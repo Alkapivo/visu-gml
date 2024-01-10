@@ -1,0 +1,10 @@
+{
+  "name":"first-form",
+  "data":{
+    "brush-color":"#f01dbc",
+    "brush-texture":"texture_baron",
+    "duration":0.0,
+    "brush-name":"first-form",
+    "template":"Wave"
+  }
+}

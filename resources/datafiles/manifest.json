@@ -1,0 +1,29 @@
+{
+  "model": "io.alkapivo.visu.controller.VisuTrack",
+  "data": {
+    "name": "track-test",
+    "track": "track.json",
+    "bullet": "bullet.json",
+    "lyrics": "lyrics.json",
+    "particle": "particle.json",
+    "shader": "shader.json",
+    "shroom": "shroom.json",
+    "texture": "texture.json",
+    "video": "video3.mp4",
+    "editor": [
+      "editor/brush-grid-channel.json",
+      "editor/brush-grid-config.json",
+      "editor/brush-grid-separator.json",
+      "editor/brush-shader-clear.json",
+      "editor/brush-shader-config.json",
+      "editor/brush-shader-overlay.json",
+      "editor/brush-shader-spawn.json",
+      "editor/brush-shroom-clear.json",
+      "editor/brush-shroom-config.json",
+      "editor/brush-shroom-spawn.json",
+      "editor/brush-view-camera.json",
+      "editor/brush-view-config.json",
+      "editor/brush-view-wallpaper.json"
+    ]
+  }
+}

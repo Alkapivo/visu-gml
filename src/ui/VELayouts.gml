@@ -1,0 +1,510 @@
+//@package io.alkapivo.visu.editor
+
+///@static
+///@type {Map<String, Callable>}
+global.__VELayouts = new Map(String, Callable, {
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "vertical-item": function(config = null) {
+    return {
+      name: "vertical-item",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.VERTICAL), UILayoutType),
+      collection: true,
+      height: function() { return (this.context.height() - this.margin.top - this.margin.bottom) / this.collection.getSize()  },
+      x: function() { return this.margin.left },
+      y: function() { return this.margin.top + this.collection.getIndex() * this.height() },
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "horizontal-item": function(config = null) {
+    return {
+      name: "horizontal-item",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.HORIZONTAL), UILayoutType),
+      collection: true,
+      width: function() { return (this.context.width() - this.margin.top - this.margin.bottom) / this.collection.getSize() },
+      x: function() { return this.margin.right + this.collection.getIndex() * this.width() },
+      y: function() { return this.margin.top },
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "channel-entry": function(config = null) {
+    return {
+      name: "channel-entry",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.VERTICAL), UILayoutType),
+      collection: true,
+      x: function() { return this.margin.left },
+      y: function() { return this.margin.top + this.collection.getIndex() * this.height() },
+      height: function() { return 32 },
+      nodes: {
+        remove: {
+          name: "channel-entry.remove",
+          width: function() { return this.context.height() - this.margin.left - this.margin.right },
+          height: function() { return 32 - this.margin.top - this.margin.bottom },
+          margin: { top: 4, left: 4, right: 4, bottom: 4 },
+        },
+        label: {
+          name: "channel-entry.label",
+          width: function() { return this.context.width() 
+            - this.context.nodes.remove.width()
+            - this.context.nodes.remove.margin.left
+            - this.context.nodes.remove.margin.right  },
+          height: function() { return 30 },
+          x: function() { return this.context.nodes.remove.right() },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "brush-entry": function(config = null) {
+    return {
+      name: "brush-entry",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.VERTICAL), UILayoutType),
+      collection: true,
+      x: function() { return this.margin.left },
+      y: function() { return this.margin.top + this.collection.getIndex() * this.height() },
+      height: function() { return 32 },
+      nodes: {
+        image: {
+          name: "brush-entry.image",
+          width: function() { return this.context.height() },
+          height: function() { return this.context.height() },
+        },
+        label: {
+          name: "brush-entry.label",
+          width: function() { return this.context.width() 
+            - this.context.nodes.image.width()
+            - this.context.nodes.image.margin.left
+            - this.context.nodes.image.margin.right
+            - this.context.nodes.remove.width()
+            - this.context.nodes.remove.margin.left
+            - this.context.nodes.remove.margin.right },
+          height: function() { return 30 },
+          x: function() { return this.context.x() + this.context.nodes.image.right() },
+        },
+        remove: {
+          name: "brush-entry.remove",
+          width: function() { return 32 - this.margin.left - this.margin.right },
+          height: function() { return 32 - this.margin.top - this.margin.bottom },
+          margin: { top: 4, left: 4, right: 4, bottom: 4 },
+          x: function() { return this.context.x() + this.context.nodes.label.right()
+            + this.margin.right },
+          y: function() { return this.context.y() + this.margin.top },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "template-entry": function(config = null) {
+    return {
+      name: "template-entry",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.VERTICAL), UILayoutType),
+      collection: true,
+      x: function() { return this.margin.left },
+      y: function() { return this.margin.top + this.collection.getIndex() * this.height() },
+      height: function() { return 32 },
+      nodes: {
+        remove: {
+          name: "template-entry.remove",
+          width: function() { return this.context.height() - this.margin.left - this.margin.right },
+          height: function() { return 32 - this.margin.top - this.margin.bottom },
+          margin: { top: 4, left: 4, right: 4, bottom: 4 },
+        },
+        label: {
+          name: "template-entry.label",
+          width: function() { return this.context.width() 
+            - this.context.nodes.remove.width()
+            - this.context.nodes.remove.margin.left
+            - this.context.nodes.remove.margin.right  },
+          height: function() { return 30 },
+          x: function() { return this.context.nodes.remove.right() },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "property": function(config = null) {
+    return {
+      name: "property",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 42 - this.margin.top - this.margin.bottom },
+      margin: { top: 5, bottom: 5 },
+      nodes: {
+        checkbox: {
+          name: "property.checkbox",
+          width: function() { return 32 },
+        },
+        label: {
+          name: "property.label",
+          x: function() { return this.context.nodes.checkbox.right() },
+          width: function() { return this.context.width() 
+            - this.context.nodes.checkbox.width()
+            - this.context.nodes.input.width() },
+        },
+        input: {
+          name: "property.input",
+          x: function() { return this.context.nodes.label.right() },
+          width: function() { return 56 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "button": function(config = null) {
+    return {
+      name: "button",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 },
+    }
+  },
+  
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "text-field": function(config = null) {
+    return {
+      name: "text-field",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 },
+      nodes: {
+        label: {
+          name: "text-field.label",
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        field: {
+          name: "text-field.field",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return this.context.width() - this.context.nodes.label.right()
+            - this.margin.left - this.margin.right },
+          height: function() { return this.context.height() 
+            - this.margin.top - this.margin.bottom },
+          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+        }
+      }
+    }
+  },
+
+    ///@param {?Struct} [config]
+  ///@return {Struct}
+  "text-field-button": function(config = null) {
+    return {
+      name: "text-field-button",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 },
+      nodes: {
+        label: {
+          name: "text-field-button.label",
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        field: {
+          name: "text-field-button.field",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return this.context.width() 
+            - this.context.nodes.label.right()
+            - this.context.nodes.button.width()
+            - this.context.nodes.button.margin.right
+            - this.margin.left - this.margin.right },
+          height: function() { return this.context.height() 
+            - this.margin.top - this.margin.bottom },
+          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+        },
+        button: {
+          name: "text-field-button.button",
+          x: function() { return this.context.nodes.field.right() + this.margin.left },
+          width: function() { return 32 },
+          margin: { top: 5, bottom: 5, right: 5 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "texture-field": function(config = null) {
+    return {
+      name: "texture-field",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return this.nodes.preview.bottom() - this.y() },
+      nodes: {
+        title: {
+          name: "texture-field.title",
+          height: function() { return 42 },
+        },
+        texture: {
+          name: "texture-field.texture",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        frame: {
+          name: "texture-field.frame",
+          y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        alpha: {
+          name: "texture-field.alpha",
+          y: function() { return this.context.nodes.frame.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        preview: {
+          name: "texture-field.preview",
+          y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+          height: function() { return 144 },
+          margin: { top: 10, bottom: 10, left: 10, right: 10 },
+        },
+      },
+    }
+  },
+  
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "numeric-slider-field": function(config = null) {
+    return {
+      name: "numeric-slider-field",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 },
+      nodes: {
+        label: {
+          name: "numeric-slider-field.label",
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        field: {
+          name: "numeric-slider-field.field",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
+            - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+        },
+        slider: {
+          name: "numeric-slider-field.slider",
+          x: function() { return this.context.nodes.field.right() + this.margin.left },
+          width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
+            - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, right: 15, left: 10 },
+        }
+      }
+    }
+  },
+  
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "color-picker": function(config = null) {
+    return {
+      name: "color-picker",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return this.nodes.hex.bottom() - this.y() },
+      nodes: {
+        title: {
+          name: "color-picker.title",
+          height: function() { return 42 },
+        },
+        red: {
+          name: "color-picker.red",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        green: {
+          name: "color-picker.green",
+          y: function() { return this.context.nodes.red.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        blue: {
+          name: "color-picker.blue",
+          y: function() { return this.context.nodes.green.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        hex: {
+          name: "color-picker.hex",
+          y: function() { return this.context.nodes.blue.bottom() + this.margin.top },
+          height: function() { return 32 },
+        }
+      }
+    }
+  },
+  
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "color-picker-alpha": function(config = null) {
+    var layout = Callable.run(VELayouts.get("color-picker"), config)
+
+    Struct.set(layout.nodes, "alpha", {
+      name: "color-picker.alpha",
+      y: function() { return this.context.nodes.blue.bottom() + this.margin.top },
+      height: function() { return 32 },
+    })
+
+    Struct.set(layout.nodes, "hex", {
+      name: "color-picker.hex",
+      y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+      height: function() { return 32 },
+    })
+
+    return layout
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "spin-select": function(config = null) {
+    return {
+      name: "spin-select",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      y: function() { return this.context.bottom() + this.margin.top },
+      height: function() { return 32 },
+      margin: { top: 5, bottom: 5 },
+      nodes: {
+        label: {
+          name: "spin-select.label",
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          margin: { right: 5, left: 5 },
+        },
+        previous: {
+          name: "spin-select.previous",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return 32 - this.margin.left - this.margin.right },
+          margin: { right: 5, left: 5 },
+        },
+        preview: {
+          name: "spin-select.preview",
+          x: function() { return this.context.nodes.label.right()
+            + (this.context.width() - this.context.nodes.label.right()) / 2.0
+            - (this.width() / 2.0) },
+          width: function() { return 32 },
+        },
+        next: {
+          name: "spin-select.next",
+          x: function() { return this.context.x() + this.context.width()
+            - this.width() - this.margin.right },
+          width: function() { return 32 - this.margin.left - this.margin.right },
+          margin: { right: 5, left: 5 },
+        },
+      }
+    }
+  },
+  
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-numeric-property": function(config = null) {
+    var textField = VELayouts.get("text-field")
+    return {
+      name: "transform-numeric-property",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return this.nodes.increment.bottom() - this.y() },
+      nodes: {
+        title: {
+          name: "transform-numeric-property.title",
+          height: function() { return 42 },
+        },
+        target: {
+          name: "transform-numeric-property.target",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factor: {
+          name: "transform-numeric-property.factor",
+          y: function() { return this.context.nodes.target.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        increment: {
+          name: "transform-numeric-property.increment",
+          y: function() { return this.context.nodes.factor.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-numeric-uniform": function(config = null) {
+    var textField = VELayouts.get("text-field")
+    return {
+      name: "transform-numeric-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return this.nodes.increment.bottom() - this.y() },
+      nodes: {
+        title: {
+          name: "transform-numeric-uniform.title",
+          height: function() { return 42 },
+        },
+        value: {
+          name: "transform-numeric-uniform.value",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        target: {
+          name: "transform-numeric-uniform.target",
+          y: function() { return this.context.nodes.value.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factor: {
+          name: "transform-numeric-uniform.factor",
+          y: function() { return this.context.nodes.target.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        increment: {
+          name: "transform-numeric-uniform.increment",
+          y: function() { return this.context.nodes.factor.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "uniform-vec2-field": function(config = null) {
+    return {
+      name: "uniform-vec2-field",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 84 },
+      nodes: {
+        label: {
+          name: "uniform-vec2-field.label",
+          x: function() { return this.context.x() + this.margin.left },
+          y: function() { return this.context.y() + this.margin.top },
+          width: function() { return this.context.width() 
+            - this.margin.left - this.margin.right },
+          height: function() { return 20 
+            - this.margin.top - this.margin.bottom },
+          margin: { bottom: 2, left: 5, right: 5 },
+        },
+        vec2x: {
+          name: "uniform-vec2-field.vec2x",
+          x: function() { return this.context.x() + this.margin.left },
+          y: function() { return this.context.nodes.label.bottom() 
+            + this.margin.top },
+          width: function() { return this.context.width() 
+            - this.margin.left - this.margin.right },
+          height: function() { return 32 
+            - this.margin.top - this.margin.bottom },
+          margin: { bottom: 5, left: 5, right: 5 },
+        },
+        vec2y: {
+          name: "uniform-vec2-field.vec2y",
+          x: function() { return this.context.x() + this.margin.left },
+          y: function() { return this.context.nodes.vec2x.bottom() 
+            + this.margin.top },
+          width: function() { return this.context.width() 
+            - this.margin.left - this.margin.right },
+          height: function() { return 32 
+            - this.margin.top - this.margin.bottom },
+          margin: { bottom: 5, left: 5, right: 5 },
+        },
+      }
+    }
+  },
+})
+#macro VELayouts global.__VELayouts

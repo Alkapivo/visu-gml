@@ -1,0 +1,63 @@
+{
+  "model": "Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
+  "data": {
+    "shroom-01": {
+      "sprite": {
+        "name": "texture_baron",
+        "animate": false
+      },
+      "lifespawn": 50,
+      "gameModes": {
+        "bulletHell": {
+          "speed": {
+            "value": 0,
+            "target": 0.028,
+            "factor": 0.0001
+          },
+          "finish": {
+            "particle": "particle_default"
+          }
+        },
+        "platformer": {
+          "onPlayerLanded": {
+            "sprite": {
+              "frame": "next"
+            }
+          },
+          "finish": {
+            "particle": "particle_default"
+          }
+        }
+      }
+    },
+    "shroom-02": {
+      "sprite": {
+        "name": "texture_test",
+        "animate": false
+      },
+      "lifespawn": 50,
+      "gameModes": {
+        "bulletHell": {
+          "speed": {
+            "value": 0,
+            "target": 0.028,
+            "factor": 0.0001
+          },
+          "finish": {
+            "particle": "particle_default"
+          }
+        },
+        "platformer": {
+          "onPlayerLanded": {
+            "sprite": {
+              "frame": "next"
+            }
+          },
+          "finish": {
+            "particle": "particle_default"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "model": "Collection<io.alkapivo.core.service.sound.SoundTemplate>",
+  "data": {
+    "sound_test": {
+      "asset": "sound_test3"
+    }
+  }
+}

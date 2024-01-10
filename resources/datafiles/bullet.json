@@ -1,0 +1,11 @@
+{
+  "model": "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
+  "data": {
+    "bullet_default": {
+      "lifespawn": 10,
+      "sprite": {
+        "name": "texture_shroom_aiobahn_01"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "model": "Collection<io.alkapivo.core.service.texture.TextureTemplate>",
+  "data": {
+    "texture_shroom_test": {
+      "asset": "texture_test",
+      "scaleX": 2.0,
+      "scaleY": 2.0
+    }
+  }
+}

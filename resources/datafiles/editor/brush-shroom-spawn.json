@@ -1,0 +1,37 @@
+{
+  "data":[
+    {
+      "color":"#FF96FF",
+      "texture":"texture_baron",
+      "properties":{
+        "shroom-spawn_use-spawn-x":true,
+        "shroom-spawn_use-spawn-y":true,
+        "shroom-spawn_angle":310.73684210526318,
+        "shroom-spawn_spawn-x":-0.34736800000000001,
+        "shroom-spawn_spawn-y":-0.41052631578947363,
+        "shroom-spawn_speed":8.0,
+        "shroom-spawn_template":"shroom-01",
+        "shroom-spawn_use-angle":true
+      },
+      "type":"brush_shroom_spawn",
+      "name":"baron"
+    },
+    {
+      "color":"#FF962B",
+      "texture":"texture_baron",
+      "properties":{
+        "shroom-spawn_use-spawn-x":true,
+        "shroom-spawn_use-spawn-y":true,
+        "shroom-spawn_angle":216.0,
+        "shroom-spawn_spawn-x":1.2947368421052632,
+        "shroom-spawn_spawn-y":-0.410526,
+        "shroom-spawn_speed":8.0,
+        "shroom-spawn_template":"shroom-01",
+        "shroom-spawn_use-angle":true
+      },
+      "type":"brush_shroom_spawn",
+      "name":"baron 2"
+    }
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
+}

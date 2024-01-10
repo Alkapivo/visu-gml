@@ -1,0 +1,62 @@
+{
+  "model": "Collection<io.alkapivo.core.service.particle.ParticleTemplate>",
+  "data": {
+    "particle_default": {
+      "shape": "CIRCLE",
+      "sprite": {
+        "name": "texture_particle_default",
+        "animate": false,
+        "stretch": false,
+        "randomValue": false
+      },
+      "size": {
+        "minValue": 1,
+        "maxValue": 16,
+        "increase": 0,
+        "wiggle": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1
+      },
+      "orientation": {
+        "minValue": 0,
+        "maxValue": 360,
+        "increase": 0,
+        "wiggle": 0,
+        "relative": false
+      },
+      "color": {
+        "start": "#ffffff",
+        "halfway": "#ffffff",
+        "finish": "#ffffff"
+      },
+      "alpha": {
+        "start": 1,
+        "halfway": 1,
+        "finish": 1
+      },
+      "blend": false,
+      "life": {
+        "minValue": 1,
+        "maxValue": 100
+      },
+      "speed": {
+        "minValue": 0.01,
+        "maxValue": 5,
+        "increase": 0,
+        "wiggle": 0
+      },
+      "angle": {
+        "minValue": 0,
+        "maxValue": 360,
+        "increase": 0,
+        "wiggle": 0
+      },
+      "gravity": {
+        "amount": 0,
+        "angle": 0
+      }
+    }
+  }
+}
