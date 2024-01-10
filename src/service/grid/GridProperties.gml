@@ -141,12 +141,13 @@ function GridProperties(config = {}) constructor {
     this.gridClearColor.alpha = this.gridClearFrameAlpha
     this.shaderClearColor.alpha = this.shaderClearFrameAlpha
 
+    /*
     Core.print("clearColor", this.clearColor.toHex(true), "clearFrame", this.clearFrame, "clearFrameAlpha", 
       this.clearFrameAlpha, "\ngridClearColor", this.gridClearColor.toHex(true), "gridClearFrame", 
       this.gridClearFrame, "gridClearFrameAlpha", this.gridClearFrameAlpha, "\nshaderClearColor", 
       this.shaderClearColor.toHex(true), "shaderClearFrame", this.shaderClearFrame, "shaderClearFrameAlpha", 
       this.shaderClearFrameAlpha, "\n\n\n")
-
+    */
     return this
   }
 }

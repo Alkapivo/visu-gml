@@ -85,8 +85,6 @@ function VEEventInspector(_editor) constructor {
             return
           }
 
-          Core.print("json", JSON.stringify(selectedEvent, { pretty: true }))
-
           selectedEvent.name = container.updateEvent(
             selectedEvent.channel, 
             selectedEvent.data, 

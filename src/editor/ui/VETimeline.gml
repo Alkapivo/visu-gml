@@ -385,8 +385,10 @@ function VETimeline(_editor) constructor {
           var spd = this.area.getWidth() / this.state.get("viewSize")
           var position = spd * time
           if (this.state.get("speed") != spd) {
-            this.items.forEach(function(item, key, container) {
-              item.area.setX(container.getXFromTimestamp(item.state.get("timestamp")))
+            chunkService.forEach(function(item, key, container) {
+              var timestamp = item.state.get("timestamp")
+              var xx = container.getXFromTimestamp(timestamp)
+              item.area.setX(xx)
             }, this)
           }
           this.state.set("speed", spd)
@@ -445,7 +447,8 @@ function VETimeline(_editor) constructor {
             thickness: 2.0,
             alpha: 0.5,
             blend: timestamp - trackEvent.timestamp > 0 ? "#00FF00" : "#FF0000",
-          }),
+          })
+          
           var label = new UILabel({
             text: $"{(timestamp - trackEvent.timestamp > 0 ? "+" : "-")} {String.formatTimestampMilisecond(abs(timestamp - trackEvent.timestamp))}",
             font: "font_inter_10_regular",
@@ -466,10 +469,10 @@ function VETimeline(_editor) constructor {
 
           //render line
           line.render(
-            16 - this.offset.x + previousX,
-            16 - this.offset.y + eventY,
-            16 - this.offset.x + nextX,
-            16 - this.offset.y + eventY
+            this.offset.x + previousX + 16,
+            this.offset.y + eventY + 16,
+            this.offset.x + nextX + 16,
+            this.offset.y + eventY + 16 
           )
 
           //render next
@@ -554,8 +557,8 @@ function VETimeline(_editor) constructor {
 
           var selectedItem = this.controller.editor.store.getValue("selected-event")
           if (Optional.is(selectedItem)) {
-            var xx = this.getXFromTimestamp(selectedItem.data.timestamp)
-            var yy = this.getYFromChannelName(selectedItem.channel)
+            var xx = this.getXFromTimestamp(selectedItem.data.timestamp) + this.offset.x
+            var yy = this.getYFromChannelName(selectedItem.channel) + this.offset.y
             this.selectedSprite.render(xx, yy)
           }
         },
@@ -624,8 +627,6 @@ function VETimeline(_editor) constructor {
             var channel = this.getChannelNameFromMouseY(event.data.y)
             var uiItem = this.addEvent(channel, trackEvent)
 
-            this.getYFromChannelName(channel)
-
             ///@description select
             Beans.get(BeanVisuController).visuEditor.store
               .get("selected-event")
@@ -642,7 +643,7 @@ function VETimeline(_editor) constructor {
         ///@param {Number} timestamp
         ///@return {Number}
         getXFromTimestamp: new BindIntent(function(timestamp) {
-          return (this.area.getWidth() / this.state.get("viewSize")) * timestamp + this.offset.x
+          return (this.area.getWidth() / this.state.get("viewSize")) * timestamp
         }),
 
         ///@param {String} channel
@@ -650,7 +651,7 @@ function VETimeline(_editor) constructor {
         getYFromChannelName: new BindIntent(function(channel) {
           return this.controller.containers
             .get("ve-timeline-channels").collection
-            .get(channel).index * 32 + this.offset.y
+            .get(channel).index * 32 
         }),
 
         ///@param {Number} mouseX
