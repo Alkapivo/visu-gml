@@ -228,6 +228,37 @@ function VisuEditor(_controller) constructor {
     this.brushToolbar.update()
     this.timeline.update()
     this.statusBar.update()
+
+    var renderBrush = this.store.getValue("render-brush")
+    var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
+    brushNode.minWidth = renderBrush ? 200 : 0
+    brushNode.maxWidth = renderBrush ? 320 : 0
+    this.brushToolbar.containers.forEach(function(container, key, enable) {
+      container.enable = enable
+    }, renderBrush)
+
+    var renderTimeline = this.store.getValue("render-timeline")
+    var timelineNode = Struct.get(this.layout.nodes, "timeline")
+    timelineNode.minHeight = renderTimeline ? 80 : 0
+    timelineNode.maxHeight = renderTimeline ? 400 : 0
+    this.timeline.containers.forEach(function(container, key, enable) {
+      container.enable = enable
+    }, renderTimeline)
+
+    var renderEvent = this.store.getValue("render-event")
+    var accordionNode = Struct.get(this.layout.nodes, "accordion")
+    accordionNode.minWidth = renderEvent ? 200 : 0
+    accordionNode.maxWidth = renderEvent ? 320 : 0
+    this.accordion.containers.forEach(function(container, key, enable) {
+      if (key == "accordion-items") {
+        container.enable = enable
+      } else {
+        if (!enable) {
+          container.enable = false
+        }
+      }
+    }, renderEvent)
+
     return this
   }
 }

@@ -6,6 +6,7 @@ function VisuTrackLoader(_controller): Service() constructor {
   ///@type {VisuController}
   controller = Assert.isType(_controller, VisuController)
   
+  ///@todo extract to generic 
   ///@type {Struct}
   utils = {
     addTask: function(task, executor) {

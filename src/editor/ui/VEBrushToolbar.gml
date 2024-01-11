@@ -568,7 +568,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       steps: 10,
                     })
                     .whenSuccess(function(result) {
-                      Core.print("brush load file success")
                       var task = JSON.parserTask(result.data, this.state)
                       Beans.get(BeanVisuController).executor.add(task)
                       return task

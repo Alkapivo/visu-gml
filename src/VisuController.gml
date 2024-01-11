@@ -222,7 +222,9 @@ function VisuController(layerName) constructor {
       "rewind": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            fsmState.state.set("resume", data.resume).set("data", data)
+            fsmState.state
+              .set("resume", data.resume)
+              .set("data", data)
               .set("promises", new Map(String, Promise, {
                 "pause-track": fsm.context.trackService.send(new Event("pause-track")),
                 "rewind-video": fsm.context.videoService.send(new Event("rewind-video", data)),
@@ -233,8 +235,28 @@ function VisuController(layerName) constructor {
           try {
             if (this.state.get("promises-resolved") != "success") {
               var promises = this.state.get("promises")
-              var filtered = promises.filter(fsm.context.loader.utils.filterPromise)
-              if (filtered.size() != promises.size()) {
+              ///@description gml bug answered by videoServiceAttempts "feature"
+              try {
+                var filtered = promises.filter(fsm.context.loader.utils.filterPromise)
+                if (filtered.size() != promises.size()) {
+                  return
+                }
+              } catch (exception) {
+                promises.forEach(function(promise, name) {
+                  if (name != "rewind-video" && promise.status == PromiseStatus.REJECTED) {
+                    throw new Exception($"non-video promise failed: '{name}'")
+                  }
+                })
+
+                var data = this.state.get("data")
+                var videoServiceAttempts = Struct.get(data, "videoServiceAttempts")
+                if (!Core.isType(videoServiceAttempts, Number) 
+                  || videoServiceAttempts == 0) {
+                  throw new Exception($"video promise failed. 'videoServiceAttempts' value: {videoServiceAttempts}")
+                }
+                data.videoServiceAttempts = videoServiceAttempts - 1
+                Logger.debug("VisuController", $"videoServiceAttempts value: {data.videoServiceAttempts}")
+                promises.set("rewind-video", fsm.context.videoService.send(new Event("rewind-video", data)))
                 return
               }
 
@@ -301,7 +323,8 @@ function VisuController(layerName) constructor {
         name: "rewind", 
         data: {
           resume: this.fsm.getStateName() == "play",
-          timestamp: Assert.isType(event.data.timestamp, Number)
+          timestamp: Assert.isType(event.data.timestamp, Number),
+          videoServiceAttempts: Struct.getDefault(event.data, "videoServiceAttempts", 5),
         }
       })
       

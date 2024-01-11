@@ -220,7 +220,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
 
         }),
-        timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+        timer: new Timer(FRAME_MS * 4, { loop: Infinity, randomize: true }),
         layout: layout.nodes.background,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -231,7 +231,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
           "store": controller.editor.store,
         }),
-        timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+        timer: new Timer(FRAME_MS * 4, { loop: Infinity, randomize: true }),
         controller: controller,
         layout: layout.nodes.form,
         timeline: controller,
@@ -273,7 +273,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
         }),
-        timer: new Timer(FRAME_MS * 2, { loop: Infinity, randomize: true }),
+        //timer: new Timer(FRAME_MS * 2, { loop: Infinity, randomize: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -282,11 +282,11 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
+          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
-          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
+          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onInit: function() {
           this.collection = new UICollection(this, { layout: this.layout })
@@ -362,7 +362,7 @@ function VETimeline(_editor) constructor {
           "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           "initialized": false
         }),
-        timer: new Timer(FRAME_MS * 2, { loop: Infinity, randomize: true }),
+        //timer: new Timer(FRAME_MS * 2, { loop: Infinity, randomize: true }),
         controller: controller,
         layout: layout.nodes.events,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -855,7 +855,7 @@ function VETimeline(_editor) constructor {
           "mouseX": null,
           "mouseXSensitivity": 30,
         }),
-        timer: new Timer(FRAME_MS * 2, { loop: Infinity, randomize: true }),
+        //timer: new Timer(FRAME_MS * 2, { loop: Infinity, randomize: true }),
         controller: controller,
         layout: layout.nodes.ruler,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -964,8 +964,9 @@ function VETimeline(_editor) constructor {
           var timestamp = this.state.get("mouseXTime")
           this.state.set("mouseX", null)
           this.state.set("mouseXTime", null)
-          return this.controller.editor.controller
-            .send(new Event("rewind", { timestamp: timestamp }))
+          return this.controller.send(new Event("rewind", { 
+            timestamp: timestamp,
+          }))
         }),
       }),
     })
