@@ -912,9 +912,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         })
       },
       onDestroy: function() {
-        this.brushToolbar.store
-          .get("template")
-          .removeSubscriber(this.name)
+        var store = this.brushToolbar.store
+        store.get("template").removeSubscriber(this.name)
+        store.get("type").removeSubscriber(this.name)
       },
     }
   },
@@ -1144,10 +1144,14 @@ function VEBrushToolbar(_editor) constructor {
   ///@return {Map<String, UI>}
   factoryContainers = function(parent) {
     this.layout = this.factoryLayout(parent)
-    return VisuBrushContainers.map(function(template, name, brushToolbar) {
-      var layout = Assert.isType(Struct.get(brushToolbar.layout.nodes, name), UILayout)
-      return new UI(template(name, brushToolbar, layout))
-    }, this, String, UI)
+    var brushToolbar = this
+    var containers = new Map(String, UI)
+    VisuBrushContainers.forEach(function(template, name, acc) {
+      var layout = Assert.isType(Struct.get(acc.brushToolbar.layout.nodes, name), UILayout)
+      var ui = new UI(template($"ve-brush-toolbar_{name}", acc.brushToolbar, layout))
+      acc.containers.add(ui, $"ve-brush-toolbar_{name}")
+    }, { containers: containers, brushToolbar: brushToolbar })
+    return containers
   }
 
   ///@type {EventDispatcher}
@@ -1170,7 +1174,7 @@ function VEBrushToolbar(_editor) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        data.uiService.send(new Event("remove", { 
+        uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

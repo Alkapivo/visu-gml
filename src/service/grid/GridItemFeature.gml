@@ -39,7 +39,12 @@ function GridItemFeature() constructor {
 
   ///@param {GridItem} gridItem
   ///@param {VisuController} controller
-  update = method(this, function(gridItem, controller) { })
+  update = function(gridItem, controller) { }
+
+  ///@return {Struct}
+  serialize = function() {
+    return {}
+  }
 }
 
 
@@ -54,6 +59,18 @@ function GridItemFeatureSpeed(json): GridItemFeature() constructor {
   ///@param {VisuController} controller
   update = function(gridItem, controller) {
     gridItem.speed = this.transformer.update().value
+  }
+
+  ///@override
+  ///@return {Struct}
+  serialize = function() {
+    var feature = this
+    return {
+      "value": feature.transformer.value,
+      "target": feature.transformer.target,
+      "factor": feature.transformer.factor,
+      "increase": feature.transformer.increase,
+    }
   }
 }
 
@@ -73,4 +90,15 @@ function GridItemFeatureFinish(json): GridItemFeature() constructor {
   update = method(this, function(gridItem, controller) {
     ///@todo spawn particle this.particle
   })
+
+  ///@override
+  ///@return {Struct}
+  serialize = function() {
+    var json = {}
+    if (Optional.is(this.particle)) {
+      Struct.set(json, "particle", this.particle)
+    }
+
+    return json
+  }
 }

@@ -63,7 +63,7 @@ function VEEventInspector(_editor) constructor {
           }
 
           this.state.set("updateTrackEvent", false)
-          var selectedEvent = Beans.get(BeanVisuController).visuEditor.store
+          var selectedEvent = Beans.get(BeanVisuController).editor.store
             .getValue("selected-event")
           if (!Core.isType(selectedEvent, Struct)) {
             return
@@ -106,7 +106,7 @@ function VEEventInspector(_editor) constructor {
         onInit: function() {
           var container = this
           this.collection = new UICollection(this, { layout: container.layout })
-          Beans.get(BeanVisuController).visuEditor.store
+          Beans.get(BeanVisuController).editor.store
             .get("selected-event")
             .addSubscriber({ 
               name: container.name,
@@ -161,6 +161,11 @@ function VEEventInspector(_editor) constructor {
               data: container,
             })
         },
+        onDestroy: function() {
+          Beans.get(BeanVisuController).editor.store
+            .get("selected-event")
+            .removeSubscriber(this.name)
+        },
       }),
     })
   }
@@ -179,7 +184,7 @@ function VEEventInspector(_editor) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        data.uiService.send(new Event("remove", { 
+        uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

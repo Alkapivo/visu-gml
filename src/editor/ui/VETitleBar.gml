@@ -127,21 +127,41 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.file,
             options: new Array(),
             callback: function() {
-              var controller = Beans.get(BeanVisuController)
-              controller.fileService.send(new Event("save-file-sync")
-                .setData({
-                  path: FileUtil.getPathToSaveWithDialog({ 
-                    filename: "track", 
-                    extension: "json"
-                  }),
-                  data: controller.trackService.track.serialize()
-              }))
+              var path = FileUtil.getPathToSaveWithDialog({ 
+                filename: "track", 
+                extension: "json"
+              })
+
+              if (path == null) {
+                return
+              }
+
+              global.__VisuTrack.saveProject(path)
             }
           }),
           "button_ve-title-bar_edit": factoryTextButton({
             text: "Edit",
             layout: layout.nodes.edit,
             options: new Array(),
+            callback: function() {
+              var manifest = FileUtil.getPathToOpenWithDialog({ 
+                filename: "manifest", 
+                extension: "json"
+              })
+
+              if (!FileUtil.fileExists(manifest)) {
+                return
+              }
+
+              var controller = Beans.get(BeanVisuController)
+              controller.editor.send(new Event("close"))
+              controller.trackService.send(new Event("close-track"))
+              controller.videoService.send(new Event("close-video"))
+              controller.send(new Event("load", {
+                manifest: manifest,
+                autoplay: false
+              }))
+            }
           }),
           "button_ve-title-bar_view": factoryTextButton({
             text: "View",
@@ -190,7 +210,7 @@ function VETitleBar(_editor) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        data.uiService.send(new Event("remove", { 
+        uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

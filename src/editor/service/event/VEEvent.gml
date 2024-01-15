@@ -41,7 +41,7 @@ function VEEvent(_context, json = null) constructor {
       type: String,
       value: Struct.get(json, "event-texture"),
       validate: function(value) {
-        Assert.isType(TextureUtil.fetch(value), Texture)
+        Assert.isType(TextureUtil.parse(value), Texture)
         Assert.areEqual(true, this.data.contains(value))
       },
       data: BRUSH_TEXTURES,

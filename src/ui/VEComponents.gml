@@ -972,7 +972,6 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var parsedValue = NumberUtil.parse(value, null)
                   if (parsedValue == null) {
-                    Core.print("Unable to parse value", value)
                     return
                   }
 
@@ -1084,7 +1083,6 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var parsedValue = NumberUtil.parse(value, null)
                   if (parsedValue == null) {
-                    Core.print("Unable to parse value", value)
                     return
                   }
 

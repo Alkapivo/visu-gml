@@ -1,5 +1,6 @@
 ///@package io.alkapivo.visu
 
+global.__VisuTrack = null
 ///@param {VisuController} _controller
 function VisuTrackLoader(_controller): Service() constructor {
 
@@ -53,18 +54,20 @@ function VisuTrackLoader(_controller): Service() constructor {
                 .setData({ path: path })
                 .setPromise(new Promise()
                   .whenSuccess(function(result) {
-                    var acc = this.setResponse
+                    var callback = this.setResponse
                     JSON.parserTask(result.data, { 
                       callback: function(prototype, json, key, acc) {
-                        acc(new prototype(json))
+                        acc.callback(new prototype(acc.path, json))
                       }, 
-                      acc: acc,
+                      acc: {
+                        callback: callback,
+                        path: result.path,
+                      },
                     }).update()
                     
-                    var response = this.response
                     return {
                       path: Assert.isType(FileUtil.getDirectoryFromPath(result.path), String),
-                      manifest: Assert.isType(response, VisuTrack),
+                      manifest: Assert.isType(this.response, VisuTrack),
                     }
                   })
                 )
@@ -99,18 +102,35 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, data) {
             var controller = fsm.context.controller
+            global.__VisuTrack = data.manifest
             var promises = new Map(String, Promise, {
               "texture": controller.fileService.send(
                 new Event("fetch-file")
                   .setData({ path: $"{data.path}{data.manifest.texture}" })
                   .setPromise(new Promise()
                     .setState({ 
-                      callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load texture '{key}'")
-                        acc.set(key, new prototype(key, json))
+                      callback: function(prototype, json, iterator, acc) {
+                        Logger.debug("VisuTrackLoader", $"load texture '{json.name}'")
+                        acc.promises.forEach(function(promise, key) {
+                          if (promise.status == PromiseStatus.REJECTED) {
+                            throw new Exception($"Found rejected load-texture promise for key '{key}'")
+                          }
+                        })
+
+                        var textureIntent = Assert.isType(new prototype(json), TextureIntent)
+                        textureIntent.file = FileUtil.get($"{acc.path}{FileUtil.getFilenameFromPath(textureIntent.file)}")
+                        var promise = new Promise()
+                        acc.service.send(new Event("load-texture")
+                          .setData(textureIntent)
+                          .setPromise(promise))
+                        acc.promises.add(promise, textureIntent.name)
                       },
-                      acc: controller.textureService.templates,
-                      steps: 10,
+                      acc: {
+                        service: controller.textureService,
+                        promises: new Map(String, Promise),
+                        path: global.__VisuTrack.path,
+                      },
+                      steps: 2,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -137,7 +157,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise())
                   .setState(new Map(any, any, {
                     service: controller.videoService,
-                    event: new Event("load-video", {
+                    event: new Event("open-video", {
                       video: {
                         name: $"{data.manifest.video}",
                         path: $"{data.path}{data.manifest.video}",
@@ -166,7 +186,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         Logger.debug("VisuTrackLoader", $"load track '{name}'")
                         acc(new prototype(json))
                       },
-                      acc: controller.trackService.applyTrack
+                      acc: controller.trackService.openTrack
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -195,7 +215,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
                         Logger.debug("VisuTrackLoader", $"load lyrics template '{key}'")
-                        //acc.set(key, new prototype(key, json))
+                        acc.set(key, new prototype(key, json))
                       },
                       acc: controller.lyricsService.templates,
                       steps: 10,
@@ -237,7 +257,6 @@ function VisuTrackLoader(_controller): Service() constructor {
                     }))
               ),
             })
-
             data.manifest.editor.forEach(function(file, index, acc) { 
               var promise = acc.controller.fileService.send(
                 new Event("fetch-file")
@@ -249,7 +268,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         acc.saveTemplate(new prototype(json))
                       },
                       acc: {
-                        saveTemplate: acc.controller.visuEditor.brushService.saveTemplate,
+                        saveTemplate: acc.controller.editor.brushService.saveTemplate,
                         file: file,
                       },
                       steps: 10,
@@ -269,6 +288,12 @@ function VisuTrackLoader(_controller): Service() constructor {
             var promises = this.state.get("promises")
             var filtered = promises.filter(fsm.context.utils.filterPromise)
             if (filtered.size() != promises.size()) {
+              return
+            }
+
+            var texturePromises = promises.get("texture").state.acc.promises
+            var filteredTextures = texturePromises.filter(fsm.context.utils.filterPromise)
+            if (filteredTextures.size() != texturePromises.size()) {
               return
             }
 
@@ -364,7 +389,7 @@ function VisuTrackLoader(_controller): Service() constructor {
       "loaded": {
         actions: {
           onStart: function(fsm, fsmState, tasks) { 
-            fsm.context.controller.visuEditor.send(new Event("open"))
+            fsm.context.controller.editor.send(new Event("open"))
           }
         },
         transitions: GMArray.toStruct([ "idle", "parse-manifest" ]),

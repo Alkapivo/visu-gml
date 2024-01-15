@@ -58,29 +58,24 @@ function ShroomTemplate(_name, json) constructor {
   
   ///@type {Map<String, ShroomGameMode>}
   gameModes = Struct.toMap(json.gameModes).map(this.mapGameMode)
+
+  ///@return {Struct}
+  serialize = function() {
+    var shroom = this
+    var json = {
+      name: shroom.name,
+      sprite: shroom.sprite,
+      gameModes: shroom.gameModes.toStruct(function(gameMode) {
+        return gameMode.serialize()
+      })
+    }
+
+    if (Optional.is(this.lifespawn)) {
+      Struct.set(json, "lifespawn", this.lifespawn)
+    }
+
+    return json
+  }
 }
 
-///@param {Struct} [config]
-function ShroomSpawn(config = {}) constructor {
-
-  ///@type {Number}
-  x = Struct.get(config, "x")
-  Assert.isType(this.x, Number, "x")
-
-  ///@type {Number}
-  y = Struct.get(config, "y")
-  Assert.isType(this.y, Number, "y")
-
-  ///@type {String}
-  template = Struct.get(config, "template")
-  Assert.isType(this.x, ShroomTemplate, "template")
-  
-  ///@type {Number}
-  speed = Struct.getDefault(config, "speed", 0)
-  Assert.isType(this.speed, Number, "speed")
-  
-  ///@type {Number}
-  angle = Struct.getDefault(config, "angle", 270)
-  Assert.isType(this.angle, Number, "angle")
-}
  

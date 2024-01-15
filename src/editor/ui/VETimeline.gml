@@ -214,7 +214,7 @@ function VETimeline(_editor) constructor {
     var layout = this.factoryLayout(parent)
     return new Map(String, UI, {
       "_ve-timeline-background": new UI({
-        name: "ve-timeline-background",
+        name: "_ve-timeline-background",
         state: new Map(String, any, {
           "background-alpha": 1.0,
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
@@ -606,7 +606,7 @@ function VETimeline(_editor) constructor {
           var uiItem = this.addEvent(channel, trackEvent)
 
           ///@description select
-          Beans.get(BeanVisuController).visuEditor.store
+          Beans.get(BeanVisuController).editor.store
             .get("selected-event")
             .set({
               name: uiItem.name,
@@ -628,7 +628,7 @@ function VETimeline(_editor) constructor {
             var uiItem = this.addEvent(channel, trackEvent)
 
             ///@description select
-            Beans.get(BeanVisuController).visuEditor.store
+            Beans.get(BeanVisuController).editor.store
               .get("selected-event")
               .set({
                 name: uiItem.name,
@@ -765,7 +765,7 @@ function VETimeline(_editor) constructor {
                   return
                 }
                 
-                Beans.get(BeanVisuController).visuEditor.store
+                Beans.get(BeanVisuController).editor.store
                   .get("selected-event")
                   .set({
                     name: context.name,
@@ -780,7 +780,7 @@ function VETimeline(_editor) constructor {
                 }
                 this.context.removeEvent(channelName, this.name)
 
-                Beans.get(BeanVisuController).visuEditor.store
+                Beans.get(BeanVisuController).editor.store
                   .get("selected-event")
                   .set(null)
               },
@@ -991,7 +991,7 @@ function VETimeline(_editor) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        data.uiService.send(new Event("remove", { 
+        uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

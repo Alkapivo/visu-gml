@@ -36,6 +36,13 @@ function ShroomGameMode(json) {
   ///@param {Shroom} shroom
   ///@param {VisuController} controller
   update = method(this, function(shroom, controller) { })
+
+  ///@return {Struct}
+  serialize = function() {
+    return this.features.toStruct(function(feature) {
+      return feature.serialize()
+    })
+  }
 }
 
 

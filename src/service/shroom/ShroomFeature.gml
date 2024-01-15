@@ -37,7 +37,7 @@ global.__SHROOM_FEATURES = new _SHROOM_FEATURES()
 ///@param {Struct} json
 function ShroomFeatureShoot(json): GridItemFeature() constructor {
 
-  ///@type {String}
+  ///@type {?String}
   bullet = Assert.isType(Struct.get(json, "bullet"), String)
 
   ///@type {?Number}
@@ -77,6 +77,25 @@ function ShroomFeatureShoot(json): GridItemFeature() constructor {
       controller.bulletService.dispatcher.send(event)
     }
   })
+
+  ///@override
+  ///@return {Struct}
+  serialize = function() {
+    var feature = this
+    var json = {
+      "bullet": feature.bullet,
+      "speed": feature.speed,
+      "interval": feature.interval,
+      "aimPlayer": feature.aimPlayer,
+      "angleRange": feature.angleRange,
+    }
+
+    if (Optional.is(this.bullets)) {
+      Struct.set(json, "bullets", this.bullets)
+    }
+
+    return json
+  }
 }
 
 

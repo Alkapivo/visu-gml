@@ -155,55 +155,6 @@ function GridService(_controller, config = {}): Service(config) constructor {
     this.moveGridItems()
       .signalGridItemsCollision()
       .updateGridItems()
-
-    if (keyboard_check_pressed(vk_space)) {
-      /*
-      this.send(new Event("transform-property", {
-        key: "vec2",
-        container: this.properties,
-        executor: this.executor,
-        transformer: new Vector2Transformer({
-          x: {
-            value: this.properties.vec2.x,
-            target: choose(1, -1) * irandom(100),
-            factor: choose(1, 2),
-            increase: 0,
-          },
-          y: {
-            value: this.properties.vec2.y,
-            target: choose(1, -1) * irandom(50),
-            factor: choose(1, 2),
-            increase: 0,
-          },
-        })
-      }))
-      */
-      /*
-      this.send(new Event("transform-property", {
-        key: "primaryWireframeColor",
-        container: this.properties,
-        executor: this.executor,
-        transformer: new ColorTransformer({
-          value: this.properties.primaryWireframeColor.toHex(),
-          target: choose("#ffccaa", "#1100bb", "#00ff5b"),
-          factor: choose(0.01, 0.05, 0.1, 0.2),
-        })
-      }))
-      */
-      /*
-      this.send(new Event("transform-property", {
-        key: "channels",
-        container: this.properties,
-        executor: this.executor,
-        transformer: new NumberTransformer({
-          value: this.properties.channels,
-          target: irandom(30),
-          factor: choose(0.01, 0.05, 0.1, 0.2),
-          increase: 0,
-        })
-      }))
-      */
-    }
     return this
   }
 }

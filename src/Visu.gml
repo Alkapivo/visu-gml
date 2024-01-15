@@ -5,7 +5,6 @@ function _Visu() constructor {
   ///@param {String} layerName
   ///@return {Visu}
   run = method(this, function(layerName) {
-    /*
     if (!Beans.exists(BeanTextureService)) {
       Beans.add(BeanTextureService, new Bean(TextureService,
         GMObjectUtil.factoryGMObject(
@@ -15,7 +14,6 @@ function _Visu() constructor {
         )
       ))
     }
-    */
     
     Beans.add(BeanVisuController, new Bean(VisuController,
       GMObjectUtil.factoryGMObject(

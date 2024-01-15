@@ -72,7 +72,7 @@ function VEBrush(template) constructor {
       type: String,
       value: template.texture,
       validate: function(value) {
-        Assert.isType(TextureUtil.fetch(value), Texture)
+        Assert.isType(TextureUtil.parse(value), Texture)
         Assert.isTrue(this.data.contains(value))
       },
       data: BRUSH_TEXTURES,

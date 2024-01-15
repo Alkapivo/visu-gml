@@ -38,7 +38,7 @@ function VEAccordion(_editor, config = null) constructor {
   ///@private
   ///@type {Map<String, Callable>}
   __containers = new Map(String, Callable, {
-    "accordion-items": function(name, accordion, layout) {
+    "_ve-accordion_accordion-items": function(name, accordion, layout) {
       return {
         name: name,
         state: new Map(String, any, {
@@ -226,7 +226,7 @@ function VEAccordion(_editor, config = null) constructor {
     return this.__containers
       .map(function(item, name, accordion) {
         var layout = Assert.isType(accordion.layout, UILayout)
-        return new UI(item($"ve-accordion_{name}", accordion, layout))
+        return new UI(item(name, accordion, layout))
       }, this, String, UI)
       .merge(this.eventInspector.containers, this.templateToolbar.containers)
   }
@@ -250,7 +250,8 @@ function VEAccordion(_editor, config = null) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        data.uiService.send(new Event("remove", { 
+        Core.print("container", key)
+        uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

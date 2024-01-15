@@ -257,7 +257,7 @@ function GridRenderer(_controller, config = {}) constructor {
       this.controller.shroomService.spawner = null
     }
 
-    this.controller.gridSystem.render()
+    //this.controller.gridSystem.render()
       
     return this
   }

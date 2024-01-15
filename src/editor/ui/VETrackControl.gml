@@ -310,7 +310,7 @@ function VETrackControl(_editor) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        data.uiService.send(new Event("remove", { 
+        uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

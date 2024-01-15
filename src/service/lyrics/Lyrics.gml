@@ -9,9 +9,20 @@ function LyricsTemplate(_name, json) constructor {
 
   ///@type {Array<String>}
   lines = Struct.contains(json, "lines")
-    ? Assert.isType(json.lines, Array).validate(String)
+    ? new Array(String, GMArray
+      .map(json.lines, function(line) {
+        return Assert.isType(line, String)
+      }))
     : new Array(String)
+
+  ///@return {Struct}
+  serialize = function() {
+    return {
+      lines: this.lines.getContainer()
+    }
+  }
 }
+
 
 
 ///@param {Struct} json

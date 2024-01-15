@@ -239,12 +239,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               var controller = Beans.get(BeanVisuController)
               var type = this.context.templateToolbar.store.getValue("type")
               var templates = null
+              var model = null
+              var filename = null
               switch (type) {
                 case VETemplateType.SHADER:
                   templates = controller.shaderPipeline.templates
+                  model = "Collection<io.alkapivo.core.service.shader.ShaderTemplate>"
+                  filename = "shader"
                   break
                 case VETemplateType.SHROOM:
                   templates = controller.shroomService.templates
+                  model = "Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>"
+                  filename = "shroom"
                   break
                 default:
                   Logger.error(
@@ -264,7 +270,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               }, struct)
 
               var data = JSON.stringify({
-                "model": "Collection<io.alkapivo.core.service.shader.ShaderTemplate>",
+                "model": model,
                 "data": struct,
               }, { pretty: true })
 
@@ -272,7 +278,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 .send(new Event("save-file-sync")
                   .setData({
                     path: FileUtil.getPathToSaveWithDialog({ 
-                      filename: "shader", 
+                      filename: filename, 
                       extension: "json"
                     }),
                     data: data
@@ -477,7 +483,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         var container = this
         this.collection = new UICollection(this, { layout: container.layout })
         this.templateToolbar.store.get("template").addSubscriber({ 
-          name: this.name,
+          name: container.name,
           callback: function(template, data) {
             if (!Core.isType(template, VETemplate)) {
               data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
@@ -508,7 +514,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         })
       },
       onDestroy: function() {
-        this.brushToolbar.store
+        this.templateToolbar.store
           .get("template")
           .removeSubscriber(this.name)
       },
@@ -698,10 +704,14 @@ function VETemplateToolbar(_editor) constructor {
   ///@return {Map<String, UI>}
   factoryContainers = function(parent) {
     this.layout = this.factoryLayout(parent)
-    return VisuTemplateContainers.map(function(template, name, templateToolbar) {
-      var layout = Assert.isType(Struct.get(templateToolbar.layout.nodes, name), UILayout)
-      return new UI(template($"ve-template-toolbar_{name}", templateToolbar, layout))
-    }, this, String, UI)
+    var templateToolbar = this
+    var containers = new Map(String, UI)
+    VisuTemplateContainers.forEach(function(template, name, acc) {
+      var layout = Assert.isType(Struct.get(acc.templateToolbar.layout.nodes, name), UILayout)
+      var ui = new UI(template($"ve-template-toolbar_{name}", acc.templateToolbar, layout))
+      acc.containers.add(ui, $"ve-template-toolbar_{name}")
+    }, { containers: containers, templateToolbar: templateToolbar })
+    return containers
   }
 
   ///@type {EventDispatcher}
@@ -718,7 +728,7 @@ function VETemplateToolbar(_editor) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        data.uiService.send(new Event("remove", { 
+        uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

@@ -23,7 +23,7 @@ function VisuController(layerName) constructor {
   fileService = new FileService(this)
 
   ///@type {TextureService}
-  textureService = new TextureService(this)
+  textureService = Beans.get(BeanTextureService)
 
   ///@type {ShaderPipeline}
   shaderPipeline = new ShaderPipeline(this)
@@ -59,10 +59,10 @@ function VisuController(layerName) constructor {
   uiService = new UIService(this)
 
   ///@type {VisuEditor}
-  visuEditor = new VisuEditor(this)
+  editor = new VisuEditor(this)
 
   ///@type {GridSystem}
-  gridSystem = new GridSystem(this)
+  //gridSystem = new GridSystem(this)
 
   ////@type {Gamemode}
   gameMode = GameMode.BULLETHELL
@@ -449,8 +449,8 @@ function VisuController(layerName) constructor {
 	  this.gridService.update()
 	  this.gridRenderer.update()
     this.videoService.update()
-    this.visuEditor.update()
-    this.gridSystem.update()
+    this.editor.update()
+    //this.gridSystem.update()
 
     return this
   }
@@ -486,7 +486,7 @@ function VisuController(layerName) constructor {
   render = function() {
     //gpu_set_alphatestenable(true)
     this.gridRenderer.render()
-        this.gridSystem.render()
+    //this.gridSystem.render()
     return this
   }
 
@@ -504,7 +504,7 @@ function VisuController(layerName) constructor {
       this.uiService.render()
     }
     MouseUtil.renderSprite()
-    this.visuEditor.render()
+    //this.editor.render()
     return this
   }
 

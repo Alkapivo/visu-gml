@@ -63,10 +63,6 @@ function VisuEditor(_controller) constructor {
       type: String,
       value: "channel name",
     },
-    "debug_true": {
-      type: Boolean,
-      value: true,
-    },
     "selected-event": {
       type: Optional.of(Struct),
       value: null,
@@ -152,7 +148,6 @@ function VisuEditor(_controller) constructor {
 
   ///@debug
   render = function() {
-    /*
     static renderLayout = function(layout, color) {
       var beginX = layout.x()
       var beginY = layout.y()
@@ -169,7 +164,6 @@ function VisuEditor(_controller) constructor {
     renderLayout(Struct.get(this.layout.nodes, "brush-toolbar"), c_orange)
     renderLayout(Struct.get(this.layout.nodes, "timeline"), c_green)
     renderLayout(Struct.get(this.layout.nodes, "status-bar"), c_grey)
-    */
   }
 
   ///@type {EventDispatcher}
