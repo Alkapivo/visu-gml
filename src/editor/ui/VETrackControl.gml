@@ -191,6 +191,9 @@ function VETrackControl(_editor) constructor {
           sprite: json.sprite,
           callback: json.callback,
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          updateCustom: Struct.contains(json, "updateCustom") 
+             ? json.updateCustom
+             : function() {},
         },
         VEStyles.get("ve-track-control").button,
         false
@@ -255,6 +258,15 @@ function VETrackControl(_editor) constructor {
           "button_ve-track-control_play": factoryButton({
             layout: layout.nodes.play,
             sprite: { name: "texture_button", frame: 1, animate: false },
+            updateCustom: function() { 
+              if (Beans.get(BeanVisuController).fsm.getStateName() == "rewind") {
+                this.sprite.setAngle(this.sprite.getAngle() + DeltaTime.apply(5.0))
+                this.sprite.setBlend(c_red)
+              } else {
+                this.sprite.setAngle(0.0)
+                this.sprite.setBlend(c_white)
+              }
+            },
             callback: function() {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               Beans.get(BeanVisuController).send(new Event("play"))
