@@ -2,4 +2,6 @@
 
 function ContextMenu() constructor {
 
+  containers = new Map(String, Callable)
+
 }

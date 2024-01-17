@@ -123,12 +123,12 @@ function VETitleBar(_editor) constructor {
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
         items: {
           "button_ve-title-bar_file": factoryTextButton({
-            text: "File",
+            text: "Save",
             layout: layout.nodes.file,
             options: new Array(),
             callback: function() {
               var path = FileUtil.getPathToSaveWithDialog({ 
-                filename: "track", 
+                filename: "manifest", 
                 extension: "json"
               })
 
@@ -140,7 +140,7 @@ function VETitleBar(_editor) constructor {
             }
           }),
           "button_ve-title-bar_edit": factoryTextButton({
-            text: "Edit",
+            text: "Load",
             layout: layout.nodes.edit,
             options: new Array(),
             callback: function() {
@@ -163,6 +163,7 @@ function VETitleBar(_editor) constructor {
               }))
             }
           }),
+          /*
           "button_ve-title-bar_view": factoryTextButton({
             text: "View",
             layout: layout.nodes.view,
@@ -173,6 +174,7 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.help,
             options: new Array(),
           }),
+          */
           "button_ve-title-bar_event": factoryCheckboxButton({
             layout: layout.nodes.event,
             spriteOn: { name: "texture_ve_title_bar_icons", frame: 0 },

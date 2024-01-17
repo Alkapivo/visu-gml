@@ -188,13 +188,13 @@ function VisuEditor(_controller) constructor {
     },
     "close": function(event) {
       return {
-        "titleBar": this.titleBar.send(new Event("close")),
+        //"titleBar": this.titleBar.send(new Event("close")),
         "accordion": this.accordion.send(new Event("close")),
         //"preview": this.preview.send(new Event("close")),
         "trackControl": this.trackControl.send(new Event("close")),
         "brushToolbar": this.brushToolbar.send(new Event("close")),
         "timeline": this.timeline.send(new Event("close")),
-        "statusBar": this.statusBar.send(new Event("close")),
+        //"statusBar": this.statusBar.send(new Event("close")),
       }
     },
     "load": function(event) {

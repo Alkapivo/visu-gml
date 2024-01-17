@@ -20,9 +20,22 @@ function VEStatusBar(_editor) constructor {
       {
         name: "status-bar",
         nodes: {
+          fpsLabel: {
+            name: "status-bar.fpsLabel",
+            x: function() { return this.context.x() + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 40 },
+          },
+          fpsValue: {
+            name: "status-bar.fpsValue",
+            x: function() { return this.context.nodes.fpsLabel.right() + this.margin.left  },
+            y: function() { return 0 },
+            margin: { left: 4 },
+            width: function() { return 24 },
+          },
           timestampLabel: {
             name: "status-bar.timestampLabel",
-            x: function() { return this.context.x() + this.margin.left },
+            x: function() { return this.context.nodes.fpsValue.right() + this.margin.left  },
             y: function() { return 0 },
             width: function() { return 80 },
           },
@@ -129,6 +142,16 @@ function VEStatusBar(_editor) constructor {
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
         items: {
+          "text_ve-status-bar_fpsLabel": factoryLabel({
+            text: "FPS:",
+            layout: layout.nodes.fpsLabel,
+          }),
+          "text_ve-status-bar_fpsValue": factoryValue({
+            layout: layout.nodes.fpsValue,
+            updateCustom: function() {
+              this.label.text = string(fps)
+            },
+          }),
           "text_ve-status-bar_timestampLabel": factoryLabel({
             text: "Timestamp:",
             layout: layout.nodes.timestampLabel,
