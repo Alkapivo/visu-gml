@@ -964,7 +964,7 @@ function VETimeline(_editor) constructor {
           var timestamp = this.state.get("mouseXTime")
           this.state.set("mouseX", null)
           this.state.set("mouseXTime", null)
-          return this.controller.send(new Event("rewind", { 
+          return this.controller.editor.controller.send(new Event("rewind", { 
             timestamp: timestamp,
           }))
         }),
