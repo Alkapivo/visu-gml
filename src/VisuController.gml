@@ -94,7 +94,9 @@ function VisuController(layerName) constructor {
     initialState: { 
       name: "idle",
       data: new Event("load", {
-        manifest: $"{working_directory}manifest.json",
+        manifest: String.join("", working_directory, os_get_config() == "editor" 
+          ? "manifest-editor.json" 
+          : "manifest.json"),
         autoplay: false
       })
     },
@@ -499,10 +501,30 @@ function VisuController(layerName) constructor {
       this.enableUIContainerServiceRendering = !this.enableUIContainerServiceRendering
     }
 
-    this.gridRenderer.renderGUI()
     if (this.enableUIContainerServiceRendering) {
+      this.gridRenderer.renderGUI()
       this.uiService.render()
+      var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
+      if (loaderState != "idle" && loaderState != "loaded") {
+        var color = c_fuchsia
+        var alpha = 0.33
+        var label = new UILabel({
+          align: { v: VAlign.CENTER, h: HAlign.CENTER },
+          font: "font_inter_24_regular",
+          text: $"LOADING:\n{string(irandom(1000) + 1000)}\n{loaderState}",
+          color: "#ffffff",
+          outline: true,
+          outlineColor: "#000000",
+        })
+        
+        label.render(GuiWidth() / 2.0, GuiHeight() / 2.0)
+        GPU.render.rectangle(0, 0, GuiWidth(), GuiHeight(), 
+          false, color, color, color, color, alpha)
+      }
     }
+    
+
+    
     MouseUtil.renderSprite()
     //this.editor.render()
     return this

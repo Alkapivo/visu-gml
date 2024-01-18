@@ -87,6 +87,12 @@ function VETitleBar(_editor) constructor {
           options: json.options,
           callback: Struct.getDefault(json, "callback", function() { }),
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          onMouseHoverOver: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+          },
         },
         VEStyles.get("ve-title-bar").menu,
         false

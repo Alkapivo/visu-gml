@@ -44,6 +44,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   ? this.backgroundColorOn
                   : this.backgroundColorOff
               },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
               label: { text: String.toArray("SHADER").join("\n") },
               category: "shader",
             },
@@ -68,6 +70,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   ? this.backgroundColorOn
                   : this.backgroundColorOff
               },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
               label: { text: String.toArray("SHROOM").join("\n") },
               category: "shroom",
             },
@@ -92,6 +96,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   ? this.backgroundColorOn
                   : this.backgroundColorOff
               },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
               label: { text: String.toArray("GRID").join("\n") },
               category: "grid",
             },
@@ -116,6 +122,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   ? this.backgroundColorOn
                   : this.backgroundColorOff
               },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
               label: { text: String.toArray("VIEW").join("\n") },
               category: "view",
             },
@@ -565,7 +573,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       acc: {
                         saveTemplate: saveTemplate,
                       },
-                      steps: 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       var task = JSON.parserTask(result.data, this.state)
@@ -967,7 +975,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               callback: function() { 
                 var brushToolbar = this.context.brushToolbar
                 var template = brushToolbar.containers
-                  .get("inspector-view").state
+                  .get("ve-brush-toolbar_inspector-view").state
                   .get("brush")
                   .toTemplate()
 

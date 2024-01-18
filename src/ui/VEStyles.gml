@@ -27,6 +27,7 @@ global.__VEStyles = new Map(String, Struct, {
   "ve-title-bar": {
     menu: {
       backgroundColorSelected: VETheme.color.accent,
+      backgroundColorOut: VETheme.color.primary,  
       backgroundColor: VETheme.color.primary,  
       label: {
         font: "font_inter_10_regular",

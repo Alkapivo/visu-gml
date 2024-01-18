@@ -1,5 +1,8 @@
 ///@package io.alkapivo.visu
 
+global.__MAGIC_NUMBER_TASK = 2
+#macro MAGIC_NUMBER_TASK global.__MAGIC_NUMBER_TASK
+
 function _Visu() constructor {
 
   ///@param {String} layerName
