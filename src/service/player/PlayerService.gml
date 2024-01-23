@@ -10,8 +10,8 @@ function PlayerService(_controller, config = {}): Service() constructor {
   ///@type {?Player}
   player = null
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-player": function(event) {
       if (!Core.isType(this.player, Player)) {
         var view = this.controller.gridService.view

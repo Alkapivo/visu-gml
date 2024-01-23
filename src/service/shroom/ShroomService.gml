@@ -95,8 +95,8 @@ function ShroomService(_controller, config = {}): Service() constructor {
     )
   }
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-shroom": function(event) {
       var view = this.controller.gridService.view
       var template = Assert.isType(this.templates.get(Struct

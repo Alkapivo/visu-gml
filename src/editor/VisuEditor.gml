@@ -166,8 +166,8 @@ function VisuEditor(_controller) constructor {
     renderLayout(Struct.get(this.layout.nodes, "status-bar"), c_grey)
   }
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
       return {
         "titleBar": this.titleBar.send(new Event("open")
@@ -244,7 +244,7 @@ function VisuEditor(_controller) constructor {
     accordionNode.minWidth = renderEvent ? 200 : 0
     accordionNode.maxWidth = renderEvent ? 320 : 0
     this.accordion.containers.forEach(function(container, key, enable) {
-      if (key == "accordion-items") {
+      if (key == "_ve-accordion_accordion-items") {
         container.enable = enable
       } else {
         if (!enable) {

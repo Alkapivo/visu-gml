@@ -972,8 +972,8 @@ function VETimeline(_editor) constructor {
     })
   }
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
       var context = this
       this.containers = this.factoryContainers(event.data.layout)

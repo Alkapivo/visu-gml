@@ -231,8 +231,8 @@ function VEAccordion(_editor, config = null) constructor {
       .merge(this.eventInspector.containers, this.templateToolbar.containers)
   }
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
       var context = this
       this.containers = this.factoryContainers(event.data.layout)
@@ -261,7 +261,7 @@ function VEAccordion(_editor, config = null) constructor {
 
   ///@param {Event} event
   ///@return {?Promise}
-  send = method(this, EventDispatcherUtil.send())
+  send = method(this, EventPumpUtil.send())
 
   ///@private
   ///@params {Struct} context

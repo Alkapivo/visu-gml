@@ -6,8 +6,8 @@ function LyricsService(config = null): Service() constructor {
   ///@type {Map<String, LyricsTemplate>}
   templates = new Map(String, LyricsTemplate)
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "add": function(event) {
       Logger.debug("LyricsService", "dispatch 'add' event")
     },

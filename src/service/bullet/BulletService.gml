@@ -47,8 +47,8 @@ function BulletService(_controller, config = {}): Service() constructor {
   ///@type {Stack<Number>}
   gc = new Stack(Number)
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-bullet": function (event, dispatcher) {
       var bulletTemplate = new BulletTemplate(global.BULLET_TEMPLATE)
       Struct.set(bulletTemplate, "x", event.data.x)

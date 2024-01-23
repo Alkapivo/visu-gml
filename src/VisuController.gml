@@ -296,8 +296,8 @@ function VisuController(layerName) constructor {
   ///@type {?Promise}
   promise = null
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "load": function(event) {
       this.fsm.dispatcher.send(new Event("transition", { 
         name: "load", 

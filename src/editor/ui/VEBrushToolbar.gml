@@ -1162,8 +1162,8 @@ function VEBrushToolbar(_editor) constructor {
     return containers
   }
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
       this.containers = this.factoryContainers(event.data.layout)
       var context = this
@@ -1192,7 +1192,7 @@ function VEBrushToolbar(_editor) constructor {
 
   ///@param {Event} event
   ///@return {?Promise}
-  send = method(this, EventDispatcherUtil.send())
+  send = method(this, EventPumpUtil.send())
 
   ///@return {VEBrushToolbar}
   update = function() { 

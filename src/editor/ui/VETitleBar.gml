@@ -204,8 +204,8 @@ function VETitleBar(_editor) constructor {
     })
   }
 
-  ///@type {EventDispatcher}
-  dispatcher = new EventDispatcher(this, new Map(String, Callable, {
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
       this.containers = this.factoryContainers(event.data.layout)
       containers.forEach(function(container, key, uiService) {
