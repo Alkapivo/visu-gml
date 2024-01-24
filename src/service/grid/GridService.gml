@@ -142,16 +142,39 @@ function GridService(_controller, config = {}): Service(config) constructor {
     return this.dispatcher.send(event)
   }
 
+  static targetLocked = {
+    x: 0,
+    y: 0,
+    setX: function(x) {
+      this.x = x
+      return this
+    },
+    setY: function(y) {
+      this.y = y
+      return this
+    },
+  }
+
   ///@override
   ///@return {GridService}
   update = function() {
+
     this.properties.update(this)
     this.dispatcher.update()
     this.executor.update()
-    this.view.setFollowTarget(Core.isType(this.controller.playerService.player, Player)
-        ? this.controller.playerService.player
-        : null)
+
+    var followTarget = null
+    if (this.controller.editor.store.getValue("target-locked") == true) {
+      followTarget = this.targetLocked
+        .setX(this.view.x + 0.5)//(this.view.width / 2))
+        .setY(this.view.y + 0.5)//(this.view.height / 2))
+    } else if (Core.isType(this.controller.playerService.player, Player)) {
+      followTarget = this.controller.playerService.player
+    }
+    this.view
+      .setFollowTarget(followTarget)
       .update()
+    
     this.moveGridItems()
       .signalGridItemsCollision()
       .updateGridItems()

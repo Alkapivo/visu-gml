@@ -53,7 +53,7 @@ function VEEventInspector(_editor) constructor {
           }),
           "updateTrackEvent": false,
         }),
-        timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+        timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
         eventInspector: eventInspector,
         layout: layout,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),

@@ -8,6 +8,9 @@ function VisuTrack(_path, json) constructor {
   path = Assert.isType(FileUtil.getDirectoryFromPath(_path), String)
 
   ///@type {String}
+  sound = Assert.isType(Struct.get(json, "sound"), String)
+
+  ///@type {String}
   track = Assert.isType(Struct.get(json, "track"), String)
   
   ///@type {String}

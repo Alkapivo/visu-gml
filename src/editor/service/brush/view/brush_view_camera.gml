@@ -6,6 +6,14 @@ function brush_view_camera(json = null) {
   return {
     name: "brush_view_camera",
     store: new Map(String, Struct, {
+      "view-config_use-lock-target": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_use-lock-target", false),
+      },
+      "view-config_lock-target": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_lock-target", false),
+      },
       "view-config_use-transform-x": {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_use-transform-x", false),
@@ -74,6 +82,29 @@ function brush_view_camera(json = null) {
       },
     }),
     components: new Array(Struct, [
+      {
+        name: "view-config_use-lock-target",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Lock target",
+            enable: { key: "view-config_use-lock-target" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-lock-target" },
+          },
+          input: { 
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "view-config_lock-target" },
+            enable: { key: "view-config_use-lock-target" },
+          },
+        },
+      },
       {
         name: "view-config_transform-x",
         template: VEComponents.get("transform-numeric-property"),

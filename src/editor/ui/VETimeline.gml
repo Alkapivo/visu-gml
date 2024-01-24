@@ -36,6 +36,7 @@ function VETimeline(_editor) constructor {
             return this
           },
           get: function(name) {
+            Core.print("this get?", name)
             return this.data.get(name)
           },
           size: function() {
@@ -88,6 +89,7 @@ function VETimeline(_editor) constructor {
           return this.service.fetch(key).data.generateKey()
         },
         get: function(name) {
+          Core.print("Or that get?", name)
           var chunks = this.service.chunks
           var keys = chunks.keys()
           var size = chunks.size()
@@ -282,11 +284,11 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
+          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
-          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
+          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
         },
         onInit: function() {
           this.collection = new UICollection(this, { layout: this.layout })
@@ -570,11 +572,11 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
+          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
-          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
+          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseDropLeft: function(event) {
           var trackEvent = MouseUtil.getClipboard()
@@ -583,13 +585,20 @@ function VETimeline(_editor) constructor {
             return
           }
 
+          var channel = this.getChannelNameFromMouseY(event.data.y)
+          if (!keyboard_check(vk_shift)) {
+            Core.print(trackEvent.eventName)
+            this.removeEvent(channel, trackEvent.eventName)
+          }
+
+          trackEvent = trackEvent.serialize()
           trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
           if (keyboard_check(vk_control)) {
             var bpm = global.__todo_bpm
             trackEvent.timestamp = floor(trackEvent.timestamp / (60 / bpm)) * (60 / bpm)
           }
 
-          var channel = this.getChannelNameFromMouseY(event.data.y)
+          channel = this.getChannelNameFromMouseY(event.data.y)
           if (!Optional.is(channel)) {
             var size = this.controller.containers
               .get("ve-timeline-channels").collection
@@ -603,7 +612,7 @@ function VETimeline(_editor) constructor {
             }
           }
 
-          var uiItem = this.addEvent(channel, trackEvent)
+          var uiItem = this.addEvent(channel, new TrackEvent(trackEvent))
 
           ///@description select
           Beans.get(BeanVisuController).editor.store
@@ -749,12 +758,8 @@ function VETimeline(_editor) constructor {
                 if (!Core.isType(trackEvent, TrackEvent)) {
                   return
                 }
-
+                Struct.set(trackEvent, "eventName", this.name)
                 MouseUtil.setClipboard(trackEvent)
-
-                if (!keyboard_check(vk_shift)) {
-                  this.context.removeEvent(channelName, this.name)
-                }
               },
               onMouseReleasedLeft: function(event) {
                 var context = this
@@ -808,6 +813,7 @@ function VETimeline(_editor) constructor {
         removeEvent: new BindIntent(function(channelName, name) {
           var editor = this.controller.editor
           var uiItem = this.items.get(name)
+          Core.print("uiitemnull", uiItem == null)
           var event = uiItem.state.get("event")
           if (!Core.isType(uiItem, UIItem)
             || !Core.isType(event, TrackEvent)) {

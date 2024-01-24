@@ -11,7 +11,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+      timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -130,7 +130,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ]),
       }),
-      timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+      timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -474,7 +474,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ]),
       }),
-      timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+      timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -533,7 +533,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+      timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -743,7 +743,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ])
       }),
-      timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+      timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -848,7 +848,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+      timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -859,6 +859,17 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             type: UIText,
             text: "Inspector",
             update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
+            onMouseReleasedLeft: function() {
+              var view = this.context.brushToolbar.containers.get("ve-brush-toolbar_inspector-view")
+              view.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
+              view.collection.components.clear() ///@todo replace with remove lambda
+              view.state
+                .set("template", null)
+                .set("brush", null)
+                .set("store", null)
+              this.context.brushToolbar.store.get("template").set(null)
+              this.context.brushToolbar.store.get("brush").set(null)
+            },
           },
           VEStyles.get("bar-title"),
           false
@@ -872,7 +883,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+      timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -996,7 +1007,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           }
         ]),
       }),
-      timer: new Timer(FRAME_MS * 3, { loop: Infinity, randomize: true }),
+      timer: new Timer(FRAME_MS * GAME_FPS * 0.50, { loop: Infinity, randomize: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),

@@ -32,7 +32,16 @@ function VETrackControl(_editor) constructor {
             },
             x: function() { return 0 },
             y: function() { return 0 },
-
+          },
+          bpm: {
+            name: "track-control.bpm",
+            width: function() { return 80 },
+            height: function() { return 32 },
+            margin: { top: 8, left: 8 },
+            x: function() { return this.context.nodes.timeline.x()
+              + this.margin.left },
+            y: function() { return this.context.nodes.timeline.bottom()
+              + this.margin.top },
           },
           backward: {
             name: "track-control.backward",
@@ -241,6 +250,11 @@ function VETrackControl(_editor) constructor {
           this.items.forEach(this.renderItem)
         },
         items: {
+          "bpm": factoryLabel({
+            text: "",
+            layout: layout.nodes.bpm,
+            updateCustom: function() { },
+          }),
           "slider_ve-track-control_timeline": factorySlider({
             layout: layout.nodes.timeline,
           }),

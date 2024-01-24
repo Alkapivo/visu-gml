@@ -435,6 +435,8 @@ function VisuController(layerName) constructor {
       ? texture_bazyl_cursor 
       : texture_baron_cursor
 
+    DeltaTime.update()
+
     this.updateIO()
     this.fsm.update()
     this.loader.update()
@@ -501,8 +503,8 @@ function VisuController(layerName) constructor {
       this.enableUIContainerServiceRendering = !this.enableUIContainerServiceRendering
     }
 
+    this.gridRenderer.renderGUI()
     if (this.enableUIContainerServiceRendering) {
-      this.gridRenderer.renderGUI()
       this.uiService.render()
       var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
       if (loaderState != "idle" && loaderState != "loaded") {
@@ -638,5 +640,15 @@ function VisuController(layerName) constructor {
 
     if (keyboard_check_pressed(vk_control)) {
       this.socket.send("ws test message " + string(random(1000)))
+    }
+
+    if (keyboard_check_pressed(vk_space)) {
+      var event = this.particleService.factoryEventSpawnParticleEmitter({
+        beginX: mouse_x,
+        beginY: mouse_y,
+        endX: mouse_x,
+        endY: mouse_y,
+      })
+      this.particleService.send(event)
     }
     */

@@ -66,6 +66,10 @@ function VisuEditor(_controller) constructor {
     "selected-event": {
       type: Optional.of(Struct),
       value: null,
+    },
+    "target-locked": {
+      type: Boolean,
+      value: false
     }
   })
 

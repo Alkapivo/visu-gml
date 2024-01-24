@@ -136,6 +136,29 @@ function VisuTrackLoader(_controller): Service() constructor {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
                     }))
               ),
+              "sound": controller.fileService.send(
+                new Event("fetch-file")
+                  .setData({ path: $"{data.path}{data.manifest.sound}" })
+                  .setPromise(new Promise()
+                    .setState({ 
+                      callback: function(prototype, json, key, acc) {
+                        Logger.debug("VisuTrackLoader", $"load sound intent '{key}'")
+                        var soundIntent = new prototype(json)
+                        var path = FileUtil.get($"{acc.path}{soundIntent.file}")
+                        Assert.fileExists(path)
+                        Assert.isFalse(acc.sounds.contains(key), "GMSound already loaded")
+                        acc.sounds.add(audio_create_stream(path), key)
+                      },
+                      acc: {
+                        sounds: Beans.get(BeanSoundService).sounds,
+                        path: global.__VisuTrack.path,
+                      },
+                      steps: MAGIC_NUMBER_TASK,
+                    })
+                    .whenSuccess(function(result) {
+                      return Assert.isType(JSON.parserTask(result.data, this.state), Task)
+                    }))
+              ),
               "shader": controller.fileService.send(
                 new Event("fetch-file")
                   .setData({ path: $"{data.path}{data.manifest.shader}" })
@@ -291,12 +314,6 @@ function VisuTrackLoader(_controller): Service() constructor {
               return
             }
 
-            var texturePromises = promises.get("texture").state.acc.promises
-            var filteredTextures = texturePromises.filter(fsm.context.utils.filterPromise)
-            if (filteredTextures.size() != texturePromises.size()) {
-              return
-            }
-
             fsm.dispatcher.send(new Event("transition", {
               name: "parse-primary-assets",
               data: filtered.map(fsm.context.utils.mapPromiseToTask, null, String, Task),
@@ -318,6 +335,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             var executor = fsm.context.controller.executor
             fsmState.state.set("tasks", tasks).set("promises", new Map(String, Promise, {
               "texture": addTask(tasks.get("texture"), executor),
+              "sound": addTask(tasks.get("sound"), executor),
               "shader": addTask(tasks.get("shader"), executor),
               "video": addTask(tasks.get("video"), executor),
             }))
@@ -330,6 +348,16 @@ function VisuTrackLoader(_controller): Service() constructor {
             if (filtered.size() != promises.size()) {
               return
             }
+
+            /*
+            var texturePromises = promises.get("texture").state.acc.promises
+            Core.print("texturePromises", texturePromises.size())
+            texturePromises.forEach(function(k) { Core.print("kkkey", k)})
+            var filteredTextures = texturePromises.filter(fsm.context.utils.filterPromise)
+            if (filteredTextures.size() != texturePromises.size()) {
+              return
+            }
+            */
 
             fsm.dispatcher.send(new Event("transition", {
               name: "parse-secondary-assets",
