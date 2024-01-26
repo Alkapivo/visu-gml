@@ -373,7 +373,7 @@ function GridRenderer(_controller, config = {}) constructor {
       }
 
       GPU.set.blendMode(BlendMode.ADD)
-      renderer.gridSurface.render(0, 0, renderer.controller.gridService.properties.renderOverlayAlpha)
+      renderer.gridSurface.render(0, 0, renderer.controller.gridService.properties.renderOverlayAlpha * alpha)
       GPU.reset.blendMode()
     }, renderer)
   }
