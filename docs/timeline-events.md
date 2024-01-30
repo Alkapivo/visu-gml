@@ -138,7 +138,7 @@
   "time": 3.63,
   "type": "Grid",
   "data": {
-    "primaryWireframeColor": {
+    "primaryChannelsColor": {
       "target": "#5d67ca",
       "factor": 0.01
     },

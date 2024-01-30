@@ -26,7 +26,10 @@ function VisuController(layerName) constructor {
   textureService = Beans.get(BeanTextureService)
 
   ///@type {ShaderPipeline}
-  shaderPipeline = new ShaderPipeline(this)
+  shaderPipeline = new ShaderPipeline()
+
+  ///@type {ShaderPipeline}
+  shaderBackgroundPipeline = new ShaderPipeline(shaderPipeline)
 
   ///@type {ParticleService}
   particleService = new ParticleService(this, { layerName: layerName })
@@ -449,12 +452,23 @@ function VisuController(layerName) constructor {
 
 	  this.particleService.update()
 	  this.shaderPipeline.update()
+    this.shaderBackgroundPipeline.update()
 	  this.trackService.update()
 	  this.gridService.update()
 	  this.gridRenderer.update()
     this.videoService.update()
     this.editor.update()
     //this.gridSystem.update()
+
+    if (keyboard_check_pressed(vk_space)) {
+      var event = this.particleService.factoryEventSpawnParticleEmitter({
+        beginX: mouse_x,
+        beginY: mouse_y,
+        endX: mouse_x,
+        endY: mouse_y,
+      })
+      this.particleService.send(event)
+    }
 
     return this
   }
@@ -524,8 +538,6 @@ function VisuController(layerName) constructor {
           false, color, color, color, color, alpha)
       }
     }
-    
-
     
     MouseUtil.renderSprite()
     //this.editor.render()

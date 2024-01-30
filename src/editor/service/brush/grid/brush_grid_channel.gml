@@ -28,6 +28,21 @@ function brush_grid_channel(json = null) {
           { value: 0, target: 1, factor: 0.01, increase: 0 }
         )),
       },
+      "grid-channel_use-primary-color": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-channel_use-primary-color", false),
+      },
+      "grid-channel_primary-color": {
+        type: Color,
+        value: ColorUtil.fromHex(Struct.get(json, "grid-channel_primary-color"), "#ffffff"),
+      },
+      "grid-channel_primary-color-speed": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-channel_primary-color-speed", 0.01),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
+        },
+      },
       "grid-channel_use-transform-primary-alpha": {
         type: Boolean,
         value: Struct.getDefault(json, "grid-channel_use-transform-primary-alpha", false),
@@ -50,13 +65,20 @@ function brush_grid_channel(json = null) {
           { value: 0, target: 1, factor: 0.01, increase: 0 }
         )),
       },
-      "grid-channel_use-primary-color": {
+      "grid-channel_use-secondary-color": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-channel_use-primary-color", false),
+        value: Struct.getDefault(json, "grid-channel_use-secondary-color", false),
       },
-      "grid-channel_primary-color": {
+      "grid-channel_secondary-color": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "grid-channel_primary-color"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(json, "grid-channel_secondary-color"), "#ffffff"),
+      },
+      "grid-channel_secondary-color-speed": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-channel_secondary-color-speed", 0.01),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
+        },
       },
       "grid-channel_use-transform-secondary-alpha": {
         type: Boolean,
@@ -79,14 +101,6 @@ function brush_grid_channel(json = null) {
           "grid-channel_transform-secondary-size",
           { value: 0, target: 1, factor: 0.01, increase: 0 }
         )),
-      },
-      "grid-channel_use-secondary-color": {
-        type: Boolean,
-        value: Struct.getDefault(json, "grid-channel_use-secondary-color", false),
-      },
-      "grid-channel_secondary-color": {
-        type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "grid-channel_secondary-color"), "#ffffff"),
       },
     }),
     components: new Array(Struct, [
@@ -189,6 +203,97 @@ function brush_grid_channel(json = null) {
         },
       },
       {
+        name: "grid-channel_primary-color",
+        template: VEComponents.get("color-picker"),
+        layout: VELayouts.get("color-picker"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL },
+          title: { 
+            label: {
+              text: "Primary color",
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "grid-channel_use-primary-color" },
+            },
+            input: { 
+              store: { key: "grid-channel_primary-color" },
+              enable: { key: "grid-channel_use-primary-color" },
+            }
+          },
+          red: {
+            label: {
+              text: "Red",
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+            field: {
+              store: { key: "grid-channel_primary-color" },
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+            slider: {
+              store: { key: "grid-channel_primary-color" },
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+          },
+          green: {
+            label: {
+              text: "Green",
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+            field: {
+              store: { key: "grid-channel_primary-color" },
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+            slider: {
+              store: { key: "grid-channel_primary-color" },
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+          },
+          blue: {
+            label: {
+              text: "Blue",
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+            field: {
+              store: { key: "grid-channel_primary-color" },
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+            slider: {
+              store: { key: "grid-channel_primary-color" },
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+          },
+          hex: { 
+            label: {
+              text: "Hex",
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+            field: {
+              store: { key: "grid-channel_primary-color" },
+              enable: { key: "grid-channel_use-primary-color" },
+            },
+          },
+        },
+      },
+      {
+        name: "grid-channel_primary-color-speed",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Speed",
+            enable: { key: "grid-channel_use-primary-color" },
+          },
+          field: { 
+            enable: { key: "grid-channel_use-primary-color" },
+            store: { key: "grid-channel_primary-color-speed" },
+          },
+        },
+      },
+      {
         name: "grid-channel_transform-primary-alpha",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
@@ -287,77 +392,93 @@ function brush_grid_channel(json = null) {
         },
       },
       {
-        name: "grid-channel_primary-color",
+        name: "grid-channel_secondary-color",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
           title: { 
             label: {
-              text: "Primary color",
-              enable: { key: "grid-channel_use-primary-color" },
+              text: "Secondary color",
+              enable: { key: "grid-channel_use-secondary-color" },
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-channel_use-primary-color" },
+              store: { key: "grid-channel_use-secondary-color" },
             },
-            input: { 
-              store: { key: "grid-channel_primary-color" },
-              enable: { key: "grid-channel_use-primary-color" },
+            input: {
+              store: { key: "grid-channel_secondary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             }
           },
           red: {
             label: {
               text: "Red",
-              enable: { key: "grid-channel_use-primary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
             field: {
-              store: { key: "grid-channel_primary-color" },
-              enable: { key: "grid-channel_use-primary-color" },
+              store: { key: "grid-channel_secondary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
             slider: {
-              store: { key: "grid-channel_primary-color" },
-              enable: { key: "grid-channel_use-primary-color" },
+              store: { key: "grid-channel_secondary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
           },
           green: {
             label: {
               text: "Green",
-              enable: { key: "grid-channel_use-primary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
             field: {
-              store: { key: "grid-channel_primary-color" },
-              enable: { key: "grid-channel_use-primary-color" },
+              store: { key: "grid-channel_secondary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
             slider: {
-              store: { key: "grid-channel_primary-color" },
-              enable: { key: "grid-channel_use-primary-color" },
+              store: { key: "grid-channel_secondary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
           },
           blue: {
             label: {
               text: "Blue",
-              enable: { key: "grid-channel_use-primary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
             field: {
-              store: { key: "grid-channel_primary-color" },
-              enable: { key: "grid-channel_use-primary-color" },
+              store: { key: "grid-channel_secondary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
             slider: {
-              store: { key: "grid-channel_primary-color" },
-              enable: { key: "grid-channel_use-primary-color" },
+              store: { key: "grid-channel_secondary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
           },
           hex: { 
             label: {
               text: "Hex",
-              enable: { key: "grid-channel_use-primary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
             field: {
-              store: { key: "grid-channel_primary-color" },
-              enable: { key: "grid-channel_use-primary-color" },
+              store: { key: "grid-channel_secondary-color" },
+              enable: { key: "grid-channel_use-secondary-color" },
             },
+          },
+        },
+      },
+      {
+        name: "grid-channel_secondary-color-speed",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Speed",
+            enable: { key: "grid-channel_use-secondary-color" },
+          },
+          field: { 
+            enable: { key: "grid-channel_use-secondary-color" },
+            store: { key: "grid-channel_secondary-color-speed" }
           },
         },
       },
@@ -455,81 +576,6 @@ function brush_grid_channel(json = null) {
             field: {
               store: { key: "grid-channel_transform-secondary-size" },
               enable: { key: "grid-channel_use-transform-secondary-size" },
-            },
-          },
-        },
-      },
-      {
-        name: "grid-channel_secondary-color",
-        template: VEComponents.get("color-picker"),
-        layout: VELayouts.get("color-picker"),
-        config: {
-          layout: { type: UILayoutType.VERTICAL },
-          title: { 
-            label: {
-              text: "Secondary color",
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-channel_use-secondary-color" },
-            },
-            input: {
-              store: { key: "grid-channel_secondary-color" },
-              enable: { key: "grid-channel_use-secondary-color" },
-            }
-          },
-          red: {
-            label: {
-              text: "Red",
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-            field: {
-              store: { key: "grid-channel_secondary-color" },
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-            slider: {
-              store: { key: "grid-channel_secondary-color" },
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-          },
-          green: {
-            label: {
-              text: "Green",
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-            field: {
-              store: { key: "grid-channel_secondary-color" },
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-            slider: {
-              store: { key: "grid-channel_secondary-color" },
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-          },
-          blue: {
-            label: {
-              text: "Blue",
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-            field: {
-              store: { key: "grid-channel_secondary-color" },
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-            slider: {
-              store: { key: "grid-channel_secondary-color" },
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-          },
-          hex: { 
-            label: {
-              text: "Hex",
-              enable: { key: "grid-channel_use-secondary-color" },
-            },
-            field: {
-              store: { key: "grid-channel_secondary-color" },
-              enable: { key: "grid-channel_use-secondary-color" },
             },
           },
         },

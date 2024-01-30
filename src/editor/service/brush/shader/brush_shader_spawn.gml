@@ -6,6 +6,14 @@ function brush_shader_spawn(json = null) {
   return {
     name: "brush_shader_spawn",
     store: new Map(String, Struct, {
+      "shader-spawn_pipeline": {
+        type: String,
+        value: Struct.getDefault(json, "shader-spawn_pipeline", "Grid"),
+        validate: function(value) {
+          Assert.isTrue(this.data.contains(value))
+        },
+        data: new Array(String, [ "Grid", "Background", "All" ])
+      },
       "shader-spawn_template": {
         type: String,
         value: Struct.getDefault(json, "shader-spawn_template", "Wave"),
@@ -23,6 +31,20 @@ function brush_shader_spawn(json = null) {
       },
     }),
     components: new Array(Struct, [
+      {
+        name: "shader-spawn_pipeline",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Pipeline" },
+          previous: { store: { key: "shader-spawn_pipeline" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "shader-spawn_pipeline" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "shader-spawn_pipeline" } },
+        },
+      },
       {
         name: "shader-spawn_template",  
         template: VEComponents.get("text-field"),

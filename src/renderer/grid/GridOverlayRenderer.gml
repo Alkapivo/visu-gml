@@ -1,5 +1,6 @@
 ///@package com.alkapivo.visu.component.grid.renderer.GridOverlayRenderer
 
+///@todo rename to sth that reflects video, background and foreground renderer
 ///@param {GridRenderer} _renderer
 function GridOverlayRenderer(_renderer) constructor {
 
@@ -17,37 +18,6 @@ function GridOverlayRenderer(_renderer) constructor {
 
   ///@type {Array<Task>}
   foregroundColors = new Array(Task).enableGC()
-
-  ///@return {GridOverlayRenderer}
-  update = function() {
-    static gcFilter = function(task, index, gc) {
-      if (!Core.isType(task, Task)
-        || task.name != "fade-sprite"
-        || task.status == TaskStatus.FULLFILLED
-        || task.status == TaskStatus.REJECTED
-        || !Core.isType(task.state.get("sprite"), Sprite)) {
-        
-        gc.add(index)
-      }
-    }
-
-    static gcColorFilter = function(task, index, gc) {
-      if (!Core.isType(task, Task)
-        || task.name != "fade-color"
-        || task.status == TaskStatus.FULLFILLED
-        || task.status == TaskStatus.REJECTED
-        || !Core.isType(task.state.get("color"), Color)) {
-        
-        gc.add(index)
-      }
-    }
-
-    this.backgrounds.forEach(gcFilter, this.backgrounds.gc).runGC()
-    this.foregrounds.forEach(gcFilter, this.foregrounds.gc).runGC()
-    this.backgroundColors.forEach(gcColorFilter, this.backgroundColors.gc).runGC()
-    this.foregroundColors.forEach(gcColorFilter, this.foregroundColors.gc).runGC()
-    return this
-  }
 
   ///@return {GridOverlayRenderer}
   renderBackgrounds = function(x = 0, y = 0, zoom = 1.0) {
@@ -109,6 +79,37 @@ function GridOverlayRenderer(_renderer) constructor {
       x - (video.surface.width / GuiWidth()) / 2.0, 
       y - (video.surface.height / GuiHeight()) / 2.0
     )    
+    return this
+  }
+
+  ///@return {GridOverlayRenderer}
+  update = function() {
+    static gcFilter = function(task, index, gc) {
+      if (!Core.isType(task, Task)
+        || task.name != "fade-sprite"
+        || task.status == TaskStatus.FULLFILLED
+        || task.status == TaskStatus.REJECTED
+        || !Core.isType(task.state.get("sprite"), Sprite)) {
+        
+        gc.add(index)
+      }
+    }
+
+    static gcColorFilter = function(task, index, gc) {
+      if (!Core.isType(task, Task)
+        || task.name != "fade-color"
+        || task.status == TaskStatus.FULLFILLED
+        || task.status == TaskStatus.REJECTED
+        || !Core.isType(task.state.get("color"), Color)) {
+        
+        gc.add(index)
+      }
+    }
+
+    this.backgrounds.forEach(gcFilter, this.backgrounds.gc).runGC()
+    this.foregrounds.forEach(gcFilter, this.foregrounds.gc).runGC()
+    this.backgroundColors.forEach(gcColorFilter, this.backgroundColors.gc).runGC()
+    this.foregroundColors.forEach(gcColorFilter, this.foregroundColors.gc).runGC()
     return this
   }
 }

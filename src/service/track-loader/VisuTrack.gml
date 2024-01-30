@@ -50,6 +50,7 @@ function VisuTrack(_path, json) constructor {
         "particle": this.particle,
         "shader": this.shader,
         "shroom": this.shroom,
+        "sound": "sound.json", ///@todo hack
         "texture": this.texture,
         "video": this.video,
         "editor": controller.editor.brushService.templates

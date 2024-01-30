@@ -6,13 +6,21 @@ function brush_shader_config(json = null) {
   return {
     name: "brush_shader_config",
     store: new Map(String, Struct, {
-      "shader-config_use-render-shaders": {
+      "shader-config_use-render-grid-shaders": {
         type: Boolean,
-        value: Struct.getDefault(json, "shader-config_use-render-shaders", false),
+        value: Struct.getDefault(json, "shader-config_use-render-grid-shaders", false),
       },
-      "shader-config_render-shaders": {
+      "shader-config_render-grid-shaders": {
         type: Boolean,
-        value: Struct.getDefault(json, "shader-config_render-shaders", false),
+        value: Struct.getDefault(json, "shader-config_render-grid-shaders", false),
+      },
+      "shader-config_use-background-grid-shaders": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shader-config_use-background-grid-shaders", false),
+      },
+      "shader-config_background-grid-shaders": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shader-config_background-grid-shaders", false),
       },
       "shader-config_use-transform-shader-alpha": {
         type: Boolean,
@@ -47,25 +55,48 @@ function brush_shader_config(json = null) {
     }),
     components: new Array(Struct, [
       {
-        name: "shader-config_render-shaders",
+        name: "shader-config_render-grid-shaders",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Render shaders",
-            enable: { key: "shader-config_use-render-shaders" },
+            enable: { key: "shader-config_use-render-grid-shaders" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "shader-config_use-render-shaders" },
+            store: { key: "shader-config_use-render-grid-shaders" },
           },
           input: { 
             spriteOn: { name: "visu_texture_checkbox_switch_on" },
             spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "shader-config_render-shaders" },
-            enable: { key: "shader-config_use-render-shaders" },
+            store: { key: "shader-config_render-grid-shaders" },
+            enable: { key: "shader-config_use-render-grid-shaders" },
+          },
+        },
+      },
+      {
+        name: "shader-config_render-background-shaders",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Render shaders",
+            enable: { key: "shader-config_use-render-background-shaders" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shader-config_use-render-background-shaders" },
+          },
+          input: { 
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "shader-config_render-background-shaders" },
+            enable: { key: "shader-config_use-render-background-shaders" },
           },
         },
       },

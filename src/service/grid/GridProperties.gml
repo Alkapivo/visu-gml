@@ -3,81 +3,6 @@
 ///@param {Struct} [config]
 function GridProperties(config = {}) constructor {
 
-  ///@type {Number}
-  speed = Assert.isType(Struct
-    .getDefault(config, "properties.speed", (FRAME_MS / 4) * 1000), Number)
-
-  ///@type {Number}
-  channels = Assert.isType(Struct
-    .getDefault(config, "properties.channels", 3), Number)
-  
-  ///@type {Number}
-  separators = Assert.isType(Struct
-    .getDefault(config, "properties.separators", 10), Number)
-
-  ///@type {Color}
-  primaryWireframeColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.primaryWireframeColor", "#023ef2")), Color)
-  
-  ///@type {Color}
-  accentWireframeColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.accentWireframeColor", "#4c47cc")), Color)
-
-  ///@type {Color}
-  backgroundColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.backgroundColor", "#ffffff")), Color)
-
-  ///@type {Color}
-  loopColor1 = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.loopColor1", "#4c47cc")), Color)
-
-  ///@type {Color}
-  loopColor2 = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.loopColor2", "#023ef2")), Color)
-
-  ///@type {Color}
-  loopColor3 = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.loopColor3", "#4c47cc")), Color)
-
-  ///@type {Color}
-  loopColor4 = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.loopColor4", "#023ef2")), Color)
-
-  ///@type {Number}
-  primaryWireframeThickness = Assert.isType(Struct
-    .getDefault(config, "properties.primaryWireframeThickness", 4), Number)
-
-  ///@type {Number}
-  accentWireframeThickness = Assert.isType(Struct
-    .getDefault(config, "properties.accentWireframeThickness", 3), Number)
-
-  ///@type {Number}
-  wireframeOpacity = Assert.isType(Struct.getDefault(config, "properties.wireframeOpacity", 0.9), Number)
-
-  ///@type {Boolean}
-  loopColors = Assert.isType(Struct
-    .getDefault(config, "properties.loopColors", false), Boolean)
-  
-  ///@type {Boolean}
-  renderMesh = Assert.isType(Struct
-    .getDefault(config, "properties.renderMesh", true), Boolean)
-  
-  ///@type {Boolean}
-  renderElements = Assert.isType(Struct
-    .getDefault(config, "properties.renderElements", true), Boolean)
-
-  ///@type {Number}
-  renderOverlay = Assert.isType(Struct
-    .getDefault(config, "properties.renderOverlay", true), Boolean)
-
-  ///@type {Number}
-  renderOverlayTreshold = Assert.isType(Struct
-    .getDefault(config, "properties.renderOverlayTreshold", 2), Number)
-
-  ///@type {Number}
-  renderOverlayAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.renderOverlayAlpha", 0.33), Number)
-
   ///@type {Color}
   clearColor = Assert.isType(ColorUtil.fromHex(Struct
     .getDefault(config, "properties.clearColor", "#00000000")), Color)
@@ -89,7 +14,124 @@ function GridProperties(config = {}) constructor {
   ///@type {Number}
   clearFrameAlpha = Assert.isType(Struct
     .getDefault(config, "properties.clearFrameAlpha", 0.0), Number)
-    
+
+  ///@type {Number}
+  speed = Assert.isType(Struct
+    .getDefault(config, "properties.speed", (FRAME_MS / 4) * 1000), Number)
+
+  ///@type {Color}
+  backgroundColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.backgroundColor", "#ffffff")), Color)
+
+  #region channels
+  ///@type {Number}
+  channels = Assert.isType(Struct
+    .getDefault(config, "properties.channels", 3), Number)
+
+  ///@type {Color}
+  channelsPrimaryColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.channelsPrimaryColor ", "#023ef2")), Color)
+
+  ///@type {Color}
+  channelsSecondaryColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.channelsSecondaryColor ", "#4c47cc")), Color)
+
+  ///@type {Number}
+  channelsPrimaryAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.channelsPrimaryAlpha", 1.0), Number)
+
+  ///@type {Number}
+  channelsSecondaryAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.channelsSecondaryAlpha", 1.0), Number)  
+
+  ///@type {Number}
+  channelsPrimaryThickness = Assert.isType(Struct
+      .getDefault(config, "properties.channelsPrimaryThickness", 4), Number)
+
+  ///@type {Number}
+  channelsSecondaryThickness = Assert.isType(Struct
+    .getDefault(config, "properties.channelsSecondaryThickness", 3), Number)
+  #endregion
+
+  #region separators
+  ///@type {Number}
+  separators = Assert.isType(Struct
+    .getDefault(config, "properties.separators", 10), Number)
+
+  ///@type {Color}
+  separatorsPrimaryColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.separatorsPrimaryColor ", "#023ef2")), Color)
+
+  ///@type {Color}
+  separatorsSecondaryColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.separatorsSecondaryColor ", "#4c47cc")), Color)
+
+  ///@type {Number}
+  separatorsPrimaryAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.separatorsPrimaryAlpha", 1.0), Number)
+
+  ///@type {Number}
+  separatorsSecondaryAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.separatorsSecondaryAlpha", 1.0), Number)  
+
+  ///@type {Number}
+  separatorsPrimaryThickness = Assert.isType(Struct
+      .getDefault(config, "properties.separatorsPrimaryThickness", 4), Number)
+
+  ///@type {Number}
+  separatorsSecondaryThickness = Assert.isType(Struct
+    .getDefault(config, "properties.separatorsSecondaryThickness", 2), Number)
+  #endregion
+  
+  #region enable/disable rendering
+  ///@type {Boolean}
+  renderGrid = Assert.isType(Struct
+    .getDefault(config, "properties.renderGrid", true), Boolean)
+  
+  ///@todo implement
+  ///@type {Boolean}
+  renderElements = Assert.isType(Struct
+    .getDefault(config, "properties.renderElements", true), Boolean)
+
+  ///@type {Boolean}
+  renderBackground = Assert.isType(Struct
+    .getDefault(config, "properties.renderBackground", true), Boolean)
+
+  ///@type {Boolean}
+  renderVideo = Assert.isType(Struct
+    .getDefault(config, "properties.renderVideo", true), Boolean)
+
+  ///@type {Boolean}
+  renderForeground = Assert.isType(Struct
+    .getDefault(config, "properties.renderForeground", true), Boolean)
+
+  ///@type {Boolean}
+  renderGridShaders = Assert.isType(Struct
+    .getDefault(config, "properties.renderGridShaders", true), Boolean)
+
+  ///@type {Boolean}
+  renderBackgroundShaders = Assert.isType(Struct
+    .getDefault(config, "properties.renderBackgroundShaders", true), Boolean)
+
+  ///@type {Boolean}
+  renderParticles = Assert.isType(Struct
+    .getDefault(config, "properties.renderParticles", true), Boolean)
+  #endregion
+
+  #region support-grid
+  ///@type {Number}
+  renderSupportGrid = Assert.isType(Struct
+    .getDefault(config, "properties.renderSupportGrid", true), Boolean)
+
+  ///@type {Number}
+  renderSupportGridTreshold = Assert.isType(Struct
+    .getDefault(config, "properties.renderSupportGridTreshold", 2), Number)
+
+  ///@type {Number}
+  renderSupportGridAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.renderSupportGridAlpha", 0.33), Number)
+  #endregion
+
   ///@type {Color}
   gridClearColor = Assert.isType(ColorUtil.fromHex(Struct
     .getDefault(config, "properties.gridClearColor", "#00000000")), Color)
@@ -102,6 +144,7 @@ function GridProperties(config = {}) constructor {
   gridClearFrameAlpha = Assert.isType(Struct
     .getDefault(config, "properties.gridClearFrameAlpha", 0.0), Number)
 
+
   ///@type {Color}
   shaderClearColor = Assert.isType(ColorUtil.fromHex(Struct
     .getDefault(config, "properties.shaderClearColor", "#00000000")), Color)
@@ -113,8 +156,7 @@ function GridProperties(config = {}) constructor {
   ///@type {Number}
   shaderClearFrameAlpha = Assert.isType(Struct
     .getDefault(config, "properties.shaderClearFrameAlpha", 0.0), Number)
-
-
+  
 
   ///@type {Struct}
   depths = {
