@@ -7,6 +7,9 @@ function VisuTrack(_path, json) constructor {
   ///@type {String}
   path = Assert.isType(FileUtil.getDirectoryFromPath(_path), String)
 
+  ///@type {Number}
+  bpm = Assert.isType(Struct.getDefault(json, "bpm", global.__todo_bpm), Number)
+
   ///@type {String}
   sound = Assert.isType(Struct.get(json, "sound"), String)
 
@@ -40,17 +43,19 @@ function VisuTrack(_path, json) constructor {
   saveProject = function(manifestPath) {
     var controller = Beans.get(BeanVisuController)
     var fileService = controller.fileService
+    var previousPath = this.path
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {
       "model": "io.alkapivo.visu.controller.VisuTrack",
       "data": {  
+        "bpm": this.bpm,
         "track": this.track,
         "bullet": this.bullet,
         "lyrics": this.lyrics,
         "particle": this.particle,
         "shader": this.shader,
         "shroom": this.shroom,
-        "sound": "sound.json", ///@todo hack
+        "sound": this.sound,
         "texture": this.texture,
         "video": this.video,
         "editor": controller.editor.brushService.templates
@@ -62,8 +67,18 @@ function VisuTrack(_path, json) constructor {
       }
     }
 
+    #region Serialize
     var track = controller.trackService.track.serialize()
     FileUtil.createDirectory($"{path}editor")
+
+    var sound = {
+      "model": "Collection<io.alkapivo.core.service.sound.SoundIntent>",
+      "data": {}
+    }
+    Beans.get(BeanSoundService).intents
+      .forEach(function(intent, name, data) {
+        Struct.set(data, name, intent.serialize())
+      }, sound.data)
 
     var bullet = {
       "model": "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
@@ -117,7 +132,7 @@ function VisuTrack(_path, json) constructor {
       },
       files: new Map(String, Struct),
     }
-    controller.textureService.templates
+    Beans.get(BeanTextureService).templates
       .forEach(function(template, name, acc) {
         var path = template.file
         var json = template.serialize()
@@ -137,44 +152,51 @@ function VisuTrack(_path, json) constructor {
     var sourceVideo = Assert.isType(FileUtil.get(Struct.get(controller.videoService
       .getVideo(), "path")), String)
     var video = FileUtil.getFilenameFromPath(sourceVideo)
+    #endregion
 
-
-
+    #region Save
     fileService.send(new Event("save-file-sync")
       .setData({
         path: manifestPath,
         data: String.replaceAll(JSON.stringify(manifest, { pretty: true }), "\\", ""),
     }))
+
     fileService.send(new Event("save-file-sync")
       .setData({
         path: $"{path}{this.track}",
         data: track,
     }))
+
     fileService.send(new Event("save-file-sync")
       .setData({
         path: $"{path}{this.bullet}",
         data: JSON.stringify(bullet, { pretty: true }),
     }))
+
     fileService.send(new Event("save-file-sync")
       .setData({
         path: $"{path}{this.lyrics}",
         data: JSON.stringify(lyrics, { pretty: true }),
     }))
+
     fileService.send(new Event("save-file-sync")
       .setData({
         path: $"{path}{this.particle}",
         data: JSON.stringify(particle, { pretty: true }),
     }))
+
     fileService.send(new Event("save-file-sync")
       .setData({
         path: $"{path}{this.shader}",
         data: JSON.stringify(shader, { pretty: true }),
     }))
+
     fileService.send(new Event("save-file-sync")
       .setData({
         path: $"{path}{this.shroom}",
         data: JSON.stringify(shroom, { pretty: true }),
     }))
+
     fileService.send(new Event("save-file-sync")
       .setData({
         path: $"{path}{this.texture}",
@@ -184,7 +206,20 @@ function VisuTrack(_path, json) constructor {
       FileUtil.copyFile(sourcePath, $"{targetDirectory}{template.file}")
     }, path)
 
+    fileService.send(new Event("save-file-sync")
+      .setData({
+        path: $"{path}{this.sound}",
+        data: JSON.stringify(sound, { pretty: true }),
+    }))
+    Struct.forEach(sound.data, function(intent, name, acc) {
+      FileUtil.copyFile($"{acc.source}{intent.file}", $"{acc.target}{intent.file}")
+    }, {
+      source: previousPath,
+      target: path,
+    })
+
     FileUtil.copyFile(sourceVideo, $"{path}{video}")
+
     Struct.forEach(editor, function(data, filename, acc) {
       acc.fileService.send(new Event("save-file-sync")
         .setData({
@@ -192,5 +227,6 @@ function VisuTrack(_path, json) constructor {
           data: JSON.stringify(data, { pretty: true }),
       }))
     }, { path: path, fileService: fileService })
+    #endregion
   }
 }

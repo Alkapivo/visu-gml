@@ -25,7 +25,7 @@ function Shroom(config = {}): GridItem(config) constructor {
     }
 
     var gameMode = this.gameModes.get(controller.gameMode)
-    if (Core.isType(gameMode, ShroomGameMode)) {
+    if (Optional.is(gameMode)) {
       gameMode.update(this, controller)
     }
     return this

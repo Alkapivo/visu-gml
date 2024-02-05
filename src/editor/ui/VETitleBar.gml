@@ -163,7 +163,6 @@ function VETitleBar(_editor) constructor {
               controller.editor.send(new Event("close"))
               controller.trackService.send(new Event("close-track"))
               controller.videoService.send(new Event("close-video"))
-              Beans.get(BeanSoundService).free()
               controller.send(new Event("load", {
                 manifest: manifest,
                 autoplay: false

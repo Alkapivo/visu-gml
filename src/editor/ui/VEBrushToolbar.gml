@@ -449,6 +449,30 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             },
           },
           {
+            name: "button_category-view_type-lyrics",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+              callback: function() { 
+                var type = this.context.brushToolbar.store.get("type")
+                if (type.get() != this.brushType) {
+                  type.set(this.brushType)
+                }
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : this.backgroundColorOff
+              },
+              label: { text: "Lyrics" },
+              brushType: VEBrushType.VIEW_LYRICS,
+            },
+          },
+          {
             name: "button_category-view_type-config",
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("horizontal-item"),

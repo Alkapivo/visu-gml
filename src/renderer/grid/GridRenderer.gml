@@ -1,5 +1,6 @@
 ///@package com.alkapivo.visu.service.grid.GridRenderer
 
+
 ///@param {Controller} _controller
 ///@param {Struct} [config]
 function GridRenderer(_controller, config = {}) constructor {
@@ -41,6 +42,9 @@ function GridRenderer(_controller, config = {}) constructor {
     new DefaultVertex(0, 0, 0, 0, 0, 1, 0, 0, ColorUtil.WHITE, 1)
   ])).build().buffer
 
+  ///@type {BKTGlitch}
+  bktGlitchService = new BKTGlitchService()
+
   ///@private
   ///@type {Timer}
   ///@description Z demo
@@ -55,6 +59,7 @@ function GridRenderer(_controller, config = {}) constructor {
     if (!properties.renderGrid) || (properties.separators <= 0) {
       return this
     }
+    var dupa = "dupa"
 
     var primaryColor = properties.separatorsPrimaryColor.toGMColor()
     var primaryAlpha = properties.separatorsPrimaryAlpha
@@ -251,21 +256,19 @@ function GridRenderer(_controller, config = {}) constructor {
   }
 
   ///@private
-  ///@param {GridRenderer} renderer
+  ///@return {GridRenderer}
   renderBackground = function() {
     if (!this.controller.gridService.properties.renderBackground) {
       return this
     }
 
+    this.backgroundSurface.render()
     var renderShadersEnabled = true ///@todo brush_shader_config shader-config_render-shaders
     var shaderPipeline = this.controller.shaderBackgroundPipeline
     if (renderShadersEnabled && shaderPipeline.executor.tasks.size() > 0) {
-      //GPU.render.clear(this.controller.gridService.properties.shaderClearColor)
       shaderPipeline.render(function(task, index, renderer) {
         renderer.backgroundSurface.render()
       }, this)
-    } else {
-      this.backgroundSurface.render()
     }
   }
 
@@ -285,11 +288,13 @@ function GridRenderer(_controller, config = {}) constructor {
   renderBackgroundSurface = function(renderer) {
     var properties = renderer.controller.gridService.properties
     GPU.render.clear(properties.backgroundColor)
-    //GPU.render.clear(ColorUtil.BLACK_TRANSPARENT)
     if (properties.renderVideo) {
       renderer.overlayRenderer.renderVideo() 
     }
-    renderer.overlayRenderer.renderBackgrounds()
+
+    if (properties.renderBackground) {
+      renderer.overlayRenderer.renderBackgrounds()
+    }
   }
 
   ///@private
@@ -370,10 +375,10 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@param {GridRenderer} renderer
   renderShaderSurface = function(renderer) {
     var properties = renderer.controller.gridService.properties
-    GPU.render.clear(properties.shaderClearColor)
     if (!properties.renderGridShaders) {
       return
     }
+    GPU.render.clear(properties.shaderClearColor)
 
     renderer.controller.shaderPipeline.render(function(task, index, renderer) {
       var properties = renderer.controller.gridService.properties
@@ -403,6 +408,7 @@ function GridRenderer(_controller, config = {}) constructor {
   update = function() {
     this.camera.update()
     this.overlayRenderer.update()
+    this.bktGlitchService.update(GuiWidth(), GuiHeight())
   }
 
   ///@return {GridRenderer}
@@ -418,14 +424,18 @@ function GridRenderer(_controller, config = {}) constructor {
     return this
   }
 
-  ///@param {?Struct} [config]
-  ///@return {GridRenderer}
-  renderGUI = function(config = null) {
+  renderBKTGlitch = function(config) {
     var width = Struct.contains(config, "width") ? config.width : GuiWidth()
     var height = Struct.contains(config, "height") ? config.height : GuiHeight()
     var _x = Struct.contains(config, "x") ? config.x : 0
     var _y = Struct.contains(config, "y") ? config.y : 0
     this.gameSurface.update(width, height).render(_x, _y)
+  }
+
+  ///@param {?Struct} [config]
+  ///@return {GridRenderer}
+  renderGUI = function(config = null) {
+    this.bktGlitchService.renderOn(renderBKTGlitch, config)
     return this
   }
 
@@ -436,3 +446,4 @@ function GridRenderer(_controller, config = {}) constructor {
     this.shaderSurface.free()
   }
 }
+

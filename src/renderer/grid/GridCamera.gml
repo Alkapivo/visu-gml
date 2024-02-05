@@ -4,22 +4,22 @@
 function GridCamera(config = {}) constructor {
     
 	///@type {Number}
-	x = Struct.getDefault(config, "x", 4096)
+	x = Assert.isType(Struct.getDefault(config, "x", 4096), Number)
 
   ///@type {Number}
-	y = Struct.getDefault(config, "y", 5356)
+	y = Assert.isType(Struct.getDefault(config, "y", 5356), Number)
 
   ///@type {Number}
-	z = Struct.getDefault(config, "z", 0)
+	z = Assert.isType(Struct.getDefault(config, "z", 0), Number)
 
   ///@type {Number}
-	zoom = Struct.getDefault(config, "zoom", 5000)
+	zoom = Assert.isType(Struct.getDefault(config, "zoom", 5000), Number)
 
   ///@type {Number}
-	angle = Struct.getDefault(config, "angle", 270)
+	angle = Assert.isType(Struct.getDefault(config, "angle", 270), Number)
 
     ///@type {Number}
-	pitch = Struct.getDefault(config, "pitch", -70)
+	pitch = Assert.isType(Struct.getDefault(config, "pitch", -70), Number)
 
   ///@type {?Matrix}
   viewMatrix = null
@@ -31,7 +31,7 @@ function GridCamera(config = {}) constructor {
 	enableMouseLook = Struct.getDefault(config, "enableMouseLook", false)
 
 	///@type {Number}
-	moveSpeed = Struct.getDefault(config, "moveSpeed", 16)
+	moveSpeed = Assert.isType(Struct.getDefault(config, "moveSpeed", 16), Number)
 
 	///@type {GMCamera}
 	gmCamera = camera_create()

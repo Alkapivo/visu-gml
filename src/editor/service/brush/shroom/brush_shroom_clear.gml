@@ -47,7 +47,7 @@ function brush_shroom_clear(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Transform treshold",
+            text: "Clear amount",
             enable: { key: "shroom-clear_use-clear-amount" },
           },  
           checkbox: { 

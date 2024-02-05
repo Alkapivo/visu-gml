@@ -28,20 +28,20 @@ function VEStatusBar(_editor) constructor {
           },
           fpsValue: {
             name: "status-bar.fpsValue",
-            x: function() { return this.context.nodes.fpsLabel.right() + this.margin.left  },
+            x: function() { return this.context.nodes.fpsLabel.right() + this.margin.left },
             y: function() { return 0 },
             margin: { left: 4 },
             width: function() { return 24 },
           },
           timestampLabel: {
             name: "status-bar.timestampLabel",
-            x: function() { return this.context.nodes.fpsValue.right() + this.margin.left  },
+            x: function() { return this.context.nodes.fpsValue.right() + this.margin.left },
             y: function() { return 0 },
             width: function() { return 80 },
           },
           timestampValue: {
             name: "status-bar.timestampValue",
-            x: function() { return this.context.nodes.timestampLabel.right() + this.margin.left  },
+            x: function() { return this.context.nodes.timestampLabel.right() + this.margin.left },
             y: function() { return 0 },
             margin: { left: 4 },
             width: function() { return 48 },
@@ -60,6 +60,34 @@ function VEStatusBar(_editor) constructor {
             y: function() { return 0 },
             margin: { left: 4 },
             width: function() { return 48 },
+          },
+          bpmLabel: {
+            name: "status-bar.bpmLabel",
+            x: function() { return this.context.nodes.durationValue.right()
+              + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 40 },
+          },
+          bpmValue: {
+            name: "status-bar.bpmValue",
+            x: function() { return this.context.nodes.bpmLabel.right() + this.margin.left },
+            y: function() { return 0 },
+            margin: { left: 4 },
+            width: function() { return 24 },
+          },
+          gameModeLabel: {
+            name: "status-bar.gameModeLabel",
+            x: function() { return this.context.nodes.bpmValue.right()
+              + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 100 },
+          },
+          gameModeValue: {
+            name: "status-bar.gameModeValue",
+            x: function() { return this.context.nodes.gameModeLabel.right() + this.margin.left },
+            y: function() { return 0 },
+            margin: { left: 4 },
+            width: function() { return 80 },
           },
           stateLabel: {
             name: "status-bar.stateLabel",
@@ -102,27 +130,39 @@ function VEStatusBar(_editor) constructor {
   ///@return {Map<String, UI>}
   factoryContainers = function(parent) {
     static factoryLabel = function(json) {
+      var struct = {
+        type: UIText,
+        layout: json.layout,
+        text: json.text,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+      }
+
+      if (Struct.contains(json, "onMouseReleasedLeft")) {
+        Struct.set(struct, "onMouseReleasedLeft", json.onMouseReleasedLeft)
+      }
+
       return Struct.appendRecursiveUnique(
-        {
-          type: UIText,
-          layout: json.layout,
-          text: json.text,
-          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-        },
+        struct,
         VEStyles.get("ve-status-bar").label,
         false
       )
     }
 
     static factoryValue = function(json) {
+      var struct = {
+        type: UIText,
+        layout: json.layout,
+        text: "VALUE",
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        updateCustom: json.updateCustom,
+      }
+
+      if (Struct.contains(json, "onMouseReleasedLeft")) {
+        Struct.set(struct, "onMouseReleasedLeft", json.onMouseReleasedLeft)
+      }
+
       return Struct.appendRecursiveUnique(
-        {
-          type: UIText,
-          layout: json.layout,
-          text: "VALUE",
-          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          updateCustom: json.updateCustom,
-        },
+        struct,
         VEStyles.get("ve-status-bar").value,
         false
       )
@@ -180,6 +220,56 @@ function VEStatusBar(_editor) constructor {
               } catch (exception) {
                 this.label.text = "N/A"
               }
+            },
+          }),
+          "text_ve-status-bar_bpmLabel": factoryLabel({
+            text: "BPM:",
+            layout: layout.nodes.bpmLabel,
+          }),
+          "text_ve-status-bar_bpmValue": factoryValue({
+            layout: layout.nodes.bpmValue,
+            updateCustom: function() {
+              this.label.text = string(global.__todo_bpm)
+            },
+          }),
+          "text_ve-status-bar_gameModeLabel": factoryLabel({
+            text: "Game mode:",
+            layout: layout.nodes.gameModeLabel,
+            onMouseReleasedLeft: function() {
+              var controller = Beans.get(BeanVisuController)
+              var gameMode = GameMode.IDLE
+              switch (controller.gameMode) {
+                case GameMode.IDLE: gameMode = GameMode.BULLETHELL
+                  break
+                case GameMode.BULLETHELL: gameMode = GameMode.PLATFORMER
+                  break
+                case GameMode.PLATFORMER: gameMode = GameMode.IDLE
+                  break
+                default:
+                  throw new Exception($"Found unsupported gameMode: {controller.gameMode}")
+              }
+              controller.send(new Event("change-gamemode").setData(gameMode))
+            },
+          }),
+          "text_ve-status-bar_gameModeValue": factoryValue({
+            layout: layout.nodes.gameModeValue,
+            updateCustom: function() {
+              this.label.text = Beans.get(BeanVisuController).gameMode
+            },
+            onMouseReleasedLeft: function() {
+              var controller = Beans.get(BeanVisuController)
+              var gameMode = GameMode.IDLE
+              switch (controller.gameMode) {
+                case GameMode.IDLE: gameMode = GameMode.BULLETHELL
+                  break
+                case GameMode.BULLETHELL: gameMode = GameMode.PLATFORMER
+                  break
+                case GameMode.PLATFORMER: gameMode = GameMode.IDLE
+                  break
+                default:
+                  throw new Exception($"Found unsupported gameMode: {controller.gameMode}")
+              }
+              controller.send(new Event("change-gamemode").setData(gameMode))
             },
           }),
           "text_ve-status-bar_stateLabel": factoryLabel({

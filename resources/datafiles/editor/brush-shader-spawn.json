@@ -7,7 +7,7 @@
         "shader-spawn_template":"CRT"
       },
       "name":"shader CRT",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#000FFF"
     },
@@ -17,7 +17,7 @@
         "shader-spawn_template":"Emboss"
       },
       "name":"shader Emboss",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#A34CFF"
     },
@@ -27,7 +27,7 @@
         "shader-spawn_template":"HUE"
       },
       "name":"shader HUE",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#A3005E"
     },
@@ -47,7 +47,7 @@
         "shader-spawn_template":"Magnify"
       },
       "name":"shader Magnify",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#0ACC00"
     },
@@ -57,7 +57,7 @@
         "shader-spawn_template":"Mosaic"
       },
       "name":"shader Mosaic",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#ABFF6E"
     },
@@ -67,7 +67,7 @@
         "shader-spawn_template":"Posterization"
       },
       "name":"shader Posterization",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#5C4596"
     },
@@ -87,7 +87,7 @@
         "shader-spawn_template":"Ripple"
       },
       "name":"shader Ripple",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#2E8AD1"
     },
@@ -117,7 +117,7 @@
         "shader-spawn_template":"Sketch"
       },
       "name":"shader Sketch",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#D67A5E"
     },
@@ -127,7 +127,7 @@
         "shader-spawn_template":"Thermal"
       },
       "name":"shader Thermal",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#D6141F"
     },
@@ -137,7 +137,7 @@
         "shader-spawn_template":"Wave"
       },
       "name":"shader Wave",
-      "texture":"texture_button",
+      "texture":"texture_bazyl",
       "type":"brush_shader_spawn",
       "color":"#A14726"
     },

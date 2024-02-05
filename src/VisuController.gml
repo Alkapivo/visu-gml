@@ -22,9 +22,6 @@ function VisuController(layerName) constructor {
   ///@type {FileService}
   fileService = new FileService(this)
 
-  ///@type {TextureService}
-  textureService = Beans.get(BeanTextureService)
-
   ///@type {ShaderPipeline}
   shaderPipeline = new ShaderPipeline()
 
@@ -57,6 +54,9 @@ function VisuController(layerName) constructor {
 
   ///@type {LyricsService}
   lyricsService = new LyricsService(this)
+
+  ///@type {LyricsRenderer}
+  lyricsRenderer = new LyricsRenderer(this)
 
   ///@type {UIService}
   uiService = new UIService(this)
@@ -130,6 +130,11 @@ function VisuController(layerName) constructor {
               name: "parse-manifest",
               data: data.manifest,
             }))
+            
+            audio_stop_all()
+            VideoUtil.runGC()
+            Beans.get(BeanSoundService).free()
+            Beans.get(BeanTextureService).free()
           },
         },
         update: function(fsm) {
@@ -301,6 +306,9 @@ function VisuController(layerName) constructor {
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
+    "change-gamemode": function(event) {
+      this.gameMode = Assert.isEnum(event.data, GameMode)
+    },
     "load": function(event) {
       this.fsm.dispatcher.send(new Event("transition", { 
         name: "load", 
@@ -429,8 +437,6 @@ function VisuController(layerName) constructor {
     }
     return this
   }
-
-  window_set_cursor(cr_none)
   
   ///@return {VisuController}
   update = function() {
@@ -455,6 +461,7 @@ function VisuController(layerName) constructor {
     this.shaderBackgroundPipeline.update()
 	  this.trackService.update()
 	  this.gridService.update()
+    this.lyricsService.update()
 	  this.gridRenderer.update()
     this.videoService.update()
     this.editor.update()
@@ -511,6 +518,8 @@ function VisuController(layerName) constructor {
   ///@type {Boolean}
   enableUIContainerServiceRendering = true
 
+  //ktglitchTimer = new Timer(10.0, { loop: Infinity })
+
   ///@return {VisuController}
   renderGUI = function() {
     if (keyboard_check_pressed(vk_f2)) {
@@ -518,6 +527,7 @@ function VisuController(layerName) constructor {
     }
 
     this.gridRenderer.renderGUI()
+    this.lyricsRenderer.renderGUI()
     if (this.enableUIContainerServiceRendering) {
       this.uiService.render()
       var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
@@ -565,6 +575,9 @@ function VisuController(layerName) constructor {
         }
       }, this)
   }
+
+  window_set_cursor(cr_none)
+
 }
 
 

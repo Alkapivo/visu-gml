@@ -65,6 +65,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                       },
                     }).update()
                     
+                    global.__todo_bpm = this.response.bpm ///@hack
                     return {
                       path: Assert.isType(FileUtil.getDirectoryFromPath(result.path), String),
                       manifest: Assert.isType(this.response, VisuTrack),
@@ -126,7 +127,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         acc.promises.add(promise, textureIntent.name)
                       },
                       acc: {
-                        service: controller.textureService,
+                        service: Beans.get(BeanTextureService),
                         promises: new Map(String, Promise),
                         path: global.__VisuTrack.path,
                       },
@@ -144,13 +145,15 @@ function VisuTrackLoader(_controller): Service() constructor {
                       callback: function(prototype, json, key, acc) {
                         Logger.debug("VisuTrackLoader", $"load sound intent '{key}'")
                         var soundIntent = new prototype(json)
+                        var soundService = acc.soundService
                         var path = FileUtil.get($"{acc.path}{soundIntent.file}")
                         Assert.fileExists(path)
-                        Assert.isFalse(acc.sounds.contains(key), "GMSound already loaded")
-                        acc.sounds.add(audio_create_stream(path), key)
+                        Assert.isFalse(soundService.sounds.contains(key), "GMSound already loaded")
+                        soundService.sounds.add(audio_create_stream(path), key)
+                        soundService.intents.add(soundIntent, key)
                       },
                       acc: {
-                        sounds: Beans.get(BeanSoundService).sounds,
+                        soundService: Beans.get(BeanSoundService),
                         path: global.__VisuTrack.path,
                       },
                       steps: MAGIC_NUMBER_TASK,
@@ -348,16 +351,6 @@ function VisuTrackLoader(_controller): Service() constructor {
             if (filtered.size() != promises.size()) {
               return
             }
-
-            /*
-            var texturePromises = promises.get("texture").state.acc.promises
-            Core.print("texturePromises", texturePromises.size())
-            texturePromises.forEach(function(k) { Core.print("kkkey", k)})
-            var filteredTextures = texturePromises.filter(fsm.context.utils.filterPromise)
-            if (filteredTextures.size() != texturePromises.size()) {
-              return
-            }
-            */
 
             fsm.dispatcher.send(new Event("transition", {
               name: "parse-secondary-assets",

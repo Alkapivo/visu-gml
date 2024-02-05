@@ -81,12 +81,11 @@ function Player(config = {}): GridItem(config) constructor {
   ///@type {Map<String, PlayerGameMode>}
   gameModes = config.gameModes
 
-  ///@param {String} gameplayName
   ///@return {Player}
   update = method(this, function(controller) {
     this.keyboard.update()
     var gameMode = this.gameModes.get(controller.gameMode)
-    if (Core.isType(gameMode, PlayerGameMode)) {
+    if (Optional.is(gameMode)) {
       gameMode.update(this, controller)
     }
     return this

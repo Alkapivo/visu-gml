@@ -10,6 +10,7 @@
     "shroom": "shroom.json",
     "texture": "texture.json",
     "video": "video3.mp4",
+    "bpm": 163,
     "editor": [
       "editor/brush-grid-channel.json",
       "editor/brush-grid-config.json",

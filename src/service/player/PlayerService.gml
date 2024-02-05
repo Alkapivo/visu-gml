@@ -28,7 +28,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
   ///@param {Number} [y]
   ///@param {PlayerTemplate} [_template]
   ///@return {Player}
-  factoryPlayer = method(this, function(x = 0, y = 0, _template = null) {
+  factoryPlayer = function(x = 0, y = 0, _template = null) {
     var template = Core.isType(_template, PlayerTemplate) 
       ? _template
       : new PlayerTemplate({
@@ -77,40 +77,40 @@ function PlayerService(_controller, config = {}): Service() constructor {
     Struct.set(template, "x", x)
     Struct.set(template, "y", y)
     return new Player(template)
-  })
+  }
 
   ///@param {Player}
   ///@return {PlayerService}
-  set = method(this, function(player) {
+  set = function(player) {
     if (!Core.isType(player, Player)) {
       return this
     }
     this.remove().player = player
     return this
-  })
+  }
 
   ///@return {PlayerService}
-  remove = method(this, function() {
+  remove = function() {
     this.player = null
     return this
-  })
+  }
 
   ///@param {Event} event
   ///@return {Promise}
-  send = method(this, function(event) {
+  send = function(event) {
     if (!Core.isType(event.promise, Promise)) {
       event.promise = new Promise()
     }
     return this.dispatcher.send(event)
-  })
+  }
 
   ///@override
   ///@return {BulletService}
-  update = method(this, function() {
+  update = function() {
     this.dispatcher.update()
     if (Core.isType(this.player, Player)) {
       this.player.update(this.controller)
     }
     return this
-  })
+  }
 }

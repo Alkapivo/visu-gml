@@ -1,6 +1,6 @@
 ///@package io.alkapivo.visu.editor.ui
 
-global.__todo_bpm = 93 * 2
+global.__todo_bpm = 120
 
 ///@param {VisuEditor} _editor
 function VETimeline(_editor) constructor {
@@ -36,7 +36,6 @@ function VETimeline(_editor) constructor {
             return this
           },
           get: function(name) {
-            Core.print("this get?", name)
             return this.data.get(name)
           },
           size: function() {
@@ -89,7 +88,6 @@ function VETimeline(_editor) constructor {
           return this.service.fetch(key).data.generateKey()
         },
         get: function(name) {
-          Core.print("Or that get?", name)
           var chunks = this.service.chunks
           var keys = chunks.keys()
           var size = chunks.size()
@@ -587,7 +585,6 @@ function VETimeline(_editor) constructor {
 
           var channel = this.getChannelNameFromMouseY(event.data.y)
           if (!keyboard_check(vk_shift)) {
-            Core.print(trackEvent.eventName)
             this.removeEvent(channel, trackEvent.eventName)
           }
 
@@ -813,7 +810,6 @@ function VETimeline(_editor) constructor {
         removeEvent: new BindIntent(function(channelName, name) {
           var editor = this.controller.editor
           var uiItem = this.items.get(name)
-          Core.print("uiitemnull", uiItem == null)
           var event = uiItem.state.get("event")
           if (!Core.isType(uiItem, UIItem)
             || !Core.isType(event, TrackEvent)) {

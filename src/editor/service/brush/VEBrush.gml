@@ -11,6 +11,7 @@ function _VEBrushType(): Enum() constructor {
   SHROOM_CONFIG = "brush_shroom_config"
   VIEW_WALLPAPER = "brush_view_wallpaper"
   VIEW_CAMERA = "brush_view_camera"
+  VIEW_LYRICS = "brush_view_lyrics"
   VIEW_CONFIG = "brush_view_config"
   GRID_CHANNEL = "brush_grid_channel"
   GRID_CONFIG = "brush_grid_config"
@@ -33,6 +34,7 @@ global.__VEBrushTypeNames = new Map(String, String)
   .set(VEBrushType.VIEW_WALLPAPER, "View wallpaper")
   .set(VEBrushType.VIEW_CAMERA, "View camera")
   .set(VEBrushType.VIEW_CONFIG, "View config")
+  .set(VEBrushType.VIEW_LYRICS, "View lyrics")
   .set(VEBrushType.GRID_CHANNEL, "Grid channel")
   .set(VEBrushType.GRID_CONFIG, "Grid config")
   .set(VEBrushType.GRID_SEPARATOR, "Grid separator")
@@ -42,9 +44,27 @@ global.__VEBrushTypeNames = new Map(String, String)
 ///@static
 ///@type {Array<String>}
 global.__BRUSH_TEXTURES = new Array(String, [
-  "texture_baron",
-  "texture_button",
   "texture_white",
+  "texture_baron",
+  "texture_bazyl",
+  "texture_visu_editor_icon_event_shader",
+  "texture_visu_editor_icon_event_shader_spawn",
+  "texture_visu_editor_icon_event_shader_overlay",
+  "texture_visu_editor_icon_event_shader_clear",
+  "texture_visu_editor_icon_event_shader_config",
+  "texture_visu_editor_icon_event_shroom",
+  "texture_visu_editor_icon_event_shroom_spawn",
+  "texture_visu_editor_icon_event_shroom_clear",
+  "texture_visu_editor_icon_event_shroom_config",
+  "texture_visu_editor_icon_event_grid",
+  "texture_visu_editor_icon_event_grid_channel",
+  "texture_visu_editor_icon_event_grid_separator",
+  "texture_visu_editor_icon_event_grid_config",
+  "texture_visu_editor_icon_event_view",
+  "texture_visu_editor_icon_event_view_background",
+  "texture_visu_editor_icon_event_view_foreground",
+  "texture_visu_editor_icon_event_view_camera",
+  "texture_visu_editor_icon_event_view_config",
 ])
 #macro BRUSH_TEXTURES global.__BRUSH_TEXTURES
 

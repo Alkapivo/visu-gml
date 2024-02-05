@@ -29,7 +29,7 @@ function LyricsTemplate(_name, json) constructor {
 function Lyrics(json) constructor {
 
   ///@type {Array<String>}
-  lines = Assert.isType(json.lines, Array).validate(String)
+  lines = Assert.isType(json.lines, Array)
 
   ///@return {Lyrics}
   static update = function() {

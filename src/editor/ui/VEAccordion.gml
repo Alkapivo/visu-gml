@@ -250,7 +250,6 @@ function VEAccordion(_editor, config = null) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        Core.print("container", key)
         uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
