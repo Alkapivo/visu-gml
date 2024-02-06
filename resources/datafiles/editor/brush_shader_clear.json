@@ -1,0 +1,17 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "data":[
+    {
+      "texture":"texture_baron",
+      "type":"brush_shader_clear",
+      "properties":{
+        "shader-clear_use-clear-all-shaders":1.0,
+        "shader-clear_use-clear-amount":0.0,
+        "shader-clear_clear-amount":1.0,
+        "shader-clear_pipeline":"Grid"
+      },
+      "name":"clear all",
+      "color":"#FFFFFF"
+    }
+  ]
+}

@@ -1,30 +1,30 @@
 {
-  "model": "io.alkapivo.visu.controller.VisuTrack",
-  "data": {
-    "name": "track-test",
-    "track": "track.json",
-    "bullet": "bullet.json",
-    "lyrics": "lyrics.json",
-    "particle": "particle.json",
-    "shader": "shader.json",
-    "shroom": "shroom.json",
-    "texture": "texture.json",
-    "video": "video3.mp4",
-    "bpm": 163,
-    "editor": [
-      "editor/brush-grid-channel.json",
-      "editor/brush-grid-config.json",
-      "editor/brush-grid-separator.json",
-      "editor/brush-shader-clear.json",
-      "editor/brush-shader-config.json",
-      "editor/brush-shader-overlay.json",
-      "editor/brush-shader-spawn.json",
-      "editor/brush-shroom-clear.json",
-      "editor/brush-shroom-config.json",
-      "editor/brush-shroom-spawn.json",
-      "editor/brush-view-camera.json",
-      "editor/brush-view-config.json",
-      "editor/brush-view-wallpaper.json"
-    ]
+  "model":"io.alkapivo.visu.controller.VisuTrack",
+  "data":{
+    "bpm": 186,
+    "track":"track.json",
+    "bullet":"bullet.json",
+    "lyrics":"lyrics.json",
+    "particle":"particle.json",
+    "shroom":"shroom.json",
+    "video":"video3.mp4",
+    "sound":"sound.json",
+    "texture":"texture.json",
+    "editor":[
+      "editor/brush_shader_clear.json",
+      "editor/brush_shroom_spawn.json",
+      "editor/brush_shader_config.json",
+      "editor/brush_shader_spawn.json",
+      "editor/brush_view_wallpaper.json",
+      "editor/brush_shader_overlay.json",
+      "editor/brush_shroom_config.json",
+      "editor/brush_view_camera.json",
+      "editor/brush_view_config.json",
+      "editor/brush_grid_channel.json",
+      "editor/brush_grid_separator.json",
+      "editor/brush_shroom_clear.json",
+      "editor/brush_grid_config.json"
+    ],
+    "shader":"video_aiobahn_unwelcome_school.mp4"
   }
 }

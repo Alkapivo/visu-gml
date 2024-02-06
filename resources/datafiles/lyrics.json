@@ -1,8 +1,8 @@
 {
-  "model": "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
-  "data": {
-    "lyrics-01": {
-      "lines": [
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+  "data":{
+    "lyrics-01":{
+      "lines":[
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu viverra dolor, at condimentum eros. Integer tellus ipsum, varius vitae purus sed, dapibus pharetra augue. Maecenas hendrerit neque et dignissim sodales. Aliquam dolor sem, commodo ac ipsum eget, porttitor semper mauris. Curabitur id massa lectus. Praesent pharetra dui ex, quis pretium metus tincidunt eu. Integer pulvinar nibh sed turpis efficitur, laoreet sagittis arcu suscipit. Vestibulum at metus tincidunt, condimentum ante id, ultricies lacus. Ut vestibulum lacinia maximus. Maecenas tempus arcu sit amet elit sollicitudin auctor. Suspendisse potenti. Curabitur vel urna quis leo volutpat luctus. Vivamus felis ligula, consequat vel rutrum vitae, volutpat vel leo. Pellentesque consectetur consectetur ante vitae tincidunt."
       ]
     }

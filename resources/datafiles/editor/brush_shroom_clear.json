@@ -1,0 +1,25 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "data":[
+    {
+      "texture":"texture_baron",
+      "type":"brush_shroom_clear",
+      "properties":{
+        "shroom-clear_use-clear-amount":1.0,
+        "shroom-clear_clear-amount":1.0,
+        "shroom-clear_use-clear-all-shrooms":0.0
+      },
+      "name":"Shroom clear single",
+      "color":"#FF00FF"
+    },
+    {
+      "texture":"texture_baron",
+      "type":"brush_shroom_clear",
+      "properties":{
+        "shroom-clear_use-clear-all-shrooms":1.0
+      },
+      "name":"Shroom clear all",
+      "color":"#FF0000"
+    }
+  ]
+}

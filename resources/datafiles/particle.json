@@ -1,61 +1,61 @@
 {
-  "model": "Collection<io.alkapivo.core.service.particle.ParticleTemplate>",
-  "data": {
-    "particle_default": {
-      "shape": "CIRCLE",
-      "sprite": {
-        "name": "texture_particle_default",
-        "animate": false,
-        "stretch": false,
-        "randomValue": false
+  "model":"Collection<io.alkapivo.core.service.particle.ParticleTemplate>",
+  "data":{
+    "particle_default":{
+      "size":{
+        "increase":0.0,
+        "wiggle":0.0,
+        "minValue":1.0,
+        "maxValue":16.0
       },
-      "size": {
-        "minValue": 1,
-        "maxValue": 16,
-        "increase": 0,
-        "wiggle": 0
+      "speed":{
+        "increase":0.0,
+        "wiggle":0.0,
+        "minValue":0.01,
+        "maxValue":5.0
       },
-      "scale": {
-        "x": 1,
-        "y": 1
+      "gravity":{
+        "amount":0.0,
+        "angle":0.0
       },
-      "orientation": {
-        "minValue": 0,
-        "maxValue": 360,
-        "increase": 0,
-        "wiggle": 0,
-        "relative": false
+      "angle":{
+        "increase":0.0,
+        "wiggle":0.0,
+        "minValue":0.0,
+        "maxValue":360.0
       },
-      "color": {
-        "start": "#ffffff",
-        "halfway": "#ffffff",
-        "finish": "#ffffff"
+      "scale":{
+        "x":1.0,
+        "y":1.0
       },
-      "alpha": {
-        "start": 1,
-        "halfway": 1,
-        "finish": 1
+      "blend":0.0,
+      "sprite":{
+        "stretch":0.0,
+        "randomValue":0.0,
+        "name":"texture_particle_default",
+        "animate":0.0
       },
-      "blend": false,
-      "life": {
-        "minValue": 1,
-        "maxValue": 100
+      "orientation":{
+        "relative":0.0,
+        "increase":0.0,
+        "wiggle":0.0,
+        "minValue":0.0,
+        "maxValue":360.0
       },
-      "speed": {
-        "minValue": 0.01,
-        "maxValue": 5,
-        "increase": 0,
-        "wiggle": 0
+      "life":{
+        "minValue":1.0,
+        "maxValue":100.0
       },
-      "angle": {
-        "minValue": 0,
-        "maxValue": 360,
-        "increase": 0,
-        "wiggle": 0
+      "shape":"CIRCLE",
+      "color":{
+        "start":"#ffffff",
+        "finish":"#ffffff",
+        "halfway":"#ffffff"
       },
-      "gravity": {
-        "amount": 0,
-        "angle": 0
+      "alpha":{
+        "start":1.0,
+        "finish":1.0,
+        "halfway":1.0
       }
     }
   }

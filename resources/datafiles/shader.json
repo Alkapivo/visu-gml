@@ -1,41 +1,77 @@
 {
+  "model":"Collection<io.alkapivo.core.service.shader.ShaderTemplate>",
   "data":{
-    "Wave 1":{
-      "name":"Wave 1",
+    "Wave":{
       "properties":{
-        "distortion":{
-          "value":30.0,
-          "factor":0.01,
-          "startValue":30.0,
-          "increase":0.0,
-          "finished":false,
-          "target":60.0
+        "amount":{
+          "increase":0.001,
+          "factor":0.050000000000000003,
+          "target":200.0,
+          "value":15.0
         },
         "speed":{
-          "value":2.0,
-          "factor":1.0,
-          "startValue":2.0,
-          "increase":0.0,
-          "finished":false,
-          "target":2.0
+          "value":2.0
+        },
+        "distortion":{
+          "factor":0.01,
+          "target":60.0,
+          "value":30.0
         },
         "time":{
-          "value":0.0,
           "factor":0.016,
-          "startValue":0.0,
-          "increase":0.0,
-          "finished":false,
-          "target":1000.0
-        },
-        "amount":{
-          "value":15.0,
-          "factor":0.050000000000000003,
-          "startValue":15.0,
-          "increase":0.001,
-          "finished":false,
-          "target":200.0
+          "target":1000.0,
+          "value":0.0
         }
       },
+      "name":"Wave",
+      "shader":"shader_wave"
+    },
+    "Wave-test":{
+      "inherit":"Wave",
+      "properties":{
+        "speed":{
+          "value":20.0
+        }
+      },
+      "name":"Wave-test",
+      "shader":"shader_wave"
+    },
+    "Wave 1":{
+      "properties":{
+        "amount":{
+          "finished":0.0,
+          "factor":0.050000000000000003,
+          "value":15.0,
+          "increase":0.001,
+          "startValue":15.0,
+          "target":200.0
+        },
+        "speed":{
+          "finished":0.0,
+          "factor":1.0,
+          "value":2.0,
+          "increase":0.0,
+          "startValue":2.0,
+          "target":2.0
+        },
+        "distortion":{
+          "finished":0.0,
+          "factor":0.01,
+          "value":30.0,
+          "increase":0.0,
+          "startValue":30.0,
+          "target":60.0
+        },
+        "time":{
+          "finished":0.0,
+          "factor":0.016,
+          "value":0.0,
+          "increase":0.0,
+          "startValue":0.0,
+          "target":1000.0
+        }
+      },
+      "name":"Wave 1",
       "shader":"shader_wave"
     },
     "Abberation":{
@@ -43,25 +79,7 @@
       "shader":"shader_abberation"
     },
     "CRT":{
-      "name":"CRT",
       "properties":{
-        "uni_crt_sizes":{
-          "x":{
-            "value":256.0
-          },
-          "y":{
-            "value":256.0
-          },
-          "z":{
-            "value":1024.0
-          },
-          "a":{
-            "value":1024.0
-          }
-        },
-        "uni_radial_distortion_amount":{
-          "value":0.12
-        },
         "uni_use_radial_distortion":{
           "value":1.0
         },
@@ -90,15 +108,32 @@
           "value":0.17499999999999999
         },
         "uni_timer":{
-          "value":0.0,
           "factor":0.016,
-          "target":1000.0
+          "target":1000.0,
+          "value":0.0
+        },
+        "uni_crt_sizes":{
+          "z":{
+            "value":1024.0
+          },
+          "x":{
+            "value":256.0
+          },
+          "y":{
+            "value":256.0
+          },
+          "a":{
+            "value":1024.0
+          }
+        },
+        "uni_radial_distortion_amount":{
+          "value":0.12
         }
       },
+      "name":"CRT",
       "shader":"shader_crt"
     },
     "Emboss":{
-      "name":"Emboss",
       "properties":{
         "resolution":{
           "x":{
@@ -109,22 +144,148 @@
           }
         }
       },
+      "name":"Emboss",
       "shader":"shader_emboss"
     },
     "HUE":{
-      "name":"HUE",
       "properties":{
         "colorShift":{
-          "value":0.0,
           "increment":0.001,
           "factor":0.10000000000000001,
-          "target":10000.0
+          "target":10000.0,
+          "value":0.0
         }
       },
+      "name":"HUE",
       "shader":"shader_hue"
     },
+    "ART":{
+      "properties":{
+        "iIterations":{
+          "finished":0.0,
+          "factor":0.10000000000000001,
+          "value":0.0,
+          "increase":0.0,
+          "startValue":0.0,
+          "target":1.0
+        },
+        "iTime":{
+          "finished":0.0,
+          "factor":0.064,
+          "value":0.0,
+          "increase":0.0,
+          "startValue":0.0,
+          "target":999.89999999999998
+        },
+        "iResolution":{
+          "x":{
+            "value":1.0
+          },
+          "y":{
+            "value":1.0
+          }
+        }
+      },
+      "name":"ART",
+      "shader":"shader_art"
+    },
+    "Octagrams":{
+      "properties":{
+        "iResolution":{
+          "x":{
+            "value":1.0
+          },
+          "y":{
+            "value":1.0
+          }
+        },
+        "iIterations":{
+          "factor":0.10000000000000001,
+          "target":4.0,
+          "value":4.0
+        },
+        "iTime":{
+          "factor":0.016,
+          "target":999.89999999999998,
+          "value":0.0
+        }
+      },
+      "name":"Octagrams",
+      "shader":"shader_octagrams"
+    },
+    "70s Melt":{
+      "properties":{
+        "iResolution":{
+          "x":{
+            "value":1.0
+          },
+          "y":{
+            "value":1.0
+          }
+        },
+        "iTime":{
+          "factor":0.064000000000000001,
+          "target":999.89999999999998,
+          "value":0.0
+        }
+      },
+      "name":"70s Melt",
+      "shader":"shader_70s_melt"
+    },
+    "Warp":{
+      "properties":{
+        "iResolution":{
+          "x":{
+            "value":1.0
+          },
+          "y":{
+            "value":1.0
+          }
+        },
+        "iTime":{
+          "factor":0.016,
+          "target":999.89999999999998,
+          "value":0.0
+        }
+      },
+      "name":"Warp",
+      "shader":"shader_warp"
+    },
+    "Phantom Star":{
+      "properties":{
+        "iTime":{
+          "factor":0.016,
+          "target":999.89999999999998,
+          "value":0.0
+        },
+        "sizeB":{
+          "factor":0.050000000000000003,
+          "value":8.0,
+          "target":8.0
+        },
+        "iResolution":{
+          "x":{
+            "value":1.0
+          },
+          "y":{
+            "value":1.0
+          }
+        },
+        "iIterations":{
+          "factor":0.01,
+          "value":1.0,
+          "target":1.0
+        },
+        "sizeA":{
+          "factor":0.050000000000000003,
+          "value":16.0,
+          "target":32.0
+        }
+      },
+      "name":"Phantom Star",
+      "shader":"shader_phantom_star"
+    },
     "LED":{
-      "name":"LED",
       "properties":{
         "resolution":{
           "x":{
@@ -135,39 +296,19 @@
           }
         },
         "ledSize":{
-          "value":96.0,
           "factor":0.016,
-          "target":1024.0
+          "target":1024.0,
+          "value":96.0
         },
         "brightness":{
           "value":1.0
         }
       },
+      "name":"LED",
       "shader":"shader_led"
     },
     "Magnify":{
-      "name":"Magnify",
       "properties":{
-        "radius":{
-          "value":0.050000000000000003,
-          "factor":0.0050000000000000001,
-          "target":0.69999999999999996
-        },
-        "minZoom":{
-          "value":0.10000000000000001,
-          "factor":0.002,
-          "target":0.29999999999999999
-        },
-        "resolution":{
-          "scale":{
-            "value":1.0
-          }
-        },
-        "maxZoom":{
-          "value":0.29999999999999999,
-          "factor":0.002,
-          "target":0.80000000000000004
-        },
         "position":{
           "x":{
             "value":0.5
@@ -175,38 +316,59 @@
           "y":{
             "value":0.5
           }
-        }
-      },
-      "shader":"shader_magnify"
-    },
-    "Mosaic":{
-      "name":"Mosaic",
-      "properties":{
+        },
+        "radius":{
+          "factor":0.0050000000000000001,
+          "target":0.69999999999999996,
+          "value":0.050000000000000003
+        },
+        "minZoom":{
+          "factor":0.002,
+          "target":0.29999999999999999,
+          "value":0.10000000000000001
+        },
         "resolution":{
           "scale":{
             "value":1.0
           }
         },
-        "amount":{
-          "value":32.0,
-          "factor":0.10000000000000001,
-          "target":512.0
+        "maxZoom":{
+          "factor":0.002,
+          "target":0.80000000000000004,
+          "value":0.29999999999999999
         }
       },
+      "name":"Magnify",
+      "shader":"shader_magnify"
+    },
+    "Mosaic":{
+      "properties":{
+        "amount":{
+          "factor":0.10000000000000001,
+          "target":512.0,
+          "value":32.0
+        },
+        "resolution":{
+          "scale":{
+            "value":1.0
+          }
+        }
+      },
+      "name":"Mosaic",
       "shader":"shader_mosaic"
     },
     "Posterization":{
-      "name":"Posterization",
       "properties":{
         "gamma":{
           "value":0.69999999999999996
         },
         "colorNumber":{
-          "value":1.0,
           "factor":0.02,
-          "target":32.0
+          "target":32.0,
+          "value":1.0
         }
       },
+      "name":"Posterization",
       "shader":"shader_posterization"
     },
     "Revert":{
@@ -214,8 +376,17 @@
       "shader":"shader_revert"
     },
     "Ripple":{
-      "name":"Ripple",
       "properties":{
+        "amount":{
+          "factor":0.20000000000000001,
+          "target":120.0,
+          "value":1.0
+        },
+        "speed":{
+          "factor":0.001,
+          "target":10.0,
+          "value":2.0
+        },
         "position":{
           "x":{
             "value":0.5
@@ -225,35 +396,25 @@
           }
         },
         "distortion":{
-          "value":40.0,
           "factor":0.20000000000000001,
-          "target":600.0
+          "target":600.0,
+          "value":40.0
         },
         "resolution":{
           "scale":{
             "value":1.0
           }
         },
-        "speed":{
-          "value":2.0,
-          "factor":0.001,
-          "target":10.0
-        },
         "time":{
-          "value":0.0,
           "factor":0.016,
-          "target":1000000.0
-        },
-        "amount":{
-          "value":1.0,
-          "factor":0.20000000000000001,
-          "target":120.0
+          "target":1000000.0,
+          "value":0.0
         }
       },
+      "name":"Ripple",
       "shader":"shader_ripple"
     },
     "Scanlines":{
-      "name":"Scanlines",
       "properties":{
         "resolution":{
           "scale":{
@@ -261,15 +422,15 @@
           }
         },
         "color":{
-          "value":"#eb0976ff",
           "factor":0.0050000000000000001,
-          "target":"#142906ff"
+          "target":"#142906ff",
+          "value":"#eb0976ff"
         }
       },
+      "name":"Scanlines",
       "shader":"shader_scanlines"
     },
     "Shock-wave":{
-      "name":"Shock-wave",
       "properties":{
         "amplitude":{
           "value":0.20000000000000001
@@ -282,9 +443,9 @@
         },
         "position":{
           "x":{
-            "value":0.0,
             "factor":0.0030000000000000001,
-            "target":1.0
+            "target":1.0,
+            "value":0.0
           },
           "y":{
             "value":0.5
@@ -296,16 +457,19 @@
           }
         },
         "time":{
-          "value":0.0,
           "factor":0.016,
-          "target":1000000.0
+          "target":1000000.0,
+          "value":0.0
         }
       },
+      "name":"Shock-wave",
       "shader":"shader_shock_wave"
     },
     "Sketch":{
-      "name":"Sketch",
       "properties":{
+        "intensity":{
+          "value":10.0
+        },
         "resolution":{
           "x":{
             "value":1280.0
@@ -313,11 +477,9 @@
           "y":{
             "value":720.0
           }
-        },
-        "intensity":{
-          "value":10.0
         }
       },
+      "name":"Sketch",
       "shader":"shader_sketch"
     },
     "Thermal":{
@@ -332,42 +494,47 @@
       "name":"Upscaling-HQ4X",
       "shader":"shader_upscaling_hq4x"
     },
-    "Wave":{
-      "type":"template_shader",
-      "name":"Wave",
+    "70s Melt 1":{
       "properties":{
-        "distortion":{
-          "value":30.0,
+        "iTime":{
+          "finished":0.0,
           "factor":0.01,
-          "target":60.0
-        },
-        "time":{
-          "value":0.0,
-          "factor":0.016,
-          "target":1000.0
-        },
-        "speed":{
-          "value":2.0
-        },
-        "amount":{
-          "value":15.0,
-          "factor":0.050000000000000003,
-          "target":200.0,
-          "increase":0.001
+          "value":333.0,
+          "increase":0.0,
+          "startValue":0.0,
+          "target":9999.8999999999996
         }
       },
-      "shader":"shader_wave"
+      "name":"70s Melt 1",
+      "shader":"shader_70s_melt"
     },
-    "Wave-test":{
-      "name":"Wave-test",
-      "inherit":"Wave",
+    "70s Melt 2":{
       "properties":{
-        "speed":{
-          "value":20.0
+        "iTime":{
+          "finished":0.0,
+          "factor":0.01,
+          "value":333.0,
+          "increase":0.0,
+          "startValue":0.0,
+          "target":9999.8999999999996
         }
       },
-      "shader":"shader_wave"
+      "name":"70s Melt 2",
+      "shader":"shader_70s_melt"
+    },
+    "HUE 2":{
+      "properties":{
+        "colorShift":{
+          "finished":0.0,
+          "factor":0.20000000000000001,
+          "value":0.0,
+          "increase":0.0,
+          "startValue":0.0,
+          "target":10000.0
+        }
+      },
+      "name":"HUE 2",
+      "shader":"shader_hue"
     }
-  },
-  "model":"Collection<io.alkapivo.core.service.shader.ShaderTemplate>"
+  }
 }

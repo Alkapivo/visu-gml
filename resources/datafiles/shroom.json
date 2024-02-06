@@ -1,62 +1,194 @@
 {
-  "model": "Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
-  "data": {
-    "shroom-01": {
-      "sprite": {
-        "name": "texture_baron",
-        "animate": false
-      },
-      "lifespawn": 50,
-      "gameModes": {
-        "bulletHell": {
-          "speed": {
-            "value": 0,
-            "target": 0.028,
-            "factor": 0.0001
+  "model":"Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
+  "data":{
+    "shroom-07":{
+      "lifespawn":50.0,
+      "gameModes":{
+        "platformer":{
+          "finish":{
+            "particle":"particle_default"
           },
-          "finish": {
-            "particle": "particle_default"
+          "onPlayerLanded":{
           }
         },
-        "platformer": {
-          "onPlayerLanded": {
-            "sprite": {
-              "frame": "next"
-            }
+        "bulletHell":{
+          "finish":{
+            "particle":"particle_default"
           },
-          "finish": {
-            "particle": "particle_default"
+          "speed":{
+            "increase":0.0,
+            "factor":0.0001,
+            "value":0.0,
+            "target":0.028000000000000001
           }
         }
+      },
+      "name":"shroom-07",
+      "sprite":{
+        "name":"image4",
+        "animate":0.0
       }
     },
-    "shroom-02": {
-      "sprite": {
-        "name": "texture_test",
-        "animate": false
-      },
-      "lifespawn": 50,
-      "gameModes": {
-        "bulletHell": {
-          "speed": {
-            "value": 0,
-            "target": 0.028,
-            "factor": 0.0001
+    "shroom-06":{
+      "lifespawn":50.0,
+      "gameModes":{
+        "platformer":{
+          "finish":{
+            "particle":"particle_default"
           },
-          "finish": {
-            "particle": "particle_default"
+          "onPlayerLanded":{
           }
         },
-        "platformer": {
-          "onPlayerLanded": {
-            "sprite": {
-              "frame": "next"
-            }
+        "bulletHell":{
+          "finish":{
+            "particle":"particle_default"
           },
-          "finish": {
-            "particle": "particle_default"
+          "speed":{
+            "increase":0.0,
+            "factor":0.0001,
+            "value":0.0,
+            "target":0.028000000000000001
           }
         }
+      },
+      "name":"shroom-06",
+      "sprite":{
+        "name":"image3",
+        "animate":0.0
+      }
+    },
+    "shroom-05":{
+      "lifespawn":50.0,
+      "gameModes":{
+        "platformer":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "onPlayerLanded":{
+          }
+        },
+        "bulletHell":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "speed":{
+            "increase":0.0,
+            "factor":0.0001,
+            "value":0.0,
+            "target":0.028000000000000001
+          }
+        }
+      },
+      "name":"shroom-05",
+      "sprite":{
+        "name":"image2",
+        "animate":0.0
+      }
+    },
+    "shroom-04":{
+      "lifespawn":50.0,
+      "gameModes":{
+        "platformer":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "onPlayerLanded":{
+          }
+        },
+        "bulletHell":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "speed":{
+            "increase":0.0,
+            "factor":0.0001,
+            "value":0.0,
+            "target":0.028000000000000001
+          }
+        }
+      },
+      "name":"shroom-04",
+      "sprite":{
+        "name":"image1",
+        "animate":0.0
+      }
+    },
+    "shroom-03":{
+      "lifespawn":50.0,
+      "gameModes":{
+        "platformer":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "onPlayerLanded":{
+          }
+        },
+        "bulletHell":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "speed":{
+            "increase":0.0,
+            "factor":0.0001,
+            "value":0.0,
+            "target":0.028000000000000001
+          }
+        }
+      },
+      "name":"shroom-03",
+      "sprite":{
+        "name":"image0",
+        "animate":0.0
+      }
+    },
+    "shroom-02":{
+      "lifespawn":50.0,
+      "gameModes":{
+        "platformer":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "onPlayerLanded":{
+          }
+        },
+        "bulletHell":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "speed":{
+            "increase":0.0,
+            "factor":0.0001,
+            "value":0.0,
+            "target":0.028000000000000001
+          }
+        }
+      },
+      "name":"shroom-02",
+      "sprite":{
+        "name":"texture_test",
+        "animate":0.0
+      }
+    },
+    "shroom-01":{
+      "lifespawn":50.0,
+      "gameModes":{
+        "platformer":{
+          "finish":{
+            "particle":"particle_default"
+          },
+          "onPlayerLanded":{
+          }
+        },
+        "bulletHell":{
+          "finish":{
+            "particle":"particle_default"
+          }
+        }
+      },
+      "name":"shroom-01",
+      "sprite":{
+        "name":"texture_baron",
+        "animate":0.0
       }
     }
   }

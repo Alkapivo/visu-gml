@@ -1,10 +1,13 @@
 {
-  "model": "Collection<io.alkapivo.core.service.texture.TextureTemplate>",
-  "data": {
-    "texture_shroom_test": {
-      "asset": "texture_test",
-      "scaleX": 2.0,
-      "scaleY": 2.0
+  "model":"Collection<io.alkapivo.core.service.texture.TextureIntent>",
+  "data":{
+    "texture_shroom_test":{
+      "prefetch":1.0,
+      "name":"texture_shroom_test",
+      "frames":1.0,
+      "file":"papiesz.jpg",
+      "originX":0.0,
+      "originY":0.0
     }
   }
 }
