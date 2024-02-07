@@ -413,13 +413,19 @@ function GridRenderer(_controller, config = {}) constructor {
 
   ///@return {GridRenderer}
   render = function() {
-    this.backgroundSurface.update(GuiWidth(), GuiHeight())
+    var width = GuiWidth()
+    var height = GuiHeight()
+    this.backgroundSurface
+      .update(width, height)
       .renderOn(this.renderBackgroundSurface, this)
-    this.gridSurface.update(GuiWidth(), GuiHeight())
+    this.gridSurface
+      .update(width, height)
       .renderOn(this.renderGridSurface, this)
-    this.shaderSurface.update(GuiWidth(), GuiHeight())
+    this.shaderSurface
+      .update(width, height)
       .renderOn(renderShaderSurface, this)
-    this.gameSurface.update(GuiWidth(), GuiHeight())
+    this.gameSurface
+      .update(width, height)
       .renderOn(this.renderGameSurface, this)
     return this
   }
