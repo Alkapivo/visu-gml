@@ -656,116 +656,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           color: VETheme.color.textShadow,
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         }),
-        "components": new Array(Struct, [
-          {
-            name: "brush-test-1",
-            template: VEComponents.get("brush-entry"),
-            layout: VELayouts.get("brush-entry"),
-            config: {
-              image: {
-                image: {
-                  name: "texture_button",
-                  blend: c_blue,
-                },
-              },
-              label: { text: "brush-test-1" },
-              button: { 
-                sprite: {
-                  name: "texture_ve_icon_trash",
-                  blend: VETheme.color.textShadow,
-                },
-                callback: Callable.run(UIUtil.templates.get("removeUIItemfromUICollection"))
-              },
-            },
-          },
-          {
-            name: "brush-test-2",
-            template: VEComponents.get("brush-entry"),
-            layout: VELayouts.get("brush-entry"),
-            config: {
-              image: {
-                image: {
-                  name: "texture_button",
-                  blend: c_red,
-                },
-              },
-              label: { text: "brush-test-2" },
-              button: { 
-                sprite: {
-                  name: "texture_ve_icon_trash",
-                  blend: VETheme.color.textShadow,
-                },
-                callback: Callable.run(UIUtil.templates.get("removeUIItemfromUICollection"))
-              },
-            },
-          },
-          {
-            name: "brush-test-3",
-            template: VEComponents.get("brush-entry"),
-            layout: VELayouts.get("brush-entry"),
-            config: {
-              image: {
-                image: {
-                  name: "texture_button",
-                  blend: c_red,
-                },
-              },
-              label: { text: "brush-test-3" },
-              button: { 
-                sprite: {
-                  name: "texture_ve_icon_trash",
-                  blend: VETheme.color.textShadow,
-                },
-                callback: Callable.run(UIUtil.templates.get("removeUIItemfromUICollection"))
-              },
-            },
-          },
-          {
-            name: "brush-test-4",
-            template: VEComponents.get("brush-entry"),
-            layout: VELayouts.get("brush-entry"),
-            config: {
-              image: {
-                image: {
-                  name: "texture_button",
-                  blend: c_red,
-                },
-              },
-              label: { text: "brush-test-4" },
-              button: { callback: Callable.run(UIUtil.templates.get("removeUIItemfromUICollection")) },
-            },
-          },
-          {
-            name: "brush-test-5",
-            template: VEComponents.get("brush-entry"),
-            layout: VELayouts.get("brush-entry"),
-            config: {
-              image: {
-                image: {
-                  name: "texture_button",
-                  blend: c_red,
-                },
-              },
-              label: { text: "brush-test-5" },
-              button: { callback: Callable.run(UIUtil.templates.get("removeUIItemfromUICollection")) },
-            },
-          },
-          {
-            name: "brush-test-6",
-            template: VEComponents.get("brush-entry"),
-            layout: VELayouts.get("brush-entry"),
-            config: {
-              image: {
-                image: {
-                  name: "texture_button",
-                  blend: c_red,
-                },
-              },
-              label: { text: "brush-test-6" },
-              button: { callback: Callable.run(UIUtil.templates.get("removeUIItemfromUICollection")) },
-            },
-          },
-        ])
       }),
       timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, randomize: true }),
       brushToolbar: brushToolbar,
@@ -811,6 +701,14 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                     },
                     label: { 
                       text: template.name,
+                      colorHoverOver: VETheme.color.accentShadow,
+                      colorHoverOut: VETheme.color.primaryShadow,
+                      onMouseHoverOver: function(event) {
+                        this.backgroundColor = ColorUtil.fromHex(colorHoverOver).toGMColor()
+                      },
+                      onMouseHoverOut: function(event) {
+                        this.backgroundColor = ColorUtil.fromHex(colorHoverOut).toGMColor()
+                      },
                       onMouseReleasedLeft: function() {
                         var template = this.context.brushToolbar.store.get("template")
                         if (!Core.isType(template.get(), VEBrushTemplate)
@@ -819,6 +717,36 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                         }
                       },
                       brushTemplate: template,
+                    },
+                    up: {
+                      onMouseReleasedLeft: function() {
+                        var brushToolbar = this.context.brushToolbar
+                        var type = brushToolbar.store.getValue("type")
+                        var templates = brushToolbar.editor.brushService.fetchTemplates(type)
+                        var size = templates.size()
+                        var index = this.component.index
+                        if (index <= 0 || size < 2) {
+                          return
+                        }
+
+                        templates.swapItems(index, index - 1)  
+                        brushToolbar.store.get("type").set(type)
+                      },
+                    },
+                    down: {
+                      onMouseReleasedLeft: function() {
+                        var brushToolbar = this.context.brushToolbar
+                        var type = brushToolbar.store.getValue("type")
+                        var templates = brushToolbar.editor.brushService.fetchTemplates(type)
+                        var size = templates.size()
+                        var index = this.component.index
+                        if (index >= size - 1 || size < 2) {
+                          return
+                        }
+                        
+                        templates.swapItems(index, index + 1)
+                        brushToolbar.store.get("type").set(type)
+                      },
                     },
                     button: { 
                       sprite: {

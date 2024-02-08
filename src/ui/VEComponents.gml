@@ -131,6 +131,36 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIButton(
+        $"{name}_brush-entry_up", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.up,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("brush-entry").up,
+            false
+          ),
+          Struct.get(config, "up"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_brush-entry_down", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.down,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("brush-entry").down,
+            false
+          ),
+          Struct.get(config, "down"),
+          false
+        )
+      ),
+      UIButton(
         $"{name}_brush-entry_remove", 
         Struct.appendRecursive(
           Struct.appendRecursive(

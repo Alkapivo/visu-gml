@@ -71,10 +71,28 @@ global.__VELayouts = new Map(String, Callable, {
       y: function() { return this.margin.top + this.collection.getIndex() * this.height() },
       height: function() { return 32 },
       nodes: {
+        up: {
+          name: "brush-entry.up",
+          width: function() { return 16 - this.margin.left - this.margin.right },
+          height: function() { return 16 - this.margin.top - this.margin.bottom },
+          margin: { top: 3, left: 2, right: 2, bottom: 1 },
+          x: function() { return this.context.x() + this.margin.right },
+          y: function() { return this.context.y() + this.margin.top },
+        },
+        down: {
+          name: "brush-entry.down",
+          width: function() { return 16 - this.margin.left - this.margin.right },
+          height: function() { return 16 - this.margin.top - this.margin.bottom },
+          margin: { top: 1, left: 2, right: 2, bottom: 3 },
+          x: function() { return this.context.x() + this.margin.right },
+          y: function() { return this.context.y() + 16 + this.margin.top },
+        },
         image: {
           name: "brush-entry.image",
           width: function() { return this.context.height() },
           height: function() { return this.context.height() },
+          x: function() { return this.context.x() + this.context.nodes.up.right() },
+          y: function() { return this.context.y() + this.margin.top },
         },
         label: {
           name: "brush-entry.label",
@@ -82,6 +100,9 @@ global.__VELayouts = new Map(String, Callable, {
             - this.context.nodes.image.width()
             - this.context.nodes.image.margin.left
             - this.context.nodes.image.margin.right
+            - this.context.nodes.up.width()
+            - this.context.nodes.up.margin.left
+            - this.context.nodes.up.margin.right
             - this.context.nodes.remove.width()
             - this.context.nodes.remove.margin.left
             - this.context.nodes.remove.margin.right },
