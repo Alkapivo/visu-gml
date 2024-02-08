@@ -108,7 +108,7 @@
  - player: implement platformer game mode
  - player/shroom/bullet optimize reloading of game modes
  - track service: extract handlers from core
- - up/down brushes
+ - [ DONE ] up/down brushes
  - up/down channels
 
 

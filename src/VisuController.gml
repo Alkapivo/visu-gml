@@ -100,7 +100,7 @@ function VisuController(layerName) constructor {
         manifest: String.join("", working_directory, os_get_config() == "editor" 
           ? "manifest-editor.json" 
           : "manifest.json"),
-        autoplay: false
+        autoplay: true
       })
     },
     states: {

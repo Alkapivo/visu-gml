@@ -59,7 +59,6 @@ function GridRenderer(_controller, config = {}) constructor {
     if (!properties.renderGrid) || (properties.separators <= 0) {
       return this
     }
-    var dupa = "dupa"
 
     var primaryColor = properties.separatorsPrimaryColor.toGMColor()
     var primaryAlpha = properties.separatorsPrimaryAlpha
@@ -164,6 +163,22 @@ function GridRenderer(_controller, config = {}) constructor {
     )
 
     return this
+  }
+
+  ///@private
+  renderBorders = function() {
+    var gridService = this.controller.gridService
+    var view = gridService.view
+
+    // bottom
+    var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
+    var beginY = (gridService.height - view.y) * GRID_SERVICE_PIXEL_HEIGHT
+    var endX = (5.0 + view.width) * GRID_SERVICE_PIXEL_WIDTH
+    var endY = beginY
+    var thickness = 64
+    var alpha = 1.0
+    var color = c_red
+    GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
   }
 
   ///@private
@@ -330,6 +345,7 @@ function GridRenderer(_controller, config = {}) constructor {
       1, 1, 1
     ))
     renderer.renderChannels()
+    renderer.renderBorders()
     
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.separatorZ, 

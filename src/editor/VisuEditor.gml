@@ -49,11 +49,11 @@ function VisuEditor(_controller) constructor {
   store = new Store({
     "render-event": {
       type: Boolean,
-      value: true,
+      value: false,
     },
     "render-timeline": {
       type: Boolean,
-      value: true,
+      value: false,
     },
     "render-brush": {
       type: Boolean,
