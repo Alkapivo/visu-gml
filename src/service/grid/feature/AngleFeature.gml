@@ -14,9 +14,8 @@ function AngleFeature(json = {}) {
       : null,
 
     add: Struct.contains(json, "add")
-    ? new NumberTransformer(json.add)
-    : null,
-
+      ? new NumberTransformer(json.add)
+      : null,
 
     ///@override
     ///@param {GridItem} item

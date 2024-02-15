@@ -478,8 +478,6 @@ function VisuController(layerName) constructor {
       this.particleService.send(event)
     }
     */
-    
-
     return this
   }
 

@@ -30,7 +30,6 @@ function CounterFeature(json = {}) {
       Struct.inject(item, this.field, this.value)
       this.value = clamp(Struct.get(item, this.field) + this.amount, this.minValue, this.maxValue)
       Struct.set(item, this.field, this.value)
-      Core.print("field", this.field, this.value)
     },
   }))
 }

@@ -12,8 +12,8 @@ function FollowPlayerFeature(json = {}) {
     value: new NumberTransformer(json.value),
 
     ///@type {?Timer}
-    interval: Struct.contains(json, "interval")
-      ? new Timer(json.interval)
+    timer: Optional.is(Struct.get(json, "interval"))
+      ? new Timer(json.interval, { shuffle: true })
       : null,
 
     ///@type {NumberTransformer}
@@ -25,15 +25,16 @@ function FollowPlayerFeature(json = {}) {
     update: function(item, controller) {
       var player = controller.playerService.player
       if (!Optional.is(player) 
-        || (Optional.is(this.interval) 
-        && !this.interval.update().finished)) {
+        || (Optional.is(this.timer) 
+        && !this.timer.update().finished)) {
         return
       }
 
-      this.transformer.value = this.angle
-      this.transformer.factor = this.value.update().value
-      this.transformer.target = Math.fetchAngle(item.x, item.y, player.x, player.y)
-      this.setAngle(this.transformer.update().value)
+      this.transformer.value = 0
+      this.transformer.finished = false
+      this.transformer.target = angle_difference(item.angle, Math.fetchAngle(item.x, item.y, player.x, player.y))
+      this.transformer.factor = abs(this.value.factor) * sign(this.transformer.target)
+      item.setAngle(item.angle - this.transformer.update().value)
     },
   }))
 }

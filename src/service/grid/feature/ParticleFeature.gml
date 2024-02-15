@@ -11,6 +11,12 @@ function ParticleFeature(json = {}) {
     ///@type {String}
     particle: Assert.isType(Struct.getDefault(json, "particle", "particle_default"), String),
 
+    ///@type {Number}
+    duration = Assert.isType(Struct.getDefault(json, "duration", FRAME_MS * 3), Number)
+
+    ///@type {Number}
+    amount = Assert.isType(Struct.getDefault(json, "amount", 100), Number)
+
     ///@override
     ///@param {GridItem} item
     ///@param {VisuController} controller
@@ -22,7 +28,6 @@ function ParticleFeature(json = {}) {
 
         if ((_x < 0 || _x > GRID_SERVICE_PIXEL_WIDTH) 
           || (_y < 0 || _y > GRID_SERVICE_PIXEL_HEIGHT)) {
-          Core.print("escape", _x, _y)
           return
         }
 
@@ -34,6 +39,8 @@ function ParticleFeature(json = {}) {
               beginY: _y,
               endX: _x,
               endY: _y,
+              duration: this.duration,
+              amount: this.amount,
             }, 
           ))
       }

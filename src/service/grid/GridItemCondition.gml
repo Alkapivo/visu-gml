@@ -54,8 +54,9 @@ global.__VISU_GRID_CONDITIONS = new Map(String, Callable, {
       }
 
       var length = Math.fetchLength(shroom.x, shroom.y, player.x, player.y)
-      var value = this.data.length
+      var value = this.data.value
       switch (this.data.operator) {
+        case "equal": return value == length
         case "greater": return value > length
         case "less": return value < length
         default: throw Exception($"Found unsupported operator for 'player-distance'")
