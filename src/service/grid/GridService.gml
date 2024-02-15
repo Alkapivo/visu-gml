@@ -87,20 +87,20 @@ function GridService(_controller, config = {}): Service(config) constructor {
     static bulletCollision = function(bullet, index, context) {
       static playerBullet = function(shroom, index, bullet) {
         if (shroom.collide(bullet)) {
-          shroom.signal("bulletCollision")
-          bullet.signal("shroomCollision")
+          shroom.signal("bulletCollision", bullet)
+          bullet.signal("shroomCollision", shroom)
         }
       }
       static shroomBullet = function(player, bullet) {
         if (player.collide(bullet)) {
-          player.signal("bulletCollision")
-          bullet.signal("playerCollision")
+          player.signal("bulletCollision", bullet)
+          bullet.signal("playerCollision", player)
         }
       }
 
       switch (bullet.producer) {
         case Player:
-          this.controller.shroomService.shrooms.forEach(playerBullet, bullet)
+          context.controller.shroomService.shrooms.forEach(playerBullet, bullet)
           break
         case Shroom:
           shroomBullet(context.controller.playerService.player, bullet)
@@ -113,8 +113,8 @@ function GridService(_controller, config = {}): Service(config) constructor {
 
     static shroomCollision = function(shroom, index, player) {
       if (shroom.collide(player)) {
-        shroom.signal("playerCollision")
-        player.signal("shroomCollision")
+        shroom.signal("playerCollision", player)
+        player.signal("shroomCollision", shroom)
       }
     }
     
@@ -166,8 +166,8 @@ function GridService(_controller, config = {}): Service(config) constructor {
     var followTarget = null
     if (this.controller.editor.store.getValue("target-locked") == true) {
       followTarget = this.targetLocked
-        .setX(this.view.x + 0.5)//(this.view.width / 2))
-        .setY(this.view.y + 0.5)//(this.view.height / 2))
+        .setX(this.view.x + (this.view.width / 2))
+        .setY(this.view.y + (this.view.height / 2))
     } else if (Core.isType(this.controller.playerService.player, Player)) {
       followTarget = this.controller.playerService.player
     }

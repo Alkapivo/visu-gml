@@ -10,6 +10,9 @@ function PlayerService(_controller, config = {}): Service() constructor {
   ///@type {?Player}
   player = null
 
+  ///@type {?GameMode}
+  gameMode = null
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-player": function(event) {
@@ -19,6 +22,8 @@ function PlayerService(_controller, config = {}): Service() constructor {
           view.x + (view.width / 2.0),
           view.y + (view.height / 2.0)
         ))
+
+        this.player.updateGameMode(this.controller.gameMode)
       }
     },
   }))
@@ -34,7 +39,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
       : new PlayerTemplate({
         name: "player_default",
         sprite: {
-          name: "texture_test",
+          name: "texture_player",
           animate: true,
         },
         keyboard: {
@@ -42,8 +47,10 @@ function PlayerService(_controller, config = {}): Service() constructor {
           down: "S",
           left: "A",
           right: "D",
+          action: "E",
         },
         gameModes: {
+          idle: {},
           bulletHell: {
             x: {
               speed: 0,
@@ -67,10 +74,11 @@ function PlayerService(_controller, config = {}): Service() constructor {
             },
             y: {
               speed: 0,
-              speedMax: 2.1 * 0.01,
-              acceleration: 3.2 * 0.0006,
-              friction: 3.1 * 0.0003,
-            }
+              speedMax: 0.25,
+              acceleration: 0.0015,
+              friction: 0,
+            },
+            jumpSize: 0.035,
           },
         },
       })
@@ -105,10 +113,15 @@ function PlayerService(_controller, config = {}): Service() constructor {
   }
 
   ///@override
-  ///@return {BulletService}
+  ///@return {PlayerService}
   update = function() {
     this.dispatcher.update()
     if (Core.isType(this.player, Player)) {
+      if (this.controller.gameMode != this.gameMode) {
+        this.gameMode = this.controller.gameMode
+        this.player.updateGameMode(this.gameMode)
+      }
+      
       this.player.update(this.controller)
     }
     return this

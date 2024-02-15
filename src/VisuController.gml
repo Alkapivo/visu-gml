@@ -68,7 +68,7 @@ function VisuController(layerName) constructor {
   //gridSystem = new GridSystem(this)
 
   ////@type {Gamemode}
-  gameMode = GameMode.BULLETHELL
+  gameMode = GameMode.PLATFORMER
 
   ///@type {Keyboard}
   keyboard = new Keyboard({ load: "L" })
@@ -467,6 +467,7 @@ function VisuController(layerName) constructor {
     this.editor.update()
     //this.gridSystem.update()
 
+    /* 
     if (keyboard_check_pressed(vk_space)) {
       var event = this.particleService.factoryEventSpawnParticleEmitter({
         beginX: mouse_x,
@@ -476,6 +477,8 @@ function VisuController(layerName) constructor {
       })
       this.particleService.send(event)
     }
+    */
+    
 
     return this
   }

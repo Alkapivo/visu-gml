@@ -57,37 +57,52 @@ function PlayerTemplate(json) constructor {
   sprite = Assert.isType(json.sprite, Struct)
 
   ///@type {Keyboard}
-  keyboard = Assert.isType(new Keyboard(Struct.contains(json, "keyboard")
-    ? json.keyboard
-    : { up: "W", down: "S", left: "A", right: "D" }
-    ), Keyboard)
+  keyboard = new Keyboard(json.keyboard)
 
-  ///@type {Map<String, PlayerGameMode>}
-  gameModes = Struct.toMap(json.gameModes).map(function(_json, key) {
-    return Callable.run(Assert.isType(Struct.get(PLAYER_GAME_MODES, key),
-      Callable, "gameModeFactory"), _json)
-  })
+  ///@type {Struct}
+  gameModes = Struct.appendUnique(
+    Struct.filter(Struct.getDefault(json, "gameModes", {}), function(gameMode, key) { 
+      return Core.isType(gameMode, Struct) && Core.isEnum(key, GameMode)
+    }),
+    PLAYER_GAME_MODES.toStruct(function() { return {} })
+  )
+
+  ///@return {Struct}
+  serialize = function() {
+    var json = {
+      sprite: this.sprite,
+      gameModes: this.gameModes,
+      keyboard: this.keyboard,
+    }
+
+    return JSON.clone(json)
+  }
 }
 
-///@param {PlayerTemplate} [config]
-function Player(config = {}): GridItem(config) constructor {
-
-  ///@type {String}
-  name = config.name
+///@param {PlayerTemplate} json
+function Player(template): GridItem(template) constructor {
 
   ///@type {Keyboard}
-  keyboard = config.keyboard
-  
-  ///@type {Map<String, PlayerGameMode>}
-  gameModes = config.gameModes
+  keyboard = Assert.isType(template.keyboard, Keyboard)
 
-  ///@return {Player}
-  update = method(this, function(controller) {
+  ///@private
+  ///@param {VisuController} controller
+  ///@return {GridItem}
+  _update = method(this, this.update)
+  
+  ///@override
+  ///@return {GridItem}
+  update = function(controller) {
     this.keyboard.update()
-    var gameMode = this.gameModes.get(controller.gameMode)
-    if (Optional.is(gameMode)) {
-      gameMode.update(this, controller)
-    }
+    this._update(controller)
     return this
-  })
+  }
+
+  this.gameModes
+    .set(GameMode.IDLE, PlayerIdleGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "idle", {})))
+    .set(GameMode.BULLETHELL, PlayerBulletHellGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
+    .set(GameMode.PLATFORMER, PlayerPlatformerGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "platformer", {})))
 }

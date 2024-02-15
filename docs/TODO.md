@@ -105,20 +105,12 @@
 [      ] Shooting component
 
 8.02.2024: 
- - player: implement platformer game mode
+ - [ DONE ] player: implement platformer game mode
  - player/shroom/bullet optimize reloading of game modes
  - track service: extract handlers from core
  - [ DONE ] up/down brushes
  - up/down channels
 
-
-
-
-# Investigate layout possible bug
-Some layouts use sth like
-```
-x: function() { return this.context.x() + this.context.nodes.SOME_NODE.right() },
-```
-Is this.context.x() redundand?
- 
+14.02.2024
+ - 
 

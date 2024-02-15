@@ -1,104 +1,39 @@
 ///@package io.alkapivo.visu.service.grid
 
-///@enum
-function _GridItemFeatureType(): Enum() constructor {
-  SPEED = "speed"
-  FINISH = "finish"
-}
-global.__GridItemFeatureType = new _GridItemFeatureType()
-#macro GridItemFeatureType global.__GridItemFeatureType
-
-
-
-function _GRID_ITEM_FEATURES() constructor {
-
-  ///@param {Struct} json
-  ///@type {GridItemFeature}
-  speed = method(this, function(json) {
-    return new GridItemFeatureSpeed(json)
-  })
-
-  ///@param {Struct} json
-  ///@type {GridItemFeature}
-  finish = method(this, function(json) {
-    return new GridItemFeatureFinish(json)
-  })
-  
-  ///@param {String} name]
-  ///@return {?GridItemFeature}
-  get = method(this, function(name) {
-    return Struct.get(this, name)
-  })
-}
-global.__GRID_ITEM_FEATURES = new _GRID_ITEM_FEATURES()
-#macro GRID_ITEM_FEATURES global.__GRID_ITEM_FEATURES 
-
-
 ///@interface
-function GridItemFeature() constructor {
-
-  ///@param {GridItem} gridItem
-  ///@param {VisuController} controller
-  update = function(gridItem, controller) { }
-
-  ///@return {Struct}
-  serialize = function() {
-    return {}
-  }
-}
-
-
 ///@param {Struct} json
-function GridItemFeatureSpeed(json): GridItemFeature() constructor {
+function GridItemFeature(json = {}) constructor {
 
-  ///@type {NumberTransformer}
-  transformer = new NumberTransformer(json)
+  ///@type {Callable}
+  type = json.type
 
-  ///@override
-  ///@param {GridItem} gridItem
-  ///@param {VisuController} controller
-  update = function(gridItem, controller) {
-    gridItem.speed = this.transformer.update().value
-  }
+  ///@type {?Array<GridItemCondition>}
+  conditions = Struct.contains(json, "conditions")
+    ? new Array(GridItemCondition, GMArray.map(json.conditions, function(condition) {
+      return new GridItemCondition(condition)
+    }))
+    : null
 
-  ///@override
-  ///@return {Struct}
-  serialize = function() {
-    var feature = this
-    return {
-      "value": feature.transformer.value,
-      "target": feature.transformer.target,
-      "factor": feature.transformer.factor,
-      "increase": feature.transformer.increase,
-    }
-  }
-}
-
-
-///@param {Struct} json
-function GridItemFeatureFinish(json): GridItemFeature() constructor {
-
-  ///@type {?String}
-  particle = Struct.getDefault(json, "particle", null)
-  if (particle != null) {
-    Assert.isType(particle, String, "particle")
-  }
-
-  ///@override
-  ///@param {GridItem} gridItem
-  ///@param {VisuController} controller
-  update = method(this, function(gridItem, controller) {
-    ///@todo spawn particle this.particle
-  })
-
-  ///@override
-  ///@return {Struct}
-  serialize = function() {
-    var json = {}
-    if (Optional.is(this.particle)) {
-      Struct.set(json, "particle", this.particle)
+  ///@return {Boolean}
+  checkConditions = function(gridItem, controller) {
+    if (!Optional.is(this.conditions)) {
+      return true
     }
 
-    return json
+    var size = this.conditions.size()
+    for (var index = 0; index < size; index++) {
+      var condition = this.conditions.get(index)
+      if (!condition.check(gridItem, controller)) {
+        return false
+      }
+    }
+    return true
   }
+
+  ///@param {GridItem} gridItem
+  ///@param {VisuController} controller
+  update = method(this, Assert.isType(Struct
+    .getDefault(json, "update", function() { }), Callable))
+
+  Struct.appendUnique(this, json)
 }

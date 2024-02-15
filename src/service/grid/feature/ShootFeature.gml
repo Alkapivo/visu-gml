@@ -1,0 +1,51 @@
+///@package io.alkapivo.visu.service.grid.feature
+
+///@param {Struct} [json]
+///@return {GridItemFeature}
+function ShootFeature(json = {}) {
+  return new GridItemFeature(Struct.append(json, {
+
+    ///@param {Callable}
+    type: ShootFeature,
+
+    ///@type {?String}
+    bullet: Assert.isType(Struct.get(json, "bullet"), String),
+
+    ///@type {?Number}
+    bullets: Struct.contains(json, "bullets")
+      ? Assert.isType(Struct.get(json, "bullets"), Number)
+      : null,
+
+    ///@type {Number}
+    speed: Assert.isType(Struct
+      .getDefault(json, "speed", 20.0), Number),
+
+    ///@type {Number}
+    interval: Assert.isType(Struct
+      .getDefault(json, "interval", 1.0), Number),
+
+    ///@private
+    ///@type {Timer}
+    timer: new Timer(this.interval, { 
+      loop: Struct.contains(json, "bullets") ? json.bullets : Infinity 
+    }),
+
+    ///@override
+    ///@param {GridItem} item
+    ///@param {VisuController} controller
+    update: function(item, controller) {
+      if (!this.timer.update().finished) {
+        return
+      }
+
+      controller.bulletService.send(new Event("spawn-bullet", {
+        x: item.x,
+        y: item.y,
+        angle: item.angle,
+        speed: this.speed,
+        producer: Shroom,
+        template: this.bullet
+      }))
+    },
+  }))
+}

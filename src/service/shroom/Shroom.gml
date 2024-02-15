@@ -1,81 +1,68 @@
 ///@package io.alkapivo.visu.service.shroom
 
-///@param {ShroomTemplate} config
-function Shroom(config = {}): GridItem(config) constructor {
-
-  ///@type {?Number}
-  lifespawn = Struct.getDefault(config, "lifespawn", null)
-
-  ///@private
-  ///@type {?Timer}
-  lifespawnTimer = lifespawn != null ? new Timer(this.lifespawn) : null
-  
-  ///@type {Map<String, ShroomGameMode>}
-  gameModes = Struct.getDefault(config, "gameModes", new Map(String, ShroomGameMode))
-
-  ///@private
-  ///@type {Map<String, any>}
-  state = Struct.getDefault(config, "state", new Map(String, any))
-
-  ///@param {VisuController} controller
-  ///@return {Shroom}
-  update = function(controller) {
-    if (lifespawnTimer != null && lifespawnTimer.update().finished) {
-      this.signal("kill")
-    }
-
-    var gameMode = this.gameModes.get(controller.gameMode)
-    if (Optional.is(gameMode)) {
-      gameMode.update(this, controller)
-    }
-    return this
-  }
-}
-
 ///@param {String} _name
 ///@param {Struct} json
 function ShroomTemplate(_name, json) constructor {
 
-  ///@private
-  ///@param {Struct} json
-  ///@param {String} key
-  ///@return {Map<String, ShroomGameMode>}
-  static mapGameMode = function(json, key) {
-    return Callable.run(Assert.isType(Struct
-      .get(SHROOM_GAME_MODES, key), Callable), json)
-  }
-  
   ///@type {String}
   name = Assert.isType(_name, String)
   
   ///@type {Struct}
   sprite = Assert.isType(Struct.get(json, "sprite"), Struct)
-  
-  ///@type {?Number}
-  lifespawn = Struct.contains(json, "lifespawn")
-    ? Assert.isType(Struct.get(json, "lifespawn"), Number)
+
+  ///@type {?Struct}
+  mask = Struct.contains(json, "mask")
+    ? Assert.isType(json.mask, Struct)
     : null
   
-  ///@type {Map<String, ShroomGameMode>}
-  gameModes = Struct.toMap(json.gameModes).map(this.mapGameMode)
+  ///@type {Struct}
+  gameModes = Struct.appendUnique(
+    Struct.filter(Struct.getDefault(json, "gameModes", {}), function(gameMode, key) { 
+      return Core.isType(gameMode, Struct) && Core.isEnum(key, GameMode)
+    }),
+    SHROOM_GAME_MODES.toStruct(function() { return {} })
+  )
 
-  ///@return {Struct}
+  //@return {Struct}
   serialize = function() {
-    var shroom = this
     var json = {
-      name: shroom.name,
-      sprite: shroom.sprite,
-      gameModes: shroom.gameModes.toStruct(function(gameMode) {
-        return gameMode.serialize()
-      })
+      sprite: this.sprite,
+      gameModes: this.gameModes,
     }
 
-    if (Optional.is(this.lifespawn)) {
-      Struct.set(json, "lifespawn", this.lifespawn)
+    if (Optional.is(this.mask)) {
+      Struct.set(json, "mask", this.mask)
     }
 
-    return json
+    return JSON.clone(json)
   }
 }
 
  
+///@param {ShroomTemplate} template
+function Shroom(template): GridItem(template) constructor {
+  
+  ///@private
+  ///@type {Map<String, any>}
+  state = Struct.getDefault(template, "state", new Map(String, any))
+
+  ///@private
+  ///@param {VisuController} controller
+  ///@type {Callable}
+  _update = method(this, this.update)
+
+  ///@param {VisuController} controller
+  ///@return {Shroom}
+  update = function(controller) {
+    this._update(controller)    
+    return this
+  }
+
+  this.gameModes
+    .set(GameMode.IDLE, ShroomIdleGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "idle", {})))
+    .set(GameMode.BULLETHELL, ShroomBulletHellGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
+    .set(GameMode.PLATFORMER, ShroomPlatformerGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "platformer", {})))
+}

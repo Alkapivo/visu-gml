@@ -420,7 +420,7 @@ function VisuTrackLoader(_controller): Service() constructor {
 
   ///@private
   ///@type {TaskExecutor}
-  executor = new TaskExecutor(this)
+  executor = new TaskExecutor(this, { catchException: false })
 
   ///@return {FSM}
   update = method(this, function() {

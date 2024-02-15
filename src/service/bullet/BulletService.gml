@@ -5,31 +5,26 @@
 
 global.BULLET_TEMPLATE = {
   name: "bullet_default",
-  lifespawn: 10,
   sprite: {
     name: "texture_test",
   },
-  behaviours: {
-    base: {
-      speed: {
-        factor: 0.001
-      },
-    },
-  },
-  conditions: [
-    {
-      name: "base",
-      when: null
+  "gameModes": {
+    "bulletHell": {
+      "features": [
+        {
+          "feature": "AngleFeature",
+          "value": {
+            "value": 0.0,
+            "target": 360.0,
+            "factor": 1.0,
+            "increase": 0.0
+          }
+        }
+      ]
     }
-  ]
+  }
 }
 
-function _BulletEvent(): Enum() constructor {
-  ADD = "spawn-bullet"
-  REMOVE = "remove-bullet"
-}
-global.__BulletEvent = new _BulletEvent()
-#macro BulletEvent global.__BulletEvent
 
 ///@param {Controller} _controller
 ///@param {Struct} [config]
@@ -47,38 +42,64 @@ function BulletService(_controller, config = {}): Service() constructor {
   ///@type {Stack<Number>}
   gc = new Stack(Number)
 
+  ///@type {?GameMode}
+  gameMode = null
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-bullet": function (event, dispatcher) {
-      var bulletTemplate = new BulletTemplate(global.BULLET_TEMPLATE)
+      var bulletTemplate = new BulletTemplate(event.data.template, this.templates
+        .get(event.data.template)
+        .serialize())
+        
       Struct.set(bulletTemplate, "x", event.data.x)
       Struct.set(bulletTemplate, "y", event.data.y)
       Struct.set(bulletTemplate, "angle", event.data.angle)
-      Struct.set(bulletTemplate, "speed", event.data.speed)
+      Struct.set(bulletTemplate, "speed", event.data.speed / 1000)
       Struct.set(bulletTemplate, "producer", event.data.producer)
-      dispatcher.context.bullets.add(new Bullet(bulletTemplate))
+      if (Struct.contains(event.data, "template")) {
+        var template = this.templates.get(event.data.template)
+        if (Struct.contains(template, "mask")) {
+          Struct.set(bulletTemplate, "mask", template.mask)
+        }
+      }
+      
+      var bullet = new Bullet(bulletTemplate)
+      bullet.updateGameMode(this.controller.gameMode)
+
+      this.bullets.add(bullet)
     },
   }))
 
+  ///@param {Event} event
+  ///@return {?Promise}
+  send = function(event) {
+    return this.dispatcher.send(event)
+  }
+
   ///@override
   ///@return {BulletService}
-  static update = function () { 
-    static updateBullets = function (bullet, index, context) {
+  update = function() { 
+    static updateGameMode = function(bullet, index, gameMode) {
+      bullet.updateGameMode(gameMode)
+    }
+
+    static updateBullet = function (bullet, index, context) {
       bullet.update(context.controller)
       if (bullet.signals.kill) {
         context.gc.push(index)
       }
     }
 
+    if (controller.gameMode != this.gameMode) {
+      this.gameMode = this.controller.gameMode
+      this.bullets.forEach(updateGameMode, this.gameMode)
+    }
+
     this.dispatcher.update()
-    this.bullets.forEach(updateBullets, this)
+    this.bullets.forEach(updateBullet, this)
     if (this.gc.size() > 0) {
-      this.gc.forEach(function (index, gcIndex, bullets) {
-        bullets.set(index, null)
-      }, this.bullets)
-      this.bullets.container = this.bullets.filter(function (item) {
-        return item != null
-      }).container
+      this.bullets.removeMany(this.gc)
     }
     return this
   }

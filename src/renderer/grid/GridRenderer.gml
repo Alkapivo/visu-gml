@@ -190,21 +190,43 @@ function GridRenderer(_controller, config = {}) constructor {
       return this
     }
 
+    var gridService = this.controller.gridService
     var useBlendAsZ = false
     if (useBlendAsZ) {
       shader_set(shader_gml_use_blend_as_z)
       shader_set_uniform_f(shader_get_uniform(shader_gml_use_blend_as_z, "size"), 1024.0)
       player.sprite.blend = (sin(this.playerZTimer.update().time) * 0.5 + 0.5) * 255     
       player.sprite.render(
-        (player.x - this.controller.gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - this.controller.gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       )
+      /*
+      GPU.render.rectangle(
+        (player.x - ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y - ((player.mask.getHeight() * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        (player.x + ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y + ((player.mask.getHeight() * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        false, 
+        c_lime
+      )
+      */
       shader_reset()
     } else {
       player.sprite.render(
-        (player.x - this.controller.gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - this.controller.gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       )
+
+      /*
+      GPU.render.rectangle(
+        (player.x - ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y - ((player.mask.getHeight() * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        (player.x + ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y + ((player.mask.getHeight() * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        false, 
+        c_lime
+      )
+      */
     }
     
     return this
@@ -215,9 +237,20 @@ function GridRenderer(_controller, config = {}) constructor {
   renderShrooms = function() {
     static renderShroom = function(shroom, index, gridService) {
       shroom.sprite.render(
-        (shroom.x - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (shroom.y - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        (shroom.x - (shroom.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (shroom.y - (shroom.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       )
+
+      /*
+      GPU.render.rectangle(
+        (shroom.x - ((shroom.mask.getWidth() * shroom.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (shroom.y - ((shroom.mask.getHeight() * shroom.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        (shroom.x + ((shroom.mask.getWidth() * shroom.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (shroom.y + ((shroom.mask.getHeight() * shroom.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        false, 
+        c_red
+      )
+      */
     }
 
     var gridService = this.controller.gridService
@@ -244,10 +277,23 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@return {GridRenderer}
   renderBullets = function() {
     static renderBullet = function(bullet, index, gridService) {
-      bullet.sprite.render(
-        (bullet.x - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (bullet.y - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+      bullet.sprite
+        .setAngle(bullet.angle)
+        .render(
+          (bullet.x + (bullet.sprite.texture.offsetX / GRID_SERVICE_PIXEL_WIDTH) - (bullet.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+          (bullet.y + (bullet.sprite.texture.offsetY / GRID_SERVICE_PIXEL_HEIGHT) - (bullet.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        )
+
+      /*
+      GPU.render.rectangle(
+        (bullet.x - ((bullet.mask.getWidth() * bullet.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (bullet.y - ((bullet.mask.getHeight() * bullet.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        (bullet.x + ((bullet.mask.getWidth() * bullet.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (bullet.y + ((bullet.mask.getHeight() * bullet.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        false, 
+        c_blue
       )
+      */
     }
     
     var gridService = this.controller.gridService

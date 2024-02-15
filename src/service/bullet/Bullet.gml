@@ -10,75 +10,77 @@ function BulletTemplate(_name, json) constructor {
   ///@type {Struct}
   sprite = Assert.isType(Struct.get(json, "sprite"), Struct)
 
-  ///@type {?Number}
-  lifespawn = Struct.contains(json, "lifespawn")
-    ? Assert.isType(json.lifespawn, Number)
+  ///@type {?Struct}
+  mask = Struct.contains(json, "mask")
+    ? Assert.isType(json.mask, Struct)
     : null
 
-
-  ///@type {Sprite}
-  //sprite = SpriteUtil.parse(json.sprite)
-  //Assert.isType(this.sprite, Sprite, "sprite")
-
   ///@type {Struct}
-  /*
-  behaviours = Struct.toMap(json.behaviours).map(function(behaviour, key) {
-    Struct.toMap(behaviour).map(function(_behaviour, behaviourName) {
-      return _behaviour
-    })
-  })
-  */
+  gameModes = Struct.appendUnique(
+    Struct.filter(Struct.getDefault(json, "gameModes", {}), function(gameMode, key) { 
+      return Core.isType(gameMode, Struct) && Core.isEnum(key, GameMode)
+    }),
+    BULLET_GAME_MODES.toStruct(function() { return {} })
+  )
 
   ///@return {Struct}
   serialize = function() {
     var json = {
       sprite: this.sprite,
+      gameModes: this.gameModes,
     }
 
-    if (Optional.is(this.lifespawn)) {
-      Struct.set(json, "lifespawn", this.lifespawn)
+    if (Optional.is(this.mask)) {
+      Struct.set(json, "mask", this.mask)
     }
-    return json
+
+    return JSON.clone(json)
   }
 }
 
-///@param {Struct} config
-function Bullet(config): GridItem(config) constructor {
 
-  ///@type {?Number}
-  lifespawn = Struct.getDefault(config, "lifespawn", null)
-  if (lifespawn != null) {
-    Assert.isType(this.lifespawn, Number, "lifespawn")
-  }
-
-  ///@private
-  ///@type {?Timer}
-  lifespawnTimer = lifespawn != null ? new Timer(this.lifespawn) : null
-
-  //behaviours
-
-  //conditions
+///@param {BulletTemplate} template
+function Bullet(template): GridItem(template) constructor {
 
   ///@type {Player|Shroom}
-  producer = config.producer
+  producer = template.producer
+  Assert.isTrue(this.producer == Player || this.producer == Shroom)
   
-  ///@todo refactor and extract to gridItems
-  static healthcheck = function(grid) {
-    /*
+  ///@private
+  ///@param {GridView} view
+  ///@return {Bullet}
+  healthcheck = function(view) {
     var distance = Math.getDistance(this.x, this.y,
-      grid.view.x + (grid.view.width / 2.0),
-      grid.view.y + (grid.view.height / 2.0)
+      view.x + (view.width / 2.0),
+      view.y + (view.height / 2.0)
     )
+
     if (distance > BULLET_MAX_DISTANCE) {
-      var event = new Event(BulletEvent.REMOVE, key)
+      var event = new Event("remove-bullet", key)
       service.dispatcher.send(service.dispatcher, event)
     }
-    */
+
+    return this
   }
+  
+  ///@private
+  ///@param {VisuController} controller
+  ///@type {Callable}
+  _update = method(this, this.update)
 
   ///@param {VisuController} controller
   ///@return {Bullet}
-  static update = function(controller) {
+  update = function(controller) {
+    //this.healthcheck(controller.gridService.view)
+    this._update(controller)    
     return this
   }
+
+  this.gameModes
+    .set(GameMode.IDLE, BulletIdleGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "idle", {})))
+    .set(GameMode.BULLETHELL, BulletBulletHellGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
+    .set(GameMode.PLATFORMER, BulletPlatformerGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "platformer", {})))
 }

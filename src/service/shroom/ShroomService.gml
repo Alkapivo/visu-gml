@@ -1,68 +1,5 @@
 ///@package io.alkapivo.visu.service.shroom
 
-///@static
-///@type {Struct}
-global.SHROOM_TEMPLATE = {
-  name: "shroom_default",
-  sprite: {
-    name: "texture_particle_default",
-    animate: false,
-  },
-  lifespawn: 50,
-  gameModes: {
-    bulletHell: {
-      shoot: {
-        bullet: "bullet_default",
-        speed: 0.01,
-        interval: 1,
-        bullets: 10,
-        aimPlayer: true,
-        angleRange: 30,
-
-      },
-      speed: {
-        target: 0.028,
-        factor: 0.0001
-      },
-      finish: {
-        particle: "particle_default",
-      }
-    },
-    platformer: {
-      onPlayerLanded: {
-        sprite: {
-          frame: "next",
-          scaleX: {
-            target: 2.0,
-            factor: 0.1,
-          },
-          scaleY: {
-            target: 2.0,
-            factor: 0.1,
-          }
-        }
-      },
-      onPlayerLeave: {
-        sprite: {
-          frame: "next",
-          scaleX: {
-            target: 1.0,
-            factor: 0.1,
-          },
-          scaleY: {
-            target: 1.0,
-            factor: 0.1,
-          }
-        }
-      },
-      finish: {
-        particle: "particle_default",
-      }
-    },
-  },
-}
-
-
 ///@param {VisuController} _controller
 ///@param {Struct} [config]
 function ShroomService(_controller, config = {}): Service() constructor {
@@ -82,6 +19,9 @@ function ShroomService(_controller, config = {}): Service() constructor {
   ///@type {?Struct}
   spawner = null
 
+  ///@type {?GameMode}
+  gameMode = null
+
   ///@param {?Struct} [json]
   ///@return {Struct}
   factorySpawner = function(json = null) {
@@ -99,6 +39,10 @@ function ShroomService(_controller, config = {}): Service() constructor {
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-shroom": function(event) {
       var view = this.controller.gridService.view
+      var template = new ShroomTemplate(event.data.template, this.templates
+        .get(event.data.template)
+        .serialize())
+
       var template = Assert.isType(this.templates.get(Struct
         .getDefault(event.data, "template", "shroom-01")), ShroomTemplate)
       var spawnX = Assert.isType(Struct
@@ -114,8 +58,11 @@ function ShroomService(_controller, config = {}): Service() constructor {
       Struct.set(template, "y", view.y + spawnY)
       Struct.set(template, "speed", spd / 1000.0)
       Struct.set(template, "angle", angle)
-      
-      this.shrooms.add(new Shroom(template))
+
+      var shroom = new Shroom(template)
+      shroom.updateGameMode(this.controller.gameMode)
+
+      this.shrooms.add(shroom)
     },
   }))
 
@@ -127,11 +74,20 @@ function ShroomService(_controller, config = {}): Service() constructor {
 
   ///@return {ShroomService}
   update = function() {
-    static updateShroom = function (shroom, index, context) {
+    static updateGameMode = function(shroom, index, gameMode) {
+      shroom.updateGameMode(gameMode)
+    }
+
+    static updateShroom = function(shroom, index, context) {
       shroom.update(context.controller)
       if (shroom.signals.kill) {
         context.gc.push(index)
       }
+    }
+
+    if (controller.gameMode != this.gameMode) {
+      this.gameMode = this.controller.gameMode
+      this.shrooms.forEach(updateGameMode, this.gameMode)
     }
 
     this.dispatcher.update()
