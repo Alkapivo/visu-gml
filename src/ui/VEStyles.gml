@@ -24,6 +24,29 @@ global.__VETheme = {
 ///@static
 ///@type {Map<String, Struct>}
 global.__VEStyles = new Map(String, Struct, {
+  "visu-modal": {
+    message: {
+      color: VETheme.color.textFocus,
+      font: "font_inter_10_regular",
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    },
+    accept: {
+      backgroundColor: VETheme.color.accept,
+      label: {
+        color: VETheme.color.textFocus,
+        font: "font_inter_10_regular",
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+      }
+    },
+    deny: {
+      backgroundColor: VETheme.color.deny,
+      label: {
+        color: VETheme.color.textFocus,
+        font: "font_inter_10_regular",
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+      }
+    },
+  },
   "ve-title-bar": {
     menu: {
       backgroundColorSelected: VETheme.color.accent,

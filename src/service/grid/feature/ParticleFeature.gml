@@ -9,13 +9,16 @@ function ParticleFeature(json = {}) {
     type: ParticleFeature,
 
     ///@type {String}
-    particle: Assert.isType(Struct.getDefault(json, "particle", "particle_default"), String),
+    particle: Assert.isType(Struct
+      .getDefault(json, "particle", "particle_default"), String),
 
     ///@type {Number}
-    duration = Assert.isType(Struct.getDefault(json, "duration", FRAME_MS * 3), Number)
+    duration: Assert.isType(Struct
+      .getDefault(json, "duration", FRAME_MS * 3), Number),
 
     ///@type {Number}
-    amount = Assert.isType(Struct.getDefault(json, "amount", 100), Number)
+    amount: Assert.isType(Struct
+      .getDefault(json, "amount", 100), Number),
 
     ///@override
     ///@param {GridItem} item

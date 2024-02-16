@@ -49,15 +49,15 @@ function VisuEditor(_controller) constructor {
   store = new Store({
     "render-event": {
       type: Boolean,
-      value: false,
+      value: Assert.isType(Core.getProperty("visu.editor.render-event", false), Boolean)
     },
     "render-timeline": {
       type: Boolean,
-      value: false,
+      value:Assert.isType(Core.getProperty("visu.editor.render-timeline", false), Boolean)
     },
     "render-brush": {
       type: Boolean,
-      value: true,
+      value: Assert.isType(Core.getProperty("visu.editor.render-brush", false), Boolean)
     },
     "new-channel-name": {
       type: String,

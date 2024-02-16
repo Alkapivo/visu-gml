@@ -20,24 +20,47 @@ global.__VETemplateTypeNames = new Map(String, String)
 ///@param {Struct} json
 function VETemplate(json) constructor {
 
+  ///@private
+  ///@param {VETemplateType} type
+  ///@param {Struct} json
+  ///@throws {Exception}
+  ///@return {Struct}
+  static parseStoreConfig = function(type, json) {
+    var storeConfig = {
+      "template-name": {
+        type: String,
+        value: json.name,
+      }
+    }
+
+    switch (type) {
+      case VETemplateType.SHADER: return Struct
+        .append(storeConfig, {
+          "template-shader": {
+            type: String,
+            value: json.shader,   
+          },
+          "template-inherit": {
+            type: Optional.of(String),
+            value: Struct.getDefault(json, "inherit", null),
+          },
+        })
+      case VETemplateType.SHROOM: return Struct
+        .append(storeConfig, {
+          "template-shroom": {
+            type: String,
+            value: json,   
+          },
+        })
+      default: throw new Exception($"Found unsupported VETemplateType: {type}")
+    }
+  }
+
   ///@type {VETemplateType}
   type = Assert.isEnum(json.type, VETemplateType)
 
   ///@type {Store}
-  store = new Store({
-    "template-name": {
-      type: String,
-      value: json.name,
-    },
-    "template-shader": {
-      type: String,
-      value: json.shader,   
-    },
-    "template-inherit": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "inherit", null),
-    },
-  })
+  store = new Store(this.parseStoreConfig(this.type, json))
 
   ///@type {Array<Struct>}
   components = new Array(Struct, [

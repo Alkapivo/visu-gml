@@ -24,16 +24,17 @@ function VEAccordion(_editor, config = null) constructor {
 
   ///@type {Store}
   store = new Store({
-    "render_event-inspector": {
+    "render-event-inspector": {
       type: Boolean,
-      value: false,
+      value: Assert.isType(Core.getProperty(
+        "visu.editor.accordion.render-event-inspector", false), Boolean),
     },
-    "render_template-toolbar": {
+    "render-template-toolbar": {
       type: Boolean,
-      value: false,
+      value: Assert.isType(Core.getProperty(
+        "visu.editor.accordion.render-template-toolbar", false), Boolean),
     },
   })
-
   
   ///@private
   ///@type {Map<String, Callable>}
@@ -44,7 +45,6 @@ function VEAccordion(_editor, config = null) constructor {
         state: new Map(String, any, {
           "background-alpha": 1.0,
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
-          
         }),
         accordion: accordion,
         layout: layout,
@@ -56,10 +56,10 @@ function VEAccordion(_editor, config = null) constructor {
             return
           }
           
-          Struct.set(this.layout.store, "render_event-inspector", store
-            .getValue("render_event-inspector"))
-          Struct.set(this.layout.store, "render_template-toolbar", store
-            .getValue("render_template-toolbar"))
+          Struct.set(this.layout.store, "render-event-inspector", store
+            .getValue("render-event-inspector"))
+          Struct.set(this.layout.store, "render-template-toolbar", store
+            .getValue("render-template-toolbar"))
         },
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
         onInit: function() {
@@ -87,7 +87,7 @@ function VEAccordion(_editor, config = null) constructor {
                 updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
                 backgroundColor: VETheme.color.accentShadow,
                 layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.checkbox,
-                store: { key: "render_event-inspector" },
+                store: { key: "render-event-inspector" },
               }
             ))
             add(UIText(
@@ -111,7 +111,7 @@ function VEAccordion(_editor, config = null) constructor {
                 updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
                 backgroundColor: VETheme.color.accentShadow,
                 layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.checkbox,
-                store: { key: "render_template-toolbar" },
+                store: { key: "render-template-toolbar" },
                 callback: function() {
                   var deb = "ugger"
                 }
@@ -130,8 +130,8 @@ function VEAccordion(_editor, config = null) constructor {
       {
         name: "ve-accordion",
         store: {
-          "render_event-inspector": false,
-          "render_template-toolbar": false,
+          "render-event-inspector": false,
+          "render-template-toolbar": false,
         },
         nodes: {
           "bar_event-inspector": {
@@ -156,14 +156,14 @@ function VEAccordion(_editor, config = null) constructor {
             y: function() { return this.context.y() + this.margin.top
                + Struct.get(this.context.nodes, "bar_event-inspector").bottom() },
             height: function() { 
-              if (!Struct.get(this.context.store, "render_event-inspector")) {
+              if (!Struct.get(this.context.store, "render-event-inspector")) {
                 return this.margin.top + this.margin.bottom
               }
               var height = this.context.height()
                - this.margin.top - this.margin.bottom
                - Struct.get(this.context.nodes, "bar_event-inspector").height()
                - Struct.get(this.context.nodes, "bar_template-toolbar").height()
-              if (Struct.get(this.context.store, "render_template-toolbar")) {
+              if (Struct.get(this.context.store, "render-template-toolbar")) {
                 height = height * 0.3
               }
               return height
@@ -193,7 +193,7 @@ function VEAccordion(_editor, config = null) constructor {
             y: function() { return this.context.y() + this.margin.top
                + Struct.get(this.context.nodes, "bar_template-toolbar").bottom() },
             height: function() { 
-              if (!Struct.get(this.context.store, "render_template-toolbar")) {
+              if (!Struct.get(this.context.store, "render-template-toolbar")) {
                 return this.margin.top + this.margin.bottom
               }
 
@@ -201,7 +201,7 @@ function VEAccordion(_editor, config = null) constructor {
                - this.margin.top - this.margin.bottom
                - Struct.get(this.context.nodes, "bar_event-inspector").height()
                - Struct.get(this.context.nodes, "bar_template-toolbar").height()
-              if (Struct.get(this.context.store, "render_event-inspector")) {
+              if (Struct.get(this.context.store, "render-event-inspector")) {
                 height = height * 0.7
               }
 
@@ -286,9 +286,9 @@ function VEAccordion(_editor, config = null) constructor {
   update = function() { 
     this.dispatcher.update()
     this.updateContainerObject(this.eventInspector, this.store
-      .getValue("render_event-inspector"))
+      .getValue("render-event-inspector"))
     this.updateContainerObject(this.templateToolbar, this.store
-      .getValue("render_template-toolbar"))
+      .getValue("render-template-toolbar"))
     return this
   }
 }

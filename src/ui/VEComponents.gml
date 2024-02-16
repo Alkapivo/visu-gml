@@ -28,6 +28,31 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
+  
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "button-wrapper": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIButton(
+        $"{name}_button", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.button,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("category-button"),
+            false
+          ),
+          config,
+          false
+        )
+      ),
+    ])
+  },
+
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -499,6 +524,263 @@ global.__VEComponents = new Map(String, Callable, {
           }
         },
         Struct.get(config, "frame"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryNumericSliderField(
+      $"{name}_alpha",
+      layout.nodes.alpha, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.textField.setText(value.getAlpha())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                sprite.setAlpha(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 1.0,
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.value = value.getAlpha()
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                sprite.setAlpha(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            },
+          },
+        },
+        Struct.get(config, "alpha"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    items.add(
+      factoryImage(
+        $"{name}_preview", 
+        layout.nodes.preview, 
+        Struct.appendRecursive(
+          { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.image = value
+              },
+              set: function(value) { },
+            }
+          },
+          Struct.get(config, "preview"),
+          false
+        )
+      )
+    )
+
+    return items
+  },
+
+    ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "texture-field-speed": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryNumericSliderField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryImage = function(name, layout, config) {
+      return UIImage(
+        name, 
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title", 
+      layout.nodes.title, 
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_texture",
+      layout.nodes.texture, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.textField.setText(value.texture.name)
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item) || !TextureUtil.exists(value)) {
+                  return
+                }
+                item.set(SpriteUtil.parse({ name: value }))
+              },
+            }
+          }
+        }, 
+        Struct.get(config, "texture"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_frame",
+      layout.nodes.frame, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.textField.setText(value.getFrame())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setFrame(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          }
+        },
+        Struct.get(config, "frame"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_speed",
+      layout.nodes.speed, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.textField.setText(value.getSpeed())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setSpeed(abs(NumberUtil.parse(value, sprite.getSpeed())))
+                item.set(sprite)
+              },
+            }
+          }
+        },
+        Struct.get(config, "speed"),
         false
       )
     ).forEach(addItem, items)
@@ -1277,6 +1559,125 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
     ])
+  },
+
+    ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "vec4-field": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(vec4, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(vec4, key, parsedValue))
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title",
+      layout.nodes.title,
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_x",
+      layout.nodes.x,
+      Struct.appendRecursive(
+        Struct.get(config, "x"),
+        { field: { vec4Property: "x" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_y",
+      layout.nodes.y,
+      Struct.appendRecursive(
+        Struct.get(config, "y"),
+        { field: { vec4Property: "y" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_z",
+      layout.nodes.z,
+      Struct.appendRecursive(
+        Struct.get(config, "z"),
+        { field: { vec4Property: "z" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_a",
+      layout.nodes.a,
+      Struct.appendRecursive(
+        Struct.get(config, "a"),
+        { field: { vec4Property: "a" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    return items
   },
 })
 #macro VEComponents global.__VEComponents

@@ -21,10 +21,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 4, bottom: 4, right: 1, left: 5 },
               callback: function() { 
-                var type = this.context.templateToolbar.store.get("type")
-                //if (type.get() != this.templateType) {
-                  type.set(this.templateType)
-                //}
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
               },
               updateCustom: function() {
                 this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
@@ -45,10 +48,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 4, bottom: 4, right: 5, left: 1 },
               callback: function() { 
-                var type = this.context.templateToolbar.store.get("type")
-                //if (type.get() != this.templateType) {
-                  type.set(this.templateType)
-                //}
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
               },
               updateCustom: function() {
                 this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
@@ -391,6 +397,16 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           text: template.name,
                           onMouseReleasedLeft: function() {
                             Core.print("MOCK template shroom left press")
+                            var shroom = Beans.get(BeanVisuController).shroomService.templates
+                              .get(this.templateName)
+                            if (!Core.isType(shroom, ShroomTemplate)) {
+                              return
+                            }
+
+                            Struct.set(shroom, "type", VETemplateType.SHROOM)
+                            this.context.templateToolbar.store
+                              .get("template")
+                              .set(new VETemplate(shroom))
                           },
                           templateName: template.name,
                         },
@@ -621,6 +637,15 @@ function VETemplateToolbar(_editor) constructor {
       },
       data: SHADERS.keys(),
     },
+    "shroom": {
+      type: String,
+      value: "shroom-01",
+      validate: function(value) {
+        Assert.isTrue(Beans
+          .get(BeanVisuController).shroomService.templates
+          .contains(value))
+      },
+    },
     "template": {
       type: Optional.of(VETemplate),
       value: null,
@@ -665,7 +690,7 @@ function VETemplateToolbar(_editor) constructor {
           },
           "template-view": {
             name: "template-toolbar.template-view",
-            percentageHeight: 0.5,
+            percentageHeight: 0.33,
             margin: { top: 2, bottom: 2, left: 10 },
             x: function() { return this.context.x() + this.margin.left },
             y: function() { return this.margin.top + Struct.get(this.context.nodes, "template-bar").bottom() },
@@ -680,7 +705,7 @@ function VETemplateToolbar(_editor) constructor {
           },
           "inspector-view": {
             name: "template-toolbar.inspector-view",
-            percentageHeight: 0.5,
+            percentageHeight: 0.66,
             margin: { top: 2, bottom: 2, left: 10 },
             x: function() { return this.context.x() + this.margin.left },
             y: function() { return this.margin.top + Struct.get(this.context.nodes, "inspector-bar").bottom() },

@@ -9,12 +9,10 @@ function _GameMode(): Enum() constructor {
 global.__GameMode = new _GameMode()
 #macro GameMode global.__GameMode
 
-#macro BeanVisuController "visuController"
 
+#macro BeanVisuController "visuController"
 ///@param {String} layerName
 function VisuController(layerName) constructor {
-
-  show_debug_overlay(false)
 
   ///@type {DisplayService}
   displayService = new DisplayService(this)
@@ -84,23 +82,18 @@ function VisuController(layerName) constructor {
   ///@type {VisuTrackLoader}
   loader = new VisuTrackLoader(this)
 
-  ///@type {Socket}
-  socket = new Socket({
-    host: "localhost",
-    port: 8082,
-    type: SocketType.WS,
-  })
-  
+  ///@type {Boolean}
+  enableUIContainerServiceRendering = true
 
   ///@type {FSM}
   fsm = new FSM(this, {
     initialState: { 
       name: "idle",
       data: new Event("load", {
-        manifest: String.join("", working_directory, os_get_config() == "editor" 
-          ? "manifest-editor.json" 
-          : "manifest.json"),
-        autoplay: true
+        manifest: FileUtil.get(String
+          .join("", working_directory, Assert.isType(Core
+          .getProperty("visu.file.manifest", "manifest.json"), String))),
+        autoplay: Assert.isType(Core.getProperty("visu.autoplay", false), Boolean),
       })
     },
     states: {
@@ -301,8 +294,22 @@ function VisuController(layerName) constructor {
     },
   })
 
-  ///@type {?Promise}
-  promise = null
+  ///@type {VisuModal}
+  exitModal = new VisuModal(this, {
+    message: { text: "Changes you made may not be saved." },
+    accept: {
+      text: "Leave",
+      callback: function() {
+        game_end()
+      }
+    },
+    deny: {
+      text: "Cancel",
+      callback: function() {
+        this.context.modal.send(new Event("close"))
+      }
+    }
+  })
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
@@ -361,21 +368,22 @@ function VisuController(layerName) constructor {
     return this.dispatcher.send(event)
   }
 
-  randomShader = function() {
-    if (keyboard_check_pressed(vk_space)) {
-      var keys = this.shaderPipeline.templates.keys()
-      var index = irandom(keys.size() - 1)
-      var key = keys.get(index)
-      
-      Core.print("Shader key:", key)
+  ///@private
+  init = function() {
+    var fullscreen = Assert.isType(Core.getProperty("visu.fullscreen", false), Boolean)
+    this.displayService
+      .resize(
+        Assert.isType(Core.getProperty("visu.window.width", 1280), Number),
+        Assert.isType(Core.getProperty("visu.window.height", 720), Number)
+      )
+      .setFullscreen(fullscreen)
 
-      shaderPipeline.dispatcher.send(new Event("spawn-shader", {
-        name: key,
-        duration: 7.0
-      }))
-    }
+    show_debug_overlay(Assert.isType(Core.getProperty("visu.debug-overlay", false), Boolean))
+    window_set_cursor(cr_none)
+    cursor_sprite = texture_bazyl_cursor
   }
 
+  ///@private
   ///@return {VisuController}
   updateIO = function() {
     this.keyboard.update()
@@ -435,18 +443,54 @@ function VisuController(layerName) constructor {
         y: MouseUtil.getMouseY(),
       }))
     }
+
+    return this
+  }
+
+  ///@private
+  ///@return {VisuController}
+  updateDisplay = function() {
+    if (keyboard_check_pressed(vk_f11)) {
+      var fullscreen = this.displayService.getFullscreen()
+      Logger.debug("VisuController", String.join("Set fullscreen to ",
+        fullscreen ? "'false'" : "'true'", "."))
+      this.displayService.setFullscreen(!fullscreen)
+    }
+
+    return this
+  }
+
+  ///@private
+  ///@return {VisuController}
+  updateCursor = function() {
+    cursor_sprite = keyboard_check(vk_control) 
+      ? texture_bazyl_cursor 
+      : texture_baron_cursor
+    return this
+  }
+
+  ///@private
+  ///@return {VisuController}
+  updateExitModal = function() {
+    if (keyboard_check_pressed(vk_escape)) {
+      this.exitModal.send(new Event("open").setData({
+        layout: new UILayout({
+          name: "display",
+          x: function() { return 0 },
+          y: function() { return 0 },
+          width: function() { return GuiWidth() },
+          height: function() { return GuiHeight() },
+        }),
+      }))
+    }
+    this.exitModal.update()
+
     return this
   }
   
   ///@return {VisuController}
   update = function() {
-    cursor_sprite = keyboard_check(vk_control) 
-      ? texture_bazyl_cursor 
-      : texture_baron_cursor
-
-    DeltaTime.update()
-
-    this.updateIO()
+    this.updateIO().updateDisplay().updateCursor().updateExitModal()
     this.fsm.update()
     this.loader.update()
 
@@ -455,7 +499,6 @@ function VisuController(layerName) constructor {
     this.dispatcher.update()
     this.executor.update()
     this.uiService.update()
-
 	  this.particleService.update()
 	  this.shaderPipeline.update()
     this.shaderBackgroundPipeline.update()
@@ -467,17 +510,8 @@ function VisuController(layerName) constructor {
     this.editor.update()
     //this.gridSystem.update()
 
-    /* 
-    if (keyboard_check_pressed(vk_space)) {
-      var event = this.particleService.factoryEventSpawnParticleEmitter({
-        beginX: mouse_x,
-        beginY: mouse_y,
-        endX: mouse_x,
-        endY: mouse_y,
-      })
-      this.particleService.send(event)
-    }
-    */
+
+
     return this
   }
 
@@ -510,16 +544,11 @@ function VisuController(layerName) constructor {
 
   ///@return {VisuController}
   render = function() {
-    //gpu_set_alphatestenable(true)
+    gpu_set_alphatestenable(true)
     this.gridRenderer.render()
     //this.gridSystem.render()
     return this
   }
-
-  ///@type {Boolean}
-  enableUIContainerServiceRendering = true
-
-  //ktglitchTimer = new Timer(10.0, { loop: Infinity })
 
   ///@return {VisuController}
   renderGUI = function() {
@@ -555,6 +584,7 @@ function VisuController(layerName) constructor {
     return this
   }
 
+  ///@return {VisuController}
   free = function() {
     Struct.toMap(this)
       .filter(function(value) {
@@ -567,23 +597,44 @@ function VisuController(layerName) constructor {
       })
       .forEach(function(struct, key, context) {
         try {
-          Logger.debug("VisuController", $"{key}.free()")
+          Logger.debug("VisuController", $"Free '{key}'")
           Callable.run(Struct.get(struct, "free"))
           var ref = ref_create(context, key)
           delete ref
         } catch (exception) {
-          Logger.error("VisuController", $"{exception.message}")
+          Logger.error("VisuController", $"Unable to free '{key}'. {exception.message}")
         }
       }, this)
+    
+    return this
   }
 
-  window_set_cursor(cr_none)
-
+  this.init()
 }
-
 
 /*
 
+  ///@type {Socket}
+  socket = new Socket({
+    host: "localhost",
+    port: 8082,
+    type: SocketType.WS,
+  })
+
+  randomShader = function() {
+    if (keyboard_check_pressed(vk_space)) {
+      var keys = this.shaderPipeline.templates.keys()
+      var index = irandom(keys.size() - 1)
+      var key = keys.get(index)
+      
+      Core.print("Shader key:", key)
+
+      shaderPipeline.dispatcher.send(new Event("spawn-shader", {
+        name: key,
+        duration: 7.0
+      }))
+    }
+  }
 
   testSurface = new Surface({ width: 512, height: 512 })
   blendModes = [ 
@@ -641,6 +692,7 @@ function VisuController(layerName) constructor {
     this.testSurface.render(512, 0)
   }
 
+///////////////////////
     if (keyboard_check_pressed(vk_space)) {
       var fadeSpriteEvent = new Event("fade-sprite", {
         sprite: SpriteUtil.parse({ name: "texture_particle_default" }),
@@ -677,4 +729,4 @@ function VisuController(layerName) constructor {
       })
       this.particleService.send(event)
     }
-    */
+*/

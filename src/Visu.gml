@@ -5,14 +5,34 @@ global.__MAGIC_NUMBER_TASK = 1
 
 function _Visu() constructor {
 
-  ///@param {String} layerName
+  ///@param {String} [layerName]
+  ///@param {Number} [layerDefaultDepth]
   ///@return {Visu}
-  run = method(this, function(layerName) {
+  static run = function(layerName = "layer_main", layerDefaultDepth = 100) {
+    Assert.isType(layerName, String)
+    Core.loadProperties()
+
+    var layerId = layer_get_id(layerName)
+    Core.print("typeof layerId", typeof(layerId))
+    if (layerId == -1) {
+      layerId = layer_create(Assert.isType(layerDefaultDepth, Number), layerName)
+    }
+
+    if (!Beans.exists(BeanDeltaTimeService)) {
+      Beans.add(BeanDeltaTimeService, new Bean(DeltaTimeService,
+        GMObjectUtil.factoryGMObject(
+          GMServiceInstance, 
+          layerId, 0, 0, 
+          new DeltaTimeService()
+        )
+      ))
+    }
+
     if (!Beans.exists(BeanTextureService)) {
       Beans.add(BeanTextureService, new Bean(TextureService,
         GMObjectUtil.factoryGMObject(
           GMServiceInstance, 
-          layer_get_id(layerName), 0, 0, 
+          layerId, 0, 0, 
           new TextureService()
         )
       ))
@@ -22,7 +42,7 @@ function _Visu() constructor {
       Beans.add(BeanSoundService, new Bean(SoundService,
         GMObjectUtil.factoryGMObject(
           GMServiceInstance, 
-          layer_get_id(layerName), 0, 0, 
+          layerId, 0, 0, 
           new SoundService()
         )
       ))
@@ -31,12 +51,12 @@ function _Visu() constructor {
     Beans.add(BeanVisuController, new Bean(VisuController,
       GMObjectUtil.factoryGMObject(
         GMControllerInstance, 
-        layer_get_id(layerName), 0, 0, 
+        layerId, 0, 0, 
         new VisuController(layerName)
       )
     ))
     return this
-  })
+  }
 }
 global.__Visu = new _Visu()
 #macro Visu global.__Visu

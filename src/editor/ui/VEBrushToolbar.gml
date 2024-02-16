@@ -1,5 +1,50 @@
 ///@package io.alkapivo.visu.editor.ui
 
+///@param {Struct} config
+///@return {Struct}
+function factoryVEBrushToolbarTypeItem(config) {
+  return {
+    name: config.name,
+    template: VEComponents.get("category-button"),
+    layout: VELayouts.get("horizontal-item"),
+    config: {
+      backgroundColor: VETheme.color.primary,
+      backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+      backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+      backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+      callback: function() {
+        this.context.brushToolbar.store
+          .get("type")
+          .set(this.brushType)
+        
+        this.context.brushToolbar.store
+          .get("template")
+          .set(null)
+        
+        this.context.brushToolbar.store
+          .get("brush")
+          .set(null)
+
+        var view = this.context.brushToolbar.containers.get("ve-brush-toolbar_inspector-view")
+        view.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
+        view.collection.components.clear() ///@todo replace with remove lambda
+        view.state
+          .set("template", null)
+          .set("brush", null)
+          .set("store", null)
+      },
+      updateCustom: function() {
+        this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
+          ? this.backgroundColorOn
+          : this.backgroundColorOff
+      },
+      label: { text: config.text },
+      brushType: config.brushType,
+    },
+  }
+}
+
+
 ///@todo move to VEBrushToolbar
 ///@static
 ///@type {Map<String, Callable>}
@@ -155,348 +200,81 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "shader": new Array(Struct, [
           {
             name: "button_category-shader_type-spawn",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Spawn" },
-              brushType: VEBrushType.SHADER_SPAWN,
-            },
+            text: "Spawn",
+            brushType: VEBrushType.SHADER_SPAWN,
           },
           {
             name: "button_category-shader_type-overlay",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Overlay" },
-              brushType: VEBrushType.SHADER_OVERLAY,
-            },
-            
+            text: "Overlay",
+            brushType: VEBrushType.SHADER_OVERLAY,
           },
           {
             name: "button_category-shader_type-clear",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Clear" },
-              brushType: VEBrushType.SHADER_CLEAR,
-            },
+            text: "Clear",
+            brushType: VEBrushType.SHADER_CLEAR,
           },
           {
             name: "button_category-shader_type-config",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 2 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Config" },
-              brushType: VEBrushType.SHADER_CONFIG,
-            },
+            text: "Config",
+            brushType: VEBrushType.SHADER_CONFIG,
           },
-        ]),
+        ]).map(factoryVEBrushToolbarTypeItem),
         "shroom": new Array(Struct, [
           {
             name: "button_category-shroom_type-spawn",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Spawn" },
-              brushType: VEBrushType.SHROOM_SPAWN,
-            },
+            text: "Spawn",
+            brushType: VEBrushType.SHROOM_SPAWN,
           },
           {
             name: "button_category-shader_type-clear",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Clear" },
-              brushType: VEBrushType.SHROOM_CLEAR,
-            },
+            text: "Clear",
+            brushType: VEBrushType.SHROOM_CLEAR,
           },
           {
             name: "button_category-shader_type-config",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Config" },
-              brushType: VEBrushType.SHROOM_CONFIG,
-            },
+            text: "Config",
+            brushType: VEBrushType.SHROOM_CONFIG,
           },
-        ]),
+        ]).map(factoryVEBrushToolbarTypeItem),
         "grid": new Array(Struct, [
           {
             name: "button_category-grid_type-channel",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Channel" },
-              brushType: VEBrushType.GRID_CHANNEL,
-            },
+            text: "Channel",
+            brushType: VEBrushType.GRID_CHANNEL,
           },
           {
             name: "button_category-grid_type-separator",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Separator" },
-              brushType: VEBrushType.GRID_SEPARATOR,
-            },
+            text: "Separator",
+            brushType: VEBrushType.GRID_SEPARATOR,
           },
           {
             name: "button_category-grid_type-config",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Config" },
-              brushType: VEBrushType.GRID_CONFIG,
-            },
+            text: "Config",
+            brushType: VEBrushType.GRID_CONFIG,
           },
-        ]),
+        ]).map(factoryVEBrushToolbarTypeItem),
         "view": new Array(Struct, [
           {
             name: "button_category-view_type-wallpaper",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Wallpaper" },
-              brushType: VEBrushType.VIEW_WALLPAPER,
-            },
+            text: "Wallpaper",
+            brushType: VEBrushType.VIEW_WALLPAPER,
           },
           {
             name: "button_category-view_type-camera",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Camera" },
-              brushType: VEBrushType.VIEW_CAMERA,
-            },
+            text: "Camera",
+            brushType: VEBrushType.VIEW_CAMERA,
           },
           {
             name: "button_category-view_type-lyrics",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Lyrics" },
-              brushType: VEBrushType.VIEW_LYRICS,
-            },
+            text: "Lyrics",
+            brushType: VEBrushType.VIEW_LYRICS,
           },
           {
             name: "button_category-view_type-config",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var type = this.context.brushToolbar.store.get("type")
-                if (type.get() != this.brushType) {
-                  type.set(this.brushType)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : this.backgroundColorOff
-              },
-              label: { text: "Config" },
-              brushType: VEBrushType.VIEW_CONFIG,
-            },
+            text: "Config",
+            brushType: VEBrushType.VIEW_CONFIG,
           },
-        ]),
+        ]).map(factoryVEBrushToolbarTypeItem),
       }),
       timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
@@ -811,17 +589,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             type: UIText,
             text: "Inspector",
             update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
-            onMouseReleasedLeft: function() {
-              var view = this.context.brushToolbar.containers.get("ve-brush-toolbar_inspector-view")
-              view.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
-              view.collection.components.clear() ///@todo replace with remove lambda
-              view.state
-                .set("template", null)
-                .set("brush", null)
-                .set("store", null)
-              this.context.brushToolbar.store.get("template").set(null)
-              this.context.brushToolbar.store.get("brush").set(null)
-            },
           },
           VEStyles.get("bar-title"),
           false
@@ -996,11 +763,11 @@ function VEBrushToolbar(_editor) constructor {
   store = new Store({
     "category": {
       type: String,
-      value: "shroom",
+      value: "shader",
     },
     "type": {
       type: String,
-      value: VEBrushType.SHROOM_CLEAR,
+      value: VEBrushType.SHADER_SPAWN,
     },
     "template": {
       type: Optional.of(VEBrushTemplate),

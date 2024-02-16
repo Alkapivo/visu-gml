@@ -190,6 +190,20 @@ global.__VELayouts = new Map(String, Callable, {
       height: function() { return 32 },
     }
   },
+
+  "button-wrapper": function(config = null) {
+    return {
+      name: "button-wrapper",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 },
+      nodes: {
+        button: {
+          name: "button-wrapper.button",
+          height: function() { return this.context.height() },
+        }
+      }
+    }
+  },
   
   ///@param {?Struct} [config]
   ///@return {Struct}
@@ -281,6 +295,48 @@ global.__VELayouts = new Map(String, Callable, {
         },
         preview: {
           name: "texture-field.preview",
+          y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+          height: function() { return 144 },
+          margin: { top: 10, bottom: 10, left: 10, right: 10 },
+        },
+      },
+    }
+  },
+
+    ///@param {?Struct} [config]
+  ///@return {Struct}
+  "texture-field-speed": function(config = null) {
+    return {
+      name: "texture-field-speed",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return this.nodes.preview.bottom() - this.y() },
+      nodes: {
+        title: {
+          name: "texture-field-speed.title",
+          height: function() { return 42 },
+        },
+        texture: {
+          name: "texture-field-speed.texture",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        frame: {
+          name: "texture-field-speed.frame",
+          y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        speed: {
+          name: "texture-field-speed.speed",
+          y: function() { return this.context.nodes.frame.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        alpha: {
+          name: "texture-field-speed.alpha",
+          y: function() { return this.context.nodes.speed.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        preview: {
+          name: "texture-field-speed.preview",
           y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
           height: function() { return 144 },
           margin: { top: 10, bottom: 10, left: 10, right: 10 },
@@ -523,6 +579,43 @@ global.__VELayouts = new Map(String, Callable, {
           height: function() { return 32 
             - this.margin.top - this.margin.bottom },
           margin: { bottom: 5, left: 5, right: 5 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "vec4-field": function(config = null) {
+    var textField = VELayouts.get("text-field")
+    return {
+      name: "vec4-field",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return this.nodes.a.bottom() - this.y() },
+      nodes: {
+        title: {
+          name: "vec4-field.title",
+          height: function() { return 42 },
+        },
+        x: {
+          name: "vec4-field.x",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        y: {
+          name: "vec4-field.y",
+          y: function() { return this.context.nodes.x.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        z: {
+          name: "vec4-field.z",
+          y: function() { return this.context.nodes.y.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        a: {
+          name: "vec4-field.a",
+          y: function() { return this.context.nodes.z.bottom() + this.margin.top },
+          height: function() { return 32 },
         },
       }
     }
