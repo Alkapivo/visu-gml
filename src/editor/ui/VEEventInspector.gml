@@ -101,6 +101,8 @@ function VEEventInspector(_editor) constructor {
             )
           }
         },
+        scrollbarY: { align: HAlign.LEFT },
+        onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
         onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
         onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
         onInit: function() {

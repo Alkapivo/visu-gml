@@ -278,8 +278,14 @@ function VETimeline(_editor) constructor {
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+        scrollbarY: { align: HAlign.LEFT },
+        _onMousePressedLeft: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY"))),
         _onMouseWheelUp: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY"))),
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
+        onMousePressedLeft: function(event) {
+          this._onMousePressedLeft(event)
+          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
+        },
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
           this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y

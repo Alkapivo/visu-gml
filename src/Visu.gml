@@ -13,7 +13,6 @@ function _Visu() constructor {
     Core.loadProperties()
 
     var layerId = layer_get_id(layerName)
-    Core.print("typeof layerId", typeof(layerId))
     if (layerId == -1) {
       layerId = layer_create(Assert.isType(layerDefaultDepth, Number), layerName)
     }

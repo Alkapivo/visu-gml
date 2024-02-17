@@ -42,9 +42,6 @@ function ShroomService(_controller, config = {}): Service() constructor {
       var template = new ShroomTemplate(event.data.template, this.templates
         .get(event.data.template)
         .serialize())
-
-      var template = Assert.isType(this.templates.get(Struct
-        .getDefault(event.data, "template", "shroom-01")), ShroomTemplate)
       var spawnX = Assert.isType(Struct
         .getDefault(event.data, "spawnX", choose(1, -1) * random(3) * (random(100) / 100)), Number)
       var spawnY = Assert.isType(Struct

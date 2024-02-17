@@ -26,14 +26,17 @@ function ShroomTemplate(_name, json) constructor {
   //@return {Struct}
   serialize = function() {
     var json = {
+      name: this.name,
       sprite: this.sprite,
       gameModes: this.gameModes,
     }
 
+    Core.print("mask", this.mask, Optional.is(this.mask))
     if (Optional.is(this.mask)) {
       Struct.set(json, "mask", this.mask)
     }
 
+    //Core.print("shroom serialize", JSON.stringify(JSON.clone(json), { pretty: true }))
     return JSON.clone(json)
   }
 }

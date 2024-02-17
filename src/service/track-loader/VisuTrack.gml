@@ -113,7 +113,7 @@ function VisuTrack(_path, json) constructor {
     }
     controller.shaderPipeline.templates
       .forEach(function(template, name, data) {
-        Struct.set(data, template.name, template)
+        Struct.set(data, template.name, template.serialize())
       }, shader.data)
 
     var shroom = {
@@ -156,61 +156,61 @@ function VisuTrack(_path, json) constructor {
 
     #region Save
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: manifestPath,
         data: String.replaceAll(JSON.stringify(manifest, { pretty: true }), "\\", ""),
-    }))
+    })))
 
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: $"{path}{this.track}",
         data: track,
-    }))
+    })))
 
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: $"{path}{this.bullet}",
         data: JSON.stringify(bullet, { pretty: true }),
-    }))
+    })))
 
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: $"{path}{this.lyrics}",
         data: JSON.stringify(lyrics, { pretty: true }),
-    }))
+    })))
 
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: $"{path}{this.particle}",
         data: JSON.stringify(particle, { pretty: true }),
-    }))
+    })))
 
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: $"{path}{this.shader}",
         data: JSON.stringify(shader, { pretty: true }),
-    }))
+    })))
 
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: $"{path}{this.shroom}",
         data: JSON.stringify(shroom, { pretty: true }),
-    }))
+    })))
 
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: $"{path}{this.texture}",
         data: JSON.stringify(textureAcc.texture, { pretty: true }),
-    }))
+    })))
     textureAcc.files.forEach(function(template, sourcePath, targetDirectory) {
       FileUtil.copyFile(sourcePath, $"{targetDirectory}{template.file}")
     }, path)
 
     fileService.send(new Event("save-file-sync")
-      .setData({
+      .setData(new File({
         path: $"{path}{this.sound}",
         data: JSON.stringify(sound, { pretty: true }),
-    }))
+    })))
     Struct.forEach(sound.data, function(intent, name, acc) {
       FileUtil.copyFile($"{acc.source}{intent.file}", $"{acc.target}{intent.file}")
     }, {
@@ -222,10 +222,10 @@ function VisuTrack(_path, json) constructor {
 
     Struct.forEach(editor, function(data, filename, acc) {
       acc.fileService.send(new Event("save-file-sync")
-        .setData({
+        .setData(new File({
           path: $"{acc.path}editor/{filename}.json",
           data: JSON.stringify(data, { pretty: true }),
-      }))
+      })))
     }, { path: path, fileService: fileService })
     #endregion
   }

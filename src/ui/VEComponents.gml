@@ -3,37 +3,12 @@
 ///@static
 ///@type {Map<String, Callable>}
 global.__VEComponents = new Map(String, Callable, {
-
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
-  "button": function(name, layout, config = null) {
-    return new Array(UIItem, [
-      UIButton(
-        $"{name}_button", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            }, 
-            VEStyles.get("category-button"),
-            false
-          ),
-          config,
-          false
-        )
-      ),
-    ])
-  },
-
   
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "button-wrapper": function(name, layout, config = null) {
+  "button": function(name, layout, config = null) {
     return new Array(UIItem, [
       UIButton(
         $"{name}_button", 
@@ -336,7 +311,31 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
-    ///@param {String} name
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "text-area": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UITextField(
+        $"field_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.field,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
+            },
+            VEStyles.get("text-area"),
+            false
+          ),
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}

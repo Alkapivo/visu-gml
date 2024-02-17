@@ -1,5 +1,7 @@
 ///@package io.alkapivo.visu.editor.api.template
 
+
+
 ///@param {Struct} json
 ///@return {Struct}
 function template_shroom(json = null) {
@@ -12,39 +14,23 @@ function template_shroom(json = null) {
       },
       "use_shroom_mask": {
         type: Boolean,
-        value: Struct.getDefault(json, "mask", false) == true,
+        value: Optional.is(Struct.getDefault(json, "mask", null)),
       },
       "shroom_mask": {
         type: Rectangle,
         value: new Rectangle(Struct.getDefault(json, "mask", null)),
       },
-      "feature": {
+      "shroom_game-mode_bullet-hell_features": {
         type: String,
-        value: Assert.isType(Core.getPrototypeName(AngleFeature), String),
-        validate: function(value) {
-          Assert.isTrue(this.data.contains(value))
-        },
-        data: new Array(String, [
-          Assert.isType(Core.getPrototypeName(AngleFeature), String),
-          Assert.isType(Core.getPrototypeName(BooleanFeature), String),
-          Assert.isType(Core.getPrototypeName(CounterFeature), String),
-          Assert.isType(Core.getPrototypeName(FollowPlayerFeature), String),
-          Assert.isType(Core.getPrototypeName(KillFeature), String),
-          Assert.isType(Core.getPrototypeName(LifespawnFeature), String),
-          Assert.isType(Core.getPrototypeName(ParticleFeature), String),
-          Assert.isType(Core.getPrototypeName(ShootFeature), String),
-          Assert.isType(Core.getPrototypeName(SpeedFeature), String),
-          Assert.isType(Core.getPrototypeName(SpriteFeature), String),
-          Assert.isType(Core.getPrototypeName(SwingFeature), String)
-        ]),
+        value: JSON.stringify(Struct.getDefault(json.gameModes.bulletHell, "features", []), { pretty: true })
       },
-      "condition": {
+      "shroom_game-mode_platformer_features": {
         type: String,
-        value: VISU_GRID_CONDITIONS.getFirst(),
-        validate: function(value) {
-          Assert.isTrue(this.data.contains(value))
-        },
-        data: VISU_GRID_CONDITIONS.keys(),
+        value: JSON.stringify(Struct.getDefault(json.gameModes.platformer, "features", []), { pretty: true })
+      },
+      "shroom_game-mode_idle_features": {
+        type: String,
+        value: JSON.stringify(Struct.getDefault(json.gameModes.idle, "features", []), { pretty: true })
       },
     }),
     components: new Array(Struct, [
@@ -92,7 +78,7 @@ function template_shroom(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Mask",
+              text: "Custom collision mask",
               enable: { key: "use_shroom_mask" },
             },
             checkbox: { 
@@ -144,7 +130,7 @@ function template_shroom(json = null) {
         },
       },
       {
-        name: "shroom_gamemode_bullethell",
+        name: "shroom_game-mode_bullet-hell",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
@@ -153,35 +139,19 @@ function template_shroom(json = null) {
         },
       },
       {
-        name: "bullethell_add-feature_spin-select",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
+        name: "shroom_game-mode_bullet-hell_features",
+        template: VEComponents.get("text-area"),
+        layout: VELayouts.get("text-area"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Feature" },
-          previous: { store: { key: "feature" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "feature" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "feature" } },
-        },
-      },
-      {
-        name: "bullethell_add-feature_button",
-        template: VEComponents.get("button-wrapper"),
-        layout: VELayouts.get("button-wrapper"),
-        config: {
-          layout: { type: UILayoutType.VERTICAL },
-          backgroundColor: VETheme.color.accept,
-          backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-          callback: function() { 
-            Core.print("MOCK add feature to shroom template")
+          field: { 
+            v_grow: true,
+            store: { key: "shroom_game-mode_bullet-hell_features" },
           },
-          label: { text: "Add feature" },
         },
       },
       {
-        name: "shroom_gamemode_platformer",
+        name: "shroom_game-mode_platformer",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
@@ -190,35 +160,19 @@ function template_shroom(json = null) {
         },
       },
       {
-        name: "platformer_add-feature_spin-select",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
+        name: "shroom_game-mode_platformer_features",
+        template: VEComponents.get("text-area"),
+        layout: VELayouts.get("text-area"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Feature" },
-          previous: { store: { key: "feature" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "feature" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "feature" } },
-        },
-      },
-      {
-        name: "platformer_add-feature_button",
-        template: VEComponents.get("button"),
-        layout: VELayouts.get("button"),
-        config: {
-          layout: { type: UILayoutType.VERTICAL },
-          backgroundColor: VETheme.color.accept,
-          backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-          callback: function() { 
-            Core.print("MOCK add feature to shroom template")
+          field: { 
+            v_grow: true,
+            store: { key: "shroom_game-mode_platformer_features" },
           },
-          label: { text: "Add feature" },
         },
       },
       {
-        name: "shroom_gamemode_idle",
+        name: "shroom_game-mode_idle",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
@@ -227,31 +181,15 @@ function template_shroom(json = null) {
         },
       },
       {
-        name: "idle_add-feature_spin-select",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
+        name: "shroom_game-mode_idle_features",
+        template: VEComponents.get("text-area"),
+        layout: VELayouts.get("text-area"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Feature" },
-          previous: { store: { key: "feature" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "feature" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "feature" } },
-        },
-      },
-      {
-        name: "idle_add-feature_button",
-        template: VEComponents.get("button"),
-        layout: VELayouts.get("button"),
-        config: {
-          layout: { type: UILayoutType.VERTICAL },
-          backgroundColor: VETheme.color.accept,
-          backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-          callback: function() { 
-            Core.print("MOCK add feature to shroom template")
+          field: { 
+            v_grow: true,
+            store: { key: "shroom_game-mode_idle_features" },
           },
-          label: { text: "Add feature" },
         },
       },
     ]),

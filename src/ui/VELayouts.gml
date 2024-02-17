@@ -181,24 +181,14 @@ global.__VELayouts = new Map(String, Callable, {
     }
   },
 
-  ///@param {?Struct} [config]
-  ///@return {Struct}
   "button": function(config = null) {
     return {
       name: "button",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       height: function() { return 32 },
-    }
-  },
-
-  "button-wrapper": function(config = null) {
-    return {
-      name: "button-wrapper",
-      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
       nodes: {
         button: {
-          name: "button-wrapper.button",
+          name: "button.button",
           height: function() { return this.context.height() },
         }
       }
@@ -211,7 +201,8 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "text-field",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
+      _height: 32,
+      height: function() { return this._height },
       nodes: {
         label: {
           name: "text-field.label",
@@ -226,6 +217,29 @@ global.__VELayouts = new Map(String, Callable, {
           height: function() { return this.context.height() 
             - this.margin.top - this.margin.bottom },
           margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          setHeight: new BindIntent(function(height) {
+            this.context._height = height + this.margin.top + this.margin.bottom
+          }),
+        }
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "text-area": function(config = null) {
+    return {
+      name: "text-area",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      _height: 32,
+      height: function() { return this._height },
+      nodes: {
+        field: {
+          name: "text-area.field",
+          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          setHeight: new BindIntent(function(height) {
+            this.context._height = height + this.margin.top + this.margin.bottom
+          }),
         }
       }
     }

@@ -406,13 +406,13 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
               Beans.get(BeanVisuController).fileService
                 .send(new Event("save-file-sync")
-                  .setData({
+                  .setData(new File({
                     path: FileUtil.getPathToSaveWithDialog({ 
                       filename: "brush", 
                       extension: "json"
                     }),
                     data: data
-                  }))
+                  })))
             }
           },
           VEStyles.get("bar-button"),
@@ -451,6 +451,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           )
         }
       },
+      onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
       onInit: function() {
@@ -482,10 +483,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       colorHoverOver: VETheme.color.accentShadow,
                       colorHoverOut: VETheme.color.primaryShadow,
                       onMouseHoverOver: function(event) {
-                        this.backgroundColor = ColorUtil.fromHex(colorHoverOver).toGMColor()
+                        //this.backgroundColor = ColorUtil.fromHex(colorHoverOver).toGMColor()
                       },
                       onMouseHoverOut: function(event) {
-                        this.backgroundColor = ColorUtil.fromHex(colorHoverOut).toGMColor()
+                        //this.backgroundColor = ColorUtil.fromHex(colorHoverOut).toGMColor()
                       },
                       onMouseReleasedLeft: function() {
                         var template = this.context.brushToolbar.store.get("template")
@@ -608,6 +609,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       scrollbarY: { align: HAlign.RIGHT },
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+      onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
       onInit: function() {

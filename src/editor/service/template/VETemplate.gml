@@ -4,6 +4,7 @@
 function _VETemplateType(): Enum() constructor {
   SHADER = "template_shader"
   SHROOM = "template_shroom"
+  BULLET = "template_bullet"
 }
 global.__VETemplateType = new _VETemplateType()
 #macro VETemplateType global.__VETemplateType
@@ -14,6 +15,7 @@ global.__VETemplateType = new _VETemplateType()
 global.__VETemplateTypeNames = new Map(String, String)
   .set(VETemplateType.SHADER, "Shader template")
   .set(VETemplateType.SHROOM, "Shroom template")
+  .set(VETemplateType.BULLET, "Bullet template")
 #macro VETemplateTypeNames global.__VETemplateTypeNames
 
 
@@ -49,7 +51,14 @@ function VETemplate(json) constructor {
         .append(storeConfig, {
           "template-shroom": {
             type: String,
-            value: json,   
+            value: json.name,   
+          },
+        })
+      case VETemplateType.BULLET: return Struct
+        .append(storeConfig, {
+          "template-bullet": {
+            type: String,
+            value: json.name,   
           },
         })
       default: throw new Exception($"Found unsupported VETemplateType: {type}")
@@ -118,19 +127,73 @@ function VETemplate(json) constructor {
   ///@private
   ///@return {ShroomTemplate}
   toShroomTemplate = function() {
-    throw new Exception("toShroomTemplate NotImplemented")
+    var sprite = this.store.getValue("shroom_texture")
+    var json = {
+      name: Assert.isType(this.store.getValue("template-name"), String),
+      sprite: {
+        name: sprite.getName(),
+        frame: sprite.getFrame(),
+        speed: sprite.getSpeed(),
+        alpha: sprite.getAlpha(),
+      },
+      gameModes: {
+        bulletHell: {
+          features: JSON.parse(this.store.getValue("shroom_game-mode_bullet-hell_features")).getContainer()
+        },
+        platformer: {
+          features: JSON.parse(this.store.getValue("shroom_game-mode_platformer_features")).getContainer()
+        },
+        idle: {
+          features: JSON.parse(this.store.getValue("shroom_game-mode_idle_features")).getContainer()
+        },
+      }
+    }
+
+    if (this.store.getValue("use_shroom_mask")) {
+      Struct.set(json, "mask", this.store.getValue("shroom_mask").serialize())
+    }
+    return new ShroomTemplate(json.name, json)
+  }
+
+  ///@private
+  ///@return {ShroomTemplate}
+  toBulletTemplate = function() {
+    var sprite = this.store.getValue("bullet_texture")
+    var json = {
+      name: Assert.isType(this.store.getValue("template-name"), String),
+      sprite: {
+        name: sprite.getName(),
+        frame: sprite.getFrame(),
+        speed: sprite.getSpeed(),
+        alpha: sprite.getAlpha(),
+      },
+      gameModes: {
+        bulletHell: {
+          features: JSON.parse(this.store.getValue("bullet_game-mode_bullet-hell_features")).getContainer()
+        },
+        platformer: {
+          features: JSON.parse(this.store.getValue("bullet_game-mode_platformer_features")).getContainer()
+        },
+        idle: {
+          features: JSON.parse(this.store.getValue("bullet_game-mode_idle_features")).getContainer()
+        },
+      }
+    }
+
+    if (this.store.getValue("use_bullet_mask")) {
+      Struct.set(json, "mask", this.store.getValue("bullet_mask").serialize())
+    }
+    return new BulletTemplate(json.name, json)
   }
 
   ///@throws {Exception}
   ///@return {ShaderTemplate|ShroomTemplate}
   serialize = function() {
     switch (this.type) {
-      case VETemplateType.SHADER:
-        return this.toShaderTemplate()
-      case VETemplateType.SHROOM:
-        return this.toShroomTemplate()
-      default:
-        throw new Exception($"Serialize dispatcher for type '{this.type}' wasn't found")
+      case VETemplateType.SHADER: return this.toShaderTemplate()
+      case VETemplateType.SHROOM: return this.toShroomTemplate()
+      case VETemplateType.BULLET: return this.toBulletTemplate()
+      default: throw new Exception($"Serialize dispatcher for type '{this.type}' wasn't found")
     }
   }
 

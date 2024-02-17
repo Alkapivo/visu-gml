@@ -232,6 +232,16 @@ global.__VEStyles = new Map(String, Struct, {
     color: VETheme.color.textShadow,
     align: { v: VAlign.CENTER, h: HAlign.RIGHT },
   },
+  "text-area": { 
+    font: "font_consolas_10_regular",
+    colorBackgroundUnfocused: VETheme.color.primaryShadow,
+    colorBackgroundFocused: VETheme.color.accentShadow,
+    colorTextUnfocused: VETheme.color.textShadow,
+    colorTextFocused: VETheme.color.textFocus,
+    colorSelection: VETheme.color.textSelected,
+    lh: 20,
+    padding: { top: 0, bottom: 0, left: 4, right: 0 }
+  },
   "slider-horizontal": {},
   "spin-select": {
     previous: {

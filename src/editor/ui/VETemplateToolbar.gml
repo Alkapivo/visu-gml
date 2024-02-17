@@ -46,7 +46,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.primary,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 5, left: 1 },
+              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
               callback: function() { 
                 this.context.templateToolbar.store
                   .get("type")
@@ -63,6 +63,33 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               },
               label: { text: "Shroom" },
               templateType: VETemplateType.SHROOM,
+            },
+          },
+          {
+            name: "button_type-bullet",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 4, bottom: 4, right: 5, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : this.backgroundColorOff
+              },
+              label: { text: "Bullet" },
+              templateType: VETemplateType.BULLET,
             },
           },
         ])
@@ -124,9 +151,21 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.accept,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function() { 
-                Core.print("MOCK add shader template")
                 var name = this.context.templateToolbar.store.getValue("name")
-                var shader = this.context.templateToolbar.store.getValue("shader")
+                if (!Core.isType(name, String) || name == "") {
+                  return
+                }
+
+                Beans.get(BeanVisuController).shaderPipeline.templates
+                  .set(name, new ShaderTemplate(name, {
+                    name: name,
+                    shader: this.context.templateToolbar.store.getValue("shader"),
+                  }))
+
+                ///@description send update event to subscribers
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(VETemplateType.SHADER)
               },
               label: { text: "Add template" },
             },
@@ -152,8 +191,61 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.accept,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function() { 
-                Core.print("MOCK add shroom template")
                 var name = this.context.templateToolbar.store.getValue("name")
+                if (!Core.isType(name, String) || name == "") {
+                  return
+                }
+
+                Beans.get(BeanVisuController).shroomService.templates
+                  .set(name, new ShroomTemplate(name, {
+                    name: name,
+                    sprite: { name: "texture_baron" },
+                  }))
+
+                ///@description send update event to subscribers
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(VETemplateType.SHROOM)
+              },
+              label: { text: "Add template" },
+            },
+          },
+        ]),
+        "template_bullet": new Array(Struct, [
+          {
+            name: "text-field_new-bullet-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "name" } },
+            },
+          },
+          {
+            name: "button_new-bullet-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              backgroundColor: VETheme.color.accept,
+              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
+              callback: function() { 
+                var name = this.context.templateToolbar.store.getValue("name")
+                if (!Core.isType(name, String) || name == "") {
+                  return
+                }
+
+                Beans.get(BeanVisuController).bulletService.templates
+                  .set(name, new BulletTemplate(name, {
+                    name: name,
+                    sprite: { name: "texture_baron" },
+                  }))
+
+                ///@description send update event to subscribers
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(VETemplateType.BULLET)
               },
               label: { text: "Add template" },
             },
@@ -241,7 +333,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             label: { text: "S" },
             update: Callable.run(UIUtil.updateAreaTemplates.get("groupByX")),
             onMousePressedLeft: function(event) {
-              Core.print("MOCK templates save")
               var controller = Beans.get(BeanVisuController)
               var type = this.context.templateToolbar.store.getValue("type")
               var templates = null
@@ -258,6 +349,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   model = "Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>"
                   filename = "shroom"
                   break
+                case VETemplateType.BULLET:
+                  templates = controller.bulletService.templates
+                  model = "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>"
+                  filename = "bullet"
+                  break
                 default:
                   Logger.error(
                     "VETemplateToolbar", 
@@ -272,7 +368,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
               var struct = {}
               templates.forEach(function(template, iterator, struct) {
-                Struct.set(struct, template.name, template)
+                Struct.set(struct, template.name, template.serialize())
               }, struct)
 
               var data = JSON.stringify({
@@ -282,13 +378,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
               Beans.get(BeanVisuController).fileService
                 .send(new Event("save-file-sync")
-                  .setData({
+                  .setData(new File({
                     path: FileUtil.getPathToSaveWithDialog({ 
                       filename: filename, 
                       extension: "json"
                     }),
                     data: data
-                  }))
+                  })))
             }
           },
           VEStyles.get("bar-button"),
@@ -314,13 +410,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           this.yOffset = this.offset.y
         }
 
-        if (this.yOffset != this.offset.y) {
-          Logger.debug("template-view", $"prev {this.yOffset}, curr {this.offset.y}, h {this.area.getHeight()}, hv: {this.fetchViewHeight()}")
-        }
-
         this.yOffset = this.offset.y
       },
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+      scrollbarY: { align: HAlign.LEFT },
+      onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
       onInit: function() {
@@ -343,7 +437,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                         label: { 
                           text: template.name,
                           onMouseReleasedLeft: function() {
-                            Core.print("MOCK template shader left press", this.templateName)
                             var shader = Beans.get(BeanVisuController).shaderPipeline.templates
                               .get(this.templateName)
                             if (!Core.isType(shader, ShaderTemplate)) {
@@ -396,7 +489,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                         label: { 
                           text: template.name,
                           onMouseReleasedLeft: function() {
-                            Core.print("MOCK template shroom left press")
                             var shroom = Beans.get(BeanVisuController).shroomService.templates
                               .get(this.templateName)
                             if (!Core.isType(shroom, ShroomTemplate)) {
@@ -417,7 +509,59 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           },
                           callback: function() {
                             this.removeUIItemfromUICollection()
-                            Beans.get(BeanVisuController).shaderPipeline.templates
+                            Beans.get(BeanVisuController).shroomService.templates
+                              .remove(this.templateName)
+                          },
+                          templateName: template.name,
+                          removeUIItemfromUICollection: new BindIntent(Callable
+                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                        },
+                      },
+                    }
+                  }, null, String, Struct)
+
+                var keys = GMArray.sort(components.keys().getContainer())
+                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
+                  var component = acc.components.get(acc.keys[iterator])
+                  acc.collection.add(new UIComponent(component))
+                }, {
+                  keys: keys,
+                  components: components,
+                  collection: data.collection,
+                })
+                break
+              case VETemplateType.BULLET:
+                var components = Beans.get(BeanVisuController).bulletService.templates
+                  .map(function(template, name) {
+                    return {
+                      name: template.name,
+                      template: VEComponents.get("template-entry"),
+                      layout: VELayouts.get("template-entry"),
+                      config: {
+                        label: { 
+                          text: template.name,
+                          onMouseReleasedLeft: function() {
+                            var bullet = Beans.get(BeanVisuController).bulletService.templates
+                              .get(this.templateName)
+                            if (!Core.isType(bullet, BulletTemplate)) {
+                              return
+                            }
+
+                            Struct.set(bullet, "type", VETemplateType.BULLET)
+                            this.context.templateToolbar.store
+                              .get("template")
+                              .set(new VETemplate(bullet))
+                          },
+                          templateName: template.name,
+                        },
+                        button: { 
+                          sprite: {
+                            name: "texture_ve_icon_trash",
+                            blend: VETheme.color.textShadow,
+                          },
+                          callback: function() {
+                            this.removeUIItemfromUICollection()
+                            Beans.get(BeanVisuController).bulletService.templates
                               .remove(this.templateName)
                           },
                           templateName: template.name,
@@ -493,6 +637,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+      scrollbarY: { align: HAlign.LEFT },
+      onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
       onInit: function() {
@@ -690,7 +836,7 @@ function VETemplateToolbar(_editor) constructor {
           },
           "template-view": {
             name: "template-toolbar.template-view",
-            percentageHeight: 0.33,
+            percentageHeight: 0.25,
             margin: { top: 2, bottom: 2, left: 10 },
             x: function() { return this.context.x() + this.margin.left },
             y: function() { return this.margin.top + Struct.get(this.context.nodes, "template-bar").bottom() },
@@ -705,7 +851,7 @@ function VETemplateToolbar(_editor) constructor {
           },
           "inspector-view": {
             name: "template-toolbar.inspector-view",
-            percentageHeight: 0.66,
+            percentageHeight: 0.75,
             margin: { top: 2, bottom: 2, left: 10 },
             x: function() { return this.context.x() + this.margin.left },
             y: function() { return this.margin.top + Struct.get(this.context.nodes, "inspector-bar").bottom() },
