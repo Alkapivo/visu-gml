@@ -615,7 +615,9 @@ function VETimeline(_editor) constructor {
             }
           }
 
-          var uiItem = this.addEvent(channel, new TrackEvent(trackEvent))
+          var uiItem = this.addEvent(channel, new TrackEvent(trackEvent, {
+            handlers: Beans.get(BeanVisuController).trackService.handlers,
+          }))
 
           ///@description select
           Beans.get(BeanVisuController).editor.store
@@ -707,7 +709,8 @@ function VETimeline(_editor) constructor {
               }, 
               template.properties
             ),
-          })
+          },
+          { handlers: Beans.get(BeanVisuController).trackService.handlers })
         }),
 
         ///@param {Event} event

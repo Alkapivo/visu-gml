@@ -30,7 +30,16 @@ function VisuController(layerName) constructor {
   particleService = new ParticleService(this, { layerName: layerName })
 
   ///@type {TrackService}
-  trackService = new TrackService(this)
+  trackService = new TrackService(this, {
+    handlers: new Map(String, Callable)
+      .merge(
+        DEFAULT_TRACK_EVENT_HANDLERS,
+        grid_track_event,
+        shader_track_event,
+        shroom_track_event,
+        view_track_event
+      ),
+  })
 
   ///@type {PlayerService}
   playerService = new PlayerService(this)

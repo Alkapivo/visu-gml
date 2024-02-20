@@ -210,9 +210,9 @@ function VisuTrackLoader(_controller): Service() constructor {
                       callback: function(prototype, json, key, acc) {
                         var name = Struct.get(json, "name")
                         Logger.debug("VisuTrackLoader", $"load track '{name}'")
-                        acc(new prototype(json))
+                        acc.openTrack(new prototype(json, { handlers: acc.handlers }))
                       },
-                      acc: controller.trackService.openTrack
+                      acc: controller.trackService
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)

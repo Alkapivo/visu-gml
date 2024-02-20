@@ -682,7 +682,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
                 
                 Callable.run(
-                  Struct.get(TRACK_EVENT_HANDLERS, brush.type), 
+                  Struct.get(Beans.get(BeanVisuController).trackService.eventHandlers, brush.type), 
                   brush.toTemplate().properties
                 )
               },

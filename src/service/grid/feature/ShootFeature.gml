@@ -1,19 +1,19 @@
 ///@package io.alkapivo.visu.service.grid.feature
 
-///@param {Struct} [json]
+///@param {Struct} json
 ///@return {GridItemFeature}
-function ShootFeature(json = {}) {
+function ShootFeature(json) {
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
     type: ShootFeature,
 
-    ///@type {?String}
-    bullet: Assert.isType(Struct.get(json, "bullet"), String),
+    ///@type {String}
+    bullet: Assert.isType(json.bullet, String),
 
     ///@type {?Number}
     bullets: Struct.contains(json, "bullets")
-      ? Assert.isType(Struct.get(json, "bullets"), Number)
+      ? Assert.isType(json.bullets, Number)
       : null,
 
     ///@type {Number}
@@ -44,7 +44,7 @@ function ShootFeature(json = {}) {
         angle: item.angle,
         speed: this.speed,
         producer: Shroom,
-        template: this.bullet
+        template: this.bullet,
       }))
     },
   }))
