@@ -39,6 +39,11 @@ function VisuController(layerName) constructor {
         shroom_track_event,
         view_track_event
       ),
+    isTrackLoaded: function() {
+      var stateName = this.context.fsm.getStateName()
+      return (stateName == "play" || stateName == "pause") 
+        && Core.isType(this.track, Track)
+    },
   })
 
   ///@type {PlayerService}

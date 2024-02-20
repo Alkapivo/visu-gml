@@ -396,6 +396,16 @@ function VisuTrackLoader(_controller): Service() constructor {
               return
             }
 
+            var audio = Assert.isType(fsm.context.controller.trackService.track.audio, Sound)
+            var attempts = this.state.inject("attempts", GAME_FPS * 5) - DeltaTime.apply(1)
+            Assert.isTrue(attempts >= 0.0)
+            this.state.set("attempts", attempts)
+            audio.rewind(0.0)
+            if (audio.getPosition() != 0.0) {
+              return
+            }
+
+            audio.pause()
             fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
           } catch (exception) {
             Logger.error("VisuTrackLoader", $"{exception.message}")
@@ -411,6 +421,9 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, tasks) { 
             fsm.context.controller.editor.send(new Event("open"))
+            fsm.context.controller.editor.controller
+              .send(new Event("rewind")
+              .setData({ timestamp: 0.0 }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "parse-manifest" ]),
