@@ -120,7 +120,21 @@ global.__VEStyles = new Map(String, Struct, {
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
       }
-    }
+    },
+    up: {
+      backgroundColor: VETheme.color.primaryShadow,
+      sprite: { 
+        name: "texture_ve_button_item_up",
+        blend: VETheme.color.textShadow,
+      },
+    },
+    down: {
+      backgroundColor: VETheme.color.primaryShadow,
+      sprite: { 
+        name: "texture_ve_button_item_down",
+        blend: VETheme.color.textShadow,
+      },
+    },
   },
   "brush-entry": {
     image: {},
@@ -228,6 +242,66 @@ global.__VEStyles = new Map(String, Struct, {
       backgroundColor: VETheme.color.accent,
     },
   },
+  "text-field-checkbox": { 
+    font: "font_inter_10_regular",
+    colorBackgroundUnfocused: VETheme.color.primaryShadow,
+    colorBackgroundFocused: VETheme.color.accentShadow,
+    colorTextUnfocused: VETheme.color.textShadow,
+    colorTextFocused: VETheme.color.textFocus,
+    colorSelection: VETheme.color.textSelected,
+    lh: 20,
+    padding: { top: 0, bottom: 0, left: 4, right: 0 },
+    label: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.CENTER, h: HAlign.RIGHT },
+    },
+    field: {
+      font: "font_inter_10_regular",
+      colorBackgroundUnfocused: VETheme.color.primaryShadow,
+      colorBackgroundFocused: VETheme.color.accentShadow,
+      colorTextUnfocused: VETheme.color.textShadow,
+      colorTextFocused: VETheme.color.textFocus,
+      colorSelection: VETheme.color.textSelected,
+      lh: 20,
+      padding: { top: 0, bottom: 0, left: 4, right: 0 },
+    },
+    checkbox: { }
+  },
+  "text-field-button-checkbox": { 
+    font: "font_inter_10_regular",
+    colorBackgroundUnfocused: VETheme.color.primaryShadow,
+    colorBackgroundFocused: VETheme.color.accentShadow,
+    colorTextUnfocused: VETheme.color.textShadow,
+    colorTextFocused: VETheme.color.textFocus,
+    colorSelection: VETheme.color.textSelected,
+    lh: 20,
+    padding: { top: 0, bottom: 0, left: 4, right: 0 },
+    label: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.CENTER, h: HAlign.RIGHT },
+    },
+    field: {
+      font: "font_inter_10_regular",
+      colorBackgroundUnfocused: VETheme.color.primaryShadow,
+      colorBackgroundFocused: VETheme.color.accentShadow,
+      colorTextUnfocused: VETheme.color.textShadow,
+      colorTextFocused: VETheme.color.textFocus,
+      colorSelection: VETheme.color.textSelected,
+      lh: 20,
+      padding: { top: 0, bottom: 0, left: 4, right: 0 },
+    },
+    button: {
+      label: {
+        font: "font_inter_10_regular",
+        color: VETheme.color.textFocus,
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+      },
+      backgroundColor: VETheme.color.accent,
+    },
+    checkbox: { }
+  },
   "text-field_label": {
     font: "font_inter_10_regular",
     color: VETheme.color.textShadow,
@@ -246,10 +320,10 @@ global.__VEStyles = new Map(String, Struct, {
   "slider-horizontal": {},
   "spin-select": {
     previous: {
-      sprite: { name: "texture_button", frame: 5 }
+      sprite: { name: "texture_button_previous" }
     },
     next: {
-      sprite: { name: "texture_button", frame: 1 }
+      sprite: { name: "texture_button_next" }
     },
   },
   "spin-select-image": {

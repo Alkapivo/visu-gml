@@ -52,9 +52,28 @@ global.__VELayouts = new Map(String, Callable, {
           width: function() { return this.context.width() 
             - this.context.nodes.remove.width()
             - this.context.nodes.remove.margin.left
-            - this.context.nodes.remove.margin.right  },
+            - this.context.nodes.remove.margin.right 
+            - this.context.nodes.up.width()
+            - this.context.nodes.up.margin.left
+            - this.context.nodes.up.margin.right },
           height: function() { return 30 },
           x: function() { return this.context.nodes.remove.right() },
+        },
+        up: {
+          name: "channel-entry.up",
+          width: function() { return 16 - this.margin.left - this.margin.right },
+          height: function() { return 16 - this.margin.top - this.margin.bottom },
+          margin: { top: 3, left: 2, right: 2, bottom: 1 },
+          x: function() { return this.context.nodes.label.right() },
+          y: function() { return this.context.y() + this.margin.top },
+        },
+        down: {
+          name: "channel-entry.down",
+          width: function() { return 16 - this.margin.left - this.margin.right },
+          height: function() { return 16 - this.margin.top - this.margin.bottom },
+          margin: { top: 1, left: 2, right: 2, bottom: 3 },
+          x: function() { return this.context.nodes.label.right() },
+          y: function() { return this.context.y() + 16 + this.margin.top },
         },
       }
     }
@@ -245,7 +264,7 @@ global.__VELayouts = new Map(String, Callable, {
     }
   },
 
-    ///@param {?Struct} [config]
+  ///@param {?Struct} [config]
   ///@return {Struct}
   "text-field-button": function(config = null) {
     return {
@@ -274,6 +293,95 @@ global.__VELayouts = new Map(String, Callable, {
           name: "text-field-button.button",
           x: function() { return this.context.nodes.field.right() + this.margin.left },
           width: function() { return 32 },
+          margin: { top: 5, bottom: 5, right: 5 },
+        },
+      }
+    }
+  },
+
+    ///@param {?Struct} [config]
+  ///@return {Struct}
+  "text-field-checkbox": function(config = null) {
+    return {
+      name: "text-field-checkbox",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 40 },
+      nodes: {
+        checkbox: {
+          name: "text-field-checkbox.checkbox",
+          width: function() { return 56 },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        label: {
+          name: "text-field-checkbox.label",
+          x: function() { return this.context.nodes.checkbox.right() 
+            + this.margin.left },
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        field: {
+          name: "text-field-checkbox.field",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return this.context.width() 
+            - this.context.nodes.checkbox.width()
+            - this.context.nodes.checkbox.margin.left
+            - this.context.nodes.checkbox.margin.right
+            - this.context.nodes.label.width()
+            - this.context.nodes.label.margin.left
+            - this.context.nodes.label.margin.right
+            - this.margin.left 
+            - this.margin.right },
+          height: function() { return this.context.height() 
+            - this.margin.top - this.margin.bottom },
+          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "text-field-button-checkbox": function(config = null) {
+    return {
+      name: "text-field-button-checkbox",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 40 },
+      nodes: {
+        checkbox: {
+          name: "text-field-button-checkbox.checkbox",
+          width: function() { return 56 },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        label: {
+          name: "text-field-button-checkbox.label",
+          x: function() { return this.context.nodes.checkbox.right() 
+            + this.margin.left },
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        field: {
+          name: "text-field-button-checkbox.field",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return this.context.width() 
+            - this.context.nodes.checkbox.width()
+            - this.context.nodes.checkbox.margin.left
+            - this.context.nodes.checkbox.margin.right
+            - this.context.nodes.label.width()
+            - this.context.nodes.label.margin.left
+            - this.context.nodes.label.margin.right
+            - this.context.nodes.button.width()
+            - this.context.nodes.button.margin.left
+            - this.context.nodes.button.margin.right
+            - this.margin.left 
+            - this.margin.right },
+          height: function() { return this.context.height() 
+            - this.margin.top - this.margin.bottom },
+          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+        },
+        button: {
+          name: "text-field-button.button",
+          x: function() { return this.context.nodes.field.right() + this.margin.left },
+          width: function() { return 56 },
           margin: { top: 5, bottom: 5, right: 5 },
         },
       }
@@ -465,7 +573,7 @@ global.__VELayouts = new Map(String, Callable, {
           name: "spin-select.previous",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
           width: function() { return 32 - this.margin.left - this.margin.right },
-          margin: { right: 5, left: 5 },
+          margin: { top: 8, bottom: 8, right: 8, left: 8 },
         },
         preview: {
           name: "spin-select.preview",
@@ -479,7 +587,7 @@ global.__VELayouts = new Map(String, Callable, {
           x: function() { return this.context.x() + this.context.width()
             - this.width() - this.margin.right },
           width: function() { return 32 - this.margin.left - this.margin.right },
-          margin: { right: 5, left: 5 },
+          margin: { top: 8, bottom: 8, right: 8, left: 8 },
         },
       }
     }

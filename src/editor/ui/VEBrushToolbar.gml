@@ -57,12 +57,48 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
       }),
       timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
-      layout: layout,
+      layout: brushToolbar.layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
+      items: {
+        "resize_brush_toolbar": {
+          type: UIButton,
+          layout: brushToolbar.layout.nodes.resize,
+          backgroundColor: VETheme.color.primary, //resize
+          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          updateCustom: function() {
+            var context = MouseUtil.getClipboard()
+            if (context == this) {
+              this.updateLayout(MouseUtil.getMouseX())
+            }
+    
+            if (context == this && !mouse_check_button(mb_left)) {
+              MouseUtil.clearClipboard()
+            }
+          },
+          updateLayout: new BindIntent(function(position) {
+            var node = Struct.get(Beans.get(BeanVisuController).editor.layout.nodes, "brush-toolbar")
+            node.percentageWidth = abs(GuiWidth() - position) / GuiWidth()
+          }),
+          onMousePressedLeft: function(event) {
+            MouseUtil.setClipboard(this)
+          },
+          onMouseReleasedLeft: function(event) {
+            if (MouseUtil.getClipboard() == this) {
+              MouseUtil.clearClipboard()
+            }
+          },
+          onMouseHoverOver: function(event) {
+            window_set_cursor(cr_size_we)
+          },
+          onMouseHoverOut: function(event) {
+            window_set_cursor(cr_default)
+          },
+        }
+      }
     }
   },
   "category": function(name, brushToolbar, layout) {
@@ -120,8 +156,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   ? this.backgroundColorOn
                   : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
               },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
               label: { text: String.toArray("SHROOM").join("\n") },
@@ -372,8 +406,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               var promise = Beans.get(BeanVisuController).fileService.send(
                 new Event("fetch-file-dialog")
                   .setData({
+                    description: "JSON file",
                     filename: "brush", 
-                    extension: "json"
+                    extension: "json",
                   })
                   .setPromise(new Promise()
                     .setState({ 
@@ -417,8 +452,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 .send(new Event("save-file-sync")
                   .setData(new File({
                     path: FileUtil.getPathToSaveWithDialog({ 
+                      description: "JSON file",
                       filename: "brush", 
-                      extension: "json"
+                      extension: "json",
                     }),
                     data: data
                   })))
@@ -596,7 +632,38 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           {
             type: UIText,
             text: "Inspector",
-            update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
+            __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
+            updateCustom: function() {
+              this.__update()
+              var context = MouseUtil.getClipboard()
+              if (context == this) {
+                this.updateLayout(MouseUtil.getMouseY())
+              }
+      
+              if (context == this && !mouse_check_button(mb_left)) {
+                MouseUtil.clearClipboard()
+              }
+            },
+            updateLayout: new BindIntent(function(position) {
+              var brushNode = Struct.get(this.context.layout.context.nodes, "brush-view")
+              var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
+              inspectorNode.percentageHeight = abs((GuiHeight() - 24) - position + 24) / (GuiHeight() - 48)
+              brushNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
+            }),
+            onMousePressedLeft: function(event) {
+              MouseUtil.setClipboard(this)
+            },
+            onMouseReleasedLeft: function(event) {
+              if (MouseUtil.getClipboard() == this) {
+                MouseUtil.clearClipboard()
+              }
+            },
+            onMouseHoverOver: function(event) {
+              window_set_cursor(cr_size_ns)
+            },
+            onMouseHoverOut: function(event) {
+              window_set_cursor(cr_default)
+            },
           },
           VEStyles.get("bar-title"),
           false
@@ -829,7 +896,9 @@ function VEBrushToolbar(_editor) constructor {
           return type.height() + brushBar.height() + inspectorBar.height() + control.height()
         }),
         nodes: {
-          "accordion": {},
+          "accordion": {
+            name: "brush-toolbar.accordion",
+          },
           "category": {
             name: "brush-toolbar.category",
             x: function() { return this.context.x() - this.width() - 1 },
@@ -839,19 +908,31 @@ function VEBrushToolbar(_editor) constructor {
           "type": {
             name: "brush-toolbar.type",
             height: function() { return 40 },
+            x: function() { return this.context.x()
+              + this.context.nodes.resize.width() },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width() },
           },
           "brush-bar": {
             name: "brush-toolbar.brushBar",
             y: function() { return this.context.nodes.type.bottom() },
+            x: function() { return this.context.x()
+              + this.context.nodes.resize.width() },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width() },
             height: function() { return 16 },
           },
           "brush-view": {
             name: "brush-toolbar.brushView",
             percentageHeight: 0.23,
             margin: { top: 1, bottom: 1, left: 0, right: 10 },
-            x: function() { return this.context.x() + this.margin.left },
-            width: function() { return this.context.width()
-               - this.margin.left - this.margin.right },
+            x: function() { return this.context.x()
+              + this.context.nodes.resize.width()
+              + this.margin.left },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width()
+              - this.margin.left 
+              - this.margin.right },
             y: function() { return this.margin.top
                + Struct.get(this.context.nodes, "brush-bar").bottom() },
             height: function() { return ceil((this.context.height() 
@@ -861,15 +942,23 @@ function VEBrushToolbar(_editor) constructor {
           "inspector-bar": {
             name: "brush-toolbar.inspector-bar",
             y: function() { return Struct.get(this.context.nodes, "brush-view").bottom() },
+            x: function() { return this.context.x()
+              + this.context.nodes.resize.width() },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width() },
             height: function() { return 16 },
           },
           "inspector-view": {
             name: "brush-toolbar.inspector-view",
             percentageHeight: 0.77,
             margin: { top: 1, bottom: 1, left: 0, right: 10 },
-            x: function() { return this.context.x() + this.margin.left },
-            width: function() { return this.context.width()
-               - this.margin.left - this.margin.right },
+            x: function() { return this.context.x()
+              + this.context.nodes.resize.width()
+              + this.margin.left },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width()
+              - this.margin.left 
+              - this.margin.right },
             y: function() { return this.margin.top
               + Struct.get(this.context.nodes, "inspector-bar").bottom() },
             height: function() { return ceil((this.context.height() 
@@ -879,7 +968,18 @@ function VEBrushToolbar(_editor) constructor {
           "control": {
             name: "brush-toolbar.category",
             y: function() { return Struct.get(this.context.nodes, "inspector-view").bottom() },
+            x: function() { return this.context.x()
+              + this.context.nodes.resize.width() },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width() },
             height: function() { return 40 },
+          },
+          "resize": {
+            name: "brush-toolbar.resize",
+            x: function() { return 0 },
+            y: function() { return 0 },
+            width: function() { return 7 },
+            height: function() { return this.context.height() },
           }
         }
       },

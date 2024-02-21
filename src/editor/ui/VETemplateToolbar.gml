@@ -389,8 +389,9 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 .send(new Event("save-file-sync")
                   .setData(new File({
                     path: FileUtil.getPathToSaveWithDialog({ 
+                      description: "JSON file",
                       filename: filename, 
-                      extension: "json"
+                      extension: "json",
                     }),
                     data: data
                   })))
@@ -638,7 +639,46 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           {
             type: UIText,
             text: "Template inspector",
-            update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
+            __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
+            updateCustom: function() {
+              this.__update()
+              /*
+              var context = MouseUtil.getClipboard()
+              if (context == this) {
+                this.updateLayout(MouseUtil.getMouseY())
+              }
+      
+              if (context == this && !mouse_check_button(mb_left)) {
+                MouseUtil.clearClipboard()
+              }
+              */
+            },
+            updateLayout: new BindIntent(function(position) {
+              var height = Beans.get(BeanVisuController).editor.layout.nodes.timeline.height()
+              var templateNode = Struct.get(this.context.layout.context.nodes, "template-view")
+              var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
+
+              var length = GuiHeight() - 24 - 24 - 32 - height - 160 - 32
+              var pos = position - 24 - 32 - 160
+              inspectorNode.percentageHeight = 1.0 - clamp(pos / length, 0.0, 1.0)
+              templateNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
+            }),
+            /*
+            onMousePressedLeft: function(event) {
+              MouseUtil.setClipboard(this)
+            },
+            onMouseReleasedLeft: function(event) {
+              if (MouseUtil.getClipboard() == this) {
+                MouseUtil.clearClipboard()
+              }
+            },
+            onMouseHoverOver: function(event) {
+              window_set_cursor(cr_size_ns)
+            },
+            onMouseHoverOut: function(event) {
+              window_set_cursor(cr_default)
+            },
+            */
           },
           VEStyles.get("bar-title"),
           false

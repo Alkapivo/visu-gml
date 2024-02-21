@@ -334,6 +334,11 @@ function VisuController(layerName) constructor {
     },
   })
 
+  ///@type {VisuNewProjectModal}
+  newProjectModal = new VisuNewProjectModal(this, {
+
+  })
+
   ///@type {VisuModal}
   exitModal = new VisuModal(this, {
     message: { text: "Changes you made may not be saved." },
@@ -419,8 +424,8 @@ function VisuController(layerName) constructor {
       .setFullscreen(fullscreen)
 
     show_debug_overlay(Assert.isType(Core.getProperty("visu.debug-overlay", false), Boolean))
-    window_set_cursor(cr_none)
-    cursor_sprite = texture_bazyl_cursor
+    window_set_cursor(cr_default)
+    //cursor_sprite = texture_bazyl_cursor
   }
 
   ///@private
@@ -503,9 +508,11 @@ function VisuController(layerName) constructor {
   ///@private
   ///@return {VisuController}
   updateCursor = function() {
+    /*
     cursor_sprite = keyboard_check(vk_control) 
       ? texture_bazyl_cursor 
       : texture_baron_cursor
+    */
     return this
   }
 
@@ -524,7 +531,7 @@ function VisuController(layerName) constructor {
       }))
     }
     this.exitModal.update()
-
+    this.newProjectModal.update()
     return this
   }
   

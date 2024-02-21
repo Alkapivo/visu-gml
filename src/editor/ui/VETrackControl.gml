@@ -27,31 +27,24 @@ function VETrackControl(_editor) constructor {
         nodes: {
           timeline: {
             name: "track-control.timeline",
+            margin: { left: 1, right: 33 },
+            x: function() { return this.margin.left },
+            y: function() { return 0 },
+            width: function() { return this.context.width() 
+              - this.margin.left
+              - this.margin.right },
             height: function() { 
               return 32
             },
-            x: function() { return 0 },
-            y: function() { return 0 },
+            
           },
           toolbar: {
             name: "track-control.toolbar",
-            width: function() { return 128 },
+            width: function() { return 200 },
             height: function() { return 32 },
-            margin: { top: 8, bottom: 4, left: 8, right: 8 },
-            y: function() { return this.context.height()
-              - this.height()
-              - this.margin.bottom },
-          },
-          snap: {
-            name: "track-control.snap",
-            width: function() { return 56 },
-            height: function() { return 32 },
-            margin: { top: 8, bottom: 4, left: 8, right: 8 },
-            x: function() { return this.context.nodes.toolbar.width() 
-              + this.margin.left },
-            y: function() { return this.context.height()
-              - this.height()
-              - this.margin.bottom },
+            margin: { top: 8, bottom: 0, left: 8, right: 8 },
+            y: function() { return this.context.nodes.timeline.bottom()
+              + this.margin.top },
           },
           backward: {
             name: "track-control.backward",
@@ -98,13 +91,35 @@ function VETrackControl(_editor) constructor {
             y: function() { return this.context.nodes.timeline.bottom()
               + this.margin.top },
           },
+          snap: {
+            name: "track-control.snap",
+            width: function() { return 56 },
+            height: function() { return 32 },
+            margin: { top: 8, bottom: 0, left: 8, right: 8 },
+            x: function() { return this.context.nodes.snapLabel.left() 
+              - this.width()
+              - this.margin.right
+              - this.margin.left },
+            y: function() { return this.context.nodes.timeline.bottom()
+              + this.margin.top },
+          },
+          snapLabel: {
+            name: "track-control.snapLabel",
+            width: function() { return 56 },
+            height: function() { return 32 },
+            margin: { top: 8, bottom: 0, left: 8, right: 8 },
+            x: function() { return this.context.nodes.timestamp.left()
+              - this.width()
+              - this.margin.right
+              - this.margin.left },
+            y: function() { return this.context.nodes.timeline.bottom()
+              + this.margin.top },
+          },
         }
       }, 
       parent
     )
   }
-
-
 
   ///@private
   ///@param {UIlayout} parent
@@ -123,8 +138,13 @@ function VETrackControl(_editor) constructor {
             scaleX: 0.125,
             scaleY: 0.125,
           },
-          progress: { thickness: 1.0, blend: "#ff0000" },
-          background: { thickness: 1.0, blend: "#000000" },
+          progress: { 
+            thickness: 1.5, 
+            blend: "#ff0000",
+            cornerFrom: { name: "texture_empty" },
+            cornerTo: { name: "texture_empty" },
+          },
+          background: { thickness: 1.0, blend: "#000000", alpha: 0.0 },
           state: new Map(String, any),
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
@@ -215,6 +235,12 @@ function VETrackControl(_editor) constructor {
           updateCustom: Struct.contains(json, "updateCustom") 
              ? json.updateCustom
              : function() {},
+          onMouseHoverOver: function(event) {
+            this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+          },
+          onMouseHoverOut: function(event) {
+            this.sprite.setBlend(c_white)
+          },
         },
         VEStyles.get("ve-track-control").button,
         false
@@ -222,14 +248,23 @@ function VETrackControl(_editor) constructor {
     }
 
     static factoryLabel = function(json) {
+      var struct = {
+        type: UIText,
+        layout: json.layout,
+        text: json.text,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+      }
+
+      if (Struct.contains(json, "updateCustom")) {
+        Struct.set(struct, "updateCustom", json.updateCustom)
+      }
+
+      if (Struct.contains(json, "align")) {
+        Struct.set(struct, "align", json.align)
+      }
+      
       return Struct.appendRecursiveUnique(
-        {
-          type: UIText,
-          layout: json.layout,
-          text: json.text,
-          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          updateCustom: json.updateCustom,
-        },
+        struct,
         VEStyles.get("ve-track-control").label,
         false
       )
@@ -253,7 +288,7 @@ function VETrackControl(_editor) constructor {
           backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
           backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-          backgroundMargin: { top: 4, bottom: 4, right: 1, left: 5 },
+          backgroundMargin: { top: 2, bottom: 2, right: 2, left: 2 },
           callback: function() { 
             this.context.state.get("store")
               .get("tool")
@@ -279,26 +314,27 @@ function VETrackControl(_editor) constructor {
         name: "ve-track-control",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "background-alpha": 0.85,
           "store": controller.editor.store,
           "tools": new Array(Struct, [
             factoryToolItem({ 
               name: "ve-track-control_tool_brush", 
-              text: "B", 
+              text: "Brush", 
               tool: "tool_brush",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_eraser", 
-              text: "E", 
+              text: "Erase", 
               tool: "tool_erase",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_clone", 
-              text: "C", 
+              text: "Clone", 
               tool: "tool_clone",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_select", 
-              text: "S", 
+              text: "Select", 
               tool: "tool_select",
             }),
           ])
@@ -306,6 +342,8 @@ function VETrackControl(_editor) constructor {
         controller: controller,
         layout: layout,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        spinner: SpriteUtil.parse({ name: "texture_spinner", scaleX: 0.25, scaleY: 0.25 }),
+        spinnerFactor: 0,
         render: function() {
           var color = this.state.get("background-color")
           if (Core.isType(color, GMColor)) {
@@ -319,6 +357,28 @@ function VETrackControl(_editor) constructor {
           }
           
           this.items.forEach(this.renderItem, this.area)
+
+          if (Beans.get(BeanVisuController).fsm.getStateName() == "rewind") {
+            this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
+            this.spinner
+              .setAlpha(this.spinnerFactor / 100.0)
+              .render(
+                (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
+                (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
+                  - (this.spinnerFactor / 2)
+            )
+          } else {
+            this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.1)
+            if (this.spinnerFactor > 0) {
+              this.spinner
+                .setAlpha(this.spinnerFactor / 100.0)
+                .render(
+                (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
+                (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
+                  - (this.spinnerFactor / 2)
+              )
+            }
+          }
         },
         items: {
           "slider_ve-track-control_timeline": factorySlider({
@@ -326,7 +386,7 @@ function VETrackControl(_editor) constructor {
           }),
           "button_ve-track-control_backward": factoryButton({
             layout: layout.nodes.backward,
-            sprite: { name: "texture_button", frame: 5, animate: false },
+            sprite: { name: "texture_ve_trackcontrol_button_rewind_left" },
             callback: function() {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               var trackService = this.context.controller.editor.trackService
@@ -337,16 +397,7 @@ function VETrackControl(_editor) constructor {
           }),
           "button_ve-track-control_play": factoryButton({
             layout: layout.nodes.play,
-            sprite: { name: "texture_button", frame: 1, animate: false },
-            updateCustom: function() { 
-              if (Beans.get(BeanVisuController).fsm.getStateName() == "rewind") {
-                this.sprite.setAngle(this.sprite.getAngle() + DeltaTime.apply(5.0))
-                this.sprite.setBlend(c_red)
-              } else {
-                this.sprite.setAngle(0.0)
-                this.sprite.setBlend(c_white)
-              }
-            },
+            sprite: { name: "texture_ve_trackcontrol_button_play" },
             callback: function() {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               Beans.get(BeanVisuController).send(new Event("play"))
@@ -354,7 +405,7 @@ function VETrackControl(_editor) constructor {
           }),
           "button_ve-track-control_pause": factoryButton({
             layout: layout.nodes.pause,
-            sprite: { name: "texture_button", frame: 2, animate: false },
+            sprite: { name: "texture_ve_trackcontrol_button_pause" },
             callback: function() {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               Beans.get(BeanVisuController).send(new Event("pause"))
@@ -362,7 +413,7 @@ function VETrackControl(_editor) constructor {
           }),
           "button_ve-track-control_forward": factoryButton({
             layout: layout.nodes.forward,
-            sprite: { name: "texture_button", frame: 4, animate: false },
+            sprite: { name: "texture_ve_trackcontrol_button_rewind_right" },
             callback: function() {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               var trackService = this.context.controller.editor.trackService
@@ -374,6 +425,7 @@ function VETrackControl(_editor) constructor {
           "text_ve-track-control_timestamp": factoryLabel({
             layout: layout.nodes.timestamp,
             text: "00:00.00",
+            align: { v: VAlign.CENTER, h: HAlign.CENTER },
             updateCustom: function() {
               this.label.text = String.formatTimestampMilisecond(
                 NumberUtil.parse(Struct
@@ -383,10 +435,15 @@ function VETrackControl(_editor) constructor {
               )
             },
           }),
+          "text_ve-track-control_snapLabel": factoryLabel({
+            layout: layout.nodes.snap,
+            text: "Snap to grid",
+            align: { v: VAlign.CENTER, h: HAlign.LEFT },
+          }),
           "checkbox_ve-track-control_snap": Struct.appendRecursiveUnique(
             {
               type: UICheckbox,
-              layout: layout.nodes.snap,
+              layout: layout.nodes.snapLabel,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               spriteOn: { name: "visu_texture_checkbox_switch_on" },
               spriteOff: { name: "visu_texture_checkbox_switch_off" },

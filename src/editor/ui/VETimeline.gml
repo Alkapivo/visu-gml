@@ -158,6 +158,13 @@ function VETimeline(_editor) constructor {
         name: "timeline",
         nodes: {
           background: {},
+          resize: {
+            name: "timeline.resize",
+            x: function() { return 0 },
+            y: function() { return 0 },
+            width: function() { return this.context.width() },
+            height: function() { return 7 },
+          },
           form: {
             name: "timeline.form",
             minWidth: 200,
@@ -168,6 +175,7 @@ function VETimeline(_editor) constructor {
               this.minWidth), this.minWidth, this.maxWidth) },
             height: function() { return 32 },
             x: function() { return 0 },
+            y: function() { return this.context.y() + this.context.nodes.resize.height() },
             
           },
           ruler: {
@@ -176,9 +184,12 @@ function VETimeline(_editor) constructor {
               - this.context.nodes.form.width()
               - this.margin.left
               - this.margin.right },
-            height: function() { return this.context.nodes.form.height() },
-            margin: { top: 0, bottom: 0, left: 8, right: 8 },
+            height: function() { return this.context.nodes.form.height() 
+              - this.margin.top
+              - this.margin.bottom },
+            margin: { top: 8, bottom: 2, left: 8, right: 8 },
             x: function() { return this.context.nodes.form.width() + this.margin.left },
+            y: function() { return this.context.y() + this.margin.top + this.context.nodes.resize.height() },
           },
           channels: {
             name: "timeline.channels",
@@ -186,7 +197,8 @@ function VETimeline(_editor) constructor {
             width: function() { return this.context.nodes.form.width() 
               - this.margin.left - this.margin.right },
             height: function() { return this.context.height() 
-              - this.context.nodes.form.height() },
+              - this.context.nodes.form.height()
+              - this.context.nodes.resize.height() },
             x: function() { return this.context.x() + this.margin.left },
             y: function() { return this.context.nodes.ruler.bottom() },
           },
@@ -199,7 +211,8 @@ function VETimeline(_editor) constructor {
               - this.margin.left
               - this.margin.right },
             height: function() { return this.context.height() 
-              - this.context.nodes.ruler.height() },
+              - this.context.nodes.ruler.height()
+              - this.context.nodes.resize.height() },
             margin: { top: 0, bottom: 0, left: 8, right: 8 },
             x: function() { return this.context.nodes.channels.right() 
               + this.margin.left},
@@ -222,13 +235,49 @@ function VETimeline(_editor) constructor {
         name: "_ve-timeline-background",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
 
         }),
         timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
         layout: layout.nodes.background,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
+        items: {
+          "resize_timeline": {
+            type: UIButton,
+            layout: layout.nodes.resize,
+            backgroundColor: VETheme.color.primary, //resize
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            updateCustom: function() {
+              var context = MouseUtil.getClipboard()
+              if (context == this) {
+                this.updateLayout(MouseUtil.getMouseY())
+              }
+      
+              if (context == this && !mouse_check_button(mb_left)) {
+                MouseUtil.clearClipboard()
+              }
+            },
+            updateLayout: new BindIntent(function(position) {
+              var node = Struct.get(Beans.get(BeanVisuController).editor.layout.nodes, "timeline")
+              node.percentageHeight = abs((GuiHeight() - 24) - position) / (GuiHeight() - 24)
+            }),
+            onMousePressedLeft: function(event) {
+              MouseUtil.setClipboard(this)
+            },
+            onMouseReleasedLeft: function(event) {
+              if (MouseUtil.getClipboard() == this) {
+                MouseUtil.clearClipboard()
+              }
+            },
+            onMouseHoverOver: function(event) {
+              window_set_cursor(cr_size_ns)
+            },
+            onMouseHoverOut: function(event) {
+              window_set_cursor(cr_default)
+            },
+          }
+        }
       }),
       "ve-timeline-form": new UI({
         name: "ve-timeline-form",
@@ -278,7 +327,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
         }),
-        timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
+        timer: new Timer(FRAME_MS * 8, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -307,6 +356,7 @@ function VETimeline(_editor) constructor {
           events.timer.time = events.timer.duration
         },
         onInit: function() {
+          this.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
           this.collection = new UICollection(this, { layout: this.layout })
           var sorted = new Map(Number, String)
           var context = this
@@ -341,6 +391,60 @@ function VETimeline(_editor) constructor {
                 callback: function() {
                   this.context.removeChannel(this.component.name)
                   this.removeUIItemfromUICollection()
+                },
+              },
+              up: {
+                onMouseReleasedLeft: function() {
+                  if (this.component.index <= 0) {
+                    return
+                  }
+
+                  var track = Beans.get(BeanVisuController).trackService.track
+                  var source = this.component.index
+                  var target = source - 1
+                  var sourceChannel = Assert.isType(track.channels
+                    .find(function(channel, name, index) {
+                      return channel.index == index
+                    }, source), TrackChannel)
+                  var targetChannel = Assert.isType(track.channels
+                    .find(function(channel, name, index) {
+                      return channel.index == index
+                    }, target), TrackChannel)
+
+                  sourceChannel.index = target
+                  targetChannel.index = source
+
+                  this.context.onInit()
+                  this.context.controller.containers
+                    .get("ve-timeline-events")
+                    .onInit()
+                },
+              },
+              down: {
+                onMouseReleasedLeft: function() {
+                  var track = Beans.get(BeanVisuController).trackService.track
+                  if (this.component.index >= track.channels.size() - 1) {
+                    return
+                  }
+
+                  var source = this.component.index
+                  var target = source + 1
+                  var sourceChannel = Assert.isType(track.channels
+                    .find(function(channel, name, index) {
+                      return channel.index == index
+                    }, source), TrackChannel)
+                  var targetChannel = Assert.isType(track.channels
+                    .find(function(channel, name, index) {
+                      return channel.index == index
+                    }, target), TrackChannel)
+
+                  sourceChannel.index = target
+                  targetChannel.index = source
+
+                  this.context.onInit()
+                  this.context.controller.containers
+                    .get("ve-timeline-events")
+                    .onInit()
                 },
               },
             },
@@ -380,7 +484,7 @@ function VETimeline(_editor) constructor {
           "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           "initialized": false
         }),
-        timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
+        timer: new Timer(FRAME_MS * 8, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.events,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -573,6 +677,8 @@ function VETimeline(_editor) constructor {
         render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
         onInit: function() {
           this.scrollbarY = null
+          this.state.set("initialized", false)
+          this.state.set("chunkService", controller.factoryChunkService())
         },
         _onMouseWheelUp: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY"))),
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
@@ -921,7 +1027,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-ruler": new UI({
         name: "ve-timeline-ruler",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
           "store": controller.editor.store,
           "viewSize": 10,
           "stepSize": 2,
@@ -1057,6 +1163,7 @@ function VETimeline(_editor) constructor {
           )
         },
         onMouseDragLeft: function(event) {
+          Core.print("mhm")
           var context = this
           this.state.set("mouseX", event.data.x)
           MouseUtil.setClipboard(new Promise()

@@ -44,7 +44,7 @@ function VEAccordion(_editor, config = null) constructor {
         name: name,
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
         }),
         accordion: accordion,
         layout: layout,
@@ -112,12 +112,45 @@ function VEAccordion(_editor, config = null) constructor {
                 backgroundColor: VETheme.color.accentShadow,
                 layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.checkbox,
                 store: { key: "render-template-toolbar" },
-                callback: function() {
-                  var deb = "ugger"
-                }
               }
             ))
         },
+        items: {
+          "resize_accordion": {
+            type: UIButton,
+            layout: layout.nodes.resize,
+            backgroundColor: VETheme.color.primary, //resize
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            updateCustom: function() {
+              var context = MouseUtil.getClipboard()
+              if (context == this) {
+                this.updateLayout(MouseUtil.getMouseX())
+              }
+      
+              if (context == this && !mouse_check_button(mb_left)) {
+                MouseUtil.clearClipboard()
+              }
+            },
+            updateLayout: new BindIntent(function(position) {
+              var node = Struct.get(Beans.get(BeanVisuController).editor.layout.nodes, "accordion")
+              node.percentageWidth = position / GuiWidth()
+            }),
+            onMousePressedLeft: function(event) {
+              MouseUtil.setClipboard(this)
+            },
+            onMouseReleasedLeft: function(event) {
+              if (MouseUtil.getClipboard() == this) {
+                MouseUtil.clearClipboard()
+              }
+            },
+            onMouseHoverOver: function(event) {
+              window_set_cursor(cr_size_we)
+            },
+            onMouseHoverOut: function(event) {
+              window_set_cursor(cr_default)
+            },
+          }
+        }
       }
     },
   })
@@ -137,6 +170,10 @@ function VEAccordion(_editor, config = null) constructor {
           "bar_event-inspector": {
             name: "bar_event-inspector",
             y: function() { return 0 },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width()
+              - this.margin.left
+              - this.margin.right },
             height: function() { return 32 },
             nodes: {
               label: {
@@ -154,15 +191,19 @@ function VEAccordion(_editor, config = null) constructor {
             name: "view_event-inspector",
             margin: { top: 2, bottom: 2, right: 0, left: 1 },
             y: function() { return this.context.y() + this.margin.top
-               + Struct.get(this.context.nodes, "bar_event-inspector").bottom() },
+              + Struct.get(this.context.nodes, "bar_event-inspector").bottom() },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width()
+              - this.margin.left
+              - this.margin.right },
             height: function() { 
               if (!Struct.get(this.context.store, "render-event-inspector")) {
                 return this.margin.top + this.margin.bottom
               }
               var height = this.context.height()
-               - this.margin.top - this.margin.bottom
-               - Struct.get(this.context.nodes, "bar_event-inspector").height()
-               - Struct.get(this.context.nodes, "bar_template-toolbar").height()
+                - this.margin.top - this.margin.bottom
+                - Struct.get(this.context.nodes, "bar_event-inspector").height()
+                - Struct.get(this.context.nodes, "bar_template-toolbar").height()
               if (Struct.get(this.context.store, "render-template-toolbar")) {
                 height = height * 0.3
               }
@@ -173,7 +214,11 @@ function VEAccordion(_editor, config = null) constructor {
           "bar_template-toolbar": {
             name: "bar_template-toolbar",
             y: function() { return Struct.get(this.context.nodes, "view_event-inspector").bottom() 
-               - this.context.y() },
+              - this.context.y() },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width()
+              - this.margin.left
+              - this.margin.right },
             height: function() { return 32 },
             nodes: {
               label: {
@@ -191,22 +236,35 @@ function VEAccordion(_editor, config = null) constructor {
             name: "view_template-toolbar",
             margin: { top: 2, bottom: 8, right: 0, left: 1 },
             y: function() { return this.context.y() + this.margin.top
-               + Struct.get(this.context.nodes, "bar_template-toolbar").bottom() },
+              + Struct.get(this.context.nodes, "bar_template-toolbar").bottom() },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width()
+              - this.margin.left
+              - this.margin.right },
             height: function() { 
               if (!Struct.get(this.context.store, "render-template-toolbar")) {
                 return this.margin.top + this.margin.bottom
               }
 
               var height = this.context.height()
-               - this.margin.top - this.margin.bottom
-               - Struct.get(this.context.nodes, "bar_event-inspector").height()
-               - Struct.get(this.context.nodes, "bar_template-toolbar").height()
+                - this.margin.top - this.margin.bottom
+                - Struct.get(this.context.nodes, "bar_event-inspector").height()
+                - Struct.get(this.context.nodes, "bar_template-toolbar").height()
               if (Struct.get(this.context.store, "render-event-inspector")) {
                 height = height * 0.7
               }
 
               return height
             },
+          },
+          "resize": {
+            name: "accordion.resize",
+            x: function() { return this.context.x()
+              + this.context.width()
+              - this.width() },
+            y: function() { return this.context.y() },
+            width: function() { return 7 },
+            height: function() { return this.context.height() },
           }
         }
       },

@@ -88,6 +88,36 @@ global.__VEComponents = new Map(String, Callable, {
           false
         )
       ),
+      UIButton(
+        $"{name}_channel-entry_up", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.up,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("channel-entry").up,
+            false
+          ),
+          Struct.get(config, "up"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_channel-entry_down", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.down,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("channel-entry").down,
+            false
+          ),
+          Struct.get(config, "down"),
+          false
+        )
+      ),
     ])
   },
 
@@ -341,6 +371,121 @@ global.__VEComponents = new Map(String, Callable, {
   ///@return {Array<UIItem>}
   "text-field-button": function(name, layout, config = null) {
     return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field-button").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UITextField(
+        $"field_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.field,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
+            },
+            VEStyles.get("text-field-button").field,
+            false
+          ),
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+      UIButton(
+        $"button_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.button,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field-button").button,
+            false
+          ),
+          Struct.get(config, "button"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "text-field-checkbox": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UICheckbox(
+        $"{name}_checkbox", 
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.checkbox,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          Struct.get(config, "checkbox"),
+          false
+        )
+      ),
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field-button").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UITextField(
+        $"field_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.field,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
+            },
+            VEStyles.get("text-field-button").field,
+            false
+          ),
+          Struct.get(config, "field"),
+          false
+        )
+      )
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "text-field-button-checkbox": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UICheckbox(
+        $"{name}_checkbox", 
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.checkbox,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          Struct.get(config, "checkbox"),
+          false
+        )
+      ),
       UIText(
         $"label_{name}", 
         Struct.appendRecursive(
@@ -1203,7 +1348,15 @@ global.__VEComponents = new Map(String, Callable, {
         layout.nodes.previous,
         Struct.appendRecursive(
           Struct.appendRecursive(
-            { increment: -1 }, 
+            { 
+              increment: -1,
+              onMouseHoverOver: function(event) {
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                this.sprite.setBlend(c_white)
+              },            
+            },
             Struct.get(config, "previous"), 
             false
           ), 
@@ -1221,7 +1374,15 @@ global.__VEComponents = new Map(String, Callable, {
         layout.nodes.next,
         Struct.appendRecursive(
           Struct.appendRecursive(
-            { increment: 1 },
+            { 
+              increment: 1,
+              onMouseHoverOver: function(event) {
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                this.sprite.setBlend(c_white)
+              },            
+            },
             Struct.get(config, "next"),
             false
           ),

@@ -35,7 +35,7 @@ function VisuTrack(_path, json) constructor {
   texture = Assert.isType(Struct.get(json, "texture"), String)
 
   ///@type {?String}
-  video = Struct.contains(json, "video")
+  video = Optional.is(Struct.get(json, "video"))
     ? Assert.isType(json.video, String)
     : null
 

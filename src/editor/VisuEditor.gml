@@ -116,9 +116,12 @@ function VisuEditor(_controller) constructor {
           height: function() { return 20 },
         },
         "accordion": {
-          minWidth: 200,
-          maxWidth: 320,
+          minWidth: 1,
+          maxWidth: 1,
           percentageWidth: 0.2,
+          width: function() { 
+            return clamp(this.percentageWidth * this.context.width(), this.minWidth, this.maxWidth)
+          },
           width: function() { return clamp(max(this.percentageWidth * this.context.width(), 
             this.minWidth), this.minWidth, this.maxWidth) },
           height: function() { return Struct.get(this.context.nodes, "timeline").top()
@@ -146,11 +149,12 @@ function VisuEditor(_controller) constructor {
           y: function() { return Struct.get(this.context.nodes, "preview").bottom() },
         },
         "brush-toolbar": {
-          minWidth: 200,
-          maxWidth: 320,
+          minWidth: 1,
+          maxWidth: 1,
           percentageWidth: 0.2,
-          width: function() { return clamp(max(this.percentageWidth * this.context.width(), 
-            this.minWidth), this.minWidth, this.maxWidth) },
+          width: function() { 
+            return clamp(this.percentageWidth * this.context.width(), this.minWidth, this.maxWidth)
+          },
           height: function() { return this.context.height()
             - Struct.get(this.context.nodes, "title-bar").height()
             - Struct.get(this.context.nodes, "status-bar").height() },
@@ -158,13 +162,16 @@ function VisuEditor(_controller) constructor {
           y: function() { return Struct.get(this.context.nodes, "title-bar").bottom() },
         },
         "timeline": {
-          minHeight: 80,
-          maxHeight: 400,
+          minHeight: 1,
+          maxHeight: 1,
           percentageHeight: 0.25,
           width: function() { return this.context.width()
             - Struct.get(this.context.nodes, "brush-toolbar").width() },
-          height: function() { return clamp(max(this.percentageHeight * this.context.height(), 
-            this.minHeight), this.minHeight, this.maxHeight) },
+          //height: function() { return clamp(max(this.percentageHeight * this.context.height(), 
+          //  this.minHeight), this.minHeight, this.maxHeight) },
+          height: function() { 
+            return clamp(this.percentageHeight * this.context.height(), this.minHeight, this.maxHeight)
+          },
           y: function() { return this.context.height() - this.height()
             - Struct.get(this.context.nodes, "status-bar").height() },
         },
@@ -258,24 +265,24 @@ function VisuEditor(_controller) constructor {
 
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
-    brushNode.minWidth = renderBrush ? 200 : 0
-    brushNode.maxWidth = renderBrush ? 320 : 0
+    brushNode.minWidth = renderBrush ? 180 : 0
+    brushNode.maxWidth = renderBrush ? GuiWidth() * 0.37 : 0
     this.brushToolbar.containers.forEach(function(container, key, enable) {
       container.enable = enable
     }, renderBrush)
 
     var renderTimeline = this.store.getValue("render-timeline")
     var timelineNode = Struct.get(this.layout.nodes, "timeline")
-    timelineNode.minHeight = renderTimeline ? 80 : 0
-    timelineNode.maxHeight = renderTimeline ? 400 : 0
+    timelineNode.minHeight = renderTimeline ? 96 : 0
+    timelineNode.maxHeight = renderTimeline ? GuiHeight() * 0.41 : 0
     this.timeline.containers.forEach(function(container, key, enable) {
       container.enable = enable
     }, renderTimeline)
 
     var renderEvent = this.store.getValue("render-event")
     var accordionNode = Struct.get(this.layout.nodes, "accordion")
-    accordionNode.minWidth = renderEvent ? 200 : 0
-    accordionNode.maxWidth = renderEvent ? 320 : 0
+    accordionNode.minWidth = renderEvent ? 180 : 0
+    accordionNode.maxWidth = renderEvent ? GuiWidth() * 0.37 : 0
     this.accordion.containers.forEach(function(container, key, enable) {
       if (key == "_ve-accordion_accordion-items") {
         container.enable = enable

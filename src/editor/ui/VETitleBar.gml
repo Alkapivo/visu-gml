@@ -129,13 +129,31 @@ function VETitleBar(_editor) constructor {
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
         items: {
           "button_ve-title-bar_file": factoryTextButton({
-            text: "Save",
+            text: "New",
             layout: layout.nodes.file,
             options: new Array(),
             callback: function() {
+              Beans.get(BeanVisuController).newProjectModal
+                .send(new Event("open").setData({
+                  layout: new UILayout({
+                    name: "display",
+                    x: function() { return 0 },
+                    y: function() { return 0 },
+                    width: function() { return GuiWidth() },
+                    height: function() { return GuiHeight() },
+                  }),
+                }))
+            }
+          }),
+          "button_ve-title-bar_edit": factoryTextButton({
+            text: "Save",
+            layout: layout.nodes.edit,
+            options: new Array(),
+            callback: function() {
               var path = FileUtil.getPathToSaveWithDialog({ 
+                description: "JSON file",
                 filename: "manifest", 
-                extension: "json"
+                extension: "json",
               })
 
               if (path == null) {
@@ -145,12 +163,13 @@ function VETitleBar(_editor) constructor {
               global.__VisuTrack.saveProject(path)
             }
           }),
-          "button_ve-title-bar_edit": factoryTextButton({
+          "button_ve-title-bar_view": factoryTextButton({
             text: "Load",
-            layout: layout.nodes.edit,
+            layout: layout.nodes.view,
             options: new Array(),
             callback: function() {
               var manifest = FileUtil.getPathToOpenWithDialog({ 
+                description: "JSON file",
                 filename: "manifest", 
                 extension: "json"
               })
@@ -170,11 +189,6 @@ function VETitleBar(_editor) constructor {
             }
           }),
           /*
-          "button_ve-title-bar_view": factoryTextButton({
-            text: "View",
-            layout: layout.nodes.view,
-            options: new Array(),
-          }),
           "button_ve-title-bar_help": factoryTextButton({
             text: "Help",
             layout: layout.nodes.help,
