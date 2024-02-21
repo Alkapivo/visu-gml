@@ -273,10 +273,11 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
         }),
-        //timer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+        timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
+        renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
         scrollbarY: { align: HAlign.LEFT },
         _onMousePressedLeft: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY"))),
@@ -368,7 +369,7 @@ function VETimeline(_editor) constructor {
           "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           "initialized": false
         }),
-        //timer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+        timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.events,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -496,8 +497,17 @@ function VETimeline(_editor) constructor {
             16 + this.offset.y + eventY
           )
         }),
-        selectedSprite: SpriteUtil.parse({ name: "texture_selected_event" }),
+        selectedSprite: SpriteUtil.parse({ 
+          name: "texture_selected_event",
+          speed: 240,
+        }),
+        renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         renderSurface: function() {
+          var trackEvent = MouseUtil.getClipboard()
+          if (!this.timer.finished) {
+            return
+          }
+
           // background
           var color = this.state.get("background-color")
           GPU.render.clear(Core.isType(color, GMColor) 
@@ -509,55 +519,34 @@ function VETimeline(_editor) constructor {
           var areaY = this.area.y
           this.area.x = this.offset.x
           this.area.y = this.offset.y
-          this.items.forEach(this.renderItem)
+          this.items.forEach(this.renderItem, this.area)
           this.area.x = areaX
           this.area.y = areaY
 
-          // lines
-          ///@todo low performance
-          IntStream.forEach(0, this.state.get("amount") + 1, function(item, index, context) {
-            var thickness = context.state.get("lines-thickness")
-            var alpha = context.state.get("lines-alpha")
-            var color = context.state.get("lines-color")
-
-            var beginX = 0
-            var beginY = (context.offset.y mod 32) + (index * 32)
-            var endX = context.area.getWidth()
-            var endY = beginY
-            GPU.render.texturedLine(
-              beginX, beginY, 
-              endX, endY, 
-              thickness, 
-              alpha,
-              color
-            )
-          }, this)
-
-          ///@todo low performance
+          var offsetX = this.offset.x
+          var offsetY = this.offset.y
+          var areaWidth = this.area.getWidth()
+          var areaHeight = this.area.getHeight()
+          var thickness = this.state.get("lines-thickness")
+          var alpha = this.state.get("lines-alpha")
+          var color = this.state.get("lines-color")
           var bpm = global.__todo_bpm
           var bpmWidth = ((this.area.getWidth() / this.state.get("viewSize")) * 60) / bpm
           var bpmSize = ceil(this.area.getWidth() / bpmWidth)
-          IntStream.forEach(0, bpmSize, function(iterator, index, context) {
-            var thickness = context.state.get("lines-thickness")
-            var alpha = context.state.get("lines-alpha")
-            var color = context.state.get("lines-color")
 
-            var bpm = global.__todo_bpm
-            var bpmWidth = ((context.area.getWidth() / context.state.get("viewSize")) * 60) / bpm
-            var bpmSize = ceil(context.area.getWidth() / bpmWidth)
-            
-            var beginX = (iterator * bpmWidth) + abs(context.offset.x) mod bpmWidth
-            var beginY = 0
-            var endX = beginX
-            var endY = clamp(context.state.get("amount") * 32, 0, context.area.getHeight())
-            GPU.render.texturedLine(
-              round(beginX), round(beginY), 
-              round(endX), round(endY), 
-              thickness, 
-              alpha,
-              color
-            )
-          }, this)
+          // lines
+          var linesSize = this.state.get("amount") + 1
+          for (var linesIndex = 0; linesIndex < linesSize; linesIndex++) {
+            var linesX = (offsetY mod 32) + (linesIndex * 32)
+            GPU.render.texturedLine(0, linesX, areaWidth, linesX, thickness, alpha,color)
+          }
+
+          /// separators
+          var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
+          for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
+            var bpmX = round((bpmIndex * bpmWidth) + abs(offsetY) mod bpmWidth)
+            GPU.render.texturedLine(bpmX, 0.0, bpmY, thickness, alpha,color)
+          }
 
           this.renderClipboard()
 
@@ -568,6 +557,7 @@ function VETimeline(_editor) constructor {
             this.selectedSprite.render(xx, yy)
           }
         },
+        renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
         onInit: function() {
           this.scrollbarY = null

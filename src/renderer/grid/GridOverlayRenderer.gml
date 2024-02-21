@@ -74,7 +74,8 @@ function GridOverlayRenderer(_renderer) constructor {
       return this
     }
 
-    video.surface.update().scaleToFill(GuiWidth() * zoom, GuiHeight() * zoom)
+    video.surface.update()
+      .scaleToFill(round(GuiWidth() * zoom), round(GuiHeight() * zoom))
     video.surface.render(
       x - (video.surface.width / GuiWidth()) / 2.0, 
       y - (video.surface.height / GuiHeight()) / 2.0

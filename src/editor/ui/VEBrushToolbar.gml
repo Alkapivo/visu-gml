@@ -440,6 +440,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
+      renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
       render: function() {
         this.renderDefaultScrollable()
@@ -608,6 +609,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
+      renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
       onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),

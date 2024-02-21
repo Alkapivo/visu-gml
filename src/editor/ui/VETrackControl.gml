@@ -247,7 +247,7 @@ function VETrackControl(_editor) constructor {
             )
           }
           
-          this.items.forEach(this.renderItem)
+          this.items.forEach(this.renderItem, this.area)
         },
         items: {
           "bpm": factoryLabel({

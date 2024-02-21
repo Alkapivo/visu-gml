@@ -91,6 +91,7 @@ function VEEventInspector(_editor) constructor {
             selectedEvent.name
           ).name
         },
+        renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
         render: function() {
           this.renderDefaultScrollable()

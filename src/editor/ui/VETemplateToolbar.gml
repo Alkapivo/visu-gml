@@ -412,6 +412,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
         this.yOffset = this.offset.y
       },
+      renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
       scrollbarY: { align: HAlign.LEFT },
       onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
@@ -636,6 +637,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
+      renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
       scrollbarY: { align: HAlign.LEFT },
       onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
