@@ -1,5 +1,16 @@
 ///@package io.alkapivo.visu.service.ui.track
 
+///@enum
+function _ToolType(): Enum() constructor {
+  SELECT = "tool_select"
+  BRUSH = "tool_brush"
+  ERASE = "tool_erase"
+  CLONE = "tool_clone"
+}
+global.__ToolType = new _ToolType()
+#macro ToolType global.__ToolType
+
+
 ///@param {VisuController} _controller
 function VisuEditor(_controller) constructor {
   
@@ -47,6 +58,24 @@ function VisuEditor(_controller) constructor {
 
   ///@type {Store}
   store = new Store({
+    "bpm": {
+      type: Number,
+      value: Assert.isType(Core.getProperty("visu.editor.bpm", 120), Number),
+      passthrough: function(value) {
+        return clamp(value, 1, 999)
+      }
+    },
+    "tool": {
+      type: String,
+      value: ToolType.BRUSH,
+      passthrough: function(value) {
+        return Core.isEnum(value, ToolType) ? value : this.value
+      }
+    },
+    "snap": {
+      type: Boolean,
+      value: false,
+    },
     "render-event": {
       type: Boolean,
       value: Assert.isType(Core.getProperty("visu.editor.render-event", false), Boolean)

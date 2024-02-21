@@ -10,6 +10,7 @@ function factoryVEBrushToolbarTypeItem(config) {
     config: {
       backgroundColor: VETheme.color.primary,
       backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+      backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
       backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
       callback: function() {
@@ -36,8 +37,10 @@ function factoryVEBrushToolbarTypeItem(config) {
       updateCustom: function() {
         this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
           ? this.backgroundColorOn
-          : this.backgroundColorOff
+          : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
       },
+      onMouseHoverOver: function(event) { },
+      onMouseHoverOut: function(event) { },
       label: { text: config.text },
       brushType: config.brushType,
     },
@@ -56,7 +59,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -76,6 +79,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             config: {
               backgroundColor: VETheme.color.primary,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 0, bottom: 1, left: 1, right: 0 },
               callback: function() { 
@@ -87,7 +91,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               updateCustom: function() {
                 this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
                   ? this.backgroundColorOn
-                  : this.backgroundColorOff
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
               },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
@@ -102,6 +106,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             config: {
               backgroundColor: VETheme.color.primary,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
               callback: function() { 
@@ -113,8 +118,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               updateCustom: function() {
                 this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
                   ? this.backgroundColorOn
-                  : this.backgroundColorOff
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
               },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
               label: { text: String.toArray("SHROOM").join("\n") },
@@ -128,6 +135,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             config: {
               backgroundColor: VETheme.color.primary,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
               callback: function() { 
@@ -139,7 +147,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               updateCustom: function() {
                 this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
                   ? this.backgroundColorOn
-                  : this.backgroundColorOff
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
               },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
@@ -154,6 +162,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             config: {
               backgroundColor: VETheme.color.primary,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
               callback: function() { 
@@ -165,7 +174,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               updateCustom: function() {
                 this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
                   ? this.backgroundColorOn
-                  : this.backgroundColorOff
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
               },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
@@ -175,7 +184,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ]),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -276,7 +285,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ]).map(factoryVEBrushToolbarTypeItem),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -335,7 +344,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -435,14 +444,17 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         }),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+      updateVerticalSelectedIndex: new BindIntent(Callable.run(UIUtil.templates.get("updateVerticalSelectedIndex"))),
       render: function() {
+        this.updateVerticalSelectedIndex(32)
+
         this.renderDefaultScrollable()
         if (!Core.isType(this.collection, UICollection) 
           || this.collection.size() == 0) {
@@ -483,12 +495,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       text: template.name,
                       colorHoverOver: VETheme.color.accentShadow,
                       colorHoverOut: VETheme.color.primaryShadow,
-                      onMouseHoverOver: function(event) {
-                        //this.backgroundColor = ColorUtil.fromHex(colorHoverOver).toGMColor()
-                      },
-                      onMouseHoverOut: function(event) {
-                        //this.backgroundColor = ColorUtil.fromHex(colorHoverOut).toGMColor()
-                      },
                       onMouseReleasedLeft: function() {
                         var template = this.context.brushToolbar.store.get("template")
                         if (!Core.isType(template.get(), VEBrushTemplate)
@@ -580,7 +586,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -604,7 +610,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -730,7 +736,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           }
         ]),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),

@@ -18,6 +18,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               backgroundColor: VETheme.color.primary,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 4, bottom: 4, right: 1, left: 5 },
               callback: function() { 
@@ -32,8 +33,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               updateCustom: function() {
                 this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
                   ? this.backgroundColorOn
-                  : this.backgroundColorOff
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
               },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
               label: { text: "Shader" },
               templateType: VETemplateType.SHADER,
             },
@@ -45,6 +48,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               backgroundColor: VETheme.color.primary,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
               callback: function() { 
@@ -59,8 +63,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               updateCustom: function() {
                 this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
                   ? this.backgroundColorOn
-                  : this.backgroundColorOff
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
               },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
               label: { text: "Shroom" },
               templateType: VETemplateType.SHROOM,
             },
@@ -72,6 +78,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               backgroundColor: VETheme.color.primary,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
               backgroundMargin: { top: 4, bottom: 4, right: 5, left: 1 },
               callback: function() { 
@@ -86,15 +93,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               updateCustom: function() {
                 this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
                   ? this.backgroundColorOn
-                  : this.backgroundColorOff
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
               },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
               label: { text: "Bullet" },
               templateType: VETemplateType.BULLET,
             },
           },
         ])
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -412,8 +421,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
         this.yOffset = this.offset.y
       },
+      updateVerticalSelectedIndex: new BindIntent(Callable.run(UIUtil.templates.get("updateVerticalSelectedIndex"))),
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
-      render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+      __render: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+      render: function() {
+        this.updateVerticalSelectedIndex(32.0)
+        this.__render()
+      },
       scrollbarY: { align: HAlign.LEFT },
       onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
@@ -437,6 +451,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       config: {
                         label: { 
                           text: template.name,
+                          colorHoverOver: VETheme.color.accentShadow,
+                          colorHoverOut: VETheme.color.primaryShadow,
                           onMouseReleasedLeft: function() {
                             var shader = Beans.get(BeanVisuController).shaderPipeline.templates
                               .get(this.templateName)
@@ -489,6 +505,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       config: {
                         label: { 
                           text: template.name,
+                          colorHoverOver: VETheme.color.accentShadow,
+                          colorHoverOut: VETheme.color.primaryShadow,
                           onMouseReleasedLeft: function() {
                             var shroom = Beans.get(BeanVisuController).shroomService.templates
                               .get(this.templateName)
@@ -541,6 +559,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       config: {
                         label: { 
                           text: template.name,
+                          colorHoverOver: VETheme.color.accentShadow,
+                          colorHoverOut: VETheme.color.primaryShadow,
                           onMouseReleasedLeft: function() {
                             var bullet = Beans.get(BeanVisuController).bulletService.templates
                               .get(this.templateName)

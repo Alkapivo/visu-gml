@@ -30,7 +30,7 @@ function VEStatusBar(_editor) constructor {
             name: "status-bar.fpsValue",
             x: function() { return this.context.nodes.fpsLabel.right() + this.margin.left },
             y: function() { return 0 },
-            margin: { left: 4 },
+            margin: { left: 2 },
             width: function() { return 24 },
           },
           timestampLabel: {
@@ -43,7 +43,7 @@ function VEStatusBar(_editor) constructor {
             name: "status-bar.timestampValue",
             x: function() { return this.context.nodes.timestampLabel.right() + this.margin.left },
             y: function() { return 0 },
-            margin: { left: 4 },
+            margin: { left: 2 },
             width: function() { return 48 },
           },
           durationLabel: {
@@ -58,7 +58,7 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.nodes.durationLabel.right()
               + this.margin.left },
             y: function() { return 0 },
-            margin: { left: 4 },
+            margin: { left: 2 },
             width: function() { return 48 },
           },
           bpmLabel: {
@@ -72,8 +72,8 @@ function VEStatusBar(_editor) constructor {
             name: "status-bar.bpmValue",
             x: function() { return this.context.nodes.bpmLabel.right() + this.margin.left },
             y: function() { return 0 },
-            margin: { left: 4 },
-            width: function() { return 24 },
+            margin: { left: 2 },
+            width: function() { return 40 },
           },
           gameModeLabel: {
             name: "status-bar.gameModeLabel",
@@ -86,7 +86,7 @@ function VEStatusBar(_editor) constructor {
             name: "status-bar.gameModeValue",
             x: function() { return this.context.nodes.gameModeLabel.right() + this.margin.left },
             y: function() { return 0 },
-            margin: { left: 4 },
+            margin: { left: 2 },
             width: function() { return 80 },
           },
           stateLabel: {
@@ -116,7 +116,7 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.x() + this.context.width()
               - this.width() },
             y: function() { return 0 },
-            margin: { left: 4 },
+            margin: { left: 2 },
             width: function() { return 64 },
           }
         }
@@ -161,9 +161,62 @@ function VEStatusBar(_editor) constructor {
         Struct.set(struct, "onMouseReleasedLeft", json.onMouseReleasedLeft)
       }
 
+      if (Struct.contains(json, "backgroundColor")) {
+        Struct.set(struct, "backgroundColor", json.backgroundColor)
+      }
+      
+      if (Struct.contains(json, "align")) {
+        Struct.set(struct, "align", json.align)
+      }
+
       return Struct.appendRecursiveUnique(
         struct,
         VEStyles.get("ve-status-bar").value,
+        false
+      )
+    }
+
+    static factoryBPMField = function(json) {
+      var struct = {
+        type: UITextField,
+        layout: json.layout,
+        text: 60,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        config: {
+          key: "bpm",
+        },
+        store: {
+          key: "bpm",
+          callback: function(value, data) { 
+            var item = data.store.get()
+            if (item == null) {
+              return 
+            }
+
+            var bpm = item.get()
+            if (!Core.isType(bpm, Number)) {
+              return 
+            }
+            data.textField.setText(string(bpm))
+          },
+          set: function(value) {
+            var item = this.get()
+            if (item == null) {
+              return 
+            }
+
+            var parsedValue = NumberUtil.parse(value, null)
+            if (parsedValue == null) {
+              return
+            }
+            item.set(parsedValue)
+          },
+        },
+      }
+
+      return Struct.appendRecursiveUnique(
+        struct,
+        VEStyles.get("text-field"),
         false
       )
     }
@@ -226,11 +279,8 @@ function VEStatusBar(_editor) constructor {
             text: "BPM:",
             layout: layout.nodes.bpmLabel,
           }),
-          "text_ve-status-bar_bpmValue": factoryValue({
+          "text_ve-status-bar_bpmValue": factoryBPMField({
             layout: layout.nodes.bpmValue,
-            updateCustom: function() {
-              this.label.text = string(global.__todo_bpm)
-            },
           }),
           "text_ve-status-bar_gameModeLabel": factoryLabel({
             text: "Game mode:",
@@ -256,6 +306,8 @@ function VEStatusBar(_editor) constructor {
             updateCustom: function() {
               this.label.text = Beans.get(BeanVisuController).gameMode
             },
+            align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            backgroundColor: VETheme.color.accentShadow,
             onMouseReleasedLeft: function() {
               var controller = Beans.get(BeanVisuController)
               var gameMode = GameMode.IDLE

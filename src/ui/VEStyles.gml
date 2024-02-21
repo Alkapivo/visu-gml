@@ -16,6 +16,7 @@ global.__VETheme = {
     textSelected: "#B2DBE3",
     accept: "#469E59",
     deny: "#A84545",
+    ruler: "#E64B3D",
   }
 }
 #macro VETheme global.__VETheme

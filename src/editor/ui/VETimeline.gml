@@ -1,7 +1,5 @@
 ///@package io.alkapivo.visu.editor.ui
 
-global.__todo_bpm = 120
-
 ///@param {VisuEditor} _editor
 function VETimeline(_editor) constructor {
 
@@ -175,9 +173,12 @@ function VETimeline(_editor) constructor {
           ruler: {
             name: "timeline.ruler",
             width: function() { return this.context.width() 
-              - this.context.nodes.form.width() },
+              - this.context.nodes.form.width()
+              - this.margin.left
+              - this.margin.right },
             height: function() { return this.context.nodes.form.height() },
-            x: function() { return this.context.nodes.form.width() },
+            margin: { top: 0, bottom: 0, left: 8, right: 8 },
+            x: function() { return this.context.nodes.form.width() + this.margin.left },
           },
           channels: {
             name: "timeline.channels",
@@ -194,10 +195,14 @@ function VETimeline(_editor) constructor {
             width: function() { return this.context.width() 
               - this.context.nodes.channels.width()
               - this.context.nodes.channels.margin.left
-              - this.context.nodes.channels.margin.right },
+              - this.context.nodes.channels.margin.right
+              - this.margin.left
+              - this.margin.right },
             height: function() { return this.context.height() 
               - this.context.nodes.ruler.height() },
-            x: function() { return this.context.nodes.channels.right() },
+            margin: { top: 0, bottom: 0, left: 8, right: 8 },
+            x: function() { return this.context.nodes.channels.right() 
+              + this.margin.left},
             y: function() { return this.context.nodes.ruler.bottom() },
           }
         }
@@ -285,15 +290,21 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMousePressedLeft: function(event) {
           this._onMousePressedLeft(event)
-          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
+          var events = this.controller.containers.get("ve-timeline-events")
+          events.offset.y = this.offset.y
+          events.timer.time = events.timer.duration
         },
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
+          var events = this.controller.containers.get("ve-timeline-events")
+          events.offset.y = this.offset.y
+          events.timer.time = events.timer.duration
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
-          this.controller.containers.get("ve-timeline-events").offset.y = this.offset.y
+          var events = this.controller.containers.get("ve-timeline-events")
+          events.offset.y = this.offset.y
+          events.timer.time = events.timer.duration
         },
         onInit: function() {
           this.collection = new UICollection(this, { layout: this.layout })
@@ -442,8 +453,9 @@ function VETimeline(_editor) constructor {
           }
 
           var timestamp = this.getTimestampFromMouseX(MouseUtil.getMouseX())
-          if (keyboard_check(vk_control)) {
-            var bpm = global.__todo_bpm
+          var store = Beans.get(BeanVisuController).editor.store
+          if (store.getValue("snap") || keyboard_check(vk_control)) {
+            var bpm = store.getValue("bpm")
             timestamp = floor(timestamp / (60 / bpm)) * (60 / bpm)
           }
 
@@ -530,7 +542,7 @@ function VETimeline(_editor) constructor {
           var thickness = this.state.get("lines-thickness")
           var alpha = this.state.get("lines-alpha")
           var color = this.state.get("lines-color")
-          var bpm = global.__todo_bpm
+          var bpm = Beans.get(BeanVisuController).editor.store.getValue("bpm")
           var bpmWidth = ((this.area.getWidth() / this.state.get("viewSize")) * 60) / bpm
           var bpmSize = ceil(this.area.getWidth() / bpmWidth)
 
@@ -541,11 +553,11 @@ function VETimeline(_editor) constructor {
             GPU.render.texturedLine(0, linesX, areaWidth, linesX, thickness, alpha,color)
           }
 
-          /// separators
+          /// bpm
           var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
           for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
-            var bpmX = round((bpmIndex * bpmWidth) + abs(offsetY) mod bpmWidth)
-            GPU.render.texturedLine(bpmX, 0.0, bpmY, thickness, alpha,color)
+            var bpmX = round((bpmIndex * bpmWidth) + (abs(this.offset.x) mod bpmWidth))
+            GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, thickness, alpha, color)
           }
 
           this.renderClipboard()
@@ -566,13 +578,16 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
+          this.timer.time = this.timer.duration
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseWheelDown: function(event) {
+          this.timer.time = this.timer.duration
           this._onMouseWheelDown(event)
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseDropLeft: function(event) {
+          this.timer.time = this.timer.duration
           var trackEvent = MouseUtil.getClipboard()
           MouseUtil.clearClipboard()
           if (!Core.isType(trackEvent, TrackEvent)) {
@@ -580,14 +595,14 @@ function VETimeline(_editor) constructor {
           }
 
           var channel = this.getChannelNameFromMouseY(event.data.y)
-          if (!keyboard_check(vk_shift)) {
-            this.removeEvent(channel, trackEvent.eventName)
-          }
+          this.removeEvent(channel, trackEvent.eventName)
 
           trackEvent = trackEvent.serialize()
           trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
-          if (keyboard_check(vk_control)) {
-            var bpm = global.__todo_bpm
+          
+          var store = Beans.get(BeanVisuController).editor.store
+          if (store.getValue("snap") || keyboard_check(vk_control)) {
+            var bpm = store.getValue("bpm")
             trackEvent.timestamp = floor(trackEvent.timestamp / (60 / bpm)) * (60 / bpm)
           }
 
@@ -620,25 +635,67 @@ function VETimeline(_editor) constructor {
         },
         onMouseReleasedLeft: function(event) {
           try {
+            this.timer.time = this.timer.duration
+            var store = Beans.get(BeanVisuController).editor.store
+            var tool = store.getValue("tool")
+            switch (tool) {
+              case ToolType.SELECT:
+                ///@description deselect
+                var store = this.controller.editor.store
+                if (Optional.is(store.getValue("selected-event"))) {
+                  store.get("selected-event").set(null)
+                }
+                break
+              case ToolType.BRUSH:
+                var trackEvent = this.factoryTrackEventFromEvent(event)
+                var channel = this.getChannelNameFromMouseY(event.data.y)
+                var uiItem = this.addEvent(channel, trackEvent)
+  
+                ///@description select
+                store.get("selected-event").set({
+                  name: uiItem.name,
+                  channel: channel,
+                  data: trackEvent,
+                })
+                break
+              case ToolType.CLONE:
+                var selected = store.getValue("selected-event")
+                if (Optional.is(selected)) {
+                  var channel = this.getChannelNameFromMouseY(event.data.y)
+                  Core.print("selected.data", selected.data)
+                  var trackEvent = selected.data.serialize()
+                  trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
 
-            ///@description deselect
-            var store = this.controller.editor.store
-            if (Optional.is(store.getValue("selected-event"))) {
-              store.get("selected-event").set(null)
+                  if (store.getValue("snap") || keyboard_check(vk_control)) {
+                    var bpm = store.getValue("bpm")
+                    trackEvent.timestamp = floor(trackEvent.timestamp / (60 / bpm)) * (60 / bpm)
+                  }
+
+                  if (!Optional.is(channel)) {
+                    var size = this.controller.containers
+                      .get("ve-timeline-channels").collection
+                      .size()
+
+                    channel = this.controller.containers
+                      .get("ve-timeline-channels").collection
+                      .findKeyByIndex(size - 1)
+                  }
+
+                  if (Optional.is(channel)) {
+                    var uiItem = this.addEvent(channel, new TrackEvent(trackEvent, {
+                      handlers: Beans.get(BeanVisuController).trackService.handlers,
+                    }))
+
+                    ///@description select
+                    store.get("selected-event").set({
+                      name: uiItem.name,
+                      channel: channel,
+                      data: uiItem.state.get("event"),
+                    })
+                  }
+                }
+                break
             }
-
-            var trackEvent = this.factoryTrackEventFromEvent(event)
-            var channel = this.getChannelNameFromMouseY(event.data.y)
-            var uiItem = this.addEvent(channel, trackEvent)
-
-            ///@description select
-            Beans.get(BeanVisuController).editor.store
-              .get("selected-event")
-              .set({
-                name: uiItem.name,
-                channel: channel,
-                data: trackEvent,
-              })
           } catch (exception) {
             Logger.error("VETimeline", $"onMouseReleasedLeft exception: {exception.message}")
           }
@@ -707,8 +764,9 @@ function VETimeline(_editor) constructor {
         ///@return {TrackEvent}
         factoryTrackEventFromEvent: new BindIntent(function(event) {
           var timestamp = this.getTimestampFromMouseX(event.data.x)
-          if (keyboard_check(vk_control)) {
-            var bpm = global.__todo_bpm
+          var store = Beans.get(BeanVisuController).editor.store
+          if (store.getValue("snap") || keyboard_check(vk_control)) {
+            var bpm = store.getValue("bpm")
             timestamp = floor(timestamp / (60 / bpm)) * (60 / bpm)
           }
           
@@ -766,25 +824,43 @@ function VETimeline(_editor) constructor {
                   return
                 }
                 
-                Beans.get(BeanVisuController).editor.store
-                  .get("selected-event")
-                  .set({
-                    name: context.name,
-                    channel: channel,
-                    data: trackEvent,
-                  })
+                var store = Beans.get(BeanVisuController).editor.store
+                var tool = store.getValue("tool")
+                switch (tool) {
+                  case ToolType.ERASE:
+                    var channelName = this.context.getChannelNameFromMouseY(event.data.y)
+                    if (Optional.is(channelName)) {
+                      this.context.removeEvent(channelName, this.name)
+                    }
+
+                    var selected = store.getValue("selected-event")
+                    if (Optional.is(selected) && selected.name == this.name) {
+                      store.get("selected-event").set(null)
+                    }
+                    break
+                  case ToolType.CLONE:
+                  case ToolType.SELECT:
+                    Beans.get(BeanVisuController).editor.store
+                      .get("selected-event")
+                      .set({
+                        name: context.name,
+                        channel: channel,
+                        data: trackEvent,
+                      })
+                    break
+                }
               },
               onMousePressedRight: function(event) {
                 var channelName = this.context.getChannelNameFromMouseY(event.data.y)
-                if (!Optional.is(channelName)) {
-                  return
+                if (Optional.is(channelName)) {
+                  this.context.removeEvent(channelName, this.name)
                 }
-                this.context.removeEvent(channelName, this.name)
 
-                Beans.get(BeanVisuController).editor.store
-                  .get("selected-event")
-                  .set(null)
-              },
+                var selected = store.getValue("selected-event")
+                if (Optional.is(selected) && selected.name == this.name) {
+                  store.get("selected-event").set(null)
+                }
+          },
             }
           )
         }),
@@ -856,7 +932,6 @@ function VETimeline(_editor) constructor {
           "mouseX": null,
           "mouseXSensitivity": 30,
         }),
-        //timer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.ruler,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -887,6 +962,16 @@ function VETimeline(_editor) constructor {
           this.state.set("speed", spd)
           this.state.set("time", null)
           this.offset.x = -1 * camera
+
+          if (Optional.is(mouseX) && !mouse_check_button(mb_left)) {
+            var timestamp = this.state.get("mouseXTime")
+            this.state.set("mouseX", null)
+            this.state.set("mouseXTime", null)
+            MouseUtil.clearClipboard()
+            return this.controller.editor.controller.send(new Event("rewind", { 
+              timestamp: timestamp,
+            }))
+          }
         },
         renderSurface: function() {
           var bkgColor = this.state.get("background-color")
@@ -906,11 +991,11 @@ function VETimeline(_editor) constructor {
           var beginX = (timestamp * spd) - camera
           var beginY = 0
           var color = ColorUtil.fromHex(VETheme.color.accent).toGMColor()
-          var textColor = ColorUtil.fromHex(VETheme.color.textFocus).toGMColor()
+          var textColor = ColorUtil.fromHex(VETheme.color.textShadow).toGMColor()
           var height = this.area.getHeight()
           draw_set_font(font_inter_10_regular)
           draw_set_halign(HAlign.LEFT)
-          draw_set_valign(VAlign.TOP)
+          draw_set_valign(VAlign.BOTTOM)
           for (var index = 0; index < viewSize; index++) {
             var label = String.formatTimestamp(timestamp + (index * stepSize))
             draw_line_color(
@@ -928,10 +1013,18 @@ function VETimeline(_editor) constructor {
               beginY + (height / 2),
               color, color
             )
+
+            draw_line_color(
+              beginX + (spd * (index + (stepSize / 4.0))),
+              beginY,
+              beginX + (spd * (index + (stepSize / 4.0))),
+              beginY + (height / 4),
+              color, color
+            )
             
             draw_text_color(
               beginX + (spd * index * stepSize) + 4, 
-              beginY + 2, 
+              beginY + height - 2, 
               label, 
               textColor, textColor, textColor, textColor, 
               1.0
@@ -940,13 +1033,28 @@ function VETimeline(_editor) constructor {
         },
         renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates
           .get("renderDefaultScrollable"))),
+        rulerSprite: SpriteUtil.parse({ 
+          name: "texture_ve_timeline_ruler", 
+          blend: VETheme.color.ruler,
+        }),
         render: function() {
+          
           this.renderDefaultScrollable()
           var position = this.state.get("position")
           var camera = this.state.get("camera")
-          var _x = this.area.getX() + (position - camera)
-          var _y = this.area.getY()
-          draw_sprite_ext(texture_button, 0, _x, _y, 0.01, 5.0, 0.0, c_red, 1.0)
+          var rulerX = this.area.getX() + (position - camera)
+          var rulerY = this.area.getY()
+          var height = this.area.getHeight() + this.controller.containers
+            .get("ve-timeline-events").area.getHeight()
+          var thickness = 0.5
+          var alpha = 1.0
+          var color = this.rulerSprite.getBlend()
+          GPU.render.texturedLine(rulerX, rulerY, rulerX, rulerY + height, thickness + 0.1, alpha, c_black)
+          GPU.render.texturedLine(rulerX, rulerY, rulerX, rulerY + height, thickness, alpha, color)
+          this.rulerSprite.render(
+            rulerX - (this.rulerSprite.getWidth() / 2),
+            rulerY
+          )
         },
         onMouseDragLeft: function(event) {
           var context = this

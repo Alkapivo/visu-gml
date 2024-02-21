@@ -33,15 +33,25 @@ function VETrackControl(_editor) constructor {
             x: function() { return 0 },
             y: function() { return 0 },
           },
-          bpm: {
-            name: "track-control.bpm",
-            width: function() { return 80 },
+          toolbar: {
+            name: "track-control.toolbar",
+            width: function() { return 128 },
             height: function() { return 32 },
-            margin: { top: 8, left: 8 },
-            x: function() { return this.context.nodes.timeline.x()
+            margin: { top: 8, bottom: 4, left: 8, right: 8 },
+            y: function() { return this.context.height()
+              - this.height()
+              - this.margin.bottom },
+          },
+          snap: {
+            name: "track-control.snap",
+            width: function() { return 56 },
+            height: function() { return 32 },
+            margin: { top: 8, bottom: 4, left: 8, right: 8 },
+            x: function() { return this.context.nodes.toolbar.width() 
               + this.margin.left },
-            y: function() { return this.context.nodes.timeline.bottom()
-              + this.margin.top },
+            y: function() { return this.context.height()
+              - this.height()
+              - this.margin.bottom },
           },
           backward: {
             name: "track-control.backward",
@@ -93,6 +103,8 @@ function VETrackControl(_editor) constructor {
       parent
     )
   }
+
+
 
   ///@private
   ///@param {UIlayout} parent
@@ -223,6 +235,43 @@ function VETrackControl(_editor) constructor {
       )
     }
 
+    static factoryToolItem = function(json) {
+      return {
+        name: json.name,
+        template: VEComponents.get("category-button"),
+        layout: function(config = null) {
+          return {
+            name: "horizontal-item",
+            type: UILayoutType.HORIZONTAL,
+            collection: true,
+            width: function() { return (this.context.width() - this.margin.top - this.margin.bottom) / this.collection.getSize() },
+            x: function() { return this.margin.left + this.collection.getIndex() * this.width() },
+          }
+        },
+        config: {
+          backgroundColor: VETheme.color.primary,
+          backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+          backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+          backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          backgroundMargin: { top: 4, bottom: 4, right: 1, left: 5 },
+          callback: function() { 
+            this.context.state.get("store")
+              .get("tool")
+              .set(this.tool)
+          },
+          updateCustom: function() {
+            this.backgroundColor = this.tool == this.context.state.get("store").getValue("tool")
+              ? this.backgroundColorOn
+              : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+          },
+          onMouseHoverOver: function(event) { },
+          onMouseHoverOut: function(event) { },
+          label: { text: json.text },
+          tool: json.tool,
+        },
+      }
+    }
+
     var controller = this
     var layout = this.factoryLayout(parent)
     return new Map(String, UI, {
@@ -231,6 +280,28 @@ function VETrackControl(_editor) constructor {
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
           "store": controller.editor.store,
+          "tools": new Array(Struct, [
+            factoryToolItem({ 
+              name: "ve-track-control_tool_brush", 
+              text: "B", 
+              tool: "tool_brush",
+            }),
+            factoryToolItem({ 
+              name: "ve-track-control_tool_eraser", 
+              text: "E", 
+              tool: "tool_erase",
+            }),
+            factoryToolItem({ 
+              name: "ve-track-control_tool_clone", 
+              text: "C", 
+              tool: "tool_clone",
+            }),
+            factoryToolItem({ 
+              name: "ve-track-control_tool_select", 
+              text: "S", 
+              tool: "tool_select",
+            }),
+          ])
         }),
         controller: controller,
         layout: layout,
@@ -250,11 +321,6 @@ function VETrackControl(_editor) constructor {
           this.items.forEach(this.renderItem, this.area)
         },
         items: {
-          "bpm": factoryLabel({
-            text: "",
-            layout: layout.nodes.bpm,
-            updateCustom: function() { },
-          }),
           "slider_ve-track-control_timeline": factorySlider({
             layout: layout.nodes.timeline,
           }),
@@ -317,6 +383,33 @@ function VETrackControl(_editor) constructor {
               )
             },
           }),
+          "checkbox_ve-track-control_snap": Struct.appendRecursiveUnique(
+            {
+              type: UICheckbox,
+              layout: layout.nodes.snap,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              spriteOn: { name: "visu_texture_checkbox_switch_on" },
+              spriteOff: { name: "visu_texture_checkbox_switch_off" },
+              store: { key: "snap"},
+              config: {
+                callback: function() { 
+                  this.context.state.get("store")
+                    .get("snap")
+                    .set(!this.value)
+                },
+              },
+            },
+            VEStyles.get("ve-track-control").button,
+            false
+          ),
+        },
+        onInit: function() {
+          var container = this
+          this.collection = new UICollection(this, { layout: container.layout.nodes.toolbar })
+          this.state.get("tools")
+            .forEach(function(component, index, collection) {
+              collection.add(new UIComponent(component))
+            }, this.collection)
         },
       })
     })

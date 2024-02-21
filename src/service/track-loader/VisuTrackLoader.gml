@@ -65,7 +65,9 @@ function VisuTrackLoader(_controller): Service() constructor {
                       },
                     }).update()
                     
-                    global.__todo_bpm = this.response.bpm ///@hack
+                    var item = Beans.get(BeanVisuController).editor.store.get("bpm")
+                    item.set(this.response.bpm)
+
                     return {
                       path: Assert.isType(FileUtil.getDirectoryFromPath(result.path), String),
                       manifest: Assert.isType(this.response, VisuTrack),
@@ -178,30 +180,6 @@ function VisuTrackLoader(_controller): Service() constructor {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
                     }))
               ),
-              "video": new Promise().fullfill(
-                new Task("send-load-video")
-                  .setPromise(new Promise())
-                  .setState(new Map(any, any, {
-                    service: controller.videoService,
-                    event: new Event("open-video", {
-                      video: {
-                        name: $"{data.manifest.video}",
-                        path: $"{data.path}{data.manifest.video}",
-                        timestamp: 0.0,
-                        volume: 0,
-                      }
-                    })
-                  }))
-                  .whenUpdate(function() {
-                    var event = Assert.isType(this.state.get("event"), Event)
-                    var service = Assert.isType(this.state.get("service"), VideoService)
-                    var name = Struct.get(Struct.get(event.data, "video"), "name")
-                    service.send(event.setPromise(Assert.isType(this.promise, Promise)))
-                    Logger.debug("VisuTrackLoader", $"load video '{name}'")
-                    this.setPromise()
-                    this.fullfill()
-                  })
-              ),
               "track": controller.fileService.send(
                 new Event("fetch-file")
                   .setData({ path: $"{data.path}{data.manifest.track}" })
@@ -283,6 +261,34 @@ function VisuTrackLoader(_controller): Service() constructor {
                     }))
               ),
             })
+
+            if (Optional.is(Struct.get(data.manifest, "video"))) {
+              promises.set("video", new Promise().fullfill(
+                new Task("send-load-video")
+                  .setPromise(new Promise())
+                  .setState(new Map(any, any, {
+                    service: controller.videoService,
+                    event: new Event("open-video", {
+                      video: {
+                        name: $"{data.manifest.video}",
+                        path: $"{data.path}{data.manifest.video}",
+                        timestamp: 0.0,
+                        volume: 0,
+                      }
+                    })
+                  }))
+                  .whenUpdate(function() {
+                    var event = Assert.isType(this.state.get("event"), Event)
+                    var service = Assert.isType(this.state.get("service"), VideoService)
+                    var name = Struct.get(Struct.get(event.data, "video"), "name")
+                    service.send(event.setPromise(Assert.isType(this.promise, Promise)))
+                    Logger.debug("VisuTrackLoader", $"load video '{name}'")
+                    this.setPromise()
+                    this.fullfill()
+                  })
+              ))
+            }
+            
             data.manifest.editor.forEach(function(file, index, acc) { 
               var promise = acc.controller.fileService.send(
                 new Event("fetch-file")
@@ -340,8 +346,13 @@ function VisuTrackLoader(_controller): Service() constructor {
               "texture": addTask(tasks.get("texture"), executor),
               "sound": addTask(tasks.get("sound"), executor),
               "shader": addTask(tasks.get("shader"), executor),
-              "video": addTask(tasks.get("video"), executor),
             }))
+
+            if (tasks.contains("video")) {
+              fsmState.state
+                .get("promises")
+                .set("video", addTask(tasks.get("video"), executor))
+            }
           },
         },
         update: function(fsm) {

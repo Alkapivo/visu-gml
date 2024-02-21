@@ -167,10 +167,17 @@ function VisuController(layerName) constructor {
       "play": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            fsmState.state.set("promises", new Map(String, Promise, {
-              "player": fsm.context.playerService.send(new Event("spawn-player")),
-              "video": fsm.context.videoService.send(new Event("resume-video")),
-            }))
+            var promises = new Map(String, Promise, {
+              "player": fsm.context.playerService
+                .send(new Event("spawn-player")),
+            })
+
+            if (Optional.is(fsm.context.videoService.video)) {
+              promises.set("video", fsm.context.videoService
+                .send(new Event("resume-video")))
+            }
+
+            fsmState.state.set("promises", promises)
           },
         },
         update: function(fsm) {
@@ -207,10 +214,17 @@ function VisuController(layerName) constructor {
       "pause": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            fsmState.state.set("promises", new Map(String, Promise, {
-              "video": fsm.context.videoService.send(new Event("pause-video")),
-              "track": fsm.context.trackService.send(new Event("pause-track")),
-            }))
+            var promises = new Map(String, Promise, {
+              "track": fsm.context.trackService
+                .send(new Event("pause-track")),
+            })
+
+            if (Optional.is(fsm.context.videoService.video)) {
+              promises.set("video", fsm.context.videoService
+                .send(new Event("pause-video")))
+            }
+
+            fsmState.state.set("promises", promises)
           },
         },
         update: function(fsm) {
@@ -239,13 +253,20 @@ function VisuController(layerName) constructor {
       "rewind": {
         actions: {
           onStart: function(fsm, fsmState, data) {
+            var promises = new Map(String, Promise, {
+              "pause-track": fsm.context.trackService
+                .send(new Event("pause-track")),
+            })
+
+            if (Optional.is(fsm.context.videoService.video)) {
+              promises.set("rewind-video", fsm.context.videoService
+                .send(new Event("rewind-video", data)))
+            }
+
             fsmState.state
               .set("resume", data.resume)
               .set("data", data)
-              .set("promises", new Map(String, Promise, {
-                "pause-track": fsm.context.trackService.send(new Event("pause-track")),
-                "rewind-video": fsm.context.videoService.send(new Event("rewind-video", data)),
-              }))
+              .set("promises", promises)
           },
         },
         update: function(fsm) {
@@ -259,6 +280,11 @@ function VisuController(layerName) constructor {
                   return
                 }
               } catch (exception) {
+                Logger.warn("VisuController", $"Rewind exception: {exception.message}")
+                if (!promises.contains("rewind-video")) {
+                  return
+                }
+
                 promises.forEach(function(promise, name) {
                   if (name != "rewind-video" && promise.status == PromiseStatus.REJECTED) {
                     throw new Exception($"non-video promise failed: '{name}'")

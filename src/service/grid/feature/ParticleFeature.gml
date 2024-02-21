@@ -14,7 +14,7 @@ function ParticleFeature(json = {}) {
 
     ///@type {Number}
     duration: Assert.isType(Struct
-      .getDefault(json, "duration", FRAME_MS * 3), Number),
+      .getDefault(json, "duration", FRAME_MS * 4), Number),
 
     ///@type {Number}
     amount: Assert.isType(Struct

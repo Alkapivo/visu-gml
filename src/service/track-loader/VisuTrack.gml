@@ -8,7 +8,7 @@ function VisuTrack(_path, json) constructor {
   path = Assert.isType(FileUtil.getDirectoryFromPath(_path), String)
 
   ///@type {Number}
-  bpm = Assert.isType(Struct.getDefault(json, "bpm", global.__todo_bpm), Number)
+  bpm = Assert.isType(Struct.getDefault(json, "bpm", Beans.get(BeanVisuController).editor.store.getValue("bpm")), Number)
 
   ///@type {String}
   sound = Assert.isType(Struct.get(json, "sound"), String)
@@ -34,8 +34,10 @@ function VisuTrack(_path, json) constructor {
   ///@type {String}
   texture = Assert.isType(Struct.get(json, "texture"), String)
 
-  ///@type {String}
-  video = Assert.isType(Struct.get(json, "video"), String)
+  ///@type {?String}
+  video = Struct.contains(json, "video")
+    ? Assert.isType(json.video, String)
+    : null
 
   ///@type {Array<String>}
   editor = new Array(String, json.editor)
@@ -149,9 +151,12 @@ function VisuTrack(_path, json) constructor {
         })
       }, editor)
 
-    var sourceVideo = Assert.isType(FileUtil.get(Struct.get(controller.videoService
-      .getVideo(), "path")), String)
-    var video = FileUtil.getFilenameFromPath(sourceVideo)
+    var video = null
+    var sourceVideo = null
+    if (Optional.is(this.video)) {
+      sourceVideo = Assert.isType(FileUtil.get(Struct.get(controller.videoService.getVideo(), "path")), String)
+      video = FileUtil.getFilenameFromPath(sourceVideo)
+    } 
     #endregion
 
     #region Save
@@ -218,7 +223,9 @@ function VisuTrack(_path, json) constructor {
       target: path,
     })
 
-    FileUtil.copyFile(sourceVideo, $"{path}{video}")
+    if (Optional.is(this.video)) {
+      FileUtil.copyFile(sourceVideo, $"{path}{video}")
+    }
 
     Struct.forEach(editor, function(data, filename, acc) {
       acc.fileService.send(new Event("save-file-sync")
