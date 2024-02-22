@@ -756,10 +756,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   return
                 }
                 
-                Callable.run(
-                  Struct.get(Beans.get(BeanVisuController).trackService.eventHandlers, brush.type), 
-                  brush.toTemplate().properties
-                )
+                var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)
+                handler(brush.toTemplate().properties)
               },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()

@@ -177,7 +177,10 @@ function VisuTrackLoader(_controller): Service() constructor {
                       steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
-                      return Assert.isType(JSON.parserTask(result.data, this.state), Task)
+                      Core.print("tutaj")
+                      var asd = Assert.isType(JSON.parserTask(result.data, this.state), Task)
+                      Core.print("tak to tutaj")
+                      return asd
                     }))
               ),
               "track": controller.fileService.send(
