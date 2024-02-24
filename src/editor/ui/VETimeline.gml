@@ -494,10 +494,11 @@ function VETimeline(_editor) constructor {
         layout: layout.nodes.events,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
-          var track = this.controller.editor.trackService.track
-          if (!Core.isType(track, Track)) {
+          if (!this.controller.editor.trackService.isTrackLoaded()) {
             return
           }
+          
+          var track = this.controller.editor.trackService.track
           this.state.set("amount", track.channels.size())
 
           ///@todo refactor
@@ -893,7 +894,7 @@ function VETimeline(_editor) constructor {
         ///@return {UIItem}
         factoryEventUIItem: new BindIntent(function(channelName, event) { 
           var _x = this.getXFromTimestamp(event.timestamp) 
-          var key = this.items.generateKey(event.timestamp * (1 + random(100000)))
+          var key = this.items.generateKey(event.timestamp * (100 + random(1000000) + random(100000)))
           var name = $"channel_{channelName}_event_{key}"
           var component = this.controller.containers
             .get("ve-timeline-channels").collection

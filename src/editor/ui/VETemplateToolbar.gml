@@ -720,7 +720,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         if (!Core.isType(this.templateToolbar.editor.trackService.track, Track)) {
           return
         }
-        
         this.templateToolbar.store.get("template").addSubscriber({ 
           name: container.name,
           callback: function(template, data) {

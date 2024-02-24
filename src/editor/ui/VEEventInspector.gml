@@ -110,7 +110,7 @@ function VEEventInspector(_editor) constructor {
           var container = this
           this.collection = new UICollection(this, { layout: container.layout })
 
-          if (!Core.isType(this.eventInspector.editor.trackService.track, Track)) {
+          if (!this.eventInspector.editor.trackService.isTrackLoaded()) {
             return
           }
 
