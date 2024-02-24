@@ -29,6 +29,27 @@ function brush_shader_spawn(json = null) {
           return clamp(NumberUtil.parse(value, this.value), 0.0, 3600.0) 
         },
       },
+      "shader-spawn_fade-in": {
+        type: Number,
+        value: Struct.getDefault(json, "shader-spawn_fade-in", 1.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.0) 
+        },
+      },
+      "shader-spawn_fade-out": {
+        type: Number,
+        value: Struct.getDefault(json, "shader-spawn_fade-out", 1.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.0) 
+        },
+      },
+      "shader-spawn_alpha-max": {
+        type: Number,
+        value: Struct.getDefault(json, "shader-spawn_alpha-max", 1.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0) 
+        },
+      },
     }),
     components: new Array(Struct, [
       {
@@ -63,6 +84,36 @@ function brush_shader_spawn(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Duration" },
           field: { store: { key: "shader-spawn_duration" } },
+        },
+      },
+      {
+        name: "shader-spawn_fade-in",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Fade in" },
+          field: { store: { key: "shader-spawn_fade-in" } },
+        },
+      },
+      {
+        name: "shader-spawn_fade-out",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Fade out" },
+          field: { store: { key: "shader-spawn_fade-out" } },
+        },
+      },
+      {
+        name: "shader-spawn_alpha-max",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Max alpha" },
+          field: { store: { key: "shader-spawn_alpha-max" } },
         },
       },
     ]),

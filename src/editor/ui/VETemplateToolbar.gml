@@ -710,6 +710,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
       scrollbarY: { align: HAlign.LEFT },
+      onMouseOnLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),

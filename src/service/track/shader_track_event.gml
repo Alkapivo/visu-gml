@@ -4,13 +4,29 @@
 ///@type {Map<String, Callable>}
 global.__shader_track_event = new Map(String, Callable, {
   "brush_shader_spawn": function(data) {
-    var controller = Beans.get(BeanVisuController)
-    var pipeline = Struct.getDefault(data, "shader-spawn_pipeline", "Grid")
-    var event = new Event("spawn-shader", {
+    var eventData = {
       template: Struct.get(data, "shader-spawn_template"),
       duration: Struct.get(data, "shader-spawn_duration"),
-    })
-    
+    }
+
+    if (Core.isType(Struct.get(data, "shader-spawn_fade-in"), Number)) {
+      Struct.set(eventData, "fadeIn", Struct
+        .get(data, "shader-spawn_fade-in"))
+    }
+
+    if (Core.isType(Struct.get(data, "shader-spawn_fade-out"), Number)) {
+      Struct.set(eventData, "fadeOut", Struct
+        .get(data, "shader-spawn_fade-out"))
+    }
+
+    if (Core.isType(Struct.get(data, "shader-spawn_alpha-max"), Number)) {
+      Struct.set(eventData, "alphaMax", Struct
+        .get(data, "shader-spawn_alpha-max"))
+    }
+
+    var event = new Event("spawn-shader", JSON.clone(eventData))
+    var controller = Beans.get(BeanVisuController)
+    var pipeline = Struct.getDefault(data, "shader-spawn_pipeline", "Grid")
     switch (pipeline) {
       case "Grid": 
         controller.shaderPipeline.send(event)
@@ -20,10 +36,8 @@ global.__shader_track_event = new Map(String, Callable, {
         break
       case "All": 
         controller.shaderPipeline.send(event)
-        controller.shaderBackgroundPipeline.send(new Event("spawn-shader", {
-          template: Struct.get(data, "shader-spawn_template"),
-          duration: Struct.get(data, "shader-spawn_duration"),
-        }))
+        controller.shaderBackgroundPipeline
+          .send(new Event("spawn-shader", JSON.clone(eventData)))
         break
       default: throw new Exception($"Found unsupported pipeline: {pipeline}")
     }

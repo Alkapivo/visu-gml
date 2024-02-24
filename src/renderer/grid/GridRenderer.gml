@@ -328,7 +328,9 @@ function GridRenderer(_controller, config = {}) constructor {
     var shaderPipeline = this.controller.shaderBackgroundPipeline
     if (renderShadersEnabled && shaderPipeline.executor.tasks.size() > 0) {
       shaderPipeline.render(function(task, index, renderer) {
-        renderer.backgroundSurface.render()
+        var properties = renderer.controller.gridService.properties
+        var alpha = task.state.getDefault("alpha", 1.0)
+        renderer.backgroundSurface.render(0, 0, alpha)
       }, this)
     }
   }
