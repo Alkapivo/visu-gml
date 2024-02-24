@@ -99,16 +99,32 @@ function VisuController(layerName) constructor {
   ///@type {Boolean}
   enableUIContainerServiceRendering = true
 
+  ///@private
+  ///@type {Number}
+  spinnerFactor = 0
+
+  ///@private
+  ///@type {Sprite}
+  spinner = Assert.isType(SpriteUtil
+    .parse({ 
+      name: "texture_spinner", 
+      scaleX: 0.25, 
+      scaleY: 0.25,
+    }), Sprite)
+
   ///@type {FSM}
   fsm = new FSM(this, {
     initialState: { 
       name: "idle",
-      data: new Event("load", {
-        manifest: FileUtil.get(String
-          .join("", working_directory, Assert.isType(Core
-          .getProperty("visu.file.manifest", "manifest.json"), String))),
-        autoplay: Assert.isType(Core.getProperty("visu.autoplay", false), Boolean),
-      })
+      data: Core.getProperty("visu.manifest.autoload", false) 
+        ? new Event("load", {
+            manifest: FileUtil.get(Core
+              .getProperty("visu.manifest.path", 
+                $"{working_directory}manifest.visu")),
+            autoplay: Assert.isType(Core
+              .getProperty("visu.autoplay", false), Boolean),
+          })
+        : null,
     },
     states: {
       "idle": {
@@ -118,14 +134,6 @@ function VisuController(layerName) constructor {
               fsm.context.send(data)
             }
           },
-        },
-        update: function(fsm) {
-          if (fsm.context.keyboard.keys.load.pressed) {
-            fsm.context.send(new Event("load", {
-              manifest: $"{working_directory}manifest.json",
-              autoplay: true
-            }))
-          }
         },
         transitions: GMArray.toStruct([ "load", "play", "pause", "quit" ]),
       },
@@ -565,6 +573,7 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   onSceneEnter = function() {
     Logger.info("VisuController", "onSceneEnter")
+    this.editor.send(new Event("open"))
     return this
   }
 
@@ -609,20 +618,43 @@ function VisuController(layerName) constructor {
       this.uiService.render()
       var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
       if (loaderState != "idle" && loaderState != "loaded") {
-        var color = c_fuchsia
-        var alpha = 0.33
-        var label = new UILabel({
-          align: { v: VAlign.CENTER, h: HAlign.CENTER },
-          font: "font_inter_24_regular",
-          text: $"LOADING:\n{string(irandom(1000) + 1000)}\n{loaderState}",
-          color: "#ffffff",
-          outline: true,
-          outlineColor: "#000000",
-        })
-        
-        label.render(GuiWidth() / 2.0, GuiHeight() / 2.0)
-        GPU.render.rectangle(0, 0, GuiWidth(), GuiHeight(), 
-          false, color, color, color, color, alpha)
+        var color = c_black
+        this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
+
+        GPU.render.rectangle(
+          0, 0, 
+          GuiWidth(), GuiHeight(), 
+          false, 
+          color, color, color, color, 
+          (this.spinnerFactor / 100) * 0.5
+        )
+
+        this.spinner
+          .setAlpha(this.spinnerFactor / 100.0)
+          .render(
+            (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
+            (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
+              - (this.spinnerFactor / 2)
+        )
+      } else if (this.spinnerFactor > 0) {
+        var color = c_black
+        this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.1)
+
+        GPU.render.rectangle(
+          0, 0, 
+          GuiWidth(), GuiHeight(), 
+          false, 
+          color, color, color, color, 
+          (this.spinnerFactor / 100) * 0.5
+        )
+
+        this.spinner
+          .setAlpha(this.spinnerFactor / 100.0)
+          .render(
+          (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
+          (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
+            - (this.spinnerFactor / 2)
+        )
       }
     }
     

@@ -273,6 +273,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       onInit: function() {
         var container = this
         this.collection = new UICollection(this, { layout: this.layout })
+
+        if (!Core.isType(this.templateToolbar.editor.trackService.track, Track)) {
+          return
+        }
+
         this.templateToolbar.store.get("type").addSubscriber({ 
           name: container.name,
           callback: function(type, data) {
@@ -436,6 +441,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       onInit: function() {
         var container = this
         this.collection = new UICollection(this, { layout: this.layout })
+
+        if (!Core.isType(this.templateToolbar.editor.trackService.track, Track)) {
+          return
+        }
+
         this.templateToolbar.store.get("type").addSubscriber({ 
           name: container.name,
           callback: function(type, data) {
@@ -706,6 +716,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       onInit: function() {
         var container = this
         this.collection = new UICollection(this, { layout: container.layout })
+
+        if (!Core.isType(this.templateToolbar.editor.trackService.track, Track)) {
+          return
+        }
+        
         this.templateToolbar.store.get("template").addSubscriber({ 
           name: container.name,
           callback: function(template, data) {

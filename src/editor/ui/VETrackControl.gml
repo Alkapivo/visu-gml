@@ -367,17 +367,15 @@ function VETrackControl(_editor) constructor {
                 (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
                   - (this.spinnerFactor / 2)
             )
-          } else {
+          } else if (this.spinnerFactor > 0) {
             this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.1)
-            if (this.spinnerFactor > 0) {
-              this.spinner
-                .setAlpha(this.spinnerFactor / 100.0)
-                .render(
-                (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
-                (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
-                  - (this.spinnerFactor / 2)
-              )
-            }
+            this.spinner
+              .setAlpha(this.spinnerFactor / 100.0)
+              .render(
+              (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
+              (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
+                - (this.spinnerFactor / 2)
+            )
           }
         },
         items: {

@@ -109,6 +109,11 @@ function VEEventInspector(_editor) constructor {
         onInit: function() {
           var container = this
           this.collection = new UICollection(this, { layout: container.layout })
+
+          if (!Core.isType(this.eventInspector.editor.trackService.track, Track)) {
+            return
+          }
+
           Beans.get(BeanVisuController).editor.store
             .get("selected-event")
             .addSubscriber({ 

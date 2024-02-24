@@ -237,14 +237,10 @@ function VisuEditor(_controller) constructor {
         //"statusBar": this.statusBar.send(new Event("close")),
       }
     },
-    "load": function(event) {
-      return {
-        //"timeline": this.timeline.send(new Event(event.name, event.data, event.promise)),
-      }
-    },
-    "select": function(event) { },
-    "deselect": function(event) { },
-  }))
+  }), {
+    enableLogger: true,
+    catchException: true,
+  })
 
   ///@param {Event} event
   ///@return {?Promise}

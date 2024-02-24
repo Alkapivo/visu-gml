@@ -358,6 +358,11 @@ function VETimeline(_editor) constructor {
         onInit: function() {
           this.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
           this.collection = new UICollection(this, { layout: this.layout })
+          
+          if (!Core.isType(this.controller.editor.trackService.track, Track)) {
+            return
+          }
+
           var sorted = new Map(Number, String)
           var context = this
           this.controller.editor.trackService.track.channels
@@ -489,11 +494,11 @@ function VETimeline(_editor) constructor {
         layout: layout.nodes.events,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
-
           var track = this.controller.editor.trackService.track
-          if (Core.isType(track, Track)) {
-            this.state.set("amount", track.channels.size())
+          if (!Core.isType(track, Track)) {
+            return
           }
+          this.state.set("amount", track.channels.size())
 
           ///@todo refactor
           var time = this.state.get("time") == null 

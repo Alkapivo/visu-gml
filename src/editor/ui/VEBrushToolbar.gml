@@ -328,6 +328,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: this.layout })
         var container = this
         var store = this.brushToolbar.store
+
+        if (!Core.isType(this.brushToolbar.editor.trackService.track, Track)) {
+          return
+        }
         
         store.get("category").addSubscriber({ 
           name: this.name,
@@ -506,6 +510,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       onInit: function() {
         var container = this
         this.collection = new UICollection(this, { layout: this.layout })
+
+        if (!Core.isType(this.brushToolbar.editor.trackService.track, Track)) {
+          return
+        }
+
         this.brushToolbar.store.get("type").addSubscriber({ 
           name: container.name,
           callback: function(type, data) {
@@ -690,6 +699,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       onInit: function() {
         var container = this
         this.collection = new UICollection(this, { layout: container.layout })
+
+        if (!Core.isType(this.brushToolbar.editor.trackService.track, Track)) {
+          return
+        }
+
         this.brushToolbar.store.get("template").addSubscriber({ 
           name: this.name,
           callback: function(template, data) {

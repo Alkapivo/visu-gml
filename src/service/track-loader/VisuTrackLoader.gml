@@ -31,10 +31,7 @@ function VisuTrackLoader(_controller): Service() constructor {
 
   ///@type {FSM}
   fsm = new FSM(this, {
-    initialState: {
-      name: "idle", //"parse-manifest",
-      data: $"{working_directory}manifest.json",
-    },
+    initialState: { name: "idle" },
     states: {
       "idle": {
         actions: {
@@ -177,10 +174,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                       steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
-                      Core.print("tutaj")
-                      var asd = Assert.isType(JSON.parserTask(result.data, this.state), Task)
-                      Core.print("tak to tutaj")
-                      return asd
+                      return Assert.isType(JSON.parserTask(result.data, this.state), Task)
                     }))
               ),
               "track": controller.fileService.send(

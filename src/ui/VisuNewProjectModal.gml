@@ -104,8 +104,8 @@ function VisuNewProjectForm(json = null) constructor {
           enable: { key: "use-file-video"},
           callback: function() {
             var path = FileUtil.getPathToOpenWithDialog({
-              description: "OGG file",
-              extension: "ogg",
+              description: "MP4 file",
+              extension: "mp4",
             })
             if (!FileUtil.fileExists(path)) {
               return

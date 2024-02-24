@@ -151,9 +151,9 @@ function VETitleBar(_editor) constructor {
             options: new Array(),
             callback: function() {
               var path = FileUtil.getPathToSaveWithDialog({ 
-                description: "JSON file",
+                description: "Visu track file",
                 filename: "manifest", 
-                extension: "json",
+                extension: "visu",
               })
 
               if (path == null) {
@@ -169,9 +169,9 @@ function VETitleBar(_editor) constructor {
             options: new Array(),
             callback: function() {
               var manifest = FileUtil.getPathToOpenWithDialog({ 
-                description: "JSON file",
+                description: "Visu track file",
                 filename: "manifest", 
-                extension: "json"
+                extension: "visu"
               })
 
               if (!FileUtil.fileExists(manifest)) {
