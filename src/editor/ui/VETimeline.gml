@@ -1169,7 +1169,6 @@ function VETimeline(_editor) constructor {
           )
         },
         onMouseDragLeft: function(event) {
-          Core.print("mhm")
           var context = this
           this.state.set("mouseX", event.data.x)
           MouseUtil.setClipboard(new Promise()

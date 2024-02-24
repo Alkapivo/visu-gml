@@ -362,5 +362,12 @@ global.__VEStyles = new Map(String, Struct, {
       align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
     }
   },
+  "transform-vec2-uniform": {
+    label: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
+    }
+  },
 })
 #macro VEStyles global.__VEStyles

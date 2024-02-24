@@ -1582,6 +1582,7 @@ global.__VEComponents = new Map(String, Callable, {
       Struct.get(config, "title")
     ).forEach(addItem, items)
 
+    #region NumberTransformer fields
     factoryTextField(
       $"{name}_value",
       layout.nodes.value,
@@ -1621,6 +1622,230 @@ global.__VEComponents = new Map(String, Callable, {
         false
       )
     ).forEach(addItem, items)
+    #endregion
+
+    return items
+  },
+
+    ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec2-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec2 = Struct.get(data, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  Core.print("set")
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec2 = Struct.get(this.context, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    Core.print("configgg", config)
+
+    factoryTitle(
+      $"{name}_title",
+      layout.nodes.title,
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    #region X
+    factoryTextField(
+      $"{name}_valueX",
+      layout.nodes.valueX,
+      Struct.appendRecursive(
+        Struct.get(config, "valueX"), 
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector2Property: "x",
+          }
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextField(
+      $"{name}_targetX",
+      layout.nodes.targetX,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector2Property: "x",
+          },
+        },
+        Struct.get(config, "targetX"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorX", 
+      layout.nodes.factorX, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector2Property: "x",
+          }
+        },
+        Struct.get(config, "factorX"), 
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextField(
+      $"{name}_incrementX",
+      layout.nodes.incrementX, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "increase",
+            transformVector2Property: "x",
+          }
+        },
+        Struct.get(config, "incrementX"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    #region Y
+    factoryTextField(
+      $"{name}_valueY",
+      layout.nodes.valueY,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          }
+        },
+        Struct.get(config, "valueY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_targetY",
+      layout.nodes.targetY,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector2Property: "y",
+          }
+        },
+        Struct.get(config, "targetY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorY", 
+      layout.nodes.factorY, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector2Property: "y",
+          }
+        },
+        Struct.get(config, "factorY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_incrementY",
+      layout.nodes.incrementY, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          }
+        },
+        Struct.get(config, "incrementY"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
 
     return items
   },

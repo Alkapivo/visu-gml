@@ -36,6 +36,7 @@ function VisuTrackLoader(_controller): Service() constructor {
       "idle": {
         actions: {
           onStart: function(fsm, fsmState, data) {
+            fsm.context.controller.editor.send(new Event("open"))
             if (Core.isType(data, String)) {
               Logger.info("VisuTrackLoader", $"message: '{data}'")
             }
@@ -46,6 +47,8 @@ function VisuTrackLoader(_controller): Service() constructor {
       "parse-manifest": {
         actions: {
           onStart: function(fsm, fsmState, path) {
+            window_set_caption($"{game_display_name}")
+            fsm.context.controller.editor.send(new Event("close"))
             fsmState.state.set("promise", fsm.context.controller.fileService.send(
               new Event("fetch-file")
                 .setData({ path: path })
@@ -428,6 +431,7 @@ function VisuTrackLoader(_controller): Service() constructor {
       "loaded": {
         actions: {
           onStart: function(fsm, fsmState, tasks) { 
+            window_set_caption($"{game_display_name} - {fsm.context.controller.trackService.track.name}")
             fsm.context.controller.editor.send(new Event("open"))
             fsm.context.controller.editor.controller
               .send(new Event("rewind")

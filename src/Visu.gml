@@ -12,6 +12,8 @@ function _Visu() constructor {
     Assert.isType(layerName, String)
     Core.loadProperties()
 
+    window_set_caption($"{game_display_name}")
+
     var layerId = layer_get_id(layerName)
     if (layerId == -1) {
       layerId = layer_create(Assert.isType(layerDefaultDepth, Number), layerName)

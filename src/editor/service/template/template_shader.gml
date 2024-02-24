@@ -83,29 +83,64 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       }
     }
   })
-  /*
   .set(ShaderUniformType.findKey(ShaderUniformType.VECTOR2), function(uniform, json) {
     return {
       store: {
         key: uniform.name,
         item: {
-          type: Vector2,
-          value: new Vector2(),
+          type: Vector2Transformer,
+          value: new Vector2Transformer(Struct
+            .getDefault(json, uniform.name, { 
+              x: { value: 1.0 }, 
+              y: { value: 1.0 },
+            })),
         },
       },
       component: {
         name: $"shader-uniform_{uniform.name}",
-        template: VEComponents.get("uniform-vec2-field"),
-        layout: VELayouts.get("uniform-vec2-field"),
+        template: VEComponents.get("transform-vec2-uniform"),
+        layout: VELayouts.get("transform-vec2-uniform"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: uniform.name },
-          vec2x: { store: { key: uniform.name } },
-          vec2y: { store: { key: uniform.name } },
+          title: { label: { text: uniform.name } },
+          valueX: {
+            label: { text: "value X" },
+            field: { store: { key: uniform.name } },
+          },
+          targetX: {
+            label: { text: "target X" },
+            field: { store: { key: uniform.name } },
+          },
+          factorX: {
+            label: { text: "factor X" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementX: {
+            label: { text: "inc. X" },
+            field: { store: { key: uniform.name } },
+          },
+          valueY: {
+            label: { text: "value Y" },
+            field: { store: { key: uniform.name } },
+          },
+          targetY: {
+            label: { text: "target Y" },
+            field: { store: { key: uniform.name } },
+          },
+          factorY: {
+            label: { text: "factor Y" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementY: {
+            label: { text: "inc. Y" },
+            field: { store: { key: uniform.name } },
+          },
         }
       }
     }
   })
+  /*
   .set(ShaderUniformType.findKey(ShaderUniformType.VECTOR3), function(uniform) {
     return {
       store: {
