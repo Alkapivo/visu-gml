@@ -213,8 +213,8 @@ function GridRenderer(_controller, config = {}) constructor {
       shader_reset()
     } else {
       player.sprite.render(
-        (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       )
 
       /*
@@ -237,8 +237,8 @@ function GridRenderer(_controller, config = {}) constructor {
   renderShrooms = function() {
     static renderShroom = function(shroom, index, gridService) {
       shroom.sprite.render(
-        (shroom.x - (shroom.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (shroom.y - (shroom.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        (shroom.x - ((shroom.sprite.texture.width * shroom.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (shroom.y - ((shroom.sprite.texture.height * shroom.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       )
 
       /*
@@ -280,8 +280,8 @@ function GridRenderer(_controller, config = {}) constructor {
       bullet.sprite
         .setAngle(bullet.angle)
         .render(
-          (bullet.x + (bullet.sprite.texture.offsetX / GRID_SERVICE_PIXEL_WIDTH) - (bullet.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-          (bullet.y + (bullet.sprite.texture.offsetY / GRID_SERVICE_PIXEL_HEIGHT) - (bullet.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+          (bullet.x + ((bullet.sprite.texture.offsetX * bullet.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - (bullet.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+          (bullet.y + ((bullet.sprite.texture.offsetY * bullet.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - (bullet.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
         )
 
       /*

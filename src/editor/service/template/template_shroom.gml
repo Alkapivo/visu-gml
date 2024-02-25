@@ -36,8 +36,8 @@ function template_shroom(json = null) {
     components: new Array(Struct, [
       {
         name: "shroom_texture",
-        template: VEComponents.get("texture-field-speed"),
-        layout: VELayouts.get("texture-field-speed"),
+        template: VEComponents.get("texture-field-ext"),
+        layout: VELayouts.get("texture-field-ext"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
@@ -53,6 +53,14 @@ function template_shroom(json = null) {
           },
           speed: {
             label: { text: "Speed" },
+            field: { store: { key: "shroom_texture" } },
+          },
+          scaleX: {
+            label: { text: "Scale X" },
+            field: { store: { key: "shroom_texture" } },
+          },
+          scaleY: {
+            label: { text: "Scale Y" },
             field: { store: { key: "shroom_texture" } },
           },
           alpha: {

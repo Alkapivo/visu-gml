@@ -135,6 +135,8 @@ function VETemplate(json) constructor {
         frame: sprite.getFrame(),
         speed: sprite.getSpeed(),
         alpha: sprite.getAlpha(),
+        scaleX: sprite.getScaleX(),
+        scaleY: sprite.getScaleY(),
       },
       gameModes: {
         bulletHell: {
@@ -187,7 +189,7 @@ function VETemplate(json) constructor {
   }
 
   ///@throws {Exception}
-  ///@return {ShaderTemplate|ShroomTemplate}
+  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate}
   serialize = function() {
     switch (this.type) {
       case VETemplateType.SHADER: return this.toShaderTemplate()

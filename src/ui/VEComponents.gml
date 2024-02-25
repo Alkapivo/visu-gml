@@ -627,7 +627,10 @@ global.__VEComponents = new Map(String, Callable, {
                 if (!Optional.is(item) || !TextureUtil.exists(value)) {
                   return
                 }
-                item.set(SpriteUtil.parse({ name: value }))
+                
+                var json = item.get().serialize()
+                json.name = value
+                item.set(SpriteUtil.parse(json))
               },
             }
           }
@@ -760,7 +763,7 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "texture-field-speed": function(name, layout, config = null) {
+  "texture-field-ext": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
       items.add(item)
@@ -849,7 +852,10 @@ global.__VEComponents = new Map(String, Callable, {
                 if (!Optional.is(item) || !TextureUtil.exists(value)) {
                   return
                 }
-                item.set(SpriteUtil.parse({ name: value }))
+
+                var json = item.get().serialize()
+                json.name = value
+                item.set(SpriteUtil.parse(json))
               },
             }
           }
@@ -925,6 +931,76 @@ global.__VEComponents = new Map(String, Callable, {
           }
         },
         Struct.get(config, "speed"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_scale_x",
+      layout.nodes.scaleX, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.textField.setText(value.getScaleX())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setScaleX(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          }
+        },
+        Struct.get(config, "scaleX"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_scale_y",
+      layout.nodes.scaleY, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.textField.setText(value.getScaleY())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setScaleY(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          }
+        },
+        Struct.get(config, "scaleY"),
         false
       )
     ).forEach(addItem, items)

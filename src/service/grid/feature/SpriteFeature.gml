@@ -3,34 +3,31 @@
 ///@param {Struct} [json]
 ///@return {GridItemFeature}
 function SpriteFeature(json = {}) {
-
+  var sprite = Assert.isType(SpriteUtil.parse(json.sprite), Sprite)
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
     type: SpriteFeature,
 
-    ///@type {Struct}
-    sprite: Assert.isType(json.sprite, Struct),
+    ///@type {Sprite}
+    sprite: sprite,
 
-    ///@type {?Struct}
-    mask: Optional.is(Struct.get(json, "mask"))
-      ? Assert.isType(json.mask, Struct)
-      : null,
+    ///@type {Rectangle}
+    mask: new Rectangle(Optional.is(Struct.get(json, "mask")) 
+      ? json.mask
+      : { 
+        x: 0, 
+        y: 0, 
+        width: sprite.getWidth(), 
+        height: sprite.getHeight()
+      }),
 
     ///@override
     ///@param {GridItem} item
     ///@param {VisuController} controller
     update: function(item, controller) {
-      var _sprite = SpriteUtil.parse(this.sprite)
-      item.setSprite(_sprite)
-      item.setMask(new Rectangle(Optional.is(this.mask)
-        ? this.mask
-        : { 
-          x: 0, 
-          y: 0, 
-          width: _sprite.getWidth(), 
-          height: _sprite.getHeight()
-        }))
+      item.setSprite(this.sprite)
+      item.setMask(this.mask)
     },
   }))
 }

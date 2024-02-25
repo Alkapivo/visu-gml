@@ -427,38 +427,48 @@ global.__VELayouts = new Map(String, Callable, {
 
     ///@param {?Struct} [config]
   ///@return {Struct}
-  "texture-field-speed": function(config = null) {
+  "texture-field-ext": function(config = null) {
     return {
-      name: "texture-field-speed",
+      name: "texture-field-ext",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       height: function() { return this.nodes.preview.bottom() - this.y() },
       nodes: {
         title: {
-          name: "texture-field-speed.title",
+          name: "texture-field-ext.title",
           height: function() { return 42 },
         },
         texture: {
-          name: "texture-field-speed.texture",
+          name: "texture-field-ext.texture",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
           height: function() { return 32 },
         },
         frame: {
-          name: "texture-field-speed.frame",
+          name: "texture-field-ext.frame",
           y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 32 },
         },
         speed: {
-          name: "texture-field-speed.speed",
+          name: "texture-field-ext.speed",
           y: function() { return this.context.nodes.frame.bottom() + this.margin.top },
           height: function() { return 32 },
         },
-        alpha: {
-          name: "texture-field-speed.alpha",
+        scaleX: {
+          name: "texture-field-ext.scaleX",
           y: function() { return this.context.nodes.speed.bottom() + this.margin.top },
           height: function() { return 32 },
         },
+        scaleY: {
+          name: "texture-field-ext.scaleY",
+          y: function() { return this.context.nodes.scaleX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        alpha: {
+          name: "texture-field-ext.alpha",
+          y: function() { return this.context.nodes.scaleY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
         preview: {
-          name: "texture-field-speed.preview",
+          name: "texture-field-ext.preview",
           y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
           height: function() { return 144 },
           margin: { top: 10, bottom: 10, left: 10, right: 10 },

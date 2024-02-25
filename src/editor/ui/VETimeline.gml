@@ -666,7 +666,7 @@ function VETimeline(_editor) constructor {
           /// bpm
           var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
           for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
-            var bpmX = round((bpmIndex * bpmWidth) + (abs(this.offset.x) mod bpmWidth))
+            var bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
             GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, thickness, alpha, color)
           }
 

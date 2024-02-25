@@ -36,8 +36,8 @@ function template_bullet(json = null) {
     components: new Array(Struct, [
       {
         name: "bullet_texture",
-        template: VEComponents.get("texture-field-speed"),
-        layout: VELayouts.get("texture-field-speed"),
+        template: VEComponents.get("texture-field-ext"),
+        layout: VELayouts.get("texture-field-ext"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
