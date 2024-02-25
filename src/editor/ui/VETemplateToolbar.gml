@@ -652,7 +652,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
             updateCustom: function() {
               this.__update()
-              /*
               var context = MouseUtil.getClipboard()
               if (context == this) {
                 this.updateLayout(MouseUtil.getMouseY())
@@ -661,19 +660,40 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               if (context == this && !mouse_check_button(mb_left)) {
                 MouseUtil.clearClipboard()
               }
-              */
             },
-            updateLayout: new BindIntent(function(position) {
-              var height = Beans.get(BeanVisuController).editor.layout.nodes.timeline.height()
-              var templateNode = Struct.get(this.context.layout.context.nodes, "template-view")
+            updateLayout: new BindIntent(function(_position) {
+              var titleBar = this.context.templateToolbar.uiService.find("ve-title-bar")
+              var statusBar = this.context.templateToolbar.uiService.find("ve-status-bar")
+
+              var typeNode = Struct.get(this.context.layout.context.nodes, "type")
+              var addNode = Struct.get(this.context.layout.context.nodes, "add")
+              var templateBarNode = Struct.get(this.context.layout.context.nodes, "template-bar")
+              var templateViewNode = Struct.get(this.context.layout.context.nodes, "template-view")
+              var controlNode = Struct.get(this.context.layout.context.nodes, "control")
               var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
 
-              var length = GuiHeight() - 24 - 24 - 32 - height - 160 - 32
-              var pos = position - 24 - 32 - 160
-              inspectorNode.percentageHeight = 1.0 - clamp(pos / length, 0.0, 1.0)
-              templateNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
+              var nodes = this.context.templateToolbar.editor.accordion.layout.nodes
+              var barEventInspectorNode = Struct.get(nodes, "bar_event-inspector")
+              var viewEventInspectorNode = Struct.get(nodes, "view_event-inspector")
+              var barTemplateToolbarNode = Struct.get(nodes, "bar_template-toolbar")
+              var timelineNode = Beans.get(BeanVisuController).editor.layout.nodes.timeline
+              
+              var top = titleBar.layout.height() + titleBar.margin.top + titleBar.margin.bottom
+                + barEventInspectorNode.height() + barEventInspectorNode.margin.top + barEventInspectorNode.margin.bottom
+                + viewEventInspectorNode.height() + viewEventInspectorNode.margin.top + viewEventInspectorNode.margin.bottom
+                + barTemplateToolbarNode.height() + barTemplateToolbarNode.margin.top + barTemplateToolbarNode.margin.bottom
+                + typeNode.height() + typeNode.margin.top + typeNode.margin.bottom
+                + addNode.height() + addNode.margin.top + addNode.margin.bottom
+                + templateBarNode.height() + templateBarNode.margin.top + templateBarNode.margin.bottom
+              var bottom = GuiHeight()
+                -  statusBar.layout.height() 
+                - (timelineNode.height() + timelineNode.margin.top + timelineNode.margin.bottom)
+                - (controlNode.height() + controlNode.margin.top + controlNode.margin.bottom)
+              var length = bottom - top
+              var position = clamp(_position - top, 0, length)
+              inspectorNode.percentageHeight = clamp((length - position) / length, 0.1, 0.9)
+              templateViewNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
             }),
-            /*
             onMousePressedLeft: function(event) {
               MouseUtil.setClipboard(this)
             },
@@ -688,7 +708,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             onMouseHoverOut: function(event) {
               window_set_cursor(cr_default)
             },
-            */
           },
           VEStyles.get("bar-title"),
           false

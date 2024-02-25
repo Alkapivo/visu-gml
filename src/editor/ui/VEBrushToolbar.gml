@@ -653,10 +653,18 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 MouseUtil.clearClipboard()
               }
             },
-            updateLayout: new BindIntent(function(position) {
+            updateLayout: new BindIntent(function(_position) {
+              var titleBar = this.context.brushToolbar.uiService.find("ve-title-bar")
+              var statusBar = this.context.brushToolbar.uiService.find("ve-status-bar")
               var brushNode = Struct.get(this.context.layout.context.nodes, "brush-view")
               var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
-              inspectorNode.percentageHeight = abs((GuiHeight() - 24) - position + 24) / (GuiHeight() - 48)
+              var typeNode = Struct.get(this.context.layout.context.nodes, "type")
+              var controlNode = Struct.get(this.context.layout.context.nodes, "control")
+              var top = titleBar.layout.height() + typeNode.height() + typeNode.margin.top + typeNode.margin.bottom
+              var bottom = GuiHeight() - statusBar.layout.height() - (controlNode.height() + controlNode.margin.top + controlNode.margin.bottom)
+              var length = bottom - top
+              var position = clamp(_position - top, 0, length)
+              inspectorNode.percentageHeight = clamp((length - position) / length, 0.07, 0.93)
               brushNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
             }),
             onMousePressedLeft: function(event) {

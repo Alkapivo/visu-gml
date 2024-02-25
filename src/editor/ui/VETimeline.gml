@@ -917,7 +917,7 @@ function VETimeline(_editor) constructor {
                 this.area.setY(this.component.index * this.area.getHeight())
               },
               onMouseDragLeft: function(event) {
-                var channelName = this.context.getChannelNameFromMouseY(event.data.y)
+                var channelName = this.state.get("channel")
                 if (!Optional.is(channelName)) {
                   return
                 }

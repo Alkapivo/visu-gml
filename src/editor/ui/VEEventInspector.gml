@@ -135,7 +135,7 @@ function VEEventInspector(_editor) constructor {
                   "event-texture": trackEvent.data.icon.name,
                   "event-timestamp": trackEvent.timestamp,
                   "event-channel": selectedEvent.channel,
-                  "type": trackEvent.callable,
+                  "type": trackEvent.callableName,
                   "properties": Struct.remove(JSON.clone(trackEvent.data), "icon")
                 })
                 data.collection.components.clear() ///@todo replace with remove lambda
