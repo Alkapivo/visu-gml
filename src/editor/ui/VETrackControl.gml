@@ -499,8 +499,27 @@ function VETrackControl(_editor) constructor {
   }
 
   ///@return {VETrackControl}
+  watchdog = function() {
+    try {
+      var trackService = this.editor.trackService
+      var time = trackService.time
+      var duration = trackService.duration
+      if (trackService.duration != 0 
+        && trackService.isTrackLoaded()
+        && time >= duration - DeltaTime.apply(FRAME_MS * 2)) {
+        
+        this.editor.controller.send(new Event("pause"))
+      }
+    } catch (exception) {
+      Logger.error("VETrackControl", $"watchdog throwed an exception: {exception.message}")
+    }
+    return this
+  }
+
+  ///@return {VETrackControl}
   update = function() { 
     this.dispatcher.update()
+    this.watchdog()
     return this
   }
 }

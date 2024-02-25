@@ -274,6 +274,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         path: $"{data.path}{data.manifest.video}",
                         timestamp: 0.0,
                         volume: 0,
+                        loop: true,
                       }
                     })
                   }))
