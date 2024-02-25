@@ -640,7 +640,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "label_inspector-control-title": Struct.appendRecursiveUnique(
           {
             type: UIText,
-            text: "Inspector",
+            text: "Brush inspector",
             __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
             updateCustom: function() {
               this.__update()

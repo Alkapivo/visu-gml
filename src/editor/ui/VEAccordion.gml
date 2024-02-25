@@ -66,6 +66,28 @@ function VEAccordion(_editor, config = null) constructor {
           var context = this
           this.state.set("store", this.accordion.store)
           context
+            .add(UIButton(
+              "accordion-item_event-inspector_preview",
+              {
+                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+                backgroundColor: VETheme.color.accentShadow,
+                font: "font_inter_10_regular",
+                color: VETheme.color.textFocus,
+                sprite: { name: "texture_ve_event_inspector_button_preview" },
+                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.preview,
+                onMousePressedLeft: function(data) {
+                  var eventInspector = this.context.accordion.eventInspector
+                  var event = eventInspector.store.getValue("event")
+                  if (!Core.isType(event, VEEvent)) {
+                    return
+                  }
+                  
+                  var handler = Beans.get(BeanVisuController).trackService.handlers
+                    .get(event.type)
+                  handler(event.toTemplate().event.data)
+                },
+              }
+            ))
             .add(UIText(
               "accordion-item_event-inspector_label",
               {
@@ -75,7 +97,7 @@ function VEAccordion(_editor, config = null) constructor {
                 color: VETheme.color.textFocus,
                 align: { v: VAlign.CENTER, h: HAlign.LEFT },
                 text: "Event inspector",
-                offset: { x: 32 },
+                offset: { x: 0 },
                 layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.label,
               }
             ))
@@ -98,7 +120,7 @@ function VEAccordion(_editor, config = null) constructor {
                 font: "font_inter_10_regular",
                 color: VETheme.color.textFocus,
                 align: { v: VAlign.CENTER, h: HAlign.LEFT },
-                text: "Template toolbar",
+                text: "Templates",
                 offset: { x: 32 },
                 layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.label,
               }
@@ -176,9 +198,16 @@ function VEAccordion(_editor, config = null) constructor {
               - this.margin.right },
             height: function() { return 32 },
             nodes: {
+              preview: {
+                name: "bar_event-inspector.preview",
+                width: function() { return 32 },
+              },
               label: {
                 name: "bar_event-inspector.label",
-                width: function() { return this.context.width() - 56 },
+                x: function() { return this.context.nodes.preview.right() },
+                width: function() { return this.context.width()
+                  - this.context.nodes.preview.width()
+                  - this.context.nodes.checkbox.width() },
               },
               checkbox: {
                 name: "bar_event-inspector.checkbox",
