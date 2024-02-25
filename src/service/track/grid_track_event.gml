@@ -143,7 +143,8 @@ global.__grid_track_event = new Map(String, Callable, {
     }
     
     if (Struct.get(data, "grid-config_use-clear-frame") == true) {
-      controller.gridService.properties.gridClearFrame = Struct.get(data, "grid-config_clear-frame")
+      controller.gridService.properties.gridClearFrame = Struct
+        .get(data, "grid-config_clear-frame")
     }
 
     if (Struct.get(data, "grid-config_use-clear-color") == true) {
@@ -172,6 +173,11 @@ global.__grid_track_event = new Map(String, Callable, {
           increase: transformer.increase,
         })
       }))
+    }
+
+    if (Struct.get(data, "grid-config_use-gamemode") == true) {
+      controller.send(new Event("change-gamemode")
+        .setData(GameMode.get(Struct.get(data, "grid-config_gamemode"))))
     }
   },
   "brush_grid_separator": function(data) {

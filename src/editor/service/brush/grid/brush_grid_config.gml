@@ -52,6 +52,18 @@ function brush_grid_config(json = null) {
           { value: 0, target: 5, factor: 0.03, increase: 2 }
         )),
       },
+      "grid-config_use-gamemode": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_use-gamemode", false),
+      },
+      "grid-config_gamemode": {
+        type: String,
+        value: Struct.getDefault(json, "grid-config_gamemode", GameMode.keys().get(0)),
+        validate: function(value) {
+          Assert.isEnumKey(value, GameMode)
+        },
+        data: GameMode.keys(),
+      },
     }),
     components: new Array(Struct, [
       {
@@ -270,6 +282,47 @@ function brush_grid_config(json = null) {
               store: { key: "grid-config_transform-clear-frame-alpha" },
               enable: { key: "grid-config_use-transform-clear-frame-alpha" },
             },
+          },
+        },
+      },
+      {
+        name: "grid-config_use-gamemode",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Set gamemode",
+            enable: { key: "grid-config_use-render-grid" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-config_use-gamemode" },
+          },
+        },
+      },
+      {
+        name: "grid-config_gamemode",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Mode",
+            enable: { key: "grid-config_use-gamemode" },
+          },
+          previous: { 
+            enable: { key: "grid-config_use-gamemode" },
+            store: { key: "grid-config_gamemode" },
+          },
+          preview: Struct.appendRecursive({ 
+            enable: { key: "grid-config_use-gamemode" },
+            store: { key: "grid-config_gamemode" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            enable: { key: "grid-config_use-gamemode" },
+            store: { key: "grid-config_gamemode" },
           },
         },
       },
