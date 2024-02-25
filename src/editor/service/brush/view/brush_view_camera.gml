@@ -6,13 +6,21 @@ function brush_view_camera(json = null) {
   return {
     name: "brush_view_camera",
     store: new Map(String, Struct, {
-      "view-config_use-lock-target": {
+      "view-config_use-lock-target-x": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-config_use-lock-target", false),
+        value: Struct.getDefault(json, "view-config_use-lock-target-x", false),
       },
-      "view-config_lock-target": {
+      "view-config_lock-target-x": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-config_lock-target", false),
+        value: Struct.getDefault(json, "view-config_lock-target-x", false),
+      },
+      "view-config_use-lock-target-y": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_use-lock-target-y", false),
+      },
+      "view-config_lock-target-y": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_lock-target-y", false),
       },
       "view-config_use-transform-x": {
         type: Boolean,
@@ -83,25 +91,48 @@ function brush_view_camera(json = null) {
     }),
     components: new Array(Struct, [
       {
-        name: "view-config_use-lock-target",
+        name: "view-config_use-lock-target-x",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Lock target",
-            enable: { key: "view-config_use-lock-target" },
+            text: "Lock target X",
+            enable: { key: "view-config_use-lock-target-x" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-config_use-lock-target" },
+            store: { key: "view-config_use-lock-target-x" },
           },
           input: { 
             spriteOn: { name: "visu_texture_checkbox_switch_on" },
             spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "view-config_lock-target" },
-            enable: { key: "view-config_use-lock-target" },
+            store: { key: "view-config_lock-target-x" },
+            enable: { key: "view-config_use-lock-target-x" },
+          },
+        },
+      },
+      {
+        name: "view-config_use-lock-target-y",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Lock target Y",
+            enable: { key: "view-config_use-lock-target-y" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-lock-target-y" },
+          },
+          input: { 
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "view-config_lock-target-y" },
+            enable: { key: "view-config_use-lock-target-y" },
           },
         },
       },

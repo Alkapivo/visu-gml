@@ -38,7 +38,8 @@
                 "blend":"#FFFFFF",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":1.0,
+              "view-config_use-lock-target-x":1.0,
+"view-config_use-lock-target-y":1.0,
               "view-config_lock-target":1.0,
               "view-config_use-transform-x":1.0,
               "view-config_transform-x":{
@@ -104,7 +105,8 @@
                 "blend":"#549BFF",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":0.0,
+              "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
               "view-config_lock-target":1.0,
               "view-config_use-transform-x":0.0,
               "view-config_transform-x":{
@@ -188,7 +190,8 @@
                 "blend":"#2650FF",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":0.0,
+              "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
               "view-config_lock-target":1.0,
               "view-config_use-transform-x":0.0,
               "view-config_transform-x":{
@@ -1447,7 +1450,8 @@
                 "blend":"#549BFF",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":0.0,
+              "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
               "view-config_lock-target":1.0,
               "view-config_use-transform-x":0.0,
               "view-config_transform-x":{
@@ -7097,7 +7101,8 @@
                 "blend":"#E1B17E",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":1.0,
+              "view-config_use-lock-target-x":1.0,
+"view-config_use-lock-target-y":1.0,
               "view-config_lock-target":1.0,
               "view-config_use-transform-x":0.0,
               "view-config_transform-x":{
@@ -7906,7 +7911,8 @@
                 "blend":"#AEFF40",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":0.0,
+              "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
               "view-config_lock-target":0.0,
               "view-config_use-transform-x":0.0,
               "view-config_transform-x":{
@@ -8170,7 +8176,8 @@
                 "blend":"#AEFF40",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":0.0,
+              "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
               "view-config_lock-target":0.0,
               "view-config_use-transform-x":0.0,
               "view-config_transform-x":{
@@ -8236,7 +8243,8 @@
                 "blend":"#FF70FF",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":0.0,
+              "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
               "view-config_lock-target":0.0,
               "view-config_use-transform-x":1.0,
               "view-config_transform-x":{
@@ -9340,7 +9348,8 @@
                 "blend":"#AEFF40",
                 "name":"texture_white"
               },
-              "view-config_use-lock-target":0.0,
+              "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
               "view-config_lock-target":0.0,
               "view-config_use-transform-x":0.0,
               "view-config_transform-x":{

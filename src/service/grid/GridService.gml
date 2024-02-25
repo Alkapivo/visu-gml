@@ -42,6 +42,20 @@ function GridService(_controller, config = {}): Service(config) constructor {
 	this.view.y = this.height - this.view.height
 
   ///@type {Struct}
+  targetLocked = {
+    x: this.view.x,
+    y: this.view.y,
+    setX: function(x) {
+      this.x = x
+      return this
+    },
+    setY: function(y) {
+      this.y = y
+      return this
+    },
+  }
+
+  ///@type {Struct}
   properties = Struct.contains(config, "properties")
     ? Assert.isType(Struct.get(config, "properties"), GridProperties)
     : new GridProperties()
@@ -142,19 +156,6 @@ function GridService(_controller, config = {}): Service(config) constructor {
     return this.dispatcher.send(event)
   }
 
-  static targetLocked = {
-    x: 0,
-    y: 0,
-    setX: function(x) {
-      this.x = x
-      return this
-    },
-    setY: function(y) {
-      this.y = y
-      return this
-    },
-  }
-
   ///@override
   ///@return {GridService}
   update = function() {
@@ -163,16 +164,22 @@ function GridService(_controller, config = {}): Service(config) constructor {
     this.dispatcher.update()
     this.executor.update()
 
-    var followTarget = null
-    if (this.controller.editor.store.getValue("target-locked") == true) {
-      followTarget = this.targetLocked
-        .setX(this.view.x + (this.view.width / 2))
-        .setY(this.view.y + (this.view.height / 2))
-    } else if (Core.isType(this.controller.playerService.player, Player)) {
-      followTarget = this.controller.playerService.player
+    var player = this.controller.playerService.player
+    if (Core.isType(player, Player)) {
+      this.targetLocked.setX(player.x)
+      this.targetLocked.setY(player.y)
     }
+
+    if (this.controller.editor.store.getValue("target-locked-x")) {
+      this.targetLocked.setX(this.view.x + (this.view.width / 2))
+    }
+
+    if (this.controller.editor.store.getValue("target-locked-y")) {
+      this.targetLocked.setY(this.view.y + (this.view.height / 2))
+    }
+
     this.view
-      .setFollowTarget(followTarget)
+      .setFollowTarget(this.targetLocked)
       .update()
     
     this.moveGridItems()

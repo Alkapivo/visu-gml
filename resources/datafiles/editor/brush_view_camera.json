@@ -31,7 +31,8 @@
           "startValue":0.0,
           "target":-70.0
         },
-        "view-config_use-lock-target":1.0,
+        "view-config_use-lock-target-x":1.0,
+"view-config_use-lock-target-y":1.0,
         "view-config_lock-target":0.0,
         "view-config_use-transform-x":1.0,
         "view-config_transform-x":{
@@ -157,7 +158,8 @@
           "startValue":0.0,
           "target":-80.0
         },
-        "view-config_use-lock-target":0.0,
+        "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
         "view-config_lock-target":1.0,
         "view-config_use-transform-x":0.0,
         "view-config_transform-x":{
@@ -221,7 +223,8 @@
           "startValue":0.0,
           "target":-80.0
         },
-        "view-config_use-lock-target":0.0,
+        "view-config_use-lock-target-x":0.0,
+"view-config_use-lock-target-y":0.0,
         "view-config_lock-target":1.0,
         "view-config_use-transform-x":0.0,
         "view-config_transform-x":{

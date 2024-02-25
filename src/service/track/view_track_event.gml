@@ -56,10 +56,16 @@ global.__view_track_event = new Map(String, Callable, {
   },
   "brush_view_camera": function(data) {
     var controller = Beans.get(BeanVisuController)
-    if (Struct.get(data, "view-config_use-lock-target") == true) {
+    if (Struct.get(data, "view-config_use-lock-target-x") == true) {
       controller.editor.store
-        .get("target-locked")
-        .set(Struct.get(data, "view-config_lock-target"))
+        .get("target-locked-x")
+        .set(Struct.get(data, "view-config_lock-target-x"))
+    }
+    
+    if (Struct.get(data, "view-config_use-lock-target-y") == true) {
+      controller.editor.store
+        .get("target-locked-y")
+        .set(Struct.get(data, "view-config_lock-target-y"))
     }
 
     if (Struct.get(data, "view-config_use-transform-x") == true) {

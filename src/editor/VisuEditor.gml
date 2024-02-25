@@ -96,7 +96,11 @@ function VisuEditor(_controller) constructor {
       type: Optional.of(Struct),
       value: null,
     },
-    "target-locked": {
+    "target-locked-x": {
+      type: Boolean,
+      value: false
+    },
+    "target-locked-y": {
       type: Boolean,
       value: false
     }
