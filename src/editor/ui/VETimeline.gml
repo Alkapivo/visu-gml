@@ -699,26 +699,28 @@ function VETimeline(_editor) constructor {
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseDropLeft: function(event) {
-          this.timer.time = this.timer.duration
           var trackEvent = MouseUtil.getClipboard()
+          var channelName = Struct.get(trackEvent, "channelName")
           MouseUtil.clearClipboard()
-          if (!Core.isType(trackEvent, TrackEvent)) {
+          this.timer.time = this.timer.duration
+
+          if (!Core.isType(trackEvent, TrackEvent)
+            || !this.controller.editor.trackService.track.channels
+              .contains(channelName)) {
             return
           }
 
-          var channel = this.getChannelNameFromMouseY(event.data.y)
-          this.removeEvent(channel, trackEvent.eventName)
+          this.removeEvent(channelName, trackEvent.eventName)
 
           trackEvent = trackEvent.serialize()
           trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
-          
           var store = Beans.get(BeanVisuController).editor.store
           if (store.getValue("snap") || keyboard_check(vk_control)) {
             var bpm = store.getValue("bpm")
             trackEvent.timestamp = floor(trackEvent.timestamp / (60 / bpm)) * (60 / bpm)
           }
 
-          channel = this.getChannelNameFromMouseY(event.data.y)
+          var channel = this.getChannelNameFromMouseY(event.data.y)
           if (!Optional.is(channel)) {
             var size = this.controller.containers
               .get("ve-timeline-channels").collection
@@ -925,6 +927,7 @@ function VETimeline(_editor) constructor {
                   return
                 }
                 Struct.set(trackEvent, "eventName", this.name)
+                Struct.set(trackEvent, "channelName", channelName)
                 MouseUtil.setClipboard(trackEvent)
               },
               onMouseReleasedLeft: function(event) {
@@ -950,6 +953,7 @@ function VETimeline(_editor) constructor {
                       store.get("selected-event").set(null)
                     }
                     break
+                  case ToolType.BRUSH:
                   case ToolType.CLONE:
                   case ToolType.SELECT:
                     Beans.get(BeanVisuController).editor.store
