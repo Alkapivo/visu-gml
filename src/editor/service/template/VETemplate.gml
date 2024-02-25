@@ -5,6 +5,9 @@ function _VETemplateType(): Enum() constructor {
   SHADER = "template_shader"
   SHROOM = "template_shroom"
   BULLET = "template_bullet"
+  LYRICS = "template_lyrics"
+  PARTICLE = "template_particle"
+  TEXTURE = "template_texture"
 }
 global.__VETemplateType = new _VETemplateType()
 #macro VETemplateType global.__VETemplateType
@@ -16,6 +19,9 @@ global.__VETemplateTypeNames = new Map(String, String)
   .set(VETemplateType.SHADER, "Shader template")
   .set(VETemplateType.SHROOM, "Shroom template")
   .set(VETemplateType.BULLET, "Bullet template")
+  .set(VETemplateType.LYRICS, "Lyrics template")
+  .set(VETemplateType.PARTICLE, "Particle template")
+  .set(VETemplateType.TEXTURE, "Texture template")
 #macro VETemplateTypeNames global.__VETemplateTypeNames
 
 
@@ -57,6 +63,27 @@ function VETemplate(json) constructor {
       case VETemplateType.BULLET: return Struct
         .append(storeConfig, {
           "template-bullet": {
+            type: String,
+            value: json.name,   
+          },
+        })
+      case VETemplateType.LYRICS: return Struct
+        .append(storeConfig, {
+          "template-lyrics": {
+            type: String,
+            value: json.name,   
+          },
+        })
+      case VETemplateType.PARTICLE: return Struct
+        .append(storeConfig, {
+          "template-particle": {
+            type: String,
+            value: json.name,   
+          },
+        })
+      case VETemplateType.TEXTURE: return Struct
+        .append(storeConfig, {
+          "template-texture": {
             type: String,
             value: json.name,   
           },
@@ -188,6 +215,24 @@ function VETemplate(json) constructor {
     return new BulletTemplate(json.name, json)
   }
 
+  ///@private
+  ///@return {LyricsTemplate}
+  toLyricsTemplate = function() {
+    throw new Exception("toLyricsTemplate - not implemented")
+  }
+
+  ///@private
+  ///@return {ParticleTemplate}
+  toParticleTemplate = function() {
+    throw new Exception("toParticleTemplate - not implemented")
+  }
+
+  ///@private
+  ///@return {TextureTemplate}
+  toTextureTemplate = function() {
+    throw new Exception("toTextureTemplate - not implemented")
+  }
+
   ///@throws {Exception}
   ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate}
   serialize = function() {
@@ -195,6 +240,9 @@ function VETemplate(json) constructor {
       case VETemplateType.SHADER: return this.toShaderTemplate()
       case VETemplateType.SHROOM: return this.toShroomTemplate()
       case VETemplateType.BULLET: return this.toBulletTemplate()
+      case VETemplateType.LYRICS: return this.toLyricsTemplate()
+      case VETemplateType.PARTICLE: return this.toParticleTemplate()
+      case VETemplateType.TEXTURE: return this.toTextureTemplate()
       default: throw new Exception($"Serialize dispatcher for type '{this.type}' wasn't found")
     }
   }

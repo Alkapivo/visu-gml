@@ -80,7 +80,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
               backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
               backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 5, left: 1 },
+              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
               callback: function() { 
                 this.context.templateToolbar.store
                   .get("type")
@@ -101,9 +101,99 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               templateType: VETemplateType.BULLET,
             },
           },
+          {
+            name: "button_type-lyrics",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Lyrics" },
+              templateType: VETemplateType.LYRICS,
+            },
+          },
+          {
+            name: "button_type-particle",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Particle" },
+              templateType: VETemplateType.PARTICLE,
+            },
+          },
+          {
+            name: "button_type-texture",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Texture" },
+              templateType: VETemplateType.TEXTURE,
+            },
+          },
         ])
       }),
-      timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
+      timer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -260,6 +350,152 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             },
           },
         ]),
+        "template_lyrics": new Array(Struct, [
+          {
+            name: "text-field_new-lyrics-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "name" } },
+            },
+          },
+          {
+            name: "button_new-lyrics-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              backgroundColor: VETheme.color.accept,
+              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
+              callback: function() { 
+                var name = this.context.templateToolbar.store.getValue("name")
+                if (!Core.isType(name, String) || name == "") {
+                  return
+                }
+
+                Beans.get(BeanVisuController).lyricsService.templates
+                  .set(name, new LyricsTemplate(name, { todo: "json" }))
+
+                ///@description send update event to subscribers
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(VETemplateType.LYRICS)
+              },
+              label: { text: "Add template" },
+            },
+          },
+        ]),
+        "template_particle": new Array(Struct, [
+          {
+            name: "text-field_new-particle-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "name" } },
+            },
+          },
+          {
+            name: "button_new-particle-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              backgroundColor: VETheme.color.accept,
+              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
+              callback: function() { 
+                var name = this.context.templateToolbar.store.getValue("name")
+                if (!Core.isType(name, String) || name == "") {
+                  return
+                }
+
+                Beans.get(BeanVisuController).particleService.templates
+                  .set(name, new ParticleTemplate(name, { todo: "json" }))
+
+                ///@description send update event to subscribers
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(VETemplateType.PARTICLE)
+              },
+              label: { text: "Add template" },
+            },
+          },
+        ]),
+        "template_texture": new Array(Struct, [
+          {
+            name: "text-field_new-texture-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "name" } },
+            },
+          },
+          {
+            name: "text-field_new-texture-template_file",  
+            template: VEComponents.get("text-field-button"),
+            layout: VELayouts.get("text-field-button"),
+            config: { 
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Texture" },
+              field: { 
+                read_only: true,
+                updateCustom: function() {
+                  var text = this.context.state.get("store").getValue("file-texture")
+                  if (Core.isType(text, String)) {
+                    this.textField.setText(FileUtil.getFilenameFromPath(text))
+                  } else {
+                    this.textField.setText("")
+                  }
+                },
+              },
+              button: { 
+                label: { text: "Open" },
+                callback: function() {
+                  var path = FileUtil.getPathToOpenWithDialog({
+                    description: "PNG file",
+                    extension: "png",
+                  })
+                  if (!FileUtil.fileExists(path)) {
+                    return
+                  }
+      
+                  this.context.state.get("store")
+                    .get("file-texture")
+                    .set(path)
+                }},
+            },
+          },
+          {
+            name: "button_new-texture-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              backgroundColor: VETheme.color.accept,
+              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
+              callback: function() { 
+                var name = this.context.templateToolbar.store.getValue("name")
+                if (!Core.isType(name, String) || name == "") {
+                  return
+                }
+
+                Beans.get(BeanTextureService).templates
+                  .set(name, new TextureTemplate(name, { todo: "json" }))
+
+                ///@description send update event to subscribers
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(VETemplateType.TEXTURE)
+              },
+              label: { text: "Add template" },
+            },
+          },
+        ]),
       }),
       timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -367,6 +603,21 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   templates = controller.bulletService.templates
                   model = "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>"
                   filename = "bullet"
+                  break
+                case VETemplateType.LYRICS:
+                  templates = controller.lyricsService.templates
+                  model = "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>"
+                  filename = "lyrics"
+                  break
+                case VETemplateType.PARTICLE:
+                  templates = controller.particleService.templates
+                  model = "Collection<io.alkapivo.core.service.particle.ParticleTemplate>"
+                  filename = "particle"
+                  break
+                case VETemplateType.TEXTURE:
+                  templates = Beans.get(BeanTextureService).templates
+                  model = "Collection<io.alkapivo.core.service.texture.TextureTemplate>"
+                  filename = "texture"
                   break
                 default:
                   Logger.error(
@@ -614,6 +865,168 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   collection: data.collection,
                 })
                 break
+              case VETemplateType.LYRICS:
+                var components = Beans.get(BeanVisuController).lyricsService.templates
+                  .map(function(template, name) {
+                    return {
+                      name: template.name,
+                      template: VEComponents.get("template-entry"),
+                      layout: VELayouts.get("template-entry"),
+                      config: {
+                        label: { 
+                          text: template.name,
+                          colorHoverOver: VETheme.color.accentShadow,
+                          colorHoverOut: VETheme.color.primaryShadow,
+                          onMouseReleasedLeft: function() {
+                            var lyrics = Beans.get(BeanVisuController).lyricsService.templates
+                              .get(this.templateName)
+                            if (!Core.isType(lyrics, LyricsTemplate)) {
+                              return
+                            }
+
+                            Struct.set(lyrics, "type", VETemplateType.LYRICS)
+                            this.context.templateToolbar.store
+                              .get("template")
+                              .set(new VETemplate(lyrics))
+                          },
+                          templateName: template.name,
+                        },
+                        button: { 
+                          sprite: {
+                            name: "texture_ve_icon_trash",
+                            blend: VETheme.color.textShadow,
+                          },
+                          callback: function() {
+                            this.removeUIItemfromUICollection()
+                            Beans.get(BeanVisuController).lyricsService.templates
+                              .remove(this.templateName)
+                          },
+                          templateName: template.name,
+                          removeUIItemfromUICollection: new BindIntent(Callable
+                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                        },
+                      },
+                    }
+                  }, null, String, Struct)
+
+                var keys = GMArray.sort(components.keys().getContainer())
+                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
+                  var component = acc.components.get(acc.keys[iterator])
+                  acc.collection.add(new UIComponent(component))
+                }, {
+                  keys: keys,
+                  components: components,
+                  collection: data.collection,
+                })
+                break
+              case VETemplateType.PARTICLE:
+                var components = Beans.get(BeanVisuController).particleService.templates
+                  .map(function(template, name) {
+                    return {
+                      name: template.name,
+                      template: VEComponents.get("template-entry"),
+                      layout: VELayouts.get("template-entry"),
+                      config: {
+                        label: { 
+                          text: template.name,
+                          colorHoverOver: VETheme.color.accentShadow,
+                          colorHoverOut: VETheme.color.primaryShadow,
+                          onMouseReleasedLeft: function() {
+                            var particle = Beans.get(BeanVisuController).particleService.templates
+                              .get(this.templateName)
+                            if (!Core.isType(particle, ParticleTemplate)) {
+                              return
+                            }
+
+                            Struct.set(particle, "type", VETemplateType.PARTICLE)
+                            this.context.templateToolbar.store
+                              .get("template")
+                              .set(new VETemplate(particle))
+                          },
+                          templateName: template.name,
+                        },
+                        button: { 
+                          sprite: {
+                            name: "texture_ve_icon_trash",
+                            blend: VETheme.color.textShadow,
+                          },
+                          callback: function() {
+                            this.removeUIItemfromUICollection()
+                            Beans.get(BeanVisuController).particleService.templates
+                              .remove(this.templateName)
+                          },
+                          templateName: template.name,
+                          removeUIItemfromUICollection: new BindIntent(Callable
+                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                        },
+                      },
+                    }
+                  }, null, String, Struct)
+
+                var keys = GMArray.sort(components.keys().getContainer())
+                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
+                  var component = acc.components.get(acc.keys[iterator])
+                  acc.collection.add(new UIComponent(component))
+                }, {
+                  keys: keys,
+                  components: components,
+                  collection: data.collection,
+                })
+                break
+              case VETemplateType.TEXTURE:
+                var components = Beans.get(BeanTextureService).templates
+                  .map(function(template, name) {
+                    return {
+                      name: template.name,
+                      template: VEComponents.get("template-entry"),
+                      layout: VELayouts.get("template-entry"),
+                      config: {
+                        label: { 
+                          text: template.name,
+                          colorHoverOver: VETheme.color.accentShadow,
+                          colorHoverOut: VETheme.color.primaryShadow,
+                          onMouseReleasedLeft: function() {
+                            var texture = Beans.get(BeanTextureService).templates
+                              .get(this.templateName)
+                            if (!Core.isType(texture, TextureTemplate)) {
+                              return
+                            }
+
+                            Struct.set(texture, "type", VETemplateType.PARTICLE)
+                            this.context.templateToolbar.store
+                              .get("template")
+                              .set(new VETemplate(texture))
+                          },
+                          templateName: template.name,
+                        },
+                        button: { 
+                          sprite: {
+                            name: "texture_ve_icon_trash",
+                            blend: VETheme.color.textShadow,
+                          },
+                          callback: function() {
+                            this.removeUIItemfromUICollection()
+                            Beans.get(BeanTextureService).templates
+                              .remove(this.templateName)
+                          },
+                          templateName: template.name,
+                          removeUIItemfromUICollection: new BindIntent(Callable
+                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                        },
+                      },
+                    }
+                  }, null, String, Struct)
+
+                var keys = GMArray.sort(components.keys().getContainer())
+                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
+                  var component = acc.components.get(acc.keys[iterator])
+                  acc.collection.add(new UIComponent(component))
+                }, {
+                  keys: keys,
+                  components: components,
+                  collection: data.collection,
+                })
+                break
               default:
                 Logger.error(
                   "VETemplateToolbar", 
@@ -810,6 +1223,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   case VETemplateType.SHROOM:
                     controller.shroomService.templates.set(name, serialized)
                     break
+                  case VETemplateType.BULLET:
+                    controller.bulletService.templates.set(name, serialized)
+                    break
+                  case VETemplateType.LYRICS:
+                    controller.lyricsService.templates.set(name, serialized)
+                    break
+                  case VETemplateType.PARTICLE:
+                    controller.particleService.templates.set(name, serialized)
+                    break
+                  case VETemplateType.TEXTURE:
+                    Beans.get(BeanTextureService).templates.set(name, serialized)
+                    break
                   default:
                     Logger.error(
                       "VETemplateToolbar", 
@@ -890,6 +1315,10 @@ function VETemplateToolbar(_editor) constructor {
     },
     "template": {
       type: Optional.of(VETemplate),
+      value: null,
+    },
+    "file-texture": {
+      type: Optional.of(String),
       value: null,
     },
   })

@@ -1,7 +1,5 @@
 ///@package io.alkapivo.visu.editor.api.template
 
-
-
 ///@param {Struct} json
 ///@return {Struct}
 function template_bullet(json = null) {
