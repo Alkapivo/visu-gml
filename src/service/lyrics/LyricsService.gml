@@ -29,20 +29,22 @@ function LyricsService(config = null): Service() constructor {
         lines: lines
       })
 
+      var lyrics = new Lyrics({
+        lines: lines,
+        font: event.data.font,
+        fontHeight: event.data.fontHeight,
+        charSpeed: event.data.charSpeed,
+        color: event.data.color,
+        align: event.data.align,
+        area: event.data.area,
+        outline: Struct.getDefault(event.data, "outline", null),
+        lineDelay: Struct.getDefault(event.data, "lineDelay", null),
+        finishDelay: Struct.getDefault(event.data, "finishDelay", null),
+      })
+
       var task = new Task("lyrics-task")
         .setState({
-          lyrics: {
-            lines: lines,
-            font: event.data.font,
-            fontHeight: event.data.fontHeight,
-            charSpeed: event.data.charSpeed,
-            color: event.data.color,
-            align: event.data.align,
-            area: event.data.area,
-            outline: Struct.getDefault(event.data, "outline", null),
-            lineDelay: Struct.getDefault(event.data, "lineDelay", null),
-            finishDelay: Struct.getDefault(event.data, "finishDelay", null),
-          },
+          lyrics: lyrics,
           charPointer: 0,
           linePointer: 0,
         })
@@ -62,11 +64,10 @@ function LyricsService(config = null): Service() constructor {
 
           if (Optional.is(state.lyrics.lineDelay) 
             && state.linePointer != 0
-            && !state.lyrics.lineDelay.finished) {
-            state.lyrics.lineDelay.update()
-            if (!state.lyrics.lineDelay.finished) {
-              return
-            }
+            && !state.lyrics.lineDelay.finished
+            && !state.lyrics.lineDelay.update().finished) {
+            
+            return
           }
 
           var line = state.lyrics.lines.get(state.linePointer)
@@ -77,6 +78,7 @@ function LyricsService(config = null): Service() constructor {
             if (Optional.is(state.lyrics.lineDelay)) {
               state.lyrics.lineDelay.reset()
             }
+            
             return
           }
         })

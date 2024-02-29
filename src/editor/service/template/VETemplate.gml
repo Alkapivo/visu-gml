@@ -221,7 +221,11 @@ function VETemplate(json) constructor {
   ///@private
   ///@return {LyricsTemplate}
   toLyricsTemplate = function() {
-    throw new Exception("toLyricsTemplate - not implemented")
+    var store = this.store
+    return new LyricsTemplate(
+      store.getValue("template-name"), 
+      { lines: String.split(store.getValue("lines"), "\n").getContainer() }
+    )
   }
 
   ///@private
