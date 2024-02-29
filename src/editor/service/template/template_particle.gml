@@ -61,7 +61,7 @@ function template_particle(json = null) {
       #region Shape
       {
         name: "particle_shape",
-        template: VEComponents.get("spin-select"),
+        template: VEComponents.get("spin-select-override"),
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },

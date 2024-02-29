@@ -343,7 +343,9 @@ function GridRenderer(_controller, config = {}) constructor {
       return this
     }
 
-    this.overlayRenderer.renderForegrounds()
+    var width = this.backgroundSurface.width
+    var height = this.backgroundSurface.height
+    this.overlayRenderer.renderForegrounds(width, height)
     return this
   }
   
@@ -351,13 +353,15 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@param {GridRenderer} renderer
   renderBackgroundSurface = function(renderer) {
     var properties = renderer.controller.gridService.properties
+    var width = this.backgroundSurface.width
+    var height = this.backgroundSurface.height
     GPU.render.clear(properties.backgroundColor)
     if (properties.renderVideo) {
-      renderer.overlayRenderer.renderVideo() 
+      renderer.overlayRenderer.renderVideo(width, height) 
     }
 
     if (properties.renderBackground) {
-      renderer.overlayRenderer.renderBackgrounds()
+      renderer.overlayRenderer.renderBackgrounds(width, height)
     }
   }
 
@@ -380,7 +384,7 @@ function GridRenderer(_controller, config = {}) constructor {
     var zfrom = zto - cameraDistance * dsin(renderer.camera.pitch)
     renderer.camera.viewMatrix = matrix_build_lookat(xfrom, yfrom, zfrom, xto, yto, zto, 0, 0, 1)
     camera_set_view_mat(renderer.camera.gmCamera, renderer.camera.viewMatrix)
-    renderer.camera.projectionMatrix = matrix_build_projection_perspective_fov(-60, -1 * GuiWidth() / GuiHeight(), 1, 32000) ///@todo extract parameters
+    renderer.camera.projectionMatrix = matrix_build_projection_perspective_fov(-60, -1 * renderer.gridSurface.width / renderer.gridSurface.height, 1, 32000) ///@todo extract parameters
     camera_set_proj_mat(renderer.camera.gmCamera, renderer.camera.projectionMatrix)
     camera_apply(renderer.camera.gmCamera)
 
@@ -486,9 +490,9 @@ function GridRenderer(_controller, config = {}) constructor {
   }
 
   ///@return {GridRenderer}
-  render = function() {
-    var width = GuiWidth()
-    var height = GuiHeight()
+  render = function(config) {
+    var width = Struct.contains(config, "width") ? config.width : GuiWidth()
+    var height = Struct.contains(config, "height") ? config.height : GuiHeight()
     this.backgroundSurface
       .update(width, height)
       .renderOn(this.renderBackgroundSurface, this)

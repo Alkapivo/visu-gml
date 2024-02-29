@@ -604,7 +604,12 @@ function VisuController(layerName) constructor {
   render = function() {
     try {
       gpu_set_alphatestenable(true) ///@todo investigate
-      this.gridRenderer.render()
+      var enable = this.enableUIContainerServiceRendering
+      var preview = this.editor.layout.nodes.preview
+      this.gridRenderer.render({ 
+        width: enable ? ceil(preview.width()) : GuiWidth(), 
+        height: enable ? ceil(preview.height() + 16) : GuiHeight(),
+      })
       //this.gridSystem.render()
     } catch (exception) {
       Logger.error("VisuController", $"render throws exception: {exception.message}")
@@ -616,7 +621,14 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   renderGUI = function() {
     try {
-      this.gridRenderer.renderGUI()
+      var enable = this.enableUIContainerServiceRendering
+      var preview = this.editor.layout.nodes.preview
+      this.gridRenderer.renderGUI({ 
+        width: enable ? ceil(preview.width()) : GuiWidth(), 
+        height: enable ? ceil(preview.height() + 16) : GuiHeight(), 
+        x: enable ? ceil(preview.x()) : 0, 
+        y: enable ? ceil(preview.y()) : 0,
+      })
       this.lyricsRenderer.renderGUI()
       if (this.enableUIContainerServiceRendering) {
         this.uiService.render()

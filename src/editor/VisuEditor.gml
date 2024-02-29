@@ -80,13 +80,29 @@ function VisuEditor(_controller) constructor {
       type: Boolean,
       value: Assert.isType(Core.getProperty("visu.editor.render-event", false), Boolean)
     },
+    "_render-event": {
+      type: Boolean,
+      value: Assert.isType(Core.getProperty("visu.editor.render-event", false), Boolean)
+    },
     "render-timeline": {
+      type: Boolean,
+      value:Assert.isType(Core.getProperty("visu.editor.render-timeline", false), Boolean)
+    },
+    "_render-timeline": {
       type: Boolean,
       value:Assert.isType(Core.getProperty("visu.editor.render-timeline", false), Boolean)
     },
     "render-brush": {
       type: Boolean,
       value: Assert.isType(Core.getProperty("visu.editor.render-brush", false), Boolean)
+    },
+    "_render-brush": {
+      type: Boolean,
+      value: Assert.isType(Core.getProperty("visu.editor.render-brush", false), Boolean)
+    },
+    "render-trackControl": {
+      type: Boolean,
+      value: false,
     },
     "new-channel-name": {
       type: String,
@@ -147,8 +163,9 @@ function VisuEditor(_controller) constructor {
             .get(this.context.nodes, "title-bar").bottom() },
         },
         "track-control": {
+          percentageHeight: 1.0,
           width: function() { return Struct.get(this.context.nodes, "preview").width() },
-          height: function() { return 80 },
+          height: function() { return 80 * this.percentageHeight },
           x: function() { return Struct.get(this.context.nodes, "preview").x() },
           y: function() { return Struct.get(this.context.nodes, "preview").bottom() },
         },
@@ -213,6 +230,10 @@ function VisuEditor(_controller) constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
+      this.store.get("render-event").set(this.store.getValue("_render-event"))
+      this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
+      this.store.get("render-brush").set(this.store.getValue("_render-brush"))
+      this.store.get("render-trackControl").set(true)
       return {
         "titleBar": this.titleBar.send(new Event("open")
           .setData({ layout: Struct.get(this.layout.nodes, "title-bar") })),
@@ -231,6 +252,13 @@ function VisuEditor(_controller) constructor {
       }
     },
     "close": function(event) {
+      this.store.get("_render-event").set(this.store.getValue("render-event"))
+      this.store.get("render-event").set(false)
+      this.store.get("_render-timeline").set(this.store.getValue("render-timeline"))
+      this.store.get("render-timeline").set(false)
+      this.store.get("_render-brush").set(this.store.getValue("render-brush"))
+      this.store.get("render-brush").set(false)
+      this.store.get("render-trackControl").set(false)
       return {
         //"titleBar": this.titleBar.send(new Event("close")),
         "accordion": this.accordion.send(new Event("close")),
@@ -292,6 +320,10 @@ function VisuEditor(_controller) constructor {
         }
       }
     }, renderEvent)
+
+    var renderTrackControl = this.store.getValue("render-trackControl")
+    var trackControlNode = Struct.get(this.layout.nodes, "track-control")
+    trackControlNode.percentageHeight = renderTrackControl ? 1.0 : 0.0
 
     return this
   }

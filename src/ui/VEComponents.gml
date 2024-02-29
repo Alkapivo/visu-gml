@@ -1517,12 +1517,145 @@ global.__VEComponents = new Map(String, Callable, {
 
     return items
   },
-  
+
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
   "spin-select": function(name, layout, config = null) {
+    static factoryButton = function(name, layout, config) {
+      return UIButton(
+        name, 
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              ///@todo move to Lambda util
+              static findEqual = function(source, iterator, target) {
+                return source == target
+              }
+
+              var increment = Struct.get(this, "increment")
+              if (!Optional.is(this.store) || !Core.isType(increment, Number)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var data = item.data
+              if (!Core.isType(data, Collection)) {
+                return
+              }
+
+              var index = data.findIndex(findEqual, item.get())
+              index = (index == null ? 0 : index) + increment
+              if (index < 0) {
+                index = data.size() - 1
+              } else if (index > data.size() - 1) {
+                index = 0
+              }
+              item.set(data.get(index))
+            },
+          }, 
+          config, 
+          false
+        )
+      )
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryPreview = function(name, layout, config) {
+      return UIImage(
+        name, 
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          config, 
+          false
+        )
+      )
+    }
+    
+    return new Array(UIItem, [
+      UIText(
+        $"{name}_label", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field_label"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      factoryButton(
+        $"{name}_previous",
+        layout.nodes.previous,
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              increment: -1,
+              onMouseHoverOver: function(event) {
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                this.sprite.setBlend(c_white)
+              },            
+            },
+            Struct.get(config, "previous"), 
+            false
+          ), 
+          Struct.get(VEStyles.get("spin-select"), "previous"),
+          false
+        )
+      ),
+      factoryPreview(
+        $"{name}_preview",
+        layout.nodes.preview,
+        Struct.get(config, "preview")
+      ),
+      factoryButton(
+        $"{name}_next",
+        layout.nodes.next,
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              increment: 1,
+              onMouseHoverOver: function(event) {
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                this.sprite.setBlend(c_white)
+              },            
+            },
+            Struct.get(config, "next"),
+            false
+          ),
+          Struct.get(VEStyles.get("spin-select"), "next"),
+          false
+        )
+      ),
+    ])
+  },
+  
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "spin-select-override": function(name, layout, config = null) {
     static factoryButton = function(name, layout, config) {
       var _config = Struct.appendRecursive(
         config,

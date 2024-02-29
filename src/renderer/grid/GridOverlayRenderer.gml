@@ -28,67 +28,70 @@ function GridOverlayRenderer(_renderer) constructor {
     return this
   }
 
+  ///@param {Number} width
+  ///@param {Number} height
   ///@return {GridOverlayRenderer}
-  renderBackgrounds = function(x = 0, y = 0, zoom = 1.0) {
-    static renderBackgroundColor = function(task) {
+  renderBackgrounds = function(width, height) {
+    static renderBackgroundColor = function(task, index, acc) {
       var color = task.state.get("color")
       var alpha = color.alpha
       color = color.toGMColor()
-      GPU.render.rectangle(0, 0, GuiWidth(), GuiHeight(), false, color, color, color, color, alpha)
+      GPU.render.rectangle(0, 0, acc.width, acc.height, false, color, color, color, color, alpha)
     }
 
     static renderBackground = function(task, index, acc) {
       var sprite = task.state.get("sprite")
-      sprite.scaleToFill(GuiWidth() * acc.zoom, GuiHeight() * acc.zoom)
+      sprite.scaleToFill(acc.width, acc.height)
         .render(
-          acc.x + (sprite.texture.offsetX / sprite.texture.width) * GuiWidth(),
-          acc.y + (sprite.texture.offsetY / sprite.texture.height) * GuiHeight()
+          (sprite.texture.offsetX / sprite.texture.width) * acc.width,
+          (sprite.texture.offsetY / sprite.texture.height) * acc.height
         )
     }
 
-    this.backgroundColors.forEach(renderBackgroundColor)
-    this.backgrounds.forEach(renderBackground, { x: x, y: y, zoom: zoom })
+    this.backgroundColors.forEach(renderBackgroundColor, { width: width, height: height })
+    this.backgrounds.forEach(renderBackground, { width: width, height: height })
     return this
   }
 
+  ///@param {Number} width
+  ///@param {Number} height
   ///@return {GridOverlayRenderer}
-  renderForegrounds = function(x = 0, y = 0, zoom = 1.0) {
-    static renderForegroundColor = function(task) {
+  renderForegrounds = function(width, height) {
+    static renderForegroundColor = function(task, index, acc) {
       var color = task.state.get("color")
       var alpha = color.alpha
       color = color.toGMColor()
-      GPU.render.rectangle(0, 0, GuiWidth(), GuiHeight(), false, color, color, color, color, alpha)
+      GPU.render.rectangle(0, 0, acc.width, acc.height, false, color, color, color, color, alpha)
     }
 
     static renderForeground = function(task, index, acc) {
       var sprite = task.state.get("sprite")
-      sprite.scaleToFill(GuiWidth() * acc.zoom, GuiHeight() * acc.zoom)
+      sprite.scaleToFill(acc.width, acc.height)
         .render(
-          acc.x + (sprite.texture.offsetX / sprite.texture.width) * GuiWidth(),
-          acc.y + (sprite.texture.offsetY / sprite.texture.height) * GuiHeight()
+          (sprite.texture.offsetX / sprite.texture.width) * acc.width,
+          (sprite.texture.offsetY / sprite.texture.height) * acc.height
         )
     }
 
     GPU.set.blendMode(BlendMode.ADD)
-    this.foregroundColors.forEach(renderForegroundColor)
-    this.foregrounds.forEach(renderForeground, { x: x, y: y, zoom: zoom })
+    this.foregroundColors.forEach(renderForegroundColor, { width: width, height: height })
+    this.foregrounds.forEach(renderForeground, { width: width, height: height })
     GPU.reset.blendMode()
     return this
   }
 
+  ///@param {Number} width
+  ///@param {Number} height
   ///@return {GridOverlayRenderer}
-  renderVideo = function(x = 0, y = 0, zoom = 1.0) {
+  renderVideo = function(width, height) {
     var video = this.renderer.controller.videoService.getVideo()
     if (!Core.isType(video, Video) || !video.isLoaded()) {
       return this
     }
 
     video.surface.update()
-      .scaleToFill(round(GuiWidth() * zoom), round(GuiHeight() * zoom))
-    video.surface.render(
-      x - (video.surface.width / GuiWidth()) / 2.0, 
-      y - (video.surface.height / GuiHeight()) / 2.0
-    )    
+      .scaleToFill(width, height)
+    video.surface.render()    
     return this
   }
 
