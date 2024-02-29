@@ -61,6 +61,9 @@ function ShroomService(_controller, config = {}): Service() constructor {
 
       this.shrooms.add(shroom)
     },
+    "clear-shrooms": function(event) {
+      this.shrooms.clear()
+    },
   }))
 
   ///@param {Event} event

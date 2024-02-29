@@ -182,6 +182,9 @@ function VETitleBar(_editor) constructor {
               controller.editor.send(new Event("close"))
               controller.trackService.send(new Event("close-track"))
               controller.videoService.send(new Event("close-video"))
+              controller.playerService.send(new Event("clear-player"))
+              controller.shroomService.send(new Event("clear-shrooms"))
+              controller.bulletService.send(new Event("clear-bullets"))
               controller.send(new Event("load", {
                 manifest: manifest,
                 autoplay: false

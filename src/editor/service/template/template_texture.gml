@@ -6,20 +6,85 @@ function template_texture(json = null) {
   var template = {
     name: Assert.isType(json.name, String),
     store: new Map(String, Struct, {
-      "name": {
-        type: String,
-        value: Assert.isType(json.name, String),
+      "texture-template": {
+        type: TextureTemplate,
+        value: new TextureTemplate(json.name, json),
       },
     }),
     components: new Array(Struct, [
       {
-        name: "texture_name",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
+        name: "textture-origin-x",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: {
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Texture name" },
+          label: { text: "Origin X" },
+          field: { 
+            store: { 
+              key: "texture-template",
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), TextureTemplate)) {
+                  return
+                }
+
+                var intent = item.get()
+                intent.originX = parsed
+                item.set(intent)
+              },
+              callback: function(value, data) { 
+                if (!Core.isType(value, TextureTemplate)) {
+                  return
+                }
+                
+                data.textField.setText(value.originX)
+              },
+            }
+          },
         },
+      },
+      {
+        name: "textture-origin-y",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Origin Y" },
+          field: { 
+            store: { 
+              key: "texture-template",
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), TextureTemplate)) {
+                  return
+                }
+
+                var intent = item.get()
+                intent.originY = parsed
+                item.set(intent)
+              },
+              callback: function(value, data) { 
+                if (!Core.isType(value, TextureTemplate)) {
+                  return
+                }
+                
+                data.textField.setText(value.originY)
+              },
+            }
+          },
+        },
+      },
+      {
+        name: "texture-preview",
+        template: VEComponents.get("image"),
+        layout: VELayouts.get("image"),
+        config: { image: { name: json.name } },
       },
     ]),
   }

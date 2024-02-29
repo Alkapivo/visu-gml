@@ -28,6 +28,22 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
+  "image": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIImage(
+        $"{name}_image",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.image,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          config,
+          false
+        )
+      )
+    ])
+  },
+
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]

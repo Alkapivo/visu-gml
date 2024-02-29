@@ -445,9 +445,9 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               field: { 
                 read_only: true,
                 updateCustom: function() {
-                  var text = this.context.state.get("store").getValue("file-texture")
-                  if (Core.isType(text, String)) {
-                    this.textField.setText(FileUtil.getFilenameFromPath(text))
+                  var intent = this.context.state.get("store").getValue("texture-intent")
+                  if (intent.file != "" && Core.isType(intent.file, String)) {
+                    this.textField.setText(FileUtil.getFilenameFromPath(intent.file))
                   } else {
                     this.textField.setText("")
                   }
@@ -457,17 +457,51 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 label: { text: "Open" },
                 callback: function() {
                   var path = FileUtil.getPathToOpenWithDialog({
-                    description: "PNG file",
-                    extension: "png",
+                    description: "PNG, JPG, BMP file",
+                    extension: "png;*.jpg;*.jpeg;*.bmp",
                   })
                   if (!FileUtil.fileExists(path)) {
                     return
                   }
       
-                  this.context.state.get("store")
-                    .get("file-texture")
-                    .set(path)
+                  var intent = this.context.state.get("store").getValue("texture-intent")
+                  intent.file = path
                 }},
+            },
+          },
+          {
+            name: "text-field_new-texture-template_frames",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Frames" },
+              field: { 
+                store: { 
+                  key: "texture-intent",
+                  set: function(value) { 
+                    var parsed = NumberUtil.parse(value)
+                    if (!Core.isType(parsed, Number)) {
+                      return
+                    }
+                    
+                    var intent = this.context.context.state.get("store")
+                      .getValue("texture-intent")
+                    if (!Core.isType(intent, TextureIntent)) {
+                      return
+                    }
+
+                    intent.frames = parsed
+                  },
+                  callback: function(value, data) { 
+                    if (!Core.isType(value, TextureIntent)) {
+                      return
+                    }
+                    
+                    data.textField.setText(value.frames)
+                  },
+                }
+              },
             },
           },
           {
@@ -480,17 +514,28 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function() { 
                 var name = this.context.templateToolbar.store.getValue("name")
-                if (!Core.isType(name, String) || name == "") {
+                if (!Core.isType(name, String) 
+                  || name == "" 
+                  || String.contains(name, " ")) {
                   return
                 }
 
-                Beans.get(BeanTextureService).templates
-                  .set(name, new TextureTemplate(name, { todo: "json" }))
+                var store = this.context.state.get("store")
+                var intent = store.getValue("texture-intent")
+                if (!Core.isType(intent, TextureIntent) && intent.file == "") {
+                  return
+                }
+                intent.name = name
+                intent = new TextureIntent(intent)
 
-                ///@description send update event to subscribers
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(VETemplateType.TEXTURE)
+                Beans.get(BeanTextureService)
+                  .send(new Event("load-texture")
+                    .setData(intent)
+                    .setPromise(new Promise()
+                      .setState(Assert.isType(store.get("type"), StoreItem))
+                      .whenSuccess(function() {
+                        this.state.set(VETemplateType.TEXTURE)
+                      })))
               },
               label: { text: "Add template" },
             },
@@ -992,7 +1037,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               return
                             }
 
-                            Struct.set(texture, "type", VETemplateType.PARTICLE)
+                            Struct.set(texture, "type", VETemplateType.TEXTURE)
                             this.context.templateToolbar.store
                               .get("template")
                               .set(new VETemplate(texture))
@@ -1317,9 +1362,9 @@ function VETemplateToolbar(_editor) constructor {
       type: Optional.of(VETemplate),
       value: null,
     },
-    "file-texture": {
-      type: Optional.of(String),
-      value: null,
+    "texture-intent": {
+      type: TextureIntent,
+      value: new TextureIntent({ name: "", file: "" }),
     },
   })
 

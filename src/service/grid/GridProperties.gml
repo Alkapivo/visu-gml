@@ -144,7 +144,6 @@ function GridProperties(config = {}) constructor {
   gridClearFrameAlpha = Assert.isType(Struct
     .getDefault(config, "properties.gridClearFrameAlpha", 0.0), Number)
 
-
   ///@type {Color}
   shaderClearColor = Assert.isType(ColorUtil.fromHex(Struct
     .getDefault(config, "properties.shaderClearColor", "#00000000")), Color)

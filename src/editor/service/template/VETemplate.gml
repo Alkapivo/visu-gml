@@ -99,7 +99,7 @@ function VETemplate(json) constructor {
   store = new Store(this.parseStoreConfig(this.type, json))
 
   ///@type {Array<Struct>}
-  components = new Array(Struct, [
+  components = new Array(Struct, [ 
     {
       name: "template-type",
       template: VEComponents.get("property"),
@@ -116,7 +116,10 @@ function VETemplate(json) constructor {
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         label: { text: "Name" },
-        field: { store: { key: "template-name" } },
+        field: { 
+          read_only: json.type == VETemplateType.TEXTURE,
+          store: { key: "template-name" }
+        },
       },
     },
   ])
@@ -230,7 +233,8 @@ function VETemplate(json) constructor {
   ///@private
   ///@return {TextureTemplate}
   toTextureTemplate = function() {
-    throw new Exception("toTextureTemplate - not implemented")
+    var template = this.store.getValue("texture-template")
+    return new TextureTemplate(template.name, template)
   }
 
   ///@throws {Exception}

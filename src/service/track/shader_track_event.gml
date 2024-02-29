@@ -77,38 +77,6 @@ global.__shader_track_event = new Map(String, Callable, {
         })
       }))
     }
-
-    if (Struct.get(data, "shader-overlay_use-clear-frame") == true) {
-      controller.gridService.properties.shaderClearFrame = Struct.get(data, "shader-overlay_clear-frame")
-    }
-
-    if (Struct.get(data, "shader-overlay_use-clear-color") == true) {
-      controller.gridService.send(new Event("transform-property", {
-        key: "shaderClearColor",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new ColorTransformer({
-          value: controller.gridService.properties.shaderClearColor.toHex(true),
-          target: Struct.get(data, "shader-overlay_clear-color"),
-          factor: 0.01,
-        })
-      }))
-    }
-
-    if (Struct.get(data, "shader-overlay_use-transform-clear-frame-alpha") == true) {
-      var transformer = Struct.get(data, "shader-overlay_transform-clear-frame-alpha")
-      controller.gridService.send(new Event("transform-property", {
-        key: "shaderClearFrameAlpha",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.shaderClearFrameAlpha,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
   },
   "brush_shader_clear": function(data) {
     static fadeOutTask = function(task) {
@@ -176,34 +144,50 @@ global.__shader_track_event = new Map(String, Callable, {
     }
   },
   "brush_shader_config": function(data) {
-    if (Struct.get(data, "shader-config_use-render-grid-shaders") == true) {
-      controller.gridService.properties.renderGridShaders = Struct.get(data, "shader-config_render-grid-shaders")
+    var controller = Beans.get(BeanVisuController)
+    
+    if (Struct.get(data, "shader-config_use-render-grid-shaders")) {
+      controller.gridService.properties.renderGridShaders = Struct
+        .get(data, "shader-config_render-grid-shaders")
     }
 
-    if (Struct.get(data, "shader-config_use-render-background-shaders") == true) {
-      controller.gridService.properties.renderBackgroundShaders = Struct.get(data, "shader-config_render-background-shaders")
+    if (Struct.get(data, "shader-config_use-background-grid-shaders")) {
+      controller.gridService.properties.renderBackgroundShaders = Struct
+        .get(data, "shader-config_render-background-shaders")
     }
 
-    /* 
-    if (Struct.get(data, "grid-config_use-clear-frame") == true) {
-      controller.gridService.properties.gridClearFrame = Struct.get(data, "grid-config_clear-frame")
+    if (Struct.get(data, "shader-config_use-clear-frame") == true) {
+      controller.gridService.properties.shaderClearFrame = Struct
+        .get(data, "shader-config_clear-frame")
     }
 
-    if (Struct.get(data, "shader-config_use-transform-shader-alpha") == true) {
-      var transformer = Struct.get(data, "shader-config_transform-shader-alpha")
+    if (Struct.get(data, "shader-config_use-clear-color") == true) {
       controller.gridService.send(new Event("transform-property", {
-        key: "renderSupportGridAlpha",
+        key: "shaderClearColor",
+        container: controller.gridService.properties,
+        executor: controller.gridService.executor,
+        transformer: new ColorTransformer({
+          value: controller.gridService.properties.shaderClearColor.toHex(true),
+          target: Struct.get(data, "shader-config_clear-color"),
+          factor: 0.01,
+        })
+      }))
+    }
+    
+    if (Struct.get(data, "shader-config_use-transform-clear-frame-alpha") == true) {
+      var transformer = Struct.get(data, "shader-config_transform-clear-frame-alpha")
+      controller.gridService.send(new Event("transform-property", {
+        key: "shaderClearFrameAlpha",
         container: controller.gridService.properties,
         executor: controller.gridService.executor,
         transformer: new NumberTransformer({
-          value: controller.gridService.properties.renderSupportGridAlpha,
+          value: controller.gridService.properties.shaderClearFrameAlpha,
           target: transformer.target,
           factor: transformer.factor,
           increase: transformer.increase,
         })
       }))
     }
-    */
   },
 })
 #macro shader_track_event global.__shader_track_event

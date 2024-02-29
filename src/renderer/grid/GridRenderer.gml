@@ -324,9 +324,10 @@ function GridRenderer(_controller, config = {}) constructor {
     }
 
     this.backgroundSurface.render()
-    var renderShadersEnabled = true ///@todo brush_shader_config shader-config_render-shaders
     var shaderPipeline = this.controller.shaderBackgroundPipeline
-    if (renderShadersEnabled && shaderPipeline.executor.tasks.size() > 0) {
+    if (this.controller.gridService.properties.renderBackgroundShaders 
+      && shaderPipeline.executor.tasks.size() > 0) {
+
       shaderPipeline.render(function(task, index, renderer) {
         var properties = renderer.controller.gridService.properties
         var alpha = task.state.getDefault("alpha", 1.0)
@@ -365,7 +366,6 @@ function GridRenderer(_controller, config = {}) constructor {
   renderGridSurface = function(renderer) {
     var properties = renderer.controller.gridService.properties
     if (properties.gridClearFrame) {
-      properties.gridClearColor.alpha = properties.gridClearFrameAlpha
       GPU.render.clear(properties.gridClearColor)
     }
 
@@ -442,7 +442,10 @@ function GridRenderer(_controller, config = {}) constructor {
     if (!properties.renderGridShaders) {
       return
     }
-    GPU.render.clear(properties.shaderClearColor)
+
+    if (properties.shaderClearFrame) {
+      GPU.render.clear(properties.shaderClearColor)
+    }
 
     renderer.controller.shaderPipeline.render(function(task, index, renderer) {
       var properties = renderer.controller.gridService.properties
@@ -461,7 +464,7 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@private
   ///@param {GridRenderer} renderer
   renderGameSurface = function(renderer) {
-    GPU.render.clear(renderer.controller.gridService.properties.gridClearColor)
+    GPU.render.clear(renderer.controller.gridService.properties.clearColor)
     renderer.renderBackground() 
     renderer.gridSurface.render()
     renderer.shaderSurface.render()

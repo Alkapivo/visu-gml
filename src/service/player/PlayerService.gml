@@ -26,6 +26,9 @@ function PlayerService(_controller, config = {}): Service() constructor {
         this.player.updateGameMode(this.controller.gameMode)
       }
     },
+    "clear-player": function(event) {
+      this.player = null
+    },
   }))
 
   ///@private

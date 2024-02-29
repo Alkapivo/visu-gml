@@ -4,6 +4,26 @@
 ///@type {Map<String, Callable>}
 global.__VELayouts = new Map(String, Callable, {
 
+  "image": function(config = null) {
+    return { 
+      name: "image",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.VERTICAL), UILayoutType),
+      height: function() { return this.width() * 0.5 },
+      nodes: { 
+        image: { 
+          name: "image.image",
+          width: function() { return this.context.width() 
+            - this.margin.left 
+            - this.margin.right },
+          height: function() { return this.context.height() 
+            - this.margin.top 
+            - this.margin.bottom },
+          margin: { top: 5, bottom: 5 },
+        },
+      },
+    }
+  },
+
   ///@param {?Struct} [config]
   ///@return {Struct}
   "vertical-item": function(config = null) {

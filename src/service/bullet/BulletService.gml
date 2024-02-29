@@ -69,6 +69,9 @@ function BulletService(_controller, config = {}): Service() constructor {
 
       this.bullets.add(bullet)
     },
+    "clear-bullets": function(event) {
+      this.bullets.clear()
+    },
   }))
 
   ///@param {Event} event
