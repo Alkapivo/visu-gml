@@ -610,12 +610,199 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "button_template-load": Struct.appendRecursiveUnique(
           {
             type: UIButton,
-            group: { index: 0, size: 2 },
-            label: { text: "L" },
+            label: { text: "Import" },
             align: { v: VAlign.CENTER, h: HAlign.RIGHT },
-            update: Callable.run(UIUtil.updateAreaTemplates.get("groupByX")),
-            onMousePressedLeft: function(event) {
-              Core.print("MOCK templates load")
+            group: { index: 1, size: 2, width: 48 },
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
+            backgroundColor: VETheme.color.primary,
+            colorHoverOver: VETheme.color.accentShadow,
+            colorHoverOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              var type = this.context.templateToolbar.store.getValue("type")
+              if (type == this.enable.key) {
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+            },
+            enable: { 
+              key: VETemplateType.TEXTURE,
+              value: false,
+            },
+            updateEnable: function() {
+              var type = this.context.templateToolbar.store.getValue("type")
+              this.enable.value = type != this.enable.key
+            },
+            render: function() {
+              var type = this.context.templateToolbar.store.getValue("type")
+              if (type == this.enable.key) {
+                return
+              }
+
+              if (Optional.is(this.preRender)) {
+                this.preRender()
+              }
+              this.renderBackgroundColor()
+        
+              if (this.sprite != null) {
+                var alpha = this.sprite.getAlpha()
+                this.sprite
+                  .setAlpha(alpha * (Struct.get(this.enable, "value") == false ? 0.5 : 1.0))
+                  .scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+                  .render(
+                    this.context.area.getX() + this.area.getX(),
+                    this.context.area.getY() + this.area.getY())
+                  .setAlpha(alpha)
+              }
+        
+              if (this.label != null) {
+                this.label.render(
+                  // todo VALIGN HALIGN
+                  this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                  this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                )
+              }
+              return this
+            },
+            callback: function(_event) {
+              var store = this.context.templateToolbar.store
+              var type = store.getValue("type")
+              var event = new Event("fetch-file-dialog")
+                .setData({
+                  description: "JSON file",
+                  filename: "template", 
+                  extension: "json",
+                })
+                .setPromise(new Promise())
+              
+              var controller = Beans.get(BeanVisuController)
+              switch(type) {
+                case VETemplateType.SHADER:
+                  event.data.filename = "shader"
+                  event.promise
+                    .setState({
+                      callback: function(prototype, json, key, acc) {
+                        Logger.debug("VisuTrackLoader", $"load shader '{key}'")
+                        acc.set(key, new prototype(key, json))
+                      },
+                      acc: controller.shaderPipeline.templates,
+                      steps: MAGIC_NUMBER_TASK,
+                      store: store,
+                    })
+                    .whenSuccess(function(result) {
+                      var task = JSON.parserTask(result.data, this.state)
+                      task.state.set("store", this.state.store)
+                      task.whenFinish(function() {
+                        var type = this.state.get("store").get("type")
+                        type.set(type.get())
+                      })
+                      Beans.get(BeanVisuController).executor.add(task)
+                      return task
+                    })
+                  break
+                case VETemplateType.SHROOM:
+                  event.data.filename = "shroom"
+                  event.promise
+                    .setState({
+                      callback: function(prototype, json, key, acc) {
+                        Logger.debug("VisuTrackLoader", $"load shroom template '{key}'")
+                        acc.set(key, new prototype(key, json))
+                      },
+                      acc: controller.shroomService.templates,
+                      steps: MAGIC_NUMBER_TASK,
+                      store: store,
+                    })
+                    .whenSuccess(function(result) {
+                      var task = JSON.parserTask(result.data, this.state)
+                      task.state.set("store", this.state.store)
+                      task.whenFinish(function() {
+                        var type = this.state.get("store").get("type")
+                        type.set(type.get())
+                      })
+                      Beans.get(BeanVisuController).executor.add(task)
+                      return task
+                    })
+                  break
+                case VETemplateType.BULLET:
+                  event.data.filename = "bullet"
+                  event.promise
+                    .setState({
+                      callback: function(prototype, json, key, acc) {
+                        Logger.debug("VisuTrackLoader", $"load bullet template '{key}'")
+                        acc.set(key, new prototype(key, json))
+                      },
+                      acc: controller.bulletService.templates,
+                      steps: MAGIC_NUMBER_TASK,
+                      store: store,
+                    })
+                    .whenSuccess(function(result) {
+                      var task = JSON.parserTask(result.data, this.state)
+                      task.state.set("store", this.state.store)
+                      task.whenFinish(function() {
+                        var type = this.state.get("store").get("type")
+                        type.set(type.get())
+                      })
+                      Beans.get(BeanVisuController).executor.add(task)
+                      return task
+                    })
+                  break
+                case VETemplateType.LYRICS:
+                  event.data.filename = "lyrics"
+                  event.promise
+                    .setState({
+                      callback: function(prototype, json, key, acc) {
+                        Logger.debug("VisuTrackLoader", $"load lyrics template '{key}'")
+                        acc.set(key, new prototype(key, json))
+                      },
+                      acc: controller.lyricsService.templates,
+                      steps: MAGIC_NUMBER_TASK,
+                      store: store,
+                    })
+                    .whenSuccess(function(result) {
+                      var task = JSON.parserTask(result.data, this.state)
+                      task.state.set("store", this.state.store)
+                      task.whenFinish(function() {
+                        var type = this.state.get("store").get("type")
+                        type.set(type.get())
+                      })
+                      Beans.get(BeanVisuController).executor.add(task)
+                      return task
+                    })
+                  break
+                case VETemplateType.PARTICLE:
+                  event.data.filename = "particle"
+                  event.promise
+                    .setState({
+                      callback: function(prototype, json, key, acc) {
+                        Logger.debug("VisuTrackLoader", $"load particle template '{key}'")
+                        acc.set(key, new prototype(key, json))
+                      },
+                      acc: controller.particleService.templates,
+                      steps: MAGIC_NUMBER_TASK,
+                      store: store,
+                    })
+                    .whenSuccess(function(result) {
+                      var task = JSON.parserTask(result.data, this.state)
+                      task.state.set("store", this.state.store)
+                      task.whenFinish(function() {
+                        var type = this.state.get("store").get("type")
+                        type.set(type.get())
+                      })
+                      Beans.get(BeanVisuController).executor.add(task)
+                      return task
+                    })
+                  break
+                case VETemplateType.TEXTURE:
+                  Logger.error("VETemplate", $"Load type '{VETemplateType.TEXTURE}' is not supported")
+                  return
+                default:
+                  throw new Exception($"Load dispatcher for type '{type}' wasn't found")
+                  break
+              }
+
+              var promise = controller.fileService.send(event)
             }
           },
           VEStyles.get("bar-button"),
@@ -624,9 +811,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "button_template-save": Struct.appendRecursiveUnique(
           {
             type: UIButton,
-            group: { index: 1, size: 2 },
-            label: { text: "S" },
-            update: Callable.run(UIUtil.updateAreaTemplates.get("groupByX")),
+            label: { text: "Export" },
+            backgroundColor: VETheme.color.primary,
+            colorHoverOver: VETheme.color.accentShadow,
+            colorHoverOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+            },
+            group: { index: 0, size: 2, width: 48 },
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
             onMousePressedLeft: function(event) {
               var controller = Beans.get(BeanVisuController)
               var type = this.context.templateToolbar.store.getValue("type")
@@ -665,10 +861,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   filename = "texture"
                   break
                 default:
-                  Logger.error(
-                    "VETemplateToolbar", 
-                    $"Dispatcher for type '{template.type}' wasn't found"
-                  )
+                  throw new Exception($"Save dispatcher for type '{template.type}' wasn't found")
                   break
               }
               

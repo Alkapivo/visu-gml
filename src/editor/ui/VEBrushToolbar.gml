@@ -400,11 +400,13 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "button_brush-control-load": Struct.appendRecursiveUnique(
           {
             type: UIButton,
-            group: { index: 0, size: 2 },
-            label: { text: "L" },
-            align: { v: VAlign.CENTER, h: HAlign.RIGHT },
-            update: Callable.run(UIUtil.updateAreaTemplates.get("groupByX")),
-            onMousePressedLeft: function(event) {
+            group: { index: 1, size: 2, width: 48 },
+            label: { text: "Import" },
+            backgroundColor: VETheme.color.primary,
+            colorHoverOver: VETheme.color.accentShadow,
+            colorHoverOut: VETheme.color.primary,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
+            callback: function(event) {
               var type = this.context.brushToolbar.store.getValue("type")
               var saveTemplate = this.context.brushToolbar.editor.brushService.saveTemplate
               var promise = Beans.get(BeanVisuController).fileService.send(
@@ -431,7 +433,13 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       return task
                     }))
               )
-            }
+            },
+            onMouseHoverOver: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+            },
           },
           VEStyles.get("bar-button"),
           false
@@ -439,10 +447,13 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "button_brush-control-save": Struct.appendRecursiveUnique(
           {
             type: UIButton,
-            group: { index: 1, size: 2 },
-            label: { text: "S" },
-            update: Callable.run(UIUtil.updateAreaTemplates.get("groupByX")),
-            onMousePressedLeft: function(event) {
+            group: { index: 0, size: 2, width: 48 },
+            label: { text: "Export" },
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
+            backgroundColor: VETheme.color.primary,
+            colorHoverOver: VETheme.color.accentShadow,
+            colorHoverOut: VETheme.color.primary,
+            callback: function(event) {
               var type = this.context.brushToolbar.store.getValue("type")
               var templates = this.context.brushToolbar.editor.brushService.fetchTemplates(type)
               var data = JSON.stringify({
@@ -462,7 +473,13 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                     }),
                     data: data
                   })))
-            }
+            },
+            onMouseHoverOver: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+            },
           },
           VEStyles.get("bar-button"),
           false

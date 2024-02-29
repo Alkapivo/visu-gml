@@ -265,7 +265,7 @@ function VisuEditor(_controller) constructor {
 
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
-    brushNode.minWidth = renderBrush ? 180 : 0
+    brushNode.minWidth = renderBrush ? 270 : 0
     brushNode.maxWidth = renderBrush ? GuiWidth() * 0.37 : 0
     this.brushToolbar.containers.forEach(function(container, key, enable) {
       container.enable = enable
@@ -281,7 +281,7 @@ function VisuEditor(_controller) constructor {
 
     var renderEvent = this.store.getValue("render-event")
     var accordionNode = Struct.get(this.layout.nodes, "accordion")
-    accordionNode.minWidth = renderEvent ? 180 : 0
+    accordionNode.minWidth = renderEvent ? 270 : 0
     accordionNode.maxWidth = renderEvent ? GuiWidth() * 0.37 : 0
     this.accordion.containers.forEach(function(container, key, enable) {
       if (key == "_ve-accordion_accordion-items") {
