@@ -1047,6 +1047,9 @@ function VEBrushToolbar(_editor) constructor {
           quiet: true,
         }))
       }, this.uiService).clear()
+
+      this.store.get("template").set(null)
+      this.store.get("brush").set(null)
     },
   }))
 

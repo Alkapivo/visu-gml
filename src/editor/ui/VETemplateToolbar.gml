@@ -1297,10 +1297,30 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           }
         ]),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      //timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+      particleTimer: new Timer(1.0, { loop: Infinity }),
+      updateCustom: function() {
+        var store = this.templateToolbar.store
+        var type = store.getValue("type")
+        var template = store.getValue("template")
+        if (type == VETemplateType.PARTICLE
+          && Optional.is(template)
+          && this.particleTimer.update().finished) {
+
+          var particleService = Beans.get(BeanVisuController).particleService
+          var event = particleService.factoryEventSpawnParticleEmitter({
+            beginX: (GuiWidth() / 2) - 32,
+            beginY: (GuiHeight() / 2) - 32,
+            endX: (GuiWidth() / 2) + 32,
+            endY: (GuiHeight() / 2) + 32,
+            amount: 10,
+          })
+          particleService.send(event)
+        }
+      },
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
       onInit: function() {
         this.collection = new UICollection(this, { layout: this.layout })
@@ -1474,6 +1494,8 @@ function VETemplateToolbar(_editor) constructor {
           quiet: true,
         }))
       }, this.uiService).clear()
+
+      this.store.get("template").set(null)
     },
   }))
 

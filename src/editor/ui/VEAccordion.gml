@@ -342,6 +342,9 @@ function VEAccordion(_editor, config = null) constructor {
           quiet: true,
         }))
       }, this.uiService).clear()
+
+      eventInspector.send(new Event("close"))
+      templateToolbar.send(new Event("close"))
     },
   }))
 

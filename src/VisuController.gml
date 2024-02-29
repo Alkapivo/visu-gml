@@ -497,6 +497,10 @@ function VisuController(layerName) constructor {
       }))
     }
 
+    if (keyboard_check_pressed(vk_f2)) {
+      this.enableUIContainerServiceRendering = !this.enableUIContainerServiceRendering
+    }
+
     return this
   }
 
@@ -565,8 +569,6 @@ function VisuController(layerName) constructor {
     this.editor.update()
     //this.gridSystem.update()
 
-
-
     return this
   }
 
@@ -600,66 +602,72 @@ function VisuController(layerName) constructor {
 
   ///@return {VisuController}
   render = function() {
-    gpu_set_alphatestenable(true)
-    this.gridRenderer.render()
-    //this.gridSystem.render()
+    try {
+      gpu_set_alphatestenable(true) ///@todo investigate
+      this.gridRenderer.render()
+      //this.gridSystem.render()
+    } catch (exception) {
+      Logger.error("VisuController", $"render throws exception: {exception.message}")
+    }
+    
     return this
   }
 
   ///@return {VisuController}
   renderGUI = function() {
-    if (keyboard_check_pressed(vk_f2)) {
-      this.enableUIContainerServiceRendering = !this.enableUIContainerServiceRendering
-    }
-
-    this.gridRenderer.renderGUI()
-    this.lyricsRenderer.renderGUI()
-    if (this.enableUIContainerServiceRendering) {
-      this.uiService.render()
-      var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
-      if (loaderState != "idle" && loaderState != "loaded") {
-        var color = c_black
-        this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
-
-        GPU.render.rectangle(
-          0, 0, 
-          GuiWidth(), GuiHeight(), 
-          false, 
-          color, color, color, color, 
-          (this.spinnerFactor / 100) * 0.5
-        )
-
-        this.spinner
-          .setAlpha(this.spinnerFactor / 100.0)
-          .render(
+    try {
+      this.gridRenderer.renderGUI()
+      this.lyricsRenderer.renderGUI()
+      if (this.enableUIContainerServiceRendering) {
+        this.uiService.render()
+        var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
+        if (loaderState != "idle" && loaderState != "loaded") {
+          var color = c_black
+          this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
+  
+          GPU.render.rectangle(
+            0, 0, 
+            GuiWidth(), GuiHeight(), 
+            false, 
+            color, color, color, color, 
+            (this.spinnerFactor / 100) * 0.5
+          )
+  
+          this.spinner
+            .setAlpha(this.spinnerFactor / 100.0)
+            .render(
+              (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
+              (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
+                - (this.spinnerFactor / 2)
+          )
+        } else if (this.spinnerFactor > 0) {
+          var color = c_black
+          this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.1)
+  
+          GPU.render.rectangle(
+            0, 0, 
+            GuiWidth(), GuiHeight(), 
+            false, 
+            color, color, color, color, 
+            (this.spinnerFactor / 100) * 0.5
+          )
+  
+          this.spinner
+            .setAlpha(this.spinnerFactor / 100.0)
+            .render(
             (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
             (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
               - (this.spinnerFactor / 2)
-        )
-      } else if (this.spinnerFactor > 0) {
-        var color = c_black
-        this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.1)
-
-        GPU.render.rectangle(
-          0, 0, 
-          GuiWidth(), GuiHeight(), 
-          false, 
-          color, color, color, color, 
-          (this.spinnerFactor / 100) * 0.5
-        )
-
-        this.spinner
-          .setAlpha(this.spinnerFactor / 100.0)
-          .render(
-          (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
-          (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
-            - (this.spinnerFactor / 2)
-        )
+          )
+        }
       }
+      
+      MouseUtil.renderSprite()
+      //this.editor.render()
+    } catch (exception) {
+      Logger.error("VisuController", $"renderGUI throws exception: {exception.message}")
     }
-    
-    MouseUtil.renderSprite()
-    //this.editor.render()
+
     return this
   }
 

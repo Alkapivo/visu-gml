@@ -472,6 +472,13 @@ function GridRenderer(_controller, config = {}) constructor {
   }
 
   ///@return {GridRenderer}
+  clear = function() {
+    this.camera = new GridCamera()
+    this.overlayRenderer.clear()
+    return this
+  }
+
+  ///@return {GridRenderer}
   update = function() {
     this.camera.update()
     this.overlayRenderer.update()
@@ -512,11 +519,13 @@ function GridRenderer(_controller, config = {}) constructor {
     return this
   }
 
+  ///@return {GridRenderer}
   free = function() {
     this.backgroundSurface.free()
     this.gridSurface.free()
     this.gameSurface.free()
     this.shaderSurface.free()
+    return this
   }
 }
 

@@ -227,7 +227,27 @@ function VETemplate(json) constructor {
   ///@private
   ///@return {ParticleTemplate}
   toParticleTemplate = function() {
-    throw new Exception("toParticleTemplate - not implemented")
+    var template = new ParticleTemplate(
+      this.store.getValue("template-name"), 
+      this.store.getValue("particle-template")
+    )
+
+    template.blend = this.store.getValue("particle-blend")
+    template.color.start = this.store.getValue("particle-color-start").toHex()
+    template.color.halfway = this.store.getValue("particle-color-halfway").toHex()
+    template.color.finish = this.store.getValue("particle-color-finish").toHex()
+    if (this.store.getValue("particle-use-sprite")) {
+      Struct.set(template, "sprite", {
+        name: this.store.getValue("particle-sprite").getName(),
+        animate: this.store.getValue("particle-sprite-animate"),
+        randomValue: this.store.getValue("particle-sprite-randomValue"),
+        stretch: this.store.getValue("particle-sprite-stretch"),
+      })
+    } else {
+      Struct.remove(template, "sprite")
+    }
+    
+    return template
   }
 
   ///@private

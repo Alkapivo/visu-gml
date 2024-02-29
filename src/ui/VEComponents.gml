@@ -549,6 +549,41 @@ global.__VEComponents = new Map(String, Callable, {
       ),
     ])
   },
+  
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "boolean-field": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field_label"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UICheckbox(
+        $"{name}_checkbox", 
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.field,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+    ])
+  },
 
   ///@param {String} name
   ///@param {UILayout} layout
@@ -776,6 +811,137 @@ global.__VEComponents = new Map(String, Callable, {
   },
 
     ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "texture-field-simple": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryNumericSliderField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {Array<UIItem>}
+    static factoryImage = function(name, layout, config) {
+      return UIImage(
+        name, 
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title", 
+      layout.nodes.title, 
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_texture",
+      layout.nodes.texture, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.textField.setText(value.texture.name)
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item) || !TextureUtil.exists(value)) {
+                  return
+                }
+                
+                var json = item.get().serialize()
+                json.name = value
+                item.set(SpriteUtil.parse(json))
+              },
+            }
+          }
+        }, 
+        Struct.get(config, "texture"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    items.add(
+      factoryImage(
+        $"{name}_preview", 
+        layout.nodes.preview, 
+        Struct.appendRecursive(
+          { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.image = value
+              },
+              set: function(value) { },
+            }
+          },
+          Struct.get(config, "preview"),
+          false
+        )
+      )
+    )
+
+    return items
+  },
+
+  ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
@@ -1358,46 +1524,51 @@ global.__VEComponents = new Map(String, Callable, {
   ///@return {Array<UIItem>}
   "spin-select": function(name, layout, config = null) {
     static factoryButton = function(name, layout, config) {
+      var _config = Struct.appendRecursive(
+        config,
+        {
+          layout: layout,
+          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        }, 
+        false
+      )
+
+      if (Struct.get(_config, "callback") == null) {
+        Struct.set(_config, method(_config, function() {
+          ///@todo move to Lambda util
+          static findEqual = function(source, iterator, target) {
+            return source == target
+          }
+
+          var increment = Struct.get(this, "increment")
+          if (!Optional.is(this.store) || !Core.isType(increment, Number)) {
+            return
+          }
+
+          var item = this.store.get()
+          if (!Optional.is(item)) {
+            return
+          }
+
+          var data = item.data
+          if (!Core.isType(data, Collection)) {
+            return
+          }
+
+          var index = data.findIndex(findEqual, item.get())
+          index = (index == null ? 0 : index) + increment
+          if (index < 0) {
+            index = data.size() - 1
+          } else if (index > data.size() - 1) {
+            index = 0
+          }
+          item.set(data.get(index))
+        }))
+      }
+
       return UIButton(
         name, 
-        Struct.appendRecursive(
-          {
-            layout: layout,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              ///@todo move to Lambda util
-              static findEqual = function(source, iterator, target) {
-                return source == target
-              }
-
-              var increment = Struct.get(this, "increment")
-              if (!Optional.is(this.store) || !Core.isType(increment, Number)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Optional.is(item)) {
-                return
-              }
-
-              var data = item.data
-              if (!Core.isType(data, Collection)) {
-                return
-              }
-
-              var index = data.findIndex(findEqual, item.get())
-              index = (index == null ? 0 : index) + increment
-              if (index < 0) {
-                index = data.size() - 1
-              } else if (index > data.size() - 1) {
-                index = 0
-              }
-              item.set(data.get(index))
-            },
-          }, 
-          config, 
-          false
-        )
+        _config
       )
     }
 
@@ -1450,7 +1621,7 @@ global.__VEComponents = new Map(String, Callable, {
               },            
             },
             Struct.get(config, "previous"), 
-            false
+            true
           ), 
           Struct.get(VEStyles.get("spin-select"), "previous"),
           false
@@ -1771,7 +1942,6 @@ global.__VEComponents = new Map(String, Callable, {
                   data.textField.setText(Struct.get(transformer, key))
                 },
                 set: function(value) {
-                  Core.print("set")
                   var item = this.get()
                   if (item == null) {
                     return 
@@ -1806,8 +1976,6 @@ global.__VEComponents = new Map(String, Callable, {
     }
 
     var items = new Array(UIItem)
-
-    Core.print("configgg", config)
 
     factoryTitle(
       $"{name}_title",

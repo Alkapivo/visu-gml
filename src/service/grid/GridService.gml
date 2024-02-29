@@ -14,23 +14,30 @@ global.__GRID_ITEM_FRUSTUM_RANGE = 3.5
 
 
 ///@param {VisuController} _controller
-///@param {Struct} [config]
-function GridService(_controller, config = {}): Service(config) constructor {
+///@param {Struct} [_config]
+function GridService(_controller, _config = {}): Service(_config) constructor {
 
   ///@type {VisuController}
   controller = Assert.isType(_controller, VisuController)
 
-  ///@type {Number}
-  width = Assert.isType(Struct.getDefault(config, "width", 1000000.0), Number)
+  ///@type {Struct}
+  config = JSON.clone(_config)
 
   ///@type {Number}
-  height = Assert.isType(Struct.getDefault(config, "height", 100.0), Number)
+  width = Assert.isType(Struct
+    .getDefault(this.config, "width", 1000000.0), Number)
 
   ///@type {Number}
-  pixelWidth = Assert.isType(Struct.getDefault(config, "pixelWidth", GRID_SERVICE_PIXEL_WIDTH), Number)
+  height = Assert.isType(Struct
+    .getDefault(this.config, "height", 100.0), Number)
 
   ///@type {Number}
-  pixelHeight = Assert.isType(Struct.getDefault(config, "pixelHeight", GRID_SERVICE_PIXEL_HEIGHT), Number)
+  pixelWidth = Assert.isType(Struct
+    .getDefault(this.config, "pixelWidth", GRID_SERVICE_PIXEL_WIDTH), Number)
+
+  ///@type {Number}
+  pixelHeight = Assert.isType(Struct
+    .getDefault(this.config, "pixelHeight", GRID_SERVICE_PIXEL_HEIGHT), Number)
 
   ///@type {GridView}
   view = new GridView({ 
@@ -56,8 +63,8 @@ function GridService(_controller, config = {}): Service(config) constructor {
   }
 
   ///@type {Struct}
-  properties = Struct.contains(config, "properties")
-    ? Assert.isType(Struct.get(config, "properties"), GridProperties)
+  properties = Optional.is(Struct.get(this.config, "properties"))
+    ? new GridProperties(this.config.properties)
     : new GridProperties()
   
   ///@type {EventPump}
@@ -65,6 +72,28 @@ function GridService(_controller, config = {}): Service(config) constructor {
     "transform-property": Callable.run(Struct.get(EVENT_DISPATCHERS, "transform-property")),
     "fade-sprite": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-sprite")),
     "fade-color": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-color")),
+    "clear-grid": function(event) {
+
+      this.view.x = (this.width - this.view.width) / 2.0
+	    this.view.y = this.height - this.view.height
+      
+      this.targetLocked = {
+        x: this.view.x,
+        y: this.view.y,
+        setX: function(x) {
+          this.x = x
+          return this
+        },
+        setY: function(y) {
+          this.y = y
+          return this
+        },
+      }
+
+      properties = Optional.is(Struct.get(this.config, "properties"))
+        ? new GridProperties(this.config.properties)
+        : new GridProperties()
+    },
   }))
 
   ///@type {TaskExecutor}

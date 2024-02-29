@@ -20,6 +20,15 @@ function GridOverlayRenderer(_renderer) constructor {
   foregroundColors = new Array(Task).enableGC()
 
   ///@return {GridOverlayRenderer}
+  clear = function() {
+    this.backgrounds.clear()
+    this.foregrounds.clear()
+    this.backgroundColors.clear()
+    this.foregroundColors.clear()
+    return this
+  }
+
+  ///@return {GridOverlayRenderer}
   renderBackgrounds = function(x = 0, y = 0, zoom = 1.0) {
     static renderBackgroundColor = function(task) {
       var color = task.state.get("color")

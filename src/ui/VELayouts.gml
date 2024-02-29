@@ -319,7 +319,7 @@ global.__VELayouts = new Map(String, Callable, {
     }
   },
 
-    ///@param {?Struct} [config]
+  ///@param {?Struct} [config]
   ///@return {Struct}
   "text-field-checkbox": function(config = null) {
     return {
@@ -410,6 +410,31 @@ global.__VELayouts = new Map(String, Callable, {
 
   ///@param {?Struct} [config]
   ///@return {Struct}
+  "boolean-field": function(config = null) {
+    return {
+      name: "boolean-field",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 },
+      nodes: {
+        label: {
+          name: "boolean-field.label",
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          y: function() { return this.context.y() + this.margin.top + this.margin.bottom },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        field: {
+          name: "boolean-field.field",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return 56 },
+          height: function() { return this.context.height() },
+          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+        }
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
   "texture-field": function(config = null) {
     return {
       name: "texture-field",
@@ -438,6 +463,33 @@ global.__VELayouts = new Map(String, Callable, {
         preview: {
           name: "texture-field.preview",
           y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+          height: function() { return 144 },
+          margin: { top: 10, bottom: 10, left: 10, right: 10 },
+        },
+      },
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "texture-field-simple": function(config = null) {
+    return {
+      name: "texture-field",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return this.nodes.preview.bottom() - this.y() },
+      nodes: {
+        title: {
+          name: "texture-field.title",
+          height: function() { return 42 },
+        },
+        texture: {
+          name: "texture-field.texture",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        preview: {
+          name: "texture-field.preview",
+          y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 144 },
           margin: { top: 10, bottom: 10, left: 10, right: 10 },
         },

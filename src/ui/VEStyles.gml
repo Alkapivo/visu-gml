@@ -355,6 +355,16 @@ global.__VEStyles = new Map(String, Struct, {
       },
     },
   },
+  "spin-select-label_no-store": {
+    preview: {
+      label: { 
+        text: "",
+        color: VETheme.color.textFocus,
+        font: "font_inter_10_regular",
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+      },
+    },
+  },
   "transform-numeric-uniform": {
     label: {
       font: "font_inter_10_regular",

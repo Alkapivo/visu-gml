@@ -179,12 +179,18 @@ function VETitleBar(_editor) constructor {
               }
 
               var controller = Beans.get(BeanVisuController)
+              controller.gridRenderer.clear()
               controller.editor.send(new Event("close"))
               controller.trackService.send(new Event("close-track"))
               controller.videoService.send(new Event("close-video"))
+              controller.gridService.send(new Event("clear-grid"))
               controller.playerService.send(new Event("clear-player"))
               controller.shroomService.send(new Event("clear-shrooms"))
               controller.bulletService.send(new Event("clear-bullets"))
+              controller.lyricsService.send(new Event("clear-lyrics"))
+              controller.particleService.send(new Event("clear-particles"))
+              Beans.get(BeanTextureService).send(new Event("free"))
+              
               controller.send(new Event("load", {
                 manifest: manifest,
                 autoplay: false

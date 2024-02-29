@@ -197,6 +197,8 @@ function VEEventInspector(_editor) constructor {
           quiet: true,
         }))
       }, this.uiService).clear()
+
+      this.store.get("event").set(null)
     },
   }))
 

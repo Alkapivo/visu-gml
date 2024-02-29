@@ -83,6 +83,9 @@ function LyricsService(config = null): Service() constructor {
       
       this.executor.add(task)
     },
+    "clear-lyrics": function(event) {
+      this.templates.clear()
+    },
   }))
 
   ///@type {TaskExecutor}
