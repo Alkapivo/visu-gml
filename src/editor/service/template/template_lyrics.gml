@@ -29,6 +29,7 @@ function template_lyrics(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           field: { 
             v_grow: true,
+            w_min: 570,
             store: { key: "lines" },
           },
         },

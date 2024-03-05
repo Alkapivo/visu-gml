@@ -262,7 +262,7 @@ function VETemplate(json) constructor {
   }
 
   ///@throws {Exception}
-  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate}
+  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate|LyricsTemplate|ParticleTemplate|TextureTemplate}
   serialize = function() {
     switch (this.type) {
       case VETemplateType.SHADER: return this.toShaderTemplate()

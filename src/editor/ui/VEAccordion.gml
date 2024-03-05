@@ -346,7 +346,10 @@ function VEAccordion(_editor, config = null) constructor {
       eventInspector.send(new Event("close"))
       templateToolbar.send(new Event("close"))
     },
-  }))
+  }), { 
+    enableLogger: false, 
+    catchException: true,
+  })
 
   ///@param {Event} event
   ///@return {?Promise}

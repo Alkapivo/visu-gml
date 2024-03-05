@@ -62,7 +62,8 @@
 [ DONE ] add enable/disable UI renderer to status bar
 [ DONE ] add visu version to title bar
 [ DONE ] add enable/disable TrackControl renderer to status bar
-[      ] fix shroom/bullet template editor
+[ DONE ] fix shroom/bullet template editor
+[      ] loop video when track is longer than video.duration
 [      ] add error popup queue
 [      ] add particle burst event to brush
 [      ] add "?" button to UI elements

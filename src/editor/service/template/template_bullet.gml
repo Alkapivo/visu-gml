@@ -33,7 +33,7 @@ function template_bullet(json = null) {
     }),
     components: new Array(Struct, [
       {
-        name: "bullet_texture",
+        name: "bullet-texture",
         template: VEComponents.get("texture-field-ext"),
         layout: VELayouts.get("texture-field-ext"),
         config: { 
@@ -51,6 +51,14 @@ function template_bullet(json = null) {
           },
           speed: {
             label: { text: "Speed" },
+            field: { store: { key: "bullet_texture" } },
+          },
+          scaleX: {
+            label: { text: "Scale X" },
+            field: { store: { key: "bullet_texture" } },
+          },
+          scaleY: {
+            label: { text: "Scale Y" },
             field: { store: { key: "bullet_texture" } },
           },
           alpha: {
@@ -144,6 +152,7 @@ function template_bullet(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           field: { 
             v_grow: true,
+            w_min: 570,
             store: { key: "bullet_game-mode_bullet-hell_features" },
           },
         },
@@ -165,6 +174,7 @@ function template_bullet(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           field: { 
             v_grow: true,
+            w_min: 570,
             store: { key: "bullet_game-mode_platformer_features" },
           },
         },
@@ -186,6 +196,7 @@ function template_bullet(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           field: { 
             v_grow: true,
+            w_min: 570,
             store: { key: "bullet_game-mode_idle_features" },
           },
         },

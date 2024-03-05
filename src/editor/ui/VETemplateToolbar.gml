@@ -249,24 +249,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               layout: { type: UILayoutType.VERTICAL },
               backgroundColor: VETheme.color.accept,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function() { 
-                var name = this.context.templateToolbar.store.getValue("name")
-                if (!Core.isType(name, String) || name == "") {
-                  return
-                }
-
-                Beans.get(BeanVisuController).shaderPipeline.templates
-                  .set(name, new ShaderTemplate(name, {
-                    name: name,
-                    shader: this.context.templateToolbar.store.getValue("shader"),
-                  }))
-
-                ///@description send update event to subscribers
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(VETemplateType.SHADER)
+              callback: function(event) {
+                this.context.templateToolbar.send(new Event("add-template"))
               },
-              label: { text: "Add template" },
+              label: { text: "Create shader" },
             },
           },
         ]),
@@ -289,24 +275,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               layout: { type: UILayoutType.VERTICAL },
               backgroundColor: VETheme.color.accept,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function() { 
-                var name = this.context.templateToolbar.store.getValue("name")
-                if (!Core.isType(name, String) || name == "") {
-                  return
-                }
-
-                Beans.get(BeanVisuController).shroomService.templates
-                  .set(name, new ShroomTemplate(name, {
-                    name: name,
-                    sprite: { name: "texture_baron" },
-                  }))
-
-                ///@description send update event to subscribers
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(VETemplateType.SHROOM)
+              callback: function(event) {
+                this.context.templateToolbar.send(new Event("add-template"))
               },
-              label: { text: "Add template" },
+              label: { text: "Create shroom" },
             },
           },
         ]),
@@ -329,24 +301,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               layout: { type: UILayoutType.VERTICAL },
               backgroundColor: VETheme.color.accept,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function() { 
-                var name = this.context.templateToolbar.store.getValue("name")
-                if (!Core.isType(name, String) || name == "") {
-                  return
-                }
-
-                Beans.get(BeanVisuController).bulletService.templates
-                  .set(name, new BulletTemplate(name, {
-                    name: name,
-                    sprite: { name: "texture_baron" },
-                  }))
-
-                ///@description send update event to subscribers
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(VETemplateType.BULLET)
+              callback: function(event) {
+                this.context.templateToolbar.send(new Event("add-template"))
               },
-              label: { text: "Add template" },
+              label: { text: "Create bullet" },
             },
           },
         ]),
@@ -369,21 +327,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               layout: { type: UILayoutType.VERTICAL },
               backgroundColor: VETheme.color.accept,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function() { 
-                var name = this.context.templateToolbar.store.getValue("name")
-                if (!Core.isType(name, String) || name == "") {
-                  return
-                }
-
-                Beans.get(BeanVisuController).lyricsService.templates
-                  .set(name, new LyricsTemplate(name, { todo: "json" }))
-
-                ///@description send update event to subscribers
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(VETemplateType.LYRICS)
+              callback: function(event) {
+                this.context.templateToolbar.send(new Event("add-template"))
               },
-              label: { text: "Add template" },
+              label: { text: "Create lyrics" },
             },
           },
         ]),
@@ -406,19 +353,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               layout: { type: UILayoutType.VERTICAL },
               backgroundColor: VETheme.color.accept,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function() { 
-                var name = this.context.templateToolbar.store.getValue("name")
-                if (!Core.isType(name, String) || name == "") {
-                  return
-                }
-
-                Beans.get(BeanVisuController).particleService.templates
-                  .set(name, new ParticleTemplate(name, { todo: "json" }))
-
-                ///@description send update event to subscribers
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(VETemplateType.PARTICLE)
+              callback: function(event) {
+                this.context.templateToolbar.send(new Event("add-template"))
               },
               label: { text: "Add template" },
             },
@@ -512,32 +448,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               layout: { type: UILayoutType.VERTICAL },
               backgroundColor: VETheme.color.accept,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function() { 
-                var name = this.context.templateToolbar.store.getValue("name")
-                if (!Core.isType(name, String) 
-                  || name == "" 
-                  || String.contains(name, " ")) {
-                  return
-                }
-
-                var store = this.context.state.get("store")
-                var intent = store.getValue("texture-intent")
-                if (!Core.isType(intent, TextureIntent) && intent.file == "") {
-                  return
-                }
-                intent.name = name
-                intent = new TextureIntent(intent)
-
-                Beans.get(BeanTextureService)
-                  .send(new Event("load-texture")
-                    .setData(intent)
-                    .setPromise(new Promise()
-                      .setState(Assert.isType(store.get("type"), StoreItem))
-                      .whenSuccess(function() {
-                        this.state.set(VETemplateType.TEXTURE)
-                      })))
+              callback: function(event) {
+                this.context.templateToolbar.send(new Event("add-template"))
               },
-              label: { text: "Add template" },
+              label: { text: "Create texture" },
             },
           },
         ]),
@@ -1445,46 +1359,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               label: { text: "Save template" },
               callback: function() { 
-                var template = this.context.templateToolbar.store
-                  .getValue("template")
-                if (!Core.isType(template, VETemplate)) {
-                  return
-                }
-
-                var name = template.store.getValue("template-name")
-                var serialized = template.serialize()
-                var controller = Beans.get(BeanVisuController)
-                switch (template.type) {
-                  case VETemplateType.SHADER:
-                    controller.shaderPipeline.templates.set(name, serialized)
-                    break
-                  case VETemplateType.SHROOM:
-                    controller.shroomService.templates.set(name, serialized)
-                    break
-                  case VETemplateType.BULLET:
-                    controller.bulletService.templates.set(name, serialized)
-                    break
-                  case VETemplateType.LYRICS:
-                    controller.lyricsService.templates.set(name, serialized)
-                    break
-                  case VETemplateType.PARTICLE:
-                    controller.particleService.templates.set(name, serialized)
-                    break
-                  case VETemplateType.TEXTURE:
-                    Beans.get(BeanTextureService).templates.set(name, serialized)
-                    break
-                  default:
-                    Logger.error(
-                      "VETemplateToolbar", 
-                      $"Dispatcher for type '{template.type}' wasn't found"
-                    )
-                    break
-                }
-
-                ///@description send update event to subscribers
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(template.type)
+                this.context.templateToolbar.send(new Event("save-template"))
               },
             },
           }
@@ -1690,7 +1565,111 @@ function VETemplateToolbar(_editor) constructor {
 
       this.store.get("template").set(null)
     },
-  }))
+    "add-template": function(event) {
+      var name = this.store.getValue("name")
+      var type = this.store.getValue("type")
+      if (!Core.isType(name, String) || name == "") {
+        return
+      }
+
+      var controller = Beans.get(BeanVisuController)
+      switch (type) {
+        case VETemplateType.SHADER:
+          controller.shaderPipeline.templates
+            .set(name, new ShaderTemplate(name, {
+              name: name,
+              shader: this.store.getValue("shader"),
+            }))
+          break
+        case VETemplateType.SHROOM:
+          controller.shroomService.templates
+            .set(name, new ShroomTemplate(name, {
+              name: name,
+              sprite: { name: "texture_baron" },
+            }))
+          break
+        case VETemplateType.BULLET:
+          controller.bulletService.templates
+            .set(name, new BulletTemplate(name, {
+              name: name,
+              sprite: { name: "texture_baron" },
+            }))
+          break
+        case VETemplateType.LYRICS:
+          controller.lyricsService.templates
+            .set(name, new LyricsTemplate(name, { todo: "json" }))
+          break
+        case VETemplateType.PARTICLE:
+          controller.particleService.templates
+            .set(name, new ParticleTemplate(name, { todo: "json" }))
+          break
+        case VETemplateType.TEXTURE:
+          if (String.contains(name, " ")) {
+            return
+          }
+
+          var intent = this.store.getValue("texture-intent")
+          if (!Core.isType(intent, TextureIntent) && intent.file == "") {
+            return
+          }
+          intent.name = name
+          intent = new TextureIntent(intent)
+
+          Beans.get(BeanTextureService)
+            .send(new Event("load-texture")
+              .setData(intent)
+              .setPromise(new Promise()
+                .setState(Assert.isType(this.store.get("type"), StoreItem))
+                .whenSuccess(function() {
+                  this.state.set(VETemplateType.TEXTURE)
+                })))
+          break
+        default:
+          throw new Exception($"Dispatcher for type '{template.type}' wasn't found")
+      }
+
+      ///@description send update event to subscribers
+      this.store.get("type").set(type)
+    },      
+    "save-template": function(event) {
+      var template = this.store.getValue("template")
+      if (!Core.isType(template, VETemplate)) {
+        return
+      }
+
+      var name = template.store.getValue("template-name")
+      var serialized = template.serialize()
+      var controller = Beans.get(BeanVisuController)
+      switch (template.type) {
+        case VETemplateType.SHADER:
+          controller.shaderPipeline.templates.set(name, serialized)
+          break
+        case VETemplateType.SHROOM:
+          controller.shroomService.templates.set(name, serialized)
+          break
+        case VETemplateType.BULLET:
+          controller.bulletService.templates.set(name, serialized)
+          break
+        case VETemplateType.LYRICS:
+          controller.lyricsService.templates.set(name, serialized)
+          break
+        case VETemplateType.PARTICLE:
+          controller.particleService.templates.set(name, serialized)
+          break
+        case VETemplateType.TEXTURE:
+          Beans.get(BeanTextureService).templates.set(name, serialized)
+          break
+        default:
+          throw new Exception($"Dispatcher for type '{template.type}' wasn't found")
+      }
+
+      ///@description send update event to subscribers
+      this.store.get("type").set(template.type)
+    },
+  }), { 
+    enableLogger: false, 
+    catchException: true,
+  })
 
   ///@param {Event} event
   ///@return {?Promise}

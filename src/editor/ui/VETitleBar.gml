@@ -291,7 +291,10 @@ function VETitleBar(_editor) constructor {
         }))
       }, this.uiService).clear()
     },
-  }))
+  }), { 
+    enableLogger: false, 
+    catchException: true,
+  })
 
   ///@param {Event} event
   ///@return {?Promise}

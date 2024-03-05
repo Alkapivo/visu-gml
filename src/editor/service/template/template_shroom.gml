@@ -154,6 +154,7 @@ function template_shroom(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           field: { 
             v_grow: true,
+            w_min: 570,
             store: { key: "shroom_game-mode_bullet-hell_features" },
           },
         },
@@ -175,6 +176,7 @@ function template_shroom(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           field: { 
             v_grow: true,
+            w_min: 570,
             store: { key: "shroom_game-mode_platformer_features" },
           },
         },
@@ -196,6 +198,7 @@ function template_shroom(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           field: { 
             v_grow: true,
+            w_min: 570,
             store: { key: "shroom_game-mode_idle_features" },
           },
         },

@@ -200,7 +200,10 @@ function VEEventInspector(_editor) constructor {
 
       this.store.get("event").set(null)
     },
-  }))
+  }), { 
+    enableLogger: false, 
+    catchException: true,
+  })
 
   ///@param {Event} event
   ///@return {?Promise}
