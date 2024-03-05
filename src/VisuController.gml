@@ -266,9 +266,17 @@ function VisuController(layerName) constructor {
                 .send(new Event("pause-track")),
             })
 
-            if (Optional.is(fsm.context.videoService.video)) {
+            var trackDuration = fsm.context.trackService.duration
+            var video = fsm.context.videoService.video
+            if (Optional.is(video) && trackDuration > 0.0) {
+              var videoData = JSON.clone(data)
+              var videoDuration = video.getDuration()
+              if (videoData.timestamp > videoDuration) {
+                videoData.timestamp = videoData.timestamp mod videoDuration
+              }
+              
               promises.set("rewind-video", fsm.context.videoService
-                .send(new Event("rewind-video", data)))
+                .send(new Event("rewind-video", videoData)))
             }
 
             fsmState.state
