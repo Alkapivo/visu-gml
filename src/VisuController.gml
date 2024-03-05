@@ -512,6 +512,9 @@ function VisuController(layerName) constructor {
       Logger.debug("VisuController", String.join("Set fullscreen to ",
         fullscreen ? "'false'" : "'true'", "."))
       this.displayService.setFullscreen(!fullscreen)
+      if (fullscreen) {
+        window_maximize_set_enable()
+      }
     }
 
     return this

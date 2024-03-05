@@ -57,8 +57,8 @@
 [ DONE ] load sprite from file
 [ DONE ] load sound from file
 05.02.2024:
-[      ] set preview layout to overlay track controls
-[      ] add fulscreen button to titlebar
+[ DONE ] set preview layout to overlay track controls
+[ DONE ] add fulscreen button to titlebar
 [      ] add enable/disable UI renderer to status bar
 [      ] add visu version to title bar
 [      ] fix shroom/bullet template editor

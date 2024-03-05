@@ -63,6 +63,13 @@ function VETitleBar(_editor) constructor {
           },
           brush: {
             name: "title-bar.brush",
+            x: function() { return this.context.nodes.fullscreen.left() 
+              - this.width() - this.margin.right },
+            y: function() { return 0 },
+            width: function() { return 20 },
+          },
+          fullscreen: {
+            name: "title-bar.fullscreen",
             x: function() { return this.context.x() + this.context.width()
                - this.width() - this.margin.right },
             y: function() { return 0 },
@@ -100,15 +107,24 @@ function VETitleBar(_editor) constructor {
     }
 
     static factoryCheckboxButton = function(json) {
+      var _json = {
+        type: UICheckbox,
+        layout: json.layout,
+        spriteOn: json.spriteOn,
+        spriteOff: json.spriteOff,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+      }
+
+      if (Optional.is(Struct.get(json, "store"))) {
+        Struct.set(_json, "store", json.store)
+      }
+
+      if (Optional.is(Struct.get(json, "callback"))) {
+        Struct.set(_json, "callback", json.callback)
+      }
+
       return Struct.appendRecursiveUnique(
-        {
-          type: UICheckbox,
-          layout: json.layout,
-          spriteOn: json.spriteOn,
-          spriteOff: json.spriteOff,
-          store: json.store,
-          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-        },
+        _json,
         VEStyles.get("ve-title-bar").checkbox,
         false
       )
@@ -221,6 +237,19 @@ function VETitleBar(_editor) constructor {
             spriteOn: { name: "texture_ve_title_bar_icons", frame: 2 },
             spriteOff: { name: "texture_ve_title_bar_icons", frame: 2, alpha: 0.5 },
             store: { key: "render-brush" },
+          }),
+          "button_ve-title-fullscreen": factoryCheckboxButton({
+            layout: layout.nodes.fullscreen,
+            spriteOn: { name: "texture_ve_title_bar_icons", frame: 3 },
+            spriteOff: { name: "texture_ve_title_bar_icons", frame: 3 },
+            callback: function(event) {
+              var displayService = Beans.get(BeanVisuController).displayService
+              var fullscreen = displayService.getFullscreen()
+              displayService.setFullscreen(!fullscreen)
+              if (fullscreen) {
+                window_maximize_set_enable()
+              }
+            },
           }),
         },
       }),
