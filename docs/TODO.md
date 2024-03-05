@@ -61,6 +61,7 @@
 [ DONE ] add fulscreen button to titlebar
 [ DONE ] add enable/disable UI renderer to status bar
 [ DONE ] add visu version to title bar
+[ DONE ] add enable/disable TrackControl renderer to status bar
 [      ] fix shroom/bullet template editor
 [      ] add error popup queue
 [      ] add particle burst event to brush

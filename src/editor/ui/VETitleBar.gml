@@ -46,6 +46,13 @@ function VETitleBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 256 },
           },
+          trackControl: {
+            name: "title-bar.trackControl",
+            x: function() { return this.context.nodes.event.left() 
+              - this.width() - this.margin.right },
+            y: function() { return 0 },
+            width: function() { return 20 },
+          },
           event: {
             name: "title-bar.event",
             x: function() { return this.context.nodes.timeline.left() 
@@ -222,6 +229,12 @@ function VETitleBar(_editor) constructor {
             VEStyles.get("ve-title-bar").version,
             false
           ),
+          "button_ve-title-bar_track-control": factoryCheckboxButton({
+            layout: layout.nodes.trackControl,
+            spriteOn: { name: "texture_ve_title_bar_icons", frame: 4 },
+            spriteOff: { name: "texture_ve_title_bar_icons", frame: 4, alpha: 0.5 },
+            store: { key: "render-trackControl" },
+          }),
           "button_ve-title-bar_event": factoryCheckboxButton({
             layout: layout.nodes.event,
             spriteOn: { name: "texture_ve_title_bar_icons", frame: 0 },
