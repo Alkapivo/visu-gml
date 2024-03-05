@@ -608,7 +608,7 @@ function VisuController(layerName) constructor {
       var preview = this.editor.layout.nodes.preview
       this.gridRenderer.render({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
-        height: enable ? ceil(preview.height() + 16) : GuiHeight(),
+        height: enable ? ceil(preview.height()) : GuiHeight(),
       })
       //this.gridSystem.render()
     } catch (exception) {
@@ -625,7 +625,7 @@ function VisuController(layerName) constructor {
       var preview = this.editor.layout.nodes.preview
       this.gridRenderer.renderGUI({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
-        height: enable ? ceil(preview.height() + 16) : GuiHeight(), 
+        height: enable ? ceil(preview.height()) : GuiHeight(), 
         x: enable ? ceil(preview.x()) : 0, 
         y: enable ? ceil(preview.y()) : 0,
       })

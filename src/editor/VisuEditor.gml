@@ -133,9 +133,11 @@ function VisuEditor(_controller) constructor {
       y: function() { return 0 },
       nodes: {
         "title-bar": {
+          name: "visu-editor.title-bar",
           height: function() { return 20 },
         },
         "accordion": {
+          name: "visu-editor.accordion",
           minWidth: 1,
           maxWidth: 1,
           percentageWidth: 0.2,
@@ -149,27 +151,28 @@ function VisuEditor(_controller) constructor {
           y: function() { return Struct.get(this.context.nodes, "title-bar").bottom() },
         },
         "preview": {
+          name: "visu-editor.preview",
           width: function() { return this.context.width()
             - Struct.get(this.context.nodes, "accordion").width()
             - Struct.get(this.context.nodes, "brush-toolbar").width() },
           height: function() { return this.context.height()
             - Struct.get(this.context.nodes, "title-bar").height()
-            - Struct.get(this.context.nodes, "track-control").height()
             - Struct.get(this.context.nodes, "timeline").height()
-            - Struct.get(this.context.nodes, "status-bar").height()},
-          x: function() { return Struct
-            .get(this.context.nodes, "accordion").right() },
-          y: function() { return Struct
-            .get(this.context.nodes, "title-bar").bottom() },
+            - Struct.get(this.context.nodes, "status-bar").height() },
+          x: function() { return this.context.nodes.accordion.right() },
+          y: function() { return Struct.get(this.context.nodes, "title-bar").bottom() },
         },
         "track-control": {
+          name: "visu-editor.track-control",
           percentageHeight: 1.0,
           width: function() { return Struct.get(this.context.nodes, "preview").width() },
           height: function() { return 80 * this.percentageHeight },
-          x: function() { return Struct.get(this.context.nodes, "preview").x() },
-          y: function() { return Struct.get(this.context.nodes, "preview").bottom() },
+          x: function() { return this.context.nodes.preview.x() },
+          y: function() { return this.context.nodes.preview.bottom()
+            - this.height() },
         },
         "brush-toolbar": {
+          name: "visu-editor.brush-toolbar",
           minWidth: 1,
           maxWidth: 1,
           percentageWidth: 0.2,
@@ -183,13 +186,12 @@ function VisuEditor(_controller) constructor {
           y: function() { return Struct.get(this.context.nodes, "title-bar").bottom() },
         },
         "timeline": {
+          name: "visu-editor.timeline",
           minHeight: 1,
           maxHeight: 1,
           percentageHeight: 0.25,
           width: function() { return this.context.width()
             - Struct.get(this.context.nodes, "brush-toolbar").width() },
-          //height: function() { return clamp(max(this.percentageHeight * this.context.height(), 
-          //  this.minHeight), this.minHeight, this.maxHeight) },
           height: function() { 
             return clamp(this.percentageHeight * this.context.height(), this.minHeight, this.maxHeight)
           },
@@ -197,6 +199,7 @@ function VisuEditor(_controller) constructor {
             - Struct.get(this.context.nodes, "status-bar").height() },
         },
         "status-bar": {
+          name: "visu-editor.status-bar",
           height: function() { return 24 },
           y: function() { return this.context.height() - this.height() },
         },
