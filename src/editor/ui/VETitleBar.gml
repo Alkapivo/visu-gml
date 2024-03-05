@@ -40,12 +40,11 @@ function VETitleBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 48 },
           },
-          help: {
-            name: "title-bar.help",
-            x: function() { return this.context.nodes.view.right()
-              + this.margin.left },
+          version: {
+            name: "title-bar.version",
+            x: function() { return (this.context.width() - this.width()) / 2.0 },
             y: function() { return 0 },
-            width: function() { return 48 },
+            width: function() { return 256 },
           },
           event: {
             name: "title-bar.event",
@@ -213,13 +212,16 @@ function VETitleBar(_editor) constructor {
               }))
             }
           }),
-          /*
-          "button_ve-title-bar_help": factoryTextButton({
-            text: "Help",
-            layout: layout.nodes.help,
-            options: new Array(),
-          }),
-          */
+          "text_ve-title-bar_version": Struct.appendRecursiveUnique(
+            {
+              type: UIText,
+              layout: layout.nodes.version,
+              text: $"v.{GM_build_date} {date_datetime_string(GM_build_date)}",
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("ve-title-bar").version,
+            false
+          ),
           "button_ve-title-bar_event": factoryCheckboxButton({
             layout: layout.nodes.event,
             spriteOn: { name: "texture_ve_title_bar_icons", frame: 0 },

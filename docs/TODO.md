@@ -59,8 +59,8 @@
 05.02.2024:
 [ DONE ] set preview layout to overlay track controls
 [ DONE ] add fulscreen button to titlebar
-[      ] add enable/disable UI renderer to status bar
-[      ] add visu version to title bar
+[ DONE ] add enable/disable UI renderer to status bar
+[ DONE ] add visu version to title bar
 [      ] fix shroom/bullet template editor
 [      ] add error popup queue
 [      ] add particle burst event to brush

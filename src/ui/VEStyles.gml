@@ -59,6 +59,13 @@ global.__VEStyles = new Map(String, Struct, {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       }
     },
+    version: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.text,
+      outline: true,
+      outlineColor: VETheme.color.darkShadow,
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    },
     checkbox: {}
   },
   "ve-status-bar": {
