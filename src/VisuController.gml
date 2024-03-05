@@ -441,6 +441,14 @@ function VisuController(layerName) constructor {
   updateIO = function() {
     this.keyboard.update()
     this.mouse.update()
+    if (keyboard_check_pressed(vk_f2)) {
+      this.enableUIContainerServiceRendering = !this.enableUIContainerServiceRendering
+    }
+
+    if (!this.enableUIContainerServiceRendering) {
+      return this
+    }
+
     if (this.mouse.buttons.left.pressed) {
       this.uiService.send(new Event("MousePressedLeft", { 
         x: MouseUtil.getMouseX(), 
@@ -495,10 +503,6 @@ function VisuController(layerName) constructor {
         x: MouseUtil.getMouseX(),
         y: MouseUtil.getMouseY(),
       }))
-    }
-
-    if (keyboard_check_pressed(vk_f2)) {
-      this.enableUIContainerServiceRendering = !this.enableUIContainerServiceRendering
     }
 
     return this
@@ -560,17 +564,20 @@ function VisuController(layerName) constructor {
     this.fileService.update()
     this.dispatcher.update()
     this.executor.update()
-    this.uiService.update()
+
+    if (this.enableUIContainerServiceRendering) {
+      this.uiService.update()
+    }
 	  this.particleService.update()
 	  this.shaderPipeline.update()
     this.shaderBackgroundPipeline.update()
 	  this.trackService.update()
+    //this.gridSystem.update()
 	  this.gridService.update()
     this.lyricsService.update()
 	  this.gridRenderer.update()
     this.videoService.update()
     this.editor.update()
-    //this.gridSystem.update()
 
     return this
   }

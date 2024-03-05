@@ -24,7 +24,7 @@ function VEStatusBar(_editor) constructor {
             name: "status-bar.fpsLabel",
             x: function() { return this.context.x() + this.margin.left },
             y: function() { return 0 },
-            width: function() { return 40 },
+            width: function() { return 32 },
           },
           fpsValue: {
             name: "status-bar.fpsValue",
@@ -37,7 +37,7 @@ function VEStatusBar(_editor) constructor {
             name: "status-bar.timestampLabel",
             x: function() { return this.context.nodes.fpsValue.right() + this.margin.left },
             y: function() { return 0 },
-            width: function() { return 80 },
+            width: function() { return 70 },
           },
           timestampValue: {
             name: "status-bar.timestampValue",
@@ -51,7 +51,7 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.nodes.timestampValue.right()
               + this.margin.left },
             y: function() { return 0 },
-            width: function() { return 64 },
+            width: function() { return 52 },
           },
           durationValue: {
             name: "status-bar.durationValue",
@@ -66,7 +66,7 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.nodes.durationValue.right()
               + this.margin.left },
             y: function() { return 0 },
-            width: function() { return 40 },
+            width: function() { return 26 },
           },
           bpmValue: {
             name: "status-bar.bpmValue",
@@ -80,13 +80,20 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.nodes.bpmValue.right()
               + this.margin.left },
             y: function() { return 0 },
-            width: function() { return 100 },
+            width: function() { return 86 },
           },
           gameModeValue: {
             name: "status-bar.gameModeValue",
             x: function() { return this.context.nodes.gameModeLabel.right() + this.margin.left },
             y: function() { return 0 },
             margin: { left: 2 },
+            width: function() { return 80 },
+          },
+          showHideUI: {
+            name: "status-bar.showHideUI",
+            x: function() { return this.context.nodes.gameModeValue.right() + this.margin.left },
+            y: function() { return 0 },
+            margin: { left: 6 },
             width: function() { return 80 },
           },
           stateLabel: {
@@ -322,6 +329,14 @@ function VEStatusBar(_editor) constructor {
                   throw new Exception($"Found unsupported gameMode: {controller.gameMode}")
               }
               controller.send(new Event("change-gamemode").setData(gameMode))
+            },
+          }),
+          "text_ve-status-bar_showHideUI": factoryLabel({
+            text: "F2: UI on/off",
+            layout: layout.nodes.showHideUI,
+            onMouseReleasedLeft: function() {
+              var controller = Beans.get(BeanVisuController)
+              controller.enableUIContainerServiceRendering = !controller.enableUIContainerServiceRendering
             },
           }),
           "text_ve-status-bar_stateLabel": factoryLabel({
