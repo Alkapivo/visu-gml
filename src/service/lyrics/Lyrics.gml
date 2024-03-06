@@ -72,4 +72,14 @@ function Lyrics(json) constructor {
   finishDelay = Optional.is(Struct.get(json, "finishDelay"))
     ? Assert.isType(json.finishDelay, Timer)
     : null
+
+  ///@type {NumberTransformer}
+  angleTransformer = Optional.is(Struct.get(json, "angleTransformer"))
+    ? Assert.isType(json.angleTransformer, NumberTransformer)
+    : null
+
+  ///@type {NumberTransformer}
+  speedTransformer = Optional.is(Struct.get(json, "speedTransformer"))
+    ? Assert.isType(json.speedTransformer, NumberTransformer)
+    : null
 }

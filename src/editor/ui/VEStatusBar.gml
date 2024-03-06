@@ -332,11 +332,11 @@ function VEStatusBar(_editor) constructor {
             },
           }),
           "text_ve-status-bar_showHideUI": factoryLabel({
-            text: "F2: UI on/off",
+            text: "F1: UI on/off",
             layout: layout.nodes.showHideUI,
             onMouseReleasedLeft: function() {
               var controller = Beans.get(BeanVisuController)
-              controller.enableUIContainerServiceRendering = !controller.enableUIContainerServiceRendering
+              controller.renderUI = !controller.renderUI
             },
           }),
           "text_ve-status-bar_stateLabel": factoryLabel({

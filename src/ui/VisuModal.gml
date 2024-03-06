@@ -110,6 +110,14 @@ function VisuModal(_controller, _config = null) constructor {
               label: { text: modal.config.accept.text },
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               onMouseReleasedLeft: modal.config.accept.callback,
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
             },
             VEStyles.get("visu-modal").accept,
             false
@@ -121,6 +129,14 @@ function VisuModal(_controller, _config = null) constructor {
               label: { text: modal.config.deny.text },
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               onMouseReleasedLeft: modal.config.deny.callback,
+              colorHoverOver: VETheme.color.deny,
+              colorHoverOut: VETheme.color.denyShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
             },
             VEStyles.get("visu-modal").deny,
             false

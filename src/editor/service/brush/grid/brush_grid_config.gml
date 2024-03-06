@@ -14,6 +14,14 @@ function brush_grid_config(json = null) {
         type: Boolean,
         value: Struct.getDefault(json, "grid-config_render-grid", false),
       },
+      "grid-config_use-render-grid-elements": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_use-render-grid-elements", false),
+      },
+      "grid-config_render-grid-elements": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_render-grid-elements", false),
+      },
       "grid-config_use-transform-speed": {
         type: Boolean,
         value: Struct.getDefault(json, "grid-config_use-transform-speed", false),
@@ -86,6 +94,29 @@ function brush_grid_config(json = null) {
             spriteOff: { name: "visu_texture_checkbox_switch_off" },
             store: { key: "grid-config_render-grid" },
             enable: { key: "grid-config_use-render-grid" },
+          }
+        },
+      },
+      {
+        name: "grid-config_use-render-grid-elements",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Render elements",
+            enable: { key: "grid-config_use-render-grid-elements" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-config_use-render-grid-elements" },
+          },
+          input: {
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "grid-config_render-grid-elements" },
+            enable: { key: "grid-config_use-render-grid-elements" },
           }
         },
       },

@@ -12,7 +12,7 @@ function BooleanFeature(json = {}) {
     value: Assert.isType(Struct.getDefault(json, "value", false), Boolean),
 
     ///@type {String}
-    field: Assert.isType(Struct.getDefault(json, "field", "counter"), String),
+    field: Assert.isType(json.field, String),
 
     ///@override
     ///@param {GridItem} item

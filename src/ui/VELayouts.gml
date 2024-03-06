@@ -220,6 +220,35 @@ global.__VELayouts = new Map(String, Callable, {
     }
   },
 
+    ///@param {?Struct} [config]
+  ///@return {Struct}
+  "property-bar": function(config = null) {
+    return {
+      name: "property-bar",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 - this.margin.top - this.margin.bottom },
+      margin: { top: 0, bottom: 5 },
+      nodes: {
+        checkbox: {
+          name: "property-bar.checkbox",
+          width: function() { return 56 },
+        },
+        label: {
+          name: "property-bar.label",
+          x: function() { return this.context.nodes.checkbox.right() },
+          width: function() { return this.context.width() 
+            - this.context.nodes.checkbox.width()
+            - this.context.nodes.input.width() },
+        },
+        input: {
+          name: "property-bar.input",
+          x: function() { return this.context.nodes.label.right() },
+          width: function() { return 56 },
+        },
+      }
+    }
+  },
+
   "button": function(config = null) {
     return {
       name: "button",

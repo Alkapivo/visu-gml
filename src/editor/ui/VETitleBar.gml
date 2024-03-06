@@ -172,17 +172,25 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.edit,
             options: new Array(),
             callback: function() {
-              var path = FileUtil.getPathToSaveWithDialog({ 
-                description: "Visu track file",
-                filename: "manifest", 
-                extension: "visu",
-              })
+              try {
+                var path = FileUtil.getPathToSaveWithDialog({ 
+                  description: "Visu track file",
+                  filename: "manifest", 
+                  extension: "visu",
+                })
 
-              if (path == null) {
-                return
+                if (path == null) {
+                  return
+                }
+
+                global.__VisuTrack.saveProject(path)
+
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                  { message: $"Project '{global.__VisuTrack.track.name}' saved successfully at: '{path}'" }))
+              } catch (exception) {
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                  { message: $"Cannot save the project: {exception.message}" }))
               }
-
-              global.__VisuTrack.saveProject(path)
             }
           }),
           "button_ve-title-bar_view": factoryTextButton({
@@ -190,33 +198,38 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.view,
             options: new Array(),
             callback: function() {
-              var manifest = FileUtil.getPathToOpenWithDialog({ 
-                description: "Visu track file",
-                filename: "manifest", 
-                extension: "visu"
-              })
-
-              if (!FileUtil.fileExists(manifest)) {
-                return
+              try {
+                var manifest = FileUtil.getPathToOpenWithDialog({ 
+                  description: "Visu track file",
+                  filename: "manifest", 
+                  extension: "visu"
+                })
+  
+                if (!FileUtil.fileExists(manifest)) {
+                  return
+                }
+  
+                var controller = Beans.get(BeanVisuController)
+                /*
+                controller.gridRenderer.clear()
+                controller.trackService.send(new Event("close-track"))
+                controller.videoService.send(new Event("close-video"))
+                controller.gridService.send(new Event("clear-grid"))
+                controller.playerService.send(new Event("clear-player"))
+                controller.shroomService.send(new Event("clear-shrooms"))
+                controller.bulletService.send(new Event("clear-bullets"))
+                controller.lyricsService.send(new Event("clear-lyrics"))
+                controller.particleService.send(new Event("clear-particles"))
+                Beans.get(BeanTextureService).send(new Event("free"))
+                */
+                controller.send(new Event("load", {
+                  manifest: manifest,
+                  autoplay: false
+                }))
+              } catch (exception) {
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                  { message: $"Cannot load the project: {exception.message}" }))
               }
-
-              var controller = Beans.get(BeanVisuController)
-              controller.gridRenderer.clear()
-              controller.editor.send(new Event("close"))
-              controller.trackService.send(new Event("close-track"))
-              controller.videoService.send(new Event("close-video"))
-              controller.gridService.send(new Event("clear-grid"))
-              controller.playerService.send(new Event("clear-player"))
-              controller.shroomService.send(new Event("clear-shrooms"))
-              controller.bulletService.send(new Event("clear-bullets"))
-              controller.lyricsService.send(new Event("clear-lyrics"))
-              controller.particleService.send(new Event("clear-particles"))
-              Beans.get(BeanTextureService).send(new Event("free"))
-              
-              controller.send(new Event("load", {
-                manifest: manifest,
-                autoplay: false
-              }))
             }
           }),
           "text_ve-title-bar_version": Struct.appendRecursiveUnique(

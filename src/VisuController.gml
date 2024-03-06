@@ -83,7 +83,18 @@ function VisuController(layerName) constructor {
   gameMode = GameMode.PLATFORMER
 
   ///@type {Keyboard}
-  keyboard = new Keyboard({ load: "L" })
+  keyboard = new Keyboard(
+    { 
+      controlTrack: KeyboardKeyType.SPACE,
+      renderUI: KeyboardKeyType.F1,
+      freeCamera: KeyboardKeyType.F5,
+      fullscreen: KeyboardKeyType.F11,
+      exitModal: KeyboardKeyType.ESC,
+      newProject: "N",
+      loadProject: "L",
+      saveProject: "O",
+    }
+  )
 
   ///@type {Mouse}
   mouse = new Mouse({ 
@@ -97,7 +108,7 @@ function VisuController(layerName) constructor {
   loader = new VisuTrackLoader(this)
 
   ///@type {Boolean}
-  enableUIContainerServiceRendering = true
+  renderUI = true
 
   ///@private
   ///@type {Number}
@@ -351,9 +362,7 @@ function VisuController(layerName) constructor {
   })
 
   ///@type {VisuNewProjectModal}
-  newProjectModal = new VisuNewProjectModal(this, {
-
-  })
+  newProjectModal = new VisuNewProjectModal(this)
 
   ///@type {VisuModal}
   exitModal = new VisuModal(this, {
@@ -433,7 +442,9 @@ function VisuController(layerName) constructor {
   }
 
   ///@private
+  ///@return {VisuController}
   init = function() {
+    Core.debugOverlay(Assert.isType(Core.getProperty("visu.debug-overlay", false), Boolean))
     var fullscreen = Assert.isType(Core.getProperty("visu.fullscreen", false), Boolean)
     this.displayService
       .resize(
@@ -441,10 +452,9 @@ function VisuController(layerName) constructor {
         Assert.isType(Core.getProperty("visu.window.height", 720), Number)
       )
       .setFullscreen(fullscreen)
-
-    show_debug_overlay(Assert.isType(Core.getProperty("visu.debug-overlay", false), Boolean))
-    window_set_cursor(cr_default)
-    //cursor_sprite = texture_bazyl_cursor
+      .setCursor(Cursor.DEFAULT)
+    
+    return this
   }
 
   ///@private
@@ -452,11 +462,11 @@ function VisuController(layerName) constructor {
   updateIO = function() {
     this.keyboard.update()
     this.mouse.update()
-    if (keyboard_check_pressed(vk_f2)) {
-      this.enableUIContainerServiceRendering = !this.enableUIContainerServiceRendering
+    if (keyboard_check_pressed(vk_f1)) {
+      this.renderUI = !this.renderUI
     }
 
-    if (!this.enableUIContainerServiceRendering) {
+    if (!this.renderUI) {
       return this
     }
 
@@ -576,7 +586,7 @@ function VisuController(layerName) constructor {
     this.dispatcher.update()
     this.executor.update()
 
-    if (this.enableUIContainerServiceRendering) {
+    if (this.renderUI) {
       try {
         this.uiService.update()
       } catch (exception) {
@@ -634,7 +644,7 @@ function VisuController(layerName) constructor {
   render = function() {
     try {
       gpu_set_alphatestenable(true) ///@todo investigate
-      var enable = this.enableUIContainerServiceRendering
+      var enable = this.renderUI
       var preview = this.editor.layout.nodes.preview
       this.gridRenderer.render({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
@@ -653,7 +663,7 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   renderGUI = function() {
     try {
-      var enable = this.enableUIContainerServiceRendering
+      var enable = this.renderUI
       var preview = this.editor.layout.nodes.preview
       this.gridRenderer.renderGUI({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
@@ -662,7 +672,7 @@ function VisuController(layerName) constructor {
         y: enable ? ceil(preview.y()) : 0,
       })
       this.lyricsRenderer.renderGUI()
-      if (this.enableUIContainerServiceRendering) {
+      if (this.renderUI) {
         this.uiService.render()
         var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
         if (loaderState != "idle" && loaderState != "loaded") {
@@ -706,7 +716,7 @@ function VisuController(layerName) constructor {
         }
       }
       
-      MouseUtil.renderSprite()
+      //MouseUtil.renderSprite()
       //this.editor.render()
     } catch (exception) {
       var message = $"renderGUI throws exception: {exception.message}"

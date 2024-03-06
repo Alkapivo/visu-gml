@@ -21,7 +21,7 @@ function CounterFeature(json = {}) {
     maxValue: Assert.isType(Struct.getDefault(json, "maxValue", 1), Number),
 
     ///@type {String}
-    field: Assert.isType(Struct.getDefault(json, "field", "counter"), String),
+    field: Assert.isType(json.field, String),
 
     ///@override
     ///@param {GridItem} item

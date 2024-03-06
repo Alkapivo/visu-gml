@@ -271,10 +271,12 @@ function VETimeline(_editor) constructor {
               }
             },
             onMouseHoverOver: function(event) {
-              window_set_cursor(cr_size_ns)
+              Beans.get(BeanVisuController).displayService
+                .setCursor(Cursor.RESIZE_VERTICAL)
             },
             onMouseHoverOut: function(event) {
-              window_set_cursor(cr_default)
+              Beans.get(BeanVisuController).displayService
+                .setCursor(Cursor.DEFAULT)
             },
           }
         }
@@ -776,7 +778,6 @@ function VETimeline(_editor) constructor {
                 var selected = store.getValue("selected-event")
                 if (Optional.is(selected)) {
                   var channel = this.getChannelNameFromMouseY(event.data.y)
-                  Core.print("selected.data", selected.data)
                   var trackEvent = selected.data.serialize()
                   trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
 
@@ -1156,7 +1157,10 @@ function VETimeline(_editor) constructor {
           blend: VETheme.color.ruler,
         }),
         render: function() {
-          
+          if (!this.controller.containers.contains("ve-timeline-events")) {
+            return
+          }
+
           this.renderDefaultScrollable()
           var position = this.state.get("position")
           var camera = this.state.get("camera")

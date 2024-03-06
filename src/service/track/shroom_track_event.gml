@@ -33,10 +33,67 @@ global.__shroom_track_event = new Map(String, Callable, {
     */
   },
   "brush_shroom_clear": function(data) {
-    Core.print("todo:", "brush_shroom_clear", "event")
+    var shroomService = Beans.get(BeanVisuController).shroomService
+    var shrooms = shroomService.shrooms
+    if (Struct.get(data, "shroom-clear_use-clear-all-shrooms")) {
+      shrooms.clear()
+    }
+
+    if (Struct.get(data, "shroom-clear_use-clear-amount")) {
+      var amount = Struct.get(data, "shroom-clear_clear-amount")
+      if (amount >= shrooms.size()) {
+        shrooms.clear()
+      } else {
+        for (var index = 0; index < amount; index++) {
+          var pointer = shrooms.size() - 1
+          if (pointer > 0) {
+            shroomService.shrooms.remove(pointer)
+          }
+        }
+      }
+    }
   },
   "brush_shroom_config": function(data) {
-    Core.print("todo:", "brush_shroom_config", "event")
+    var gridService = Beans.get(BeanVisuController).gridService
+    if (Struct.get(data, "shroom-config_use-render-shrooms")) {
+      gridService.properties.renderShrooms = Struct
+        .get(data, "shroom-config_render-shrooms")
+    }
+
+    if (Struct.get(data, "shroom-config_use-transform-shroom-z")) {
+      var transformer = Struct.get(data, "shroom-config_transform-shroom-z")
+      gridService.send(new Event("transform-property", {
+        key: "shroomZ",
+        container: gridService.properties.depths,
+        executor: gridService.executor,
+        transformer: new NumberTransformer({
+          value: gridService.properties.depths.shroomZ,
+          target: transformer.target,
+          factor: transformer.factor,
+          increase: transformer.increase,
+        })
+      }))
+    }
+
+    if (Struct.get(data, "shroom-config_use-render-bullets")) {
+      gridService.properties.renderBullets = Struct
+        .get(data, "shroom-config_render-bullets")
+    }
+
+    if (Struct.get(data, "shroom-config_use-transform-bullet-z")) {
+      var transformer = Struct.get(data, "shroom-config_transform-bullet-z")
+      gridService.send(new Event("transform-property", {
+        key: "bulletZ",
+        container: gridService.properties.depths,
+        executor: gridService.executor,
+        transformer: new NumberTransformer({
+          value: gridService.properties.depths.bulletZ,
+          target: transformer.target,
+          factor: transformer.factor,
+          increase: transformer.increase,
+        })
+      }))
+    }
   },
 })
 #macro shroom_track_event global.__shroom_track_event

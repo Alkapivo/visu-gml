@@ -318,6 +318,61 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
+    ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "property-bar": function(name, layout, config = null) {
+    var style = VEStyles.get("property-bar")
+    return new Array(UIItem, [
+      UICheckbox(
+        $"{name}_checkbox", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.checkbox,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            Struct.get(style, "checkbox"),
+            false
+          ),
+          Struct.get(config, "checkbox"),
+          false
+        )
+      ),
+      UIText(
+        $"{name}_text", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            Struct.get(style, "label"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UICheckbox(
+        $"{name}_input", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.input,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            Struct.get(style, "input"),
+            false
+          ),
+          Struct.get(config, "input"),
+          false
+        )
+      ),
+    ])
+  },
+
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]

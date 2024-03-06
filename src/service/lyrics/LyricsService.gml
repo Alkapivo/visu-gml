@@ -40,6 +40,8 @@ function LyricsService(config = null): Service() constructor {
         outline: Struct.getDefault(event.data, "outline", null),
         lineDelay: Struct.getDefault(event.data, "lineDelay", null),
         finishDelay: Struct.getDefault(event.data, "finishDelay", null),
+        angleTransformer: Struct.getDefault(event.data, "angleTransformer", null),
+        speedTransformer: Struct.getDefault(event.data, "speedTransformer", null),
       })
 
       var task = new Task("lyrics-task")
@@ -60,6 +62,20 @@ function LyricsService(config = null): Service() constructor {
               this.fullfill()
             }
             return
+          }
+
+          var angleTransformer = state.lyrics.angleTransformer
+          var speedTransformer = state.lyrics.speedTransformer
+          if (Optional.is(angleTransformer) 
+            && Optional.is(speedTransformer)) {
+            
+            angleTransformer.update()
+            speedTransformer.update()
+            var _x = Math.fetchCircleX(speedTransformer.get() / 1000.0, angleTransformer.get())
+            var _y = Math.fetchCircleY(speedTransformer.get() / 1000.0, angleTransformer.get())
+            var area = state.lyrics.area
+            area.setX(area.getX() + _x)
+            area.setY(area.getY() + _y)
           }
 
           if (Optional.is(state.lyrics.lineDelay) 

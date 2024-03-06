@@ -123,11 +123,17 @@ global.__grid_track_event = new Map(String, Callable, {
   },
   "brush_grid_config": function(data) {
     var controller = Beans.get(BeanVisuController)
-    if (Struct.get(data, "grid-config_use-render-grid") == true) {
-      controller.gridService.properties.renderGrid = Struct.get(data, "grid-config_render-grid")
+    if (Struct.get(data, "grid-config_use-render-grid")) {
+      controller.gridService.properties.renderGrid = Struct
+        .get(data, "grid-config_render-grid")
+    }
+
+    if (Struct.get(data, "grid-config_use-render-grid-elements")) {
+      controller.gridService.properties.renderElements = Struct
+        .get(data, "grid-config_render-grid-elements")
     }
     
-    if (Struct.get(data, "grid-config_use-transform-speed") == true) {
+    if (Struct.get(data, "grid-config_use-transform-speed")) {
       var transformer = Struct.get(data, "grid-config_transform-speed")
       controller.gridService.send(new Event("transform-property", {
         key: "speed",
@@ -142,7 +148,7 @@ global.__grid_track_event = new Map(String, Callable, {
       }))
     }
     
-    if (Struct.get(data, "grid-config_use-clear-frame") == true) {
+    if (Struct.get(data, "grid-config_use-clear-frame")) {
       controller.gridService.properties.gridClearFrame = Struct
         .get(data, "grid-config_clear-frame")
     }

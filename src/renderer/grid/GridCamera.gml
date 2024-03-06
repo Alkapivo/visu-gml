@@ -41,7 +41,7 @@ function GridCamera(config = {}) constructor {
 	///@return {Camera}
 	update = function() {
 		this.executor.update()
-		this.enableMouseLook = keyboard_check_pressed(vk_f1)
+		this.enableMouseLook = keyboard_check_pressed(vk_f5)
 			? !this.enableMouseLook 
 			: this.enableMouseLook
 			

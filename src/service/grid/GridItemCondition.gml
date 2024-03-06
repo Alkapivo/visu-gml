@@ -13,13 +13,31 @@ global.__VISU_GRID_CONDITIONS = new Map(String, Callable, {
       return Struct.get(item, this.data.field) == this.data.value
     }
   },
+  "logic-gate": function() {
+    return function(item, controller) {
+      var a = Struct.get(item, this.data.fieldA)
+      var b = Struct.get(item, this.data.fieldB)
+      switch (this.data.operator) {
+        case "and": return a && b
+        case "or": return a || b
+        case "not": return !a
+        case "nor": return !(a || b)
+        case "nand": return !(a && b)
+        case "xor": return (a || b) && !(a && b)
+        case "xnor": return (a && b) || (!a && !b)
+        default: throw Exception($"Found unsupported operator for 'logic-gate': {this.data.operator}")
+      }
+    }
+  },
   "numeric": function() {
     return function(item, controller) {
       var value = Struct.get(item, this.data.field)
       switch (this.data.operator) {
         case "equal": return this.data.value == value
         case "greater": return this.data.value > value
+        case "greaterOrEqual": return this.data.value >= value
         case "less": return this.data.value < value
+        case "lessOrEqual": return this.data.value <= value
         default: throw Exception($"Found unsupported operator for 'numeric': {this.data.operator}")
       }
     }

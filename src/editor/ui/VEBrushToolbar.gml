@@ -92,10 +92,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             }
           },
           onMouseHoverOver: function(event) {
-            window_set_cursor(cr_size_we)
+            Beans.get(BeanVisuController).displayService
+              .setCursor(Cursor.RESIZE_HORIZONTAL)
           },
           onMouseHoverOut: function(event) {
-            window_set_cursor(cr_default)
+            Beans.get(BeanVisuController).displayService
+              .setCursor(Cursor.DEFAULT)
           },
         }
       }
@@ -703,10 +705,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               }
             },
             onMouseHoverOver: function(event) {
-              window_set_cursor(cr_size_ns)
+              Beans.get(BeanVisuController).displayService
+                .setCursor(Cursor.RESIZE_VERTICAL)
             },
             onMouseHoverOut: function(event) {
-              window_set_cursor(cr_default)
+              Beans.get(BeanVisuController).displayService
+                .setCursor(Cursor.DEFAULT)
             },
           },
           VEStyles.get("bar-title"),

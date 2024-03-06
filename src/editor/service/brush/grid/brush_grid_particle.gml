@@ -56,32 +56,32 @@ function brush_grid_particle(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_beginX", 0.5),
         passthrough: function(value) {
-          //return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
-          return NumberUtil.parse(value, this.value)
+          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
+          //return NumberUtil.parse(value, this.value)
         },
       },
       "grid-particle_beginY": {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_beginY", 0.5),
         passthrough: function(value) {
-          //return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0)
-          return NumberUtil.parse(value, this.value)
+          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0)
+          //return NumberUtil.parse(value, this.value)
         },
       },
       "grid-particle_endX": {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_endX", 0.5),
         passthrough: function(value) {
-          //return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
-          return NumberUtil.parse(value, this.value)
+          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
+          //return NumberUtil.parse(value, this.value)
         },
       },
       "grid-particle_endY": {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_endY", 0.5),
         passthrough: function(value) {
-          //return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
-          return NumberUtil.parse(value, this.value)
+          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
+          //return NumberUtil.parse(value, this.value)
         },
       },
       "grid-particle_amount": {
@@ -135,8 +135,8 @@ function brush_grid_particle(json = null) {
       },
       {
         name: "grid-particle_beginX",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Begin X" },
@@ -145,12 +145,21 @@ function brush_grid_particle(json = null) {
             generateParticleAreaMethods(),
             false
           ),
+          slider: Struct.appendUnique(
+            { 
+              store: { key: "grid-particle_beginX" },
+              minValue: -3.0,
+              maxValue: 3.0,
+            },
+            generateParticleAreaMethods(),
+            false
+          ),
         },
       },
       {
         name: "grid-particle_beginY",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Begin Y" },
@@ -159,12 +168,21 @@ function brush_grid_particle(json = null) {
             generateParticleAreaMethods(),
             false
           ),
+          slider: Struct.appendUnique(
+            { 
+              store: { key: "grid-particle_beginY" },
+              minValue: -3.0,
+              maxValue: 3.0,
+            },
+            generateParticleAreaMethods(),
+            false
+          ),
         },
       },
       {
         name: "grid-particle_endX",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "End X" },
@@ -173,17 +191,35 @@ function brush_grid_particle(json = null) {
             generateParticleAreaMethods(),
             false
           ),
+          slider: Struct.appendUnique(
+            { 
+              store: { key: "grid-particle_endX" },
+              minValue: -3.0,
+              maxValue: 3.0,
+            },
+            generateParticleAreaMethods(),
+            false
+          ),
         },
       },
       {
         name: "grid-particle_endY",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "End Y" },
           field: Struct.appendUnique(
             { store: { key: "grid-particle_endY" } },
+            generateParticleAreaMethods(),
+            false
+          ),
+          slider: Struct.appendUnique(
+            { 
+              store: { key: "grid-particle_endY" },
+              minValue: -3.0,
+              maxValue: 3.0,
+            },
             generateParticleAreaMethods(),
             false
           ),

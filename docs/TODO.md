@@ -68,5 +68,23 @@
 [ DONE ] add error popup queue
 [ DONE ] add player event to brush
 [ DONE ] add particle burst event to brush
-[      ] add "?" button to UI elements
-[      ] basic unit test for core
+[      ] add "?" button to json text fields
+L O W P R I O R I T Y
+[      ] keyboard shortcuts
+[      ] context menu
+[      ] ctrl+z, ctrl+shift+z on timeline
+[      ] markdown documentation
+[      ] settings
+[      ] core unit test
+[      ] visu unit test
+[      ] dialogue designer support
+[      ] language pack
+[      ] event to brush
+[      ] brush add panel
+[      ] select many
+[      ] drag&drop on list view (instead of buttons)
+[      ] mute channel
+[      ] execute "some" events while rewinding (e.g. channels, definitely not spawn-shroom)
+
+
+

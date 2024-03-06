@@ -15,7 +15,9 @@ global.__VETheme = {
     textFocus: "#FFFFFF",
     textSelected: "#B2DBE3",
     accept: "#469E59",
+    acceptShadow: "#468a55",
     deny: "#A84545",
+    denyShadow: "#823d3d",
     ruler: "#E64B3D",
   }
 }
@@ -32,7 +34,7 @@ global.__VEStyles = new Map(String, Struct, {
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
     },
     accept: {
-      backgroundColor: VETheme.color.accept,
+      backgroundColor: VETheme.color.acceptShadow,
       label: {
         color: VETheme.color.textFocus,
         font: "font_inter_10_regular",
@@ -40,7 +42,7 @@ global.__VEStyles = new Map(String, Struct, {
       }
     },
     deny: {
-      backgroundColor: VETheme.color.deny,
+      backgroundColor: VETheme.color.denyShadow,
       label: {
         color: VETheme.color.textFocus,
         font: "font_inter_10_regular",
@@ -206,6 +208,20 @@ global.__VEStyles = new Map(String, Struct, {
       backgroundColor: VETheme.color.primaryShadow,
     },
   },
+  "property-bar": {
+    checkbox: {
+      backgroundColor: VETheme.color.accentShadow,
+    },
+    label: {
+      backgroundColor: VETheme.color.accentShadow,
+      font: "font_inter_10_regular",
+      color: VETheme.color.textFocus,
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    },
+    input: {
+      backgroundColor: VETheme.color.accentShadow,
+    },
+  },
   "text-field": { 
     font: "font_inter_10_regular",
     colorBackgroundUnfocused: VETheme.color.primaryShadow,
@@ -242,11 +258,11 @@ global.__VEStyles = new Map(String, Struct, {
     },
     button: {
       label: {
-        font: "font_inter_10_regular",
+        font: "font_inter_8_regular",
         color: VETheme.color.textFocus,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
-      backgroundColor: VETheme.color.accent,
+      backgroundColor: VETheme.color.accentShadow,
     },
   },
   "text-field-checkbox": { 
@@ -305,7 +321,7 @@ global.__VEStyles = new Map(String, Struct, {
         color: VETheme.color.textFocus,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
-      backgroundColor: VETheme.color.accent,
+      backgroundColor: VETheme.color.accentShadow,
     },
     checkbox: { }
   },

@@ -25,6 +25,25 @@ function brush_shroom_config(json = null) {
           { value: 0, target: 100, factor: 1.0, increase: 0.2 }
         )),
       },
+      "shroom-config_use-render-bullets": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-config_use-render-bullets", false),
+      },
+      "shroom-config_render-bullets": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-config_render-bullets", false),
+      },
+      "shroom-config_use-transform-bullet-z": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-config_use-transform-bullet-z", true),
+      },
+      "shroom-config_transform-bullet-z": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "shroom-config_transform-bullet-z", 
+          { value: 0, target: 100, factor: 1.0, increase: 0.2 }
+        )),
+      },
     }),
     components: new Array(Struct, [
       {
@@ -95,6 +114,78 @@ function brush_shroom_config(json = null) {
             field: {
               store: { key: "shroom-config_transform-shroom-z" },
               enable: { key: "shroom-config_use-transform-shroom-z" },
+            },
+          },
+        },
+      },
+      {
+        name: "shroom-config_render-bullets",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Render bullets",
+            enable: { key: "shroom-config_use-render-bullets" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-config_use-render-bullets" },
+          },
+          input: { 
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "shroom-config_render-bullets" },
+            enable: { key: "shroom-config_use-render-bullets" },
+          },
+        },
+      },
+      {
+        name: "shroom-config_transform-bullet-z",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Transform bullet z",
+              enable: { key: "shroom-config_use-transform-bullet-z" },
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "shroom-config_use-transform-bullet-z" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "shroom-config_use-transform-bullet-z" },
+            },
+            field: {
+              store: { key: "shroom-config_transform-bullet-z" },
+              enable: { key: "shroom-config_use-transform-bullet-z" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "shroom-config_use-transform-bullet-z" },
+            },
+            field: {
+              store: { key: "shroom-config_transform-bullet-z" },
+              enable: { key: "shroom-config_use-transform-bullet-z" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "shroom-config_use-transform-bullet-z" },
+            },
+            field: {
+              store: { key: "shroom-config_transform-bullet-z" },
+              enable: { key: "shroom-config_use-transform-bullet-z" },
             },
           },
         },

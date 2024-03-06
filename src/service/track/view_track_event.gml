@@ -200,6 +200,12 @@ global.__view_track_event = new Map(String, Callable, {
         finishDelay: Struct.get(data, "view-lyrics_use-finish-delay")
           ? new Timer(Struct.get(data, "view-lyrics_finish-delay"))
           : null,
+        angleTransformer: Struct.get(data, "view-lyrics_use-transform-angle")
+          ? new NumberTransformer(Struct.get(data, "view-lyrics_transform-angle"))
+          : null,
+        speedTransformer: Struct.get(data, "view-lyrics_use-transform-speed")
+          ? new NumberTransformer(Struct.get(data, "view-lyrics_transform-speed"))
+          : null,
       }))
   },
   "brush_view_config": function(data) {

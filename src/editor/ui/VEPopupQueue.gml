@@ -179,7 +179,10 @@ function VEPopupQueue(_editor) constructor {
             var lines = 1 + String.count(text, "\n")
             this.layout._height = lines == 1 ? this.context.area.getHeight() : lines * string_height("|")
             this.label.text = text
-          }
+          },
+          onMousePressedLeft: function(event) {
+            this.context.controller.dispatcher.send(new Event("remove", this.context.name))
+          },
         },
         "close": {
           type: UIText,
@@ -189,14 +192,22 @@ function VEPopupQueue(_editor) constructor {
           color: VETheme.color.textFocus,
           outline: true,
           outlineColor: VETheme.color.darkShadow,
-          backgroundColor: VETheme.color.deny,
+          backgroundColor: VETheme.color.denyShadow,
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
             this.layout._offsetY = abs(this.context.offset.y)
             this.updateArea()
           },
-          onMouseReleasedLeft: function(event) {
+          colorHoverOver: VETheme.color.deny,
+          colorHoverOut: VETheme.color.denyShadow,
+          onMouseHoverOver: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+          onMousePressedLeft: function(event) {
             this.context.controller.dispatcher.send(new Event("remove", this.context.name))
           },
         },

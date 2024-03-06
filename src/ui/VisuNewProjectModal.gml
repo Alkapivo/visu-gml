@@ -22,10 +22,47 @@ function VisuNewProjectForm(json = null) constructor {
       type: Optional.of(String),
       value: Struct.getDefault(json, "file-video", ""),
     },
+    "use-bullet": {
+      type: Boolean,
+      value: Struct.getDefault(json, "use-bullet", false),
+    },
+    "bullet": {
+      type: Optional.of(String),
+      value: Struct.getDefault(json, "bullet", ""),
+    },
+    "use-particle": {
+      type: Boolean,
+      value: Struct.getDefault(json, "use-particle", false),
+    },
+    "particle": {
+      type: Optional.of(String),
+      value: Struct.getDefault(json, "particle", ""),
+    },
+    "use-shroom": {
+      type: Boolean,
+      value: Struct.getDefault(json, "use-shroom", false),
+    },
+    "shroom": {
+      type: Optional.of(String),
+      value: Struct.getDefault(json, "shroom", ""),
+    },
+    "include-brushes": {
+      type: Boolean,
+      value: Struct.getDefault(json, "include-brushes", false),
+    },
   })
 
   ///@type {Array<Struct>}
   components = new Array(Struct, [
+    {
+      name: "titlebar",
+      template: VEComponents.get("property-bar"),
+      layout: VELayouts.get("property-bar"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        label: { text: "Create new project" },
+      },
+    },
     {
       name: "project-name",
       template: VEComponents.get("text-field-checkbox"),
@@ -68,7 +105,16 @@ function VisuNewProjectForm(json = null) constructor {
             this.context.state.get("store")
               .get("file-audio")
               .set(path)
-          }},
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
       },
     },
     {
@@ -115,6 +161,206 @@ function VisuNewProjectForm(json = null) constructor {
               .get("file-video")
               .set(path)
           },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
+      name: "bullet",  
+      template: VEComponents.get("text-field-button-checkbox"),
+      layout: VELayouts.get("text-field-button-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        checkbox: { 
+          store: { key: "use-bullet" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          
+        },
+        label: { 
+          text: "Bullets",
+          enable: { key: "use-bullet" },
+        },
+        field: { 
+          read_only: true,
+          updateCustom: function() {
+            var text = this.context.state.get("store").getValue("bullet")
+            if (Core.isType(text, String)) {
+              this.textField.setText(FileUtil.getFilenameFromPath(text))
+            } else {
+              this.textField.setText("")
+            }
+          },
+          enable: { key: "use-bullet"},
+        },
+        button: { 
+          label: { text: "Open" },
+          enable: { key: "use-bullet"},
+          callback: function() {
+            var path = FileUtil.getPathToOpenWithDialog({
+              description: "JSON file",
+              extension: "json",
+            })
+            if (!FileUtil.fileExists(path)) {
+              return
+            }
+
+            this.context.state.get("store")
+              .get("bullet")
+              .set(path)
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
+      name: "particle",  
+      template: VEComponents.get("text-field-button-checkbox"),
+      layout: VELayouts.get("text-field-button-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        checkbox: { 
+          store: { key: "use-particle" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          
+        },
+        label: { 
+          text: "Particles",
+          enable: { key: "use-particle" },
+        },
+        field: { 
+          read_only: true,
+          updateCustom: function() {
+            var text = this.context.state.get("store").getValue("particle")
+            if (Core.isType(text, String)) {
+              this.textField.setText(FileUtil.getFilenameFromPath(text))
+            } else {
+              this.textField.setText("")
+            }
+          },
+          enable: { key: "use-particle"},
+        },
+        button: { 
+          label: { text: "Open" },
+          enable: { key: "use-particle"},
+          callback: function() {
+            var path = FileUtil.getPathToOpenWithDialog({
+              description: "JSON file",
+              extension: "json",
+            })
+            if (!FileUtil.fileExists(path)) {
+              return
+            }
+
+            this.context.state.get("store")
+              .get("particle")
+              .set(path)
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
+      name: "shroom",  
+      template: VEComponents.get("text-field-button-checkbox"),
+      layout: VELayouts.get("text-field-button-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        checkbox: { 
+          store: { key: "use-shroom" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          
+        },
+        label: { 
+          text: "Shrooms",
+          enable: { key: "use-shroom" },
+        },
+        field: { 
+          read_only: true,
+          updateCustom: function() {
+            var text = this.context.state.get("store").getValue("shroom")
+            if (Core.isType(text, String)) {
+              this.textField.setText(FileUtil.getFilenameFromPath(text))
+            } else {
+              this.textField.setText("")
+            }
+          },
+          enable: { key: "use-shroom"},
+        },
+        button: { 
+          label: { text: "Open" },
+          enable: { key: "use-shroom"},
+          callback: function() {
+            var path = FileUtil.getPathToOpenWithDialog({
+              description: "JSON file",
+              extension: "json",
+            })
+            if (!FileUtil.fileExists(path)) {
+              return
+            }
+
+            this.context.state.get("store")
+              .get("shroom")
+              .set(path)
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
+      name: "include-brushes",
+      template: VEComponents.get("boolean-field"),
+      layout: VELayouts.get("text-field-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        label: { text: "Include brushes" },
+        field: { 
+          store: { key: "include-brushes" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          scaleToFillStretched: false,
         },
       },
     },
@@ -124,18 +370,31 @@ function VisuNewProjectForm(json = null) constructor {
       layout: VELayouts.get("button"),
       config: {
         layout: { type: UILayoutType.VERTICAL },
-        backgroundColor: VETheme.color.accept,
+        backgroundColor: VETheme.color.acceptShadow,
         backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-        callback: function() { 
+        label: { text: "Create project" },
+        colorHoverOver: VETheme.color.accept,
+        colorHoverOut: VETheme.color.acceptShadow,
+        onMouseHoverOver: function(event) {
+          this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+        },
+        onMouseHoverOut: function(event) {
+          this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+        },
+        onMousePressedLeft: function(event) {
           var path = FileUtil.getPathToSaveWithDialog({ 
             description: "JSON file",
             filename: "manifest", 
             xtension: "json" 
           })
-          this.context.state.get("form").save(path)
+          try {
+            this.context.state.get("form").save(path)
+          } catch (exception) {
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+              { message: $"Cannot create project: {exception.message}" }))
+          }
           this.context.modal.send(new Event("close"))
         },
-        label: { text: "Create project" },
       },
     },
     {
@@ -144,12 +403,20 @@ function VisuNewProjectForm(json = null) constructor {
       layout: VELayouts.get("button"),
       config: {
         layout: { type: UILayoutType.VERTICAL },
-        backgroundColor: VETheme.color.deny,
+        backgroundColor: VETheme.color.denyShadow,
         backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-        callback: function() { 
+        label: { text: "Cancel" },
+        colorHoverOver: VETheme.color.deny,
+        colorHoverOut: VETheme.color.denyShadow,
+        onMouseHoverOver: function(event) {
+          this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+        },
+        onMouseHoverOut: function(event) {
+          this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+        },
+        onMousePressedLeft: function(event) {
           this.context.modal.send(new Event("close"))
         },
-        label: { text: "Cancel" },
       },
     },
   ])
@@ -159,11 +426,27 @@ function VisuNewProjectForm(json = null) constructor {
     var json = {
       name: Assert.isType(this.store.getValue("project-name"), String),
       audio: Assert.isType(this.store.getValue("file-audio"), String),
+      includeBrushes: Assert.isType(this.store.getValue("include-brushes"), Boolean), 
     }
 
     if (this.store.getValue("use-file-video") 
       && Core.isType(this.store.getValue("file-video"), String)) {
       Struct.set(json, "video", this.store.getValue("file-video"))
+    }
+
+    if (this.store.getValue("use-bullet")
+      && Core.isType(this.store.getValue("bullet"), String)) {
+      Struct.set(json, "bullet", this.store.getValue("bullet"))
+    }
+
+    if (this.store.getValue("use-particle")
+      && Core.isType(this.store.getValue("particle"), String)) {
+      Struct.set(json, "particle", this.store.getValue("particle"))
+    }
+
+    if (this.store.getValue("use-shroom")
+      && Core.isType(this.store.getValue("shroom"), String)) {
+      Struct.set(json, "shroom", this.store.getValue("shroom"))
     }
 
     return json
@@ -242,22 +525,39 @@ function VisuNewProjectForm(json = null) constructor {
       }
     })
 
-    FileUtil.createDirectory($"{path}editor")
+    if (Struct.contains(json, "bullet")) {
+      templates.remove("bullet")
+      FileUtil.copyFile(json.bullet, $"{path}{manifest.data.bullet}")
+    }
+    if (Struct.contains(json, "particle")) {
+      templates.remove("particle")
+      FileUtil.copyFile(json.particle, $"{path}{manifest.data.particle}")
+    }
+    if (Struct.contains(json, "shroom")) {
+      templates.remove("shroom")
+      FileUtil.copyFile(json.shroom, $"{path}{manifest.data.shroom}")
+    }
 
+    FileUtil.createDirectory($"{path}editor")
+    var visuTrack = global.__VisuTrack
+    if (json.includeBrushes && Core.isType(visuTrack, VisuTrack)) {
+      visuTrack.editor.forEach(function(brush, index, acc) {
+        FileUtil.copyFile($"{acc.visuTrack.path}{brush}", $"{acc.path}{brush}")
+      }, {
+        visuTrack: visuTrack,
+        path: path,
+      })
+    }
 
     var audioFilename = FileUtil.getFilenameFromPath(json.audio)
-    Core.print("audio copy", json.audio, $"{path}{audioFilename}")
     FileUtil.copyFile(json.audio, $"{path}{audioFilename}")
-
 
     if (Core.isType(Struct.get(json, "video"), String)) {
       Struct.set(manifest.data, "video", FileUtil
         .getFilenameFromPath(json.video))
       var videoFilename = FileUtil.getFilenameFromPath(json.video)
-      Core.print("video copy", json.video, $"{path}{videoFilename}")
       FileUtil.copyFile(json.video, $"{path}{videoFilename}")
     }
-
 
     templates.forEach(function(template, key, acc) {
       var filename = Assert.isType(Struct.get(acc.manifest.data, key), String)
@@ -272,12 +572,22 @@ function VisuNewProjectForm(json = null) constructor {
       path: path,
     })
 
-    
     fileService.send(new Event("save-file-sync")
       .setData(new File({
-        path: $"{path}manifest.json" ,
+        path: $"{path}manifest.visu" ,
         data: String.replaceAll(JSON.stringify(manifest, { pretty: true }), "\\", ""),
-    })))
+      }))
+      .setPromise(new Promise()
+        .setState({ name: json.name, path: path })
+        .whenSuccess(function(result) {
+          Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+            { message: $"Project '{this.state.name}' created successfully at: '{this.state.path}'" }))
+        })
+        .whenFailure(function(result) {
+          Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+            { message: $"Cannot create project '{this.state.name}' at: '{this.state.path}'" }))
+        })
+      ))
 
     return this
   }
@@ -314,7 +624,7 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
         x: function() { return (this.context.width() - this.width()) / 2 },
         y: function() { return (this.context.height() - this.height()) / 2 },
         width: function() { return 480 },
-        height: function() { return 360 },
+        height: function() { return 380 },
       },
       parent
     )

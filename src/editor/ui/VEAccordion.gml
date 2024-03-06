@@ -166,10 +166,12 @@ function VEAccordion(_editor, config = null) constructor {
               }
             },
             onMouseHoverOver: function(event) {
-              window_set_cursor(cr_size_we)
+              Beans.get(BeanVisuController).displayService
+                .setCursor(Cursor.RESIZE_HORIZONTAL)
             },
             onMouseHoverOut: function(event) {
-              window_set_cursor(cr_default)
+              Beans.get(BeanVisuController).displayService
+                .setCursor(Cursor.DEFAULT)
             },
           }
         }

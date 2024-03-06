@@ -47,11 +47,22 @@ function VisuTrackLoader(_controller): Service() constructor {
       "parse-manifest": {
         actions: {
           onStart: function(fsm, fsmState, path) {
-            Beans.get(BeanVisuController).editor.popupQueue.dispatcher
-              .execute(new Event("clear"))
-            
             window_set_caption($"{game_display_name}")
-            fsm.context.controller.editor.send(new Event("close"))
+
+            var controller = fsm.context.controller
+            controller.gridRenderer.clear()
+            controller.editor.popupQueue.dispatcher.execute(new Event("clear"))
+            controller.editor.dispatcher.execute(new Event("close"))
+            controller.trackService.dispatcher.execute(new Event("close-track"))
+            controller.videoService.dispatcher.execute(new Event("close-video"))
+            controller.gridService.dispatcher.execute(new Event("clear-grid"))
+            controller.playerService.dispatcher.execute(new Event("clear-player"))
+            controller.shroomService.dispatcher.execute(new Event("clear-shrooms"))
+            controller.bulletService.dispatcher.execute(new Event("clear-bullets"))
+            controller.lyricsService.dispatcher.execute(new Event("clear-lyrics"))
+            controller.particleService.dispatcher.execute(new Event("clear-particles"))
+            Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
+
             fsmState.state.set("promise", fsm.context.controller.fileService.send(
               new Event("fetch-file")
                 .setData({ path: path })
@@ -442,6 +453,9 @@ function VisuTrackLoader(_controller): Service() constructor {
             fsm.context.controller.editor.controller
               .send(new Event("rewind")
               .setData({ timestamp: 0.0 }))
+
+            fsm.context.controller.editor.controller.send(new Event("spawn-popup", 
+              { message: $"Project '{fsm.context.controller.trackService.track.name}' loaded successfully" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "parse-manifest" ]),

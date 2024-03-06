@@ -254,7 +254,8 @@ function GridRenderer(_controller, config = {}) constructor {
     }
 
     var gridService = this.controller.gridService
-    if (!gridService.properties.renderElements) {
+    if (!gridService.properties.renderElements 
+      || !gridService.properties.renderShrooms) {
       return this
     }
 
@@ -320,7 +321,8 @@ function GridRenderer(_controller, config = {}) constructor {
     }
     
     var gridService = this.controller.gridService
-    if (!gridService.properties.renderElements) {
+    if (!gridService.properties.renderElements
+        || !gridService.properties.renderBullets) {
       return this
     }
 

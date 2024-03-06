@@ -247,12 +247,20 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             layout: VELayouts.get("button"),
             config: {
               layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.accept,
+              backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
               },
               label: { text: "Create shader" },
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
             },
           },
         ]),
@@ -273,12 +281,20 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             layout: VELayouts.get("button"),
             config: {
               layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.accept,
+              backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
               },
               label: { text: "Create shroom" },
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
             },
           },
         ]),
@@ -299,12 +315,20 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             layout: VELayouts.get("button"),
             config: {
               layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.accept,
+              backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
               },
               label: { text: "Create bullet" },
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
             },
           },
         ]),
@@ -325,12 +349,20 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             layout: VELayouts.get("button"),
             config: {
               layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.accept,
+              backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
               },
               label: { text: "Create lyrics" },
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
             },
           },
         ]),
@@ -351,12 +383,20 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             layout: VELayouts.get("button"),
             config: {
               layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.accept,
+              backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
               },
-              label: { text: "Add template" },
+              label: { text: "Create particle" },
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
             },
           },
         ]),
@@ -402,7 +442,16 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       
                   var intent = this.context.state.get("store").getValue("texture-intent")
                   intent.file = path
-                }},
+                },
+                colorHoverOver: VETheme.color.accent,
+                colorHoverOut: VETheme.color.accentShadow,
+                onMouseHoverOver: function(event) {
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                },
+                onMouseHoverOut: function(event) {
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                },
+              },
             },
           },
           {
@@ -446,12 +495,20 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             layout: VELayouts.get("button"),
             config: {
               layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.accept,
+              backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
               },
               label: { text: "Create texture" },
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
             },
           },
         ]),
@@ -1268,10 +1325,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               }
             },
             onMouseHoverOver: function(event) {
-              window_set_cursor(cr_size_ns)
+              Beans.get(BeanVisuController).displayService
+                .setCursor(Cursor.RESIZE_VERTICAL)
             },
             onMouseHoverOut: function(event) {
-              window_set_cursor(cr_default)
+              Beans.get(BeanVisuController).displayService
+                .setCursor(Cursor.DEFAULT)
             },
           },
           VEStyles.get("bar-title"),
@@ -1355,11 +1414,19 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("horizontal-item"),
             config: {
-              backgroundColor: VETheme.color.accept,
+              backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               label: { text: "Save template" },
               callback: function() { 
                 this.context.templateToolbar.send(new Event("save-template"))
+              },
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
               },
             },
           }

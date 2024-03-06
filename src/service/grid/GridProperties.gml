@@ -88,10 +88,17 @@ function GridProperties(config = {}) constructor {
   renderGrid = Assert.isType(Struct
     .getDefault(config, "properties.renderGrid", true), Boolean)
   
-  ///@todo implement
   ///@type {Boolean}
   renderElements = Assert.isType(Struct
     .getDefault(config, "properties.renderElements", true), Boolean)
+
+  ///@type {Boolean}
+  renderBullets = Assert.isType(Struct
+    .getDefault(config, "properties.renderBullets", true), Boolean)
+
+  ///@type {Boolean}
+  renderShrooms = Assert.isType(Struct
+    .getDefault(config, "properties.renderShrooms", true), Boolean)
 
   ///@type {Boolean}
   renderBackground = Assert.isType(Struct

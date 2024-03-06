@@ -124,6 +124,28 @@ function brush_view_lyrics(json = null) {
           return clamp(NumberUtil.parse(value, this.value), 0.000001, 999.0)
         },
       },
+      "view-lyrics_use-transform-angle": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-lyrics_use-transform-angle", false),
+      },
+      "view-lyrics_transform-angle": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "view-lyrics_transform-angle", 
+          { value: 0, target: 360, factor: 0.1, increase: 0 }
+        )),
+      },
+      "view-lyrics_use-transform-speed": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-lyrics_use-transform-speed", false),
+      },
+      "view-lyrics_transform-speed": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "view-lyrics_transform-speed", 
+          { value: 0, target: 8, factor: 0.01, increase: 0 }
+        )),
+      },
     }),
     components: new Array(Struct, [
       {
@@ -474,6 +496,124 @@ function brush_view_lyrics(json = null) {
             minValue: 0.0,
             maxValue: 1.0,
             store: { key: "view-lyrics_height" },
+          },
+        },
+      },
+      {
+        name: "view-lyrics_transform-angle",
+        template: VEComponents.get("transform-numeric-uniform"),
+        layout: VELayouts.get("transform-numeric-uniform"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Transform angle",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+          value: {
+            label: {
+              text: "Value",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-angle" },
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-angle" },
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-angle" },
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-angle" },
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+        },
+      },
+      {
+        name: "view-lyrics_transform-speed",
+        template: VEComponents.get("transform-numeric-uniform"),
+        layout: VELayouts.get("transform-numeric-uniform"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Transform speed",
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "view-lyrics_use-transform-speed" },
+            },
+          },
+          value: {
+            label: {
+              text: "Value",
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-speed" },
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-speed" },
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-speed" },
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-speed" },
+              enable: { key: "view-lyrics_use-transform-speed" },
+            },
           },
         },
       },
