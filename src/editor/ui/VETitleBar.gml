@@ -185,11 +185,13 @@ function VETitleBar(_editor) constructor {
 
                 global.__VisuTrack.saveProject(path)
 
-                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-                  { message: $"Project '{global.__VisuTrack.track.name}' saved successfully at: '{path}'" }))
+                var controller = Beans.get(BeanVisuController)
+                controller.send(new Event("spawn-popup", 
+                  { message: $"Project '{controller.trackService.track.name}' saved successfully at: '{path}'" }))
               } catch (exception) {
-                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-                  { message: $"Cannot save the project: {exception.message}" }))
+                var message = $"Cannot save the project: {exception.message}"
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+                Logger.error("VETitleBar", message)
               }
             }
           }),

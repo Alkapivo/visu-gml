@@ -1445,8 +1445,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           && Optional.is(template)
           && this.particleTimer.update().finished) {
 
+          var particleName = template.store.getValue("template-name")
           var particleService = Beans.get(BeanVisuController).particleService
           var event = particleService.factoryEventSpawnParticleEmitter({
+            particleName: particleName,
             beginX: (GuiWidth() / 2) - 32,
             beginY: (GuiHeight() / 2) - 32,
             endX: (GuiWidth() / 2) + 32,
@@ -1683,11 +1685,13 @@ function VETemplateToolbar(_editor) constructor {
                 })))
           break
         default:
-          throw new Exception($"Dispatcher for type '{template.type}' wasn't found")
+          throw new Exception($"Dispatcher for type '{type}' wasn't found")
       }
 
       ///@description send update event to subscribers
       this.store.get("type").set(type)
+      var storeItem = this.store.get("template")
+      storeItem.set(storeItem.get())
     },      
     "save-template": function(event) {
       var template = this.store.getValue("template")
@@ -1723,6 +1727,7 @@ function VETemplateToolbar(_editor) constructor {
 
       ///@description send update event to subscribers
       this.store.get("type").set(template.type)
+      this.store.get("template").set(template)
     },
   }), { 
     enableLogger: false, 

@@ -160,14 +160,7 @@ function VETemplate(json) constructor {
     var sprite = this.store.getValue("shroom_texture")
     var json = {
       name: Assert.isType(this.store.getValue("template-name"), String),
-      sprite: {
-        name: sprite.getName(),
-        frame: sprite.getFrame(),
-        speed: sprite.getSpeed(),
-        alpha: sprite.getAlpha(),
-        scaleX: sprite.getScaleX(),
-        scaleY: sprite.getScaleY(),
-      },
+      sprite: sprite.serialize(),
       gameModes: {
         bulletHell: {
           features: JSON.parse(this.store.getValue("shroom_game-mode_bullet-hell_features")).getContainer()
@@ -193,12 +186,7 @@ function VETemplate(json) constructor {
     var sprite = this.store.getValue("bullet_texture")
     var json = {
       name: Assert.isType(this.store.getValue("template-name"), String),
-      sprite: {
-        name: sprite.getName(),
-        frame: sprite.getFrame(),
-        speed: sprite.getSpeed(),
-        alpha: sprite.getAlpha(),
-      },
+      sprite: sprite.serialize(),
       gameModes: {
         bulletHell: {
           features: JSON.parse(this.store.getValue("bullet_game-mode_bullet-hell_features")).getContainer()

@@ -13,7 +13,7 @@ function template_texture(json = null) {
     }),
     components: new Array(Struct, [
       {
-        name: "textture-origin-x",
+        name: "texture-origin-x",
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
         config: {
