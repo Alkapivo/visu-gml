@@ -19,6 +19,9 @@ function ShroomService(_controller, config = {}): Service() constructor {
   ///@type {?Struct}
   spawner = null
 
+  ///@type {?Struct}
+  particleArea = null
+
   ///@type {?GameMode}
   gameMode = null
 

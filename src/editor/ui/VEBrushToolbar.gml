@@ -291,6 +291,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             brushType: VEBrushType.GRID_SEPARATOR,
           },
           {
+            name: "button_category-grid_type-particle",
+            text: "Particle",
+            brushType: VEBrushType.GRID_PARTICLE,
+          },
+          {
             name: "button_category-grid_type-player",
             text: "Player",
             brushType: VEBrushType.GRID_PLAYER,
@@ -914,6 +919,7 @@ function VEBrushToolbar(_editor) constructor {
     "grid": new Array(String, [ 
       VEBrushType.GRID_CHANNEL, 
       VEBrushType.GRID_CONFIG, 
+      VEBrushType.GRID_PARTICLE,
       VEBrushType.GRID_PLAYER,
       VEBrushType.GRID_SEPARATOR
     ]),

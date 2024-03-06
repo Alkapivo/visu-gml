@@ -15,6 +15,7 @@ function _VEBrushType(): Enum() constructor {
   VIEW_CONFIG = "brush_view_config"
   GRID_CHANNEL = "brush_grid_channel"
   GRID_CONFIG = "brush_grid_config"
+  GRID_PARTICLE = "brush_grid_particle"
   GRID_PLAYER = "brush_grid_player"
   GRID_SEPARATOR = "brush_grid_separator"
 }
@@ -38,6 +39,7 @@ global.__VEBrushTypeNames = new Map(String, String)
   .set(VEBrushType.VIEW_LYRICS, "View lyrics")
   .set(VEBrushType.GRID_CHANNEL, "Grid channel")
   .set(VEBrushType.GRID_CONFIG, "Grid config")
+  .set(VEBrushType.GRID_PARTICLE, "Grid particle")
   .set(VEBrushType.GRID_PLAYER, "Grid player")
   .set(VEBrushType.GRID_SEPARATOR, "Grid separator")
 #macro VEBrushTypeNames global.__VEBrushTypeNames

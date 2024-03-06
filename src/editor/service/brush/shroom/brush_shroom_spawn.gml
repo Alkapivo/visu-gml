@@ -97,7 +97,6 @@ function brush_shroom_spawn(json = null) {
           label: { text: "Template" },
           field: { store: { key: "shroom-spawn_template" } },
         },
-        
       },
       {
         name: "shroom-spawn_speed",  

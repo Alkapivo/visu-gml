@@ -240,7 +240,6 @@ function VEPopupQueue(_editor) constructor {
     "remove": function(event) {
       var index = Assert.isType(this.containers
         .findIndex(function(container, index, target) { ///@todo move to Lambda util
-          Core.print("container.name", container.name, "target", target)
           return container.name == target
         }, event.data), Number)
       

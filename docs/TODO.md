@@ -66,14 +66,6 @@
 [ DONE ] loop video when track is longer than video.duration
 [ DONE ] add error popup queue
 [ DONE ] add player event to brush
-[      ] add particle burst event to brush
+[ DONE ] add particle burst event to brush
 [      ] add "?" button to UI elements
 [      ] basic unit test for core
-
-particle-burt
-x
-y
-size
-amount
-duration
-interval

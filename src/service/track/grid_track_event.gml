@@ -180,6 +180,26 @@ global.__grid_track_event = new Map(String, Callable, {
         .setData(GameMode.get(Struct.get(data, "grid-config_gamemode"))))
     }
   },
+  "brush_grid_particle": function(data) {
+    var particleService = Beans.get(BeanVisuController).particleService
+    particleService.send(particleService
+      .factoryEventSpawnParticleEmitter(
+        {
+          particleName: Struct.get(data, "grid-particle_template"),
+          beginX: Struct.get(data, "grid-particle_beginX") * GRID_SERVICE_PIXEL_WIDTH,
+          beginY: Struct.get(data, "grid-particle_beginY") * GRID_SERVICE_PIXEL_HEIGHT,
+          endX: Struct.get(data, "grid-particle_endX") * GRID_SERVICE_PIXEL_WIDTH,
+          endY: Struct.get(data, "grid-particle_endY") * GRID_SERVICE_PIXEL_HEIGHT,
+          amount: Struct.get(data, "grid-particle_amount"),
+          interval: Struct.get(data, "grid-particle_interval"),
+          duration: Struct.get(data, "grid-particle_duration"),
+          shape: ParticleEmitterShape
+            .get(Struct.get(data, "grid-particle_shape")),
+          distribution: ParticleEmitterDistribution
+            .get(Struct.get(data, "grid-particle_distribution")),
+        }, 
+      ))
+  },
   "brush_grid_player": function(data) {
     var json = {}
 

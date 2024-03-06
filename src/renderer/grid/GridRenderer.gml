@@ -270,6 +270,29 @@ function GridRenderer(_controller, config = {}) constructor {
       this.controller.shroomService.spawner = null
     }
 
+    // Render particleArea
+    var particleArea = this.controller.shroomService.particleArea
+    if (Core.isType(particleArea, Struct)) {
+      particleArea.topLeft.sprite.render(
+        particleArea.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleArea.topRight.sprite.render(
+        particleArea.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleArea.bottomLeft.sprite.render(
+        particleArea.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleArea.bottomRight.sprite.render(
+        particleArea.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+
+      this.controller.shroomService.particleArea = null
+    }
+
     return this
   }
 
