@@ -492,7 +492,7 @@ function VETrackControl(_editor) constructor {
     },
   }), { 
     enableLogger: false, 
-    catchException: true,
+    catchException: false,
   })
 
   ///@param {Event} event
@@ -514,14 +514,23 @@ function VETrackControl(_editor) constructor {
         this.editor.controller.send(new Event("pause"))
       }
     } catch (exception) {
-      Logger.error("VETrackControl", $"watchdog throwed an exception: {exception.message}")
+      var message = $"watchdog throwed an exception: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("VETrackControl", message)
     }
     return this
   }
 
   ///@return {VETrackControl}
   update = function() { 
-    this.dispatcher.update()
+    try {
+      this.dispatcher.update()
+    } catch (exception) {
+      var message = $"VETrackControl dispatcher fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("UI", message)
+    }
+    
     this.watchdog()
     return this
   }

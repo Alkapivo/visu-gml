@@ -293,7 +293,7 @@ function VETitleBar(_editor) constructor {
     },
   }), { 
     enableLogger: false, 
-    catchException: true,
+    catchException: false,
   })
 
   ///@param {Event} event
@@ -304,7 +304,13 @@ function VETitleBar(_editor) constructor {
 
   ///@return {VETitleBar}
   update = function() { 
-    this.dispatcher.update()
+    try {
+      this.dispatcher.update()
+    } catch (exception) {
+      var message = $"VETitleBar dispatcher fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("UI", message)
+    }
     return this
   }
 }

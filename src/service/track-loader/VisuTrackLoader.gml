@@ -47,6 +47,9 @@ function VisuTrackLoader(_controller): Service() constructor {
       "parse-manifest": {
         actions: {
           onStart: function(fsm, fsmState, path) {
+            Beans.get(BeanVisuController).editor.popupQueue.dispatcher
+              .execute(new Event("clear"))
+            
             window_set_caption($"{game_display_name}")
             fsm.context.controller.editor.send(new Event("close"))
             fsmState.state.set("promise", fsm.context.controller.fileService.send(
@@ -92,11 +95,10 @@ function VisuTrackLoader(_controller): Service() constructor {
               },
             }))
           } catch (exception) {
-            Logger.error("VisuTrackLoader", $"{exception.message}")
-            fsm.dispatcher.send(new Event("transition", {
-              name: "idle",
-              data: $"'parse-manifest' fatal error: {exception.message}",
-            }))
+            var message = $"'parse-manifest' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuTrackLoader", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "create-parser-tasks" ]),
@@ -329,11 +331,10 @@ function VisuTrackLoader(_controller): Service() constructor {
               data: filtered.map(fsm.context.utils.mapPromiseToTask, null, String, Task),
             }))
           } catch (exception) {
-            Logger.error("VisuTrackLoader", $"{exception.message}")
-            fsm.dispatcher.send(new Event("transition", {
-              name: "idle",
-              data: $"'create-parser-tasks' fatal error: {exception.message}",
-            }))
+            var message = $"'create-parser-tasks' fatal error: {exception.message}",
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuTrackLoader", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "parse-primary-assets" ]),
@@ -364,16 +365,21 @@ function VisuTrackLoader(_controller): Service() constructor {
               return
             }
 
+            var texturePromises = this.state.get("tasks").get("texture").state.get("acc").promises
+            var filteredTextures = texturePromises.filter(fsm.context.utils.filterPromise)
+            if (filteredTextures.size() != texturePromises.size()) {
+              return
+            }
+
             fsm.dispatcher.send(new Event("transition", {
               name: "parse-secondary-assets",
               data: Assert.isType(this.state.get("tasks"), Map)
             }))
           } catch (exception) {
-            Logger.error("VisuTrackLoader", $"{exception.message}")
-            fsm.dispatcher.send(new Event("transition", {
-              name: "idle",
-              data: $"'parse-primary-assets' fatal error: {exception.message}",
-            }))
+            var message = $"'parse-primary-assets' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuTrackLoader", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "parse-secondary-assets" ]),
@@ -420,11 +426,10 @@ function VisuTrackLoader(_controller): Service() constructor {
             audio.pause()
             fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
           } catch (exception) {
-            Logger.error("VisuTrackLoader", $"{exception.message}")
-            fsm.dispatcher.send(new Event("transition", {
-              name: "idle",
-              data: $"'parse-secondary-assets' fatal error: {exception.message}",
-            }))
+            var message = $"'parse-secondary-assets' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuTrackLoader", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "loaded" ]),
@@ -450,8 +455,23 @@ function VisuTrackLoader(_controller): Service() constructor {
 
   ///@return {FSM}
   update = method(this, function() {
-    this.fsm.update()
-    this.executor.update()
+    try {
+      this.fsm.update()
+    } catch (exception) {
+      var message = $"VisuTrackLoader FSM fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)
+    }
+
+    try {
+      this.executor.update()
+    } catch (exception) {
+      this.executor.tasks.clear()
+      var message = $"VisuTrackLoader executor fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)
+      this.fsm.dispatcher.send(new Event("transition", { name: "idle" }))
+    }
     return this
   })
 }

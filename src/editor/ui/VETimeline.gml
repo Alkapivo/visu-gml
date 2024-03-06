@@ -811,7 +811,9 @@ function VETimeline(_editor) constructor {
                 break
             }
           } catch (exception) {
-            Logger.error("VETimeline", $"onMouseReleasedLeft exception: {exception.message}")
+            var message = $"onMouseReleasedLeft exception: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VETimeline", message)
           }
         },
     
@@ -1224,7 +1226,7 @@ function VETimeline(_editor) constructor {
     },
   }), { 
     enableLogger: false, 
-    catchException: true,
+    catchException: false,
   })
 
   ///@param {Event} event
@@ -1235,7 +1237,13 @@ function VETimeline(_editor) constructor {
 
   ///@return {VETimeline}
   update = function() { 
-    this.dispatcher.update()
+    try {
+      this.dispatcher.update()
+    } catch (exception) {
+      var message = $"VETimeline dispatcher fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("UI", message)
+    }
     return this
   }
 }

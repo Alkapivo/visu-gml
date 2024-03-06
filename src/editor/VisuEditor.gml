@@ -56,6 +56,9 @@ function VisuEditor(_controller) constructor {
   ///@type {VEStatusBar}
   statusBar = new VEStatusBar(this)
 
+  ///@type {VEPopupQueue}
+  popupQueue = new VEPopupQueue(this)
+
   ///@type {Store}
   store = new Store({
     "bpm": {
@@ -274,7 +277,7 @@ function VisuEditor(_controller) constructor {
     },
   }), {
     enableLogger: true,
-    catchException: true,
+    catchException: false,
   })
 
   ///@param {Event} event
@@ -285,7 +288,14 @@ function VisuEditor(_controller) constructor {
 
   ///@return {VisuEditor}
   update = function() {
-    this.dispatcher.update()
+    try {
+      this.dispatcher.update()
+    } catch (exception) {
+      var message = $"VisuEditor dispatcher fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("UI", message)
+    }
+
     this.titleBar.update()
     this.accordion.update()
     //this.preview.update()
@@ -293,6 +303,8 @@ function VisuEditor(_controller) constructor {
     this.brushToolbar.update()
     this.timeline.update()
     this.statusBar.update()
+
+    this.popupQueue.update()
 
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")

@@ -399,7 +399,7 @@ function VEStatusBar(_editor) constructor {
     },
   }), { 
     enableLogger: false, 
-    catchException: true,
+    catchException: false,
   })
 
   ///@param {Event} event
@@ -410,7 +410,13 @@ function VEStatusBar(_editor) constructor {
 
   ///@return {VEBrushToolbar}
   update = function() { 
-    this.dispatcher.update()
+    try {
+      this.dispatcher.update()
+    } catch (exception) {
+      var message = $"VEStatusBar dispatcher fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("UI", message)
+    }
     return this
   }
 }

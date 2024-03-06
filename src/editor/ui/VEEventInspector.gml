@@ -202,7 +202,7 @@ function VEEventInspector(_editor) constructor {
     },
   }), { 
     enableLogger: false, 
-    catchException: true,
+    catchException: false,
   })
 
   ///@param {Event} event
@@ -211,7 +211,14 @@ function VEEventInspector(_editor) constructor {
 
   ///@return {VEBrushToolbar}
   update = function() { 
-    this.dispatcher.update()
+    try {
+      this.dispatcher.update()
+    } catch (exception) {
+      var message = $"VEBrushToolbar dispatcher fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("UI", message)
+    }
+
     this.containers.forEach(function (container, key, enable) {
       container.enable = enable
     }, this.enable)

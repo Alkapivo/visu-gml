@@ -64,7 +64,7 @@
 [ DONE ] add enable/disable TrackControl renderer to status bar
 [ DONE ] fix shroom/bullet template editor
 [ DONE ] loop video when track is longer than video.duration
-[      ] add error popup queue
+[ DONE ] add error popup queue
 [      ] add particle burst event to brush
 [      ] add "?" button to UI elements
 [      ] basic unit test for core

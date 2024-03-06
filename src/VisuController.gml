@@ -162,12 +162,11 @@ function VisuController(layerName) constructor {
               }))
             }
           } catch (exception) {
-            Logger.error("VisuController::FSM", $"'load' fatal error: {exception.message}")
+            var message = $"'load' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuController::FSM", message)
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
-            fsm.context.loader.fsm.dispatcher.send(new Event("transition", { 
-              name: "idle",
-              data: $"'load' fatal error: {exception.message}"
-            }))
+            fsm.context.loader.fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "play", "pause" ]),
@@ -210,11 +209,10 @@ function VisuController(layerName) constructor {
             //Assert.areEqual(fsm.context.videoService.getVideo().getStatus(), VideoStatus.PLAYING)
             //Assert.areEqual(fsm.context.trackService.track.getStatus(), TrackStatus.PLAYING)
           } catch (exception) {
-            Logger.error("VisuController::FSM", $"'play': {exception.message}")
-            fsm.dispatcher.send(new Event("transition", {
-              name: "idle",
-              data: $"'play' fatal error: {exception.message}",
-            }))
+            var message = $"'play': {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuController::FSM", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "load", "pause", "rewind", "quit" ]),
@@ -249,11 +247,10 @@ function VisuController(layerName) constructor {
             //Assert.areEqual(fsm.context.videoService.video.getStatus(), VideoStatus.PAUSED)
             //Assert.areEqual(fsm.context.trackService.track.getStatus(), TrackStatus.PAUSED)
           } catch (exception) {
-            Logger.error("VisuController", $"{exception.message}")
-            fsm.dispatcher.send(new Event("transition", {
-              name: "idle",
-              data: $"'pause' fatal error: {exception.message}",
-            }))
+            var message = $"'pause' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuController", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "load", "play", "rewind", "quit" ]),
@@ -296,7 +293,9 @@ function VisuController(layerName) constructor {
                   return
                 }
               } catch (exception) {
-                Logger.warn("VisuController", $"Rewind exception: {exception.message}")
+                var message = $"Rewind exception: {exception.message}"
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+                Logger.warn("VisuController", message)
                 if (!promises.contains("rewind-video")) {
                   return
                 }
@@ -330,10 +329,11 @@ function VisuController(layerName) constructor {
               return
             }
           } catch (exception) {
-            Logger.error("VisuController", $"{exception.message}")
+            var message = $"'rewind' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuController", message)
             fsm.dispatcher.send(new Event("transition", {
               name: this.state.get("resume") ? "play" : "pause",
-              data: $"'rewind' fatal error: {exception.message}",
             }))
           }
         },
@@ -418,6 +418,9 @@ function VisuController(layerName) constructor {
     "quit": function(event) {
       this.fsm.dispatcher.send(new Event("transition", { name: "quit" }))
     },
+    "spawn-popup": function(event) {
+      this.editor.popupQueue.send(new Event("push", event.data))
+    }
   }))
 
   ///@type {TaskExecutor}
@@ -612,7 +615,9 @@ function VisuController(layerName) constructor {
       Core.print("[onNetworkEvent] event:", event)
       Core.print("[onNetworkEvent] message:", message)
     } catch (exception) {
-      Logger.error("[VisuController::onNetworkEvent]", exception.message)	
+      var message = $"'onNetworkEvent' fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)	
     }
 
     return this
@@ -630,7 +635,9 @@ function VisuController(layerName) constructor {
       })
       //this.gridSystem.render()
     } catch (exception) {
-      Logger.error("VisuController", $"render throws exception: {exception.message}")
+      var message = $"render throws exception: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)
     }
     
     return this
@@ -695,7 +702,9 @@ function VisuController(layerName) constructor {
       MouseUtil.renderSprite()
       //this.editor.render()
     } catch (exception) {
-      Logger.error("VisuController", $"renderGUI throws exception: {exception.message}")
+      var message = $"renderGUI throws exception: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)
     }
 
     return this

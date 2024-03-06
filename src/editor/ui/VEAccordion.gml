@@ -348,7 +348,7 @@ function VEAccordion(_editor, config = null) constructor {
     },
   }), { 
     enableLogger: false, 
-    catchException: true,
+    catchException: false,
   })
 
   ///@param {Event} event
@@ -377,11 +377,17 @@ function VEAccordion(_editor, config = null) constructor {
 
   ///@return {VEBrushToolbar}
   update = function() { 
-    this.dispatcher.update()
-    this.updateContainerObject(this.eventInspector, this.store
-      .getValue("render-event-inspector"))
-    this.updateContainerObject(this.templateToolbar, this.store
-      .getValue("render-template-toolbar"))
+    try {
+      this.dispatcher.update()
+      this.updateContainerObject(this.eventInspector, this.store
+        .getValue("render-event-inspector"))
+      this.updateContainerObject(this.templateToolbar, this.store
+        .getValue("render-template-toolbar"))
+    } catch (exception) {
+      var message = $"VEAccordion dispatcher fatal error: {exception.message}"
+      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      Logger.error("UI", message)
+    }
     return this
   }
 }
