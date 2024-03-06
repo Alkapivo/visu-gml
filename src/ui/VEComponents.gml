@@ -2098,7 +2098,9 @@ global.__VEComponents = new Map(String, Callable, {
                     || !Struct.contains(transformer, key)) {
                     return 
                   }
-                  item.set(Struct.set(transformer, key, parsedValue))
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec2Transformer)
                 },
               },
             },

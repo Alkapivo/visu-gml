@@ -233,6 +233,9 @@ function template_shader(json = null) {
       return
     }
 
+    var asd = property.store.item
+    var def = asd
+
     template.store.add(property.store.item, property.store.key)
     template.components.add(property.component)
   }, template)

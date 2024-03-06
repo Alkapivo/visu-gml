@@ -56,7 +56,7 @@
 22.02.2024 (?):
 [ DONE ] load sprite from file
 [ DONE ] load sound from file
-05.02.2024:
+05.03.2024:
 [ DONE ] set preview layout to overlay track controls
 [ DONE ] add fulscreen button to titlebar
 [ DONE ] add enable/disable UI renderer to status bar
@@ -64,6 +64,7 @@
 [ DONE ] add enable/disable TrackControl renderer to status bar
 [ DONE ] fix shroom/bullet template editor
 [ DONE ] loop video when track is longer than video.duration
+06.03.2024:
 [ DONE ] add error popup queue
 [ DONE ] add player event to brush
 [ DONE ] add particle burst event to brush
