@@ -180,6 +180,27 @@ global.__grid_track_event = new Map(String, Callable, {
         .setData(GameMode.get(Struct.get(data, "grid-config_gamemode"))))
     }
   },
+  "brush_grid_player": function(data) {
+    var json = {}
+
+    if (Struct.get(data, "grid-player_use-idle")) {
+      Struct.set(json, "idle", Struct
+        .get(data, "grid-player_idle"))
+    }
+
+    if (Struct.get(data, "grid-player_use-bullet-hell")) {
+      Struct.set(json, "bulletHell", Struct
+        .get(data, "grid-player_bullet-hell"))
+    }
+
+    if (Struct.get(data, "grid-player_use-platformer")) {
+      Struct.set(json, "platformer", Struct
+        .get(data, "grid-player_platformer"))
+    }
+
+    Beans.get(BeanVisuController).playerService
+      .send(new Event("spawn-player", json))
+  },
   "brush_grid_separator": function(data) {
     var controller = Beans.get(BeanVisuController)
     if (Struct.get(data, "grid-separator_use-transform-amount") == true) {

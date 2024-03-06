@@ -12,6 +12,7 @@ function PlayerIdleGameMode(json) {
 }
 
 
+
 ///@param {Struct} json
 ///@return {GridItemGameMode}
 function PlayerBulletHellGameMode(json) {
@@ -26,8 +27,35 @@ function PlayerBulletHellGameMode(json) {
     ///@type {GridItemMovement}
     y: new GridItemMovement(Struct.getDefault(json, "y", { })),
 
-    ///@type {Timer}
-    cooldown: new Timer(Struct.getDefault(json, "cooldown", FRAME_MS * 8), { loop: Infinity }),
+    ///@type {Array<Struct>}
+    guns: new Array(Struct, Core.isType(Struct.get(json, "guns"), GMArray)
+      ? GMArray.map(json.guns, function(gun) {
+        return {
+          cooldown: new Timer(FRAME_MS * Struct
+            .getDefault(gun, "cooldown",  8), { loop: Infinity }),
+          bullet: Assert.isType(Struct
+            .getDefault(gun, "bullet", "bullet_default"), String),
+          angle: Assert.isType(Struct
+            .getDefault(gun, "angle", 90.0), Number),
+          speed: Assert.isType(Struct
+            .getDefault(gun, "speed", 10.0), Number),
+          offsetX: Assert.isType(Struct
+            .getDefault(gun, "offsetX", 0.0), Number),
+          offsetY: Assert.isType(Struct
+            .getDefault(gun, "offsetY", 0.0), Number),
+        }
+      })
+      : [
+        {
+          "cooldown": new Timer(FRAME_MS * 16.0, { loop: Infinity }),
+          "bullet": "bullet_default",
+          "angle": 90.0,
+          "speed": 16.0,
+          "offsetX": 0.0,
+          "offsetY": 0.0
+        }
+      ]
+    ),
 
     ///@override
     ///@param {Player} player
@@ -45,21 +73,42 @@ function PlayerBulletHellGameMode(json) {
       }
       
       var keys = player.keyboard.keys
+      if (Optional.is(global.GMTF_DATA.active)) {
+        keys.left.on = false
+        keys.right.on = false
+        keys.up.on = false
+        keys.down.on = false
+        keys.action.on = false
+      }
+
       player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
       player.y = player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on)
 
-      if (keys.action.on && this.cooldown.finished) {
-        this.cooldown.update()
-        controller.bulletService.send(new Event("spawn-bullet", {
-          x: player.x,
-          y: player.y,
-          angle: 90,
-          speed: 10,
-          producer: Player,
-          template: "bullet_default",
-        }))
-      } else if (!this.cooldown.finished) {
-        this.cooldown.update()
+      if (keys.action.on) {
+        this.guns.forEach(function(gun, index, acc) {
+          if (!gun.cooldown.finished) {
+            gun.cooldown.update()
+            return
+          }
+          gun.cooldown.update()
+          acc.controller.bulletService.send(new Event("spawn-bullet", {
+            x: acc.player.x + (gun.offsetX / GRID_SERVICE_PIXEL_WIDTH),
+            y: acc.player.y + (gun.offsetY / GRID_SERVICE_PIXEL_HEIGHT),
+            producer: Player,
+            angle: gun.angle,
+            speed: gun.speed,
+            template: gun.bullet,
+          }))
+        }, {
+          controller: controller,
+          player: player,
+        })
+      } else {
+        this.guns.forEach(function(gun) {
+          if (!gun.cooldown.finished) {
+            gun.cooldown.update()
+          }
+        })
       }
     },
   }))
@@ -79,12 +128,13 @@ function PlayerPlatformerGameMode(json) {
     x: new GridItemMovement(Struct.getDefault(json, "x", { })),
 
     ///@param {GridItemMovement}
-    y: new GridItemMovement(Struct.getDefault(json, "y", { })),
+    y: new GridItemMovement(Struct.getDefault(json, "y", { speedMax: 25.0 })),
 
-    ///@type {Number}
-    jumpSize: Struct.contains(json, "jumpSize")
-      ? Assert.isType(json.jumpSize, Number)
-      : 0.1,
+    ///@type {Struct}
+    jump: {
+      size: Assert.isType(Struct.getDefault(Struct
+        .get(json, "jump"), "size", 3.5), Number) / 100.0,
+    },
 
     ///@type {?Shroom}
     shroomLanded: null,
@@ -114,8 +164,8 @@ function PlayerPlatformerGameMode(json) {
 
       var shroomCollision = player.signals.shroomCollision
       if (!Optional.is(shroomCollision)) {
-        if (keys.up.pressed && player.y == gridService.height) {
-          this.y.speed = -1 * this.jumpSize
+        if ((keys.up.pressed || keys.action.pressed) && player.y == gridService.height) {
+          this.y.speed = -1 * this.jump.size
         }
 
         if (Optional.is(this.shroomLanded)) {
@@ -128,21 +178,21 @@ function PlayerPlatformerGameMode(json) {
         }
 
         if (!this.doubleJumped && player.y != gridService.height) {
-          if (keys.up.pressed) {
-            this.y.speed = -1 * this.jumpSize
+          if (keys.up.pressed || keys.action.pressed) {
+            this.y.speed = -1 * this.jump.size
             this.doubleJumped = true
           }
         }
 
         player.y = player.y + calcSpeed(this.y, player, false, true)
       } else {
-        if (keys.up.pressed && this.y.speed > 0) {
-          this.y.speed = -1 * this.jumpSize
+        if ((keys.up.pressed || keys.action.pressed) && this.y.speed > 0) {
+          this.y.speed = -1 * this.jump.size
         }
 
         if (!this.doubleJumped && !Optional.is(this.shroomLanded)) {
-          if (keys.up.pressed) {
-            this.y.speed = -1 * this.jumpSize
+          if (keys.up.pressed || keys.action.pressed) {
+            this.y.speed = -1 * this.jump.size
             this.doubleJumped = true
           }
         }

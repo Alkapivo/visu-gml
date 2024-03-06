@@ -577,8 +577,15 @@ function VisuController(layerName) constructor {
     this.executor.update()
 
     if (this.enableUIContainerServiceRendering) {
-      this.uiService.update()
+      try {
+        this.uiService.update()
+      } catch (exception) {
+        var message = $"'update' set fatal error: {exception.message}"
+        this.send(new Event("spawn-popup", { message: message }))
+        Logger.error("UIService", message)
+      }
     }
+    
 	  this.particleService.update()
 	  this.shaderPipeline.update()
     this.shaderBackgroundPipeline.update()
@@ -616,7 +623,7 @@ function VisuController(layerName) constructor {
       Core.print("[onNetworkEvent] message:", message)
     } catch (exception) {
       var message = $"'onNetworkEvent' fatal error: {exception.message}"
-      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      this.send(new Event("spawn-popup", { message: message }))
       Logger.error("VisuController", message)	
     }
 

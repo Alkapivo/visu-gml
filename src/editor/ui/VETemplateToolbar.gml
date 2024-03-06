@@ -1428,6 +1428,10 @@ function VETemplateToolbar(_editor) constructor {
       type: String,
       value: "new template",
     },
+    "template": {
+      type: Optional.of(VETemplate),
+      value: null,
+    },
     "shader": {
       type: String,
       value: "shader_hue",
@@ -1436,19 +1440,6 @@ function VETemplateToolbar(_editor) constructor {
         Assert.isTrue(this.data.contains(value))
       },
       data: SHADERS.keys(),
-    },
-    "shroom": {
-      type: String,
-      value: "shroom-01",
-      validate: function(value) {
-        Assert.isTrue(Beans
-          .get(BeanVisuController).shroomService.templates
-          .contains(value))
-      },
-    },
-    "template": {
-      type: Optional.of(VETemplate),
-      value: null,
     },
     "texture-intent": {
       type: TextureIntent,

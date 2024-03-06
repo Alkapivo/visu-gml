@@ -16,15 +16,36 @@ function PlayerService(_controller, config = {}): Service() constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-player": function(event) {
-      if (!Core.isType(this.player, Player)) {
-        var view = this.controller.gridService.view
-        this.set(this.factoryPlayer(
-          view.x + (view.width / 2.0),
-          view.y + (view.height / 2.0)
-        ))
-
-        this.player.updateGameMode(this.controller.gameMode)
+      var view = this.controller.gridService.view
+      var _x = view.x + (view.width / 2.0)
+      var _y = view.y + (view.height / 2.0)
+      if (Core.isType(this.player, Player)) {
+        _x = this.player.x
+        _y = this.player.y
       }
+
+      var template = {
+        name: "player_default",
+        sprite: {
+          name: "texture_player",
+          animate: true,
+        },
+        keyboard: {
+          up: KeyboardKeyType.ARROW_UP,
+          down: KeyboardKeyType.ARROW_DOWN,
+          left: KeyboardKeyType.ARROW_LEFT,
+          right: KeyboardKeyType.ARROW_RIGHT,
+          action: "Z",
+        },
+        gameModes: {
+          idle: Struct.getDefault(event.data, "idle", {}),
+          bulletHell: Struct.getDefault(event.data, "bulletHell", {}),
+          platformer: Struct.getDefault(event.data, "platformer", {}),
+        },
+      }
+
+      this.set(this.factoryPlayer(_x, _y, new PlayerTemplate(template)))
+      this.player.updateGameMode(this.controller.gameMode)
     },
     "clear-player": function(event) {
       this.player = null
@@ -46,43 +67,16 @@ function PlayerService(_controller, config = {}): Service() constructor {
           animate: true,
         },
         keyboard: {
-          up: "W",
-          down: "S",
-          left: "A",
-          right: "D",
-          action: "E",
+          up: KeyboardKeyType.ARROW_UP,
+          down: KeyboardKeyType.ARROW_DOWN,
+          left: KeyboardKeyType.ARROW_LEFT,
+          right: KeyboardKeyType.ARROW_RIGHT,
+          action: "Z",
         },
         gameModes: {
           idle: {},
-          bulletHell: {
-            x: {
-              speed: 0,
-              speedMax: 2.1 * 0.01,
-              acceleration: 3.2 * 0.0006,
-              friction: 3.1 * 0.0003,
-            },
-            y: {
-              speed: 0,
-              speedMax: 2.1 * 0.01,
-              acceleration: 3.2 * 0.0006,
-              friction: 3.1 * 0.0003,
-            }
-          },
-          platformer: {
-            x: {
-              speed: 0,
-              speedMax: 2.1 * 0.01,
-              acceleration: 3.2 * 0.0006,
-              friction: 3.1 * 0.0003,
-            },
-            y: {
-              speed: 0,
-              speedMax: 0.25,
-              acceleration: 0.0015,
-              friction: 0,
-            },
-            jumpSize: 0.035,
-          },
+          bulletHell: {},
+          platformer: {},
         },
       })
     Struct.set(template, "x", x)

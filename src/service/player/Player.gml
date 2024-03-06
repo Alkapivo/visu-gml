@@ -1,52 +1,5 @@
 ///@package io.alkapivo.visu.service.player
 
-/* 
-///@todo add to VisuTrackLoader as player.json
-var playerTemplate = {
-  name: "player_default",
-  sprite: {
-    name: "texture_test",
-    animate: true,
-  },
-  keyboard: {
-    up: "W",
-    down: "S",
-    left: "A",
-    right: "D",
-  },
-  gameModes: {
-    bulletHell: {
-      x: {
-        speed: 0,
-        speedMax: 1.1 * 0.01,
-        acceleration: 2.2 * 0.0006,
-        friction: 2.1 * 0.0003,
-      },
-      y: {
-        speed: 0,
-        speedMax: 2.1 * 0.01,
-        acceleration: 3.2 * 0.0006,
-        friction: 3.1 * 0.0003,
-      }
-    },
-    platformer: {
-      x: {
-        speed: 0,
-        speedMax: 2.1 * 0.01,
-        acceleration: 3.2 * 0.0006,
-        friction: 3.1 * 0.0003,
-      },
-      y: {
-        speed: 0,
-        speedMax: 2.1 * 0.01,
-        acceleration: 3.2 * 0.0006,
-        friction: 3.1 * 0.0003,
-      }
-    },
-  },
-}
-*/
-
 ///@param {Struct} json
 function PlayerTemplate(json) constructor {
 

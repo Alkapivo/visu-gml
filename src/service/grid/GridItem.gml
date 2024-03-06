@@ -4,16 +4,16 @@
 function GridItemMovement(json = null) constructor {
   
   ///@type {Number}
-  speed = Assert.isType(Struct.getDefault(json, "speed", 0), Number)
+  speed = Assert.isType(Struct.getDefault(json, "speed", 0.0) / 100.0, Number)
   
   ///@type {Number}
-  speedMax = Assert.isType(Struct.getDefault(json, "speedMax", 1.6 * 0.01), Number)
+  speedMax = Assert.isType(Struct.getDefault(json, "speedMax", 2.1) / 100.0, Number)
   
   ///@type {Number}
-  acceleration = Assert.isType(Struct.getDefault(json, "acceleration", 3.2 * 0.0003), Number)
+  acceleration = Assert.isType(Struct.getDefault(json, "acceleration", 1.92) / 1000.0, Number)
   
   ///@type {Number}
-  friction = Assert.isType(Struct.getDefault(json, "friction", 3.1 * 0.00015), Number)
+  friction = Assert.isType(Struct.getDefault(json, "friction", 9.3) / 10000.0, Number)
 }
 
 
