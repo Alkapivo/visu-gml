@@ -57,6 +57,7 @@ function GridItemSignals() constructor {
   }
 }
 
+
 ///@interface
 ///@param {Struct} [config]
 ///@return {GridItem}
@@ -76,14 +77,15 @@ function GridItem(config = {}) constructor {
     .getDefault(config, "sprite", { name: "texture_test" })), Sprite)
 
   ///@type {Rectangle}
-  mask = Optional.is(Struct.get(config, "mask"))
-    ? Assert.isType(new Rectangle(config.mask), Rectangle)
+  mask = Core.isType(Struct.get(config, "mask"), Rectangle)
+    ? config.mask
     : new Rectangle({ 
       x: 0, 
       y: 0, 
       width: this.sprite.getWidth(), 
       height: this.sprite.getHeight()
   })
+
 
   ///@type {Number}
   speed = Assert.isType(Struct.getDefault(config, "speed", 0), Number)

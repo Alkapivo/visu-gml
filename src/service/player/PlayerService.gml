@@ -24,12 +24,13 @@ function PlayerService(_controller, config = {}): Service() constructor {
         _y = this.player.y
       }
 
-      var template = {
+      var template = new PlayerTemplate({
         name: "player_default",
-        sprite: {
+        sprite: Struct.getDefault(event.data, "sprite", {
           name: "texture_player",
           animate: true,
-        },
+        }),
+        mask: Struct.get(event.data, "mask"),
         keyboard: {
           up: KeyboardKeyType.ARROW_UP,
           down: KeyboardKeyType.ARROW_DOWN,
@@ -42,47 +43,18 @@ function PlayerService(_controller, config = {}): Service() constructor {
           bulletHell: Struct.getDefault(event.data, "bulletHell", {}),
           platformer: Struct.getDefault(event.data, "platformer", {}),
         },
-      }
+      })
 
-      this.set(this.factoryPlayer(_x, _y, new PlayerTemplate(template)))
+      Struct.set(template, "x", _x)
+      Struct.set(template, "y", _y)
+
+      this.set(new Player(template))
       this.player.updateGameMode(this.controller.gameMode)
     },
     "clear-player": function(event) {
-      this.player = null
+      this.remove()
     },
   }))
-
-  ///@private
-  ///@param {Number} [x]
-  ///@param {Number} [y]
-  ///@param {PlayerTemplate} [_template]
-  ///@return {Player}
-  factoryPlayer = function(x = 0, y = 0, _template = null) {
-    var template = Core.isType(_template, PlayerTemplate) 
-      ? _template
-      : new PlayerTemplate({
-        name: "player_default",
-        sprite: {
-          name: "texture_player",
-          animate: true,
-        },
-        keyboard: {
-          up: KeyboardKeyType.ARROW_UP,
-          down: KeyboardKeyType.ARROW_DOWN,
-          left: KeyboardKeyType.ARROW_LEFT,
-          right: KeyboardKeyType.ARROW_RIGHT,
-          action: "Z",
-        },
-        gameModes: {
-          idle: {},
-          bulletHell: {},
-          platformer: {},
-        },
-      })
-    Struct.set(template, "x", x)
-    Struct.set(template, "y", y)
-    return new Player(template)
-  }
 
   ///@param {Player}
   ///@return {PlayerService}

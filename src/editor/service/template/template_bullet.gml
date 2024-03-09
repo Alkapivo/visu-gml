@@ -74,6 +74,9 @@ function template_bullet(json = null) {
             image: { name: "texture_empty" },
             store: { key: "bullet_texture" },
           },
+          resolution: {
+            store: { key: "bullet_texture" },
+          },
         },
       },
       {

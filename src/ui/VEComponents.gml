@@ -1009,7 +1009,7 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {String} name
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
+    ///@return {UIComponent}
     static factoryTitle = function(name, layout, config) {
       return new UIComponent({
         name: name,
@@ -1022,7 +1022,7 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {String} name
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
+    ///@return {UIComponent}
     static factoryTextField = function(name, layout, config) {
       return new UIComponent({
         name: name,
@@ -1035,7 +1035,7 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {String} name
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
+    ///@return {UIComponent}
     static factoryNumericSliderField = function(name, layout, config) {
       return new UIComponent({
         name: name,
@@ -1048,10 +1048,28 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {String} name
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
+    ///@return {UIItem}
     static factoryImage = function(name, layout, config) {
       return UIImage(
         name, 
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIItem}
+    static factoryLabel = function(name, layout, config) {
+      return UIText(
+        name,
         Struct.appendRecursive(
           {
             layout: layout,
@@ -1318,6 +1336,33 @@ global.__VEComponents = new Map(String, Callable, {
             }
           },
           Struct.get(config, "preview"),
+          false
+        )
+      )
+    )
+
+    items.add(
+      factoryLabel(
+        $"{name}_resolution", 
+        layout.nodes.resolution, 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              store: { 
+                callback: function(value, data) {
+                  if (!Core.isType(value, Sprite)) {
+                    return
+                  }
+
+                  data.label.text = $"x: {value.getWidth()} y: {value.getHeight()}"
+                },
+                set: function(value) { },
+              }
+            },
+            VEStyles.get("texture-field-ext").resolution,
+            false
+          ),
+          Struct.get(config, "resolution"),
           false
         )
       )

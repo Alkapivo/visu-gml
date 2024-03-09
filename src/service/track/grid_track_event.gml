@@ -207,7 +207,14 @@ global.__grid_track_event = new Map(String, Callable, {
       ))
   },
   "brush_grid_player": function(data) {
-    var json = {}
+    var controller = Beans.get(BeanVisuController)
+    var json = {
+      sprite: Struct.get(data, "grid-player_texture")
+    }
+
+    if (Struct.get(data, "grid-player_use-mask")) {
+      Struct.set(json, "mask", Struct.get(data, "grid-player_mask"))
+    }
 
     if (Struct.get(data, "grid-player_use-idle")) {
       Struct.set(json, "idle", Struct
@@ -224,8 +231,23 @@ global.__grid_track_event = new Map(String, Callable, {
         .get(data, "grid-player_platformer"))
     }
 
-    Beans.get(BeanVisuController).playerService
-      .send(new Event("spawn-player", json))
+    controller.playerService.send(new Event("spawn-player", json))
+
+    if (Struct.get(data, "grid-player_use-transform-player-z")) {
+      var gridService = controller.gridService
+      var transformer = Struct.get(data, "grid-player_transform-player-z")
+      gridService.send(new Event("transform-property", {
+        key: "playerZ",
+        container: gridService.properties.depths,
+        executor: gridService.executor,
+        transformer: new NumberTransformer({
+          value: gridService.properties.depths.playerZ,
+          target: transformer.target,
+          factor: transformer.factor,
+          increase: transformer.increase,
+        })
+      }))
+    }
   },
   "brush_grid_separator": function(data) {
     var controller = Beans.get(BeanVisuController)

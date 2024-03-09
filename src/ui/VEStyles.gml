@@ -402,5 +402,12 @@ global.__VEStyles = new Map(String, Struct, {
       align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
     }
   },
+  "texture-field-ext": {
+    resolution: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    }
+  }
 })
 #macro VEStyles global.__VEStyles

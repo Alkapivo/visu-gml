@@ -553,7 +553,6 @@ function VETimeline(_editor) constructor {
               .addSubscriber({ 
                 name: this.name,
                 callback: function(zoom, context) { 
-                  Core.print("zoom", zoom)
                   context.state.set("viewSize", zoom)
                 },
                 data: container,

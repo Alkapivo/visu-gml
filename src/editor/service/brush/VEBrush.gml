@@ -63,6 +63,8 @@ global.__BRUSH_TEXTURES = new Array(String, [
   "texture_visu_editor_icon_event_grid",
   "texture_visu_editor_icon_event_grid_channel",
   "texture_visu_editor_icon_event_grid_separator",
+  "texture_visu_editor_icon_event_grid_particle",
+  "texture_visu_editor_icon_event_grid_player",
   "texture_visu_editor_icon_event_grid_config",
   "texture_visu_editor_icon_event_view",
   "texture_visu_editor_icon_event_view_background",

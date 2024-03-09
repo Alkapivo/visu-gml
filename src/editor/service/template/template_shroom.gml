@@ -76,6 +76,9 @@ function template_shroom(json = null) {
             image: { name: "texture_empty" },
             store: { key: "shroom_texture" },
           },
+          resolution: {
+            store: { key: "shroom_texture" },
+          },
         },
       },
       {

@@ -4,10 +4,13 @@
 function PlayerTemplate(json) constructor {
 
   ///@type {String}
-  name = Assert.isType(Struct.get(json, "name"), String)
+  name = Assert.isType(json.name, String)
 
   ///@type {Struct}
   sprite = Assert.isType(json.sprite, Struct)
+
+  ///@type {?Struct}
+  mask = Core.isType(Struct.get(json, "mask"), Struct) ? json.mask : null
 
   ///@type {Keyboard}
   keyboard = new Keyboard(json.keyboard)
@@ -26,6 +29,10 @@ function PlayerTemplate(json) constructor {
       sprite: this.sprite,
       gameModes: this.gameModes,
       keyboard: this.keyboard,
+    }
+
+    if (Core.isType(this.mask, Struct)) {
+      Struct.set(json, "mask", this.mask)
     }
 
     return JSON.clone(json)

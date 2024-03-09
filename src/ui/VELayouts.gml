@@ -570,9 +570,14 @@ global.__VELayouts = new Map(String, Callable, {
         },
         preview: {
           name: "texture-field-ext.preview",
-          y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+          y: function() { return this.context.nodes.resolution.bottom() + this.margin.top },
           height: function() { return 144 },
           margin: { top: 10, bottom: 10, left: 10, right: 10 },
+        },
+        resolution: {
+          name: "texture-field-ext.resolution",
+          y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+          height: function() { return 32 },
         },
       },
     }
