@@ -6,6 +6,10 @@ function template_particle(json = null) {
   var template = {
     name: Assert.isType(json.name, String),
     store: new Map(String, Struct, {
+      "particle_use-preview": {
+        type: Boolean,
+        value: Struct.getDefault(json, "particle_use-preview", false) == true,
+      },
       "particle-template": {
         type: ParticleTemplate,
         value: new ParticleTemplate(json.name, json),
@@ -58,6 +62,28 @@ function template_particle(json = null) {
       },
     }),
     components: new Array(Struct, [
+      {
+        name: "particle_use-preview",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Particle preview",
+            enable: { key: "particle_use-preview" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "particle_use-preview" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: {
+            backgroundColor: VETheme.color.accentShadow,
+          }
+        },
+      },
       #region Shape
       {
         name: "particle_shape",

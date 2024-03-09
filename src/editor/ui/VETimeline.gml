@@ -238,7 +238,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
 
         }),
-        timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
+        updateAreaTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
         layout: layout.nodes.background,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -246,7 +246,7 @@ function VETimeline(_editor) constructor {
           "resize_timeline": {
             type: UIButton,
             layout: layout.nodes.resize,
-            backgroundColor: VETheme.color.primary, //resize
+            backgroundColor: VETheme.color.primary,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             updateCustom: function() {
               var context = MouseUtil.getClipboard()
@@ -259,8 +259,14 @@ function VETimeline(_editor) constructor {
               }
             },
             updateLayout: new BindIntent(function(position) {
-              var node = Struct.get(Beans.get(BeanVisuController).editor.layout.nodes, "timeline")
+              var controller = Beans.get(BeanVisuController)
+              var node = controller.editor.layout.nodes.timeline
               node.percentageHeight = abs((GuiHeight() - 24) - position) / (GuiHeight() - 24)
+
+              var events = controller.editor.uiService.find("ve-timeline-events")
+              if (Core.isType(events, UI)) {
+                events.updateAreaTimer.finish()
+              }
             }),
             onMousePressedLeft: function(event) {
               MouseUtil.setClipboard(this)
@@ -287,7 +293,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
           "store": controller.editor.store,
         }),
-        timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
+        updateAreaTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.form,
         timeline: controller,
@@ -329,7 +335,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
         }),
-        timer: new Timer(FRAME_MS * 8, { loop: Infinity, shuffle: true }),
+        updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -481,7 +487,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
           "chunkService": controller.factoryChunkService(),
-          "viewSize": 10,
+          "viewSize": controller.editor.store.getValue("timeline-zoom"),
           "speed": 2.0,
           "position": 0,
           "amount": 0,
@@ -491,7 +497,7 @@ function VETimeline(_editor) constructor {
           "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           "initialized": false
         }),
-        timer: new Timer(FRAME_MS * 8, { loop: Infinity, shuffle: true }),
+        updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.events,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -541,6 +547,17 @@ function VETimeline(_editor) constructor {
                   acc.container.add(uiItem, uiItem.name)
                 }, { channel: channel, container: container })
               }, this)
+
+            var container = this
+            this.state.get("store").get("timeline-zoom")
+              .addSubscriber({ 
+                name: this.name,
+                callback: function(zoom, context) { 
+                  Core.print("zoom", zoom)
+                  context.state.set("viewSize", zoom)
+                },
+                data: container,
+              })
           }
         },
         fetchViewHeight: function() {
@@ -566,8 +583,9 @@ function VETimeline(_editor) constructor {
 
           var timestamp = this.getTimestampFromMouseX(MouseUtil.getMouseX())
           var store = Beans.get(BeanVisuController).editor.store
-          if (store.getValue("snap") || keyboard_check(vk_control)) {
-            var bpm = store.getValue("bpm")
+          if (store.getValue("snap")) {
+            var bpmSub = store.getValue("bpm-sub")
+            var bpm = store.getValue("bpm") * bpmSub
             timestamp = floor(timestamp / (60 / bpm)) * (60 / bpm)
           }
 
@@ -628,7 +646,7 @@ function VETimeline(_editor) constructor {
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         renderSurface: function() {
           var trackEvent = MouseUtil.getClipboard()
-          if (!this.timer.finished) {
+          if (!this.updateAreaTimer.finished) {
             return
           }
 
@@ -654,6 +672,7 @@ function VETimeline(_editor) constructor {
           var thickness = this.state.get("lines-thickness")
           var alpha = this.state.get("lines-alpha")
           var color = this.state.get("lines-color")
+          var bpmSub = Beans.get(BeanVisuController).editor.store.getValue("bpm-sub")
           var bpm = Beans.get(BeanVisuController).editor.store.getValue("bpm")
           var bpmWidth = ((this.area.getWidth() / this.state.get("viewSize")) * 60) / bpm
           var bpmSize = ceil(this.area.getWidth() / bpmWidth)
@@ -666,10 +685,30 @@ function VETimeline(_editor) constructor {
           }
 
           /// bpm
+          var bpmX = 0
           var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
-          for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
-            var bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
-            GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, thickness, alpha, color)
+          if (bpmSub > 1) {
+            var bpmSubLength = round(bpmWidth / bpmSub)
+            for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
+              bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
+              GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, thickness, alpha, color)
+              for (var bpmSubIndex = 1; bpmSubIndex <= bpmSub; bpmSubIndex++) {
+                GPU.render.texturedLine(
+                  bpmX + (bpmSubIndex * bpmSubLength), 
+                  0, 
+                  bpmX + (bpmSubIndex * bpmSubLength), 
+                  bpmY, 
+                  thickness, 
+                  alpha * 0.5, 
+                  color
+                )
+              }
+            }
+          } else {
+            for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
+              bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
+              GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, thickness, alpha, color)
+            }
           }
 
           this.renderClipboard()
@@ -688,15 +727,21 @@ function VETimeline(_editor) constructor {
           this.state.set("initialized", false)
           this.state.set("chunkService", controller.factoryChunkService())
         },
+        onDestroy: function() {
+          Core.print("on destroy!")
+          this.state.get("store")
+            .get("timeline-zoom")
+            .removeSubscriber(this.name)
+        },
         _onMouseWheelUp: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY"))),
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.timer.time = this.timer.duration
+          this.updateAreaTimer.finish()
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseWheelDown: function(event) {
-          this.timer.time = this.timer.duration
+          this.updateAreaTimer.finish()
           this._onMouseWheelDown(event)
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
@@ -704,7 +749,7 @@ function VETimeline(_editor) constructor {
           var trackEvent = MouseUtil.getClipboard()
           var channelName = Struct.get(trackEvent, "channelName")
           MouseUtil.clearClipboard()
-          this.timer.time = this.timer.duration
+          this.updateAreaTimer.finish()
 
           if (!Core.isType(trackEvent, TrackEvent)
             || !this.controller.editor.trackService.track.channels
@@ -718,7 +763,8 @@ function VETimeline(_editor) constructor {
           trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
           var store = Beans.get(BeanVisuController).editor.store
           if (store.getValue("snap") || keyboard_check(vk_control)) {
-            var bpm = store.getValue("bpm")
+            var bpmSub = store.getValue("bpm-sub")
+            var bpm = store.getValue("bpm") * bpmSub
             trackEvent.timestamp = floor(trackEvent.timestamp / (60 / bpm)) * (60 / bpm)
           }
 
@@ -751,7 +797,7 @@ function VETimeline(_editor) constructor {
         },
         onMouseReleasedLeft: function(event) {
           try {
-            this.timer.time = this.timer.duration
+            this.updateAreaTimer.finish()
             var store = Beans.get(BeanVisuController).editor.store
             var tool = store.getValue("tool")
             switch (tool) {
@@ -782,7 +828,8 @@ function VETimeline(_editor) constructor {
                   trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
 
                   if (store.getValue("snap") || keyboard_check(vk_control)) {
-                    var bpm = store.getValue("bpm")
+                    var bpmSub = store.getValue("bpm-sub")
+                    var bpm = store.getValue("bpm") * bpmSub
                     trackEvent.timestamp = floor(trackEvent.timestamp / (60 / bpm)) * (60 / bpm)
                   }
 
@@ -883,7 +930,8 @@ function VETimeline(_editor) constructor {
           var timestamp = this.getTimestampFromMouseX(event.data.x)
           var store = Beans.get(BeanVisuController).editor.store
           if (store.getValue("snap") || keyboard_check(vk_control)) {
-            var bpm = store.getValue("bpm")
+            var bpmSub = store.getValue("bpm-sub")
+            var bpm = store.getValue("bpm") * bpmSub
             timestamp = floor(timestamp / (60 / bpm)) * (60 / bpm)
           }
           
@@ -1042,7 +1090,7 @@ function VETimeline(_editor) constructor {
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
           "store": controller.editor.store,
-          "viewSize": 10,
+          "viewSize": controller.editor.store.getValue("timeline-zoom"),
           "stepSize": 2,
           "speed": 2.0,
           "position": 0,
@@ -1057,13 +1105,13 @@ function VETimeline(_editor) constructor {
         updateCustom: function() {
           var trackService = this.controller.editor.trackService
           var width = this.area.getWidth()
-          var viewSize = this.state.get("viewSize")
+          var viewSize = this.state.get("store").getValue("timeline-zoom")
           var spd = width / viewSize
           var time = this.state.get("time")
           var mouseX = this.state.get("mouseX")
           var duration = trackService.duration
           if (mouseX != null) {
-            var _time = (MouseUtil.getMouseX() - mouseX) / this.state.get("mouseXSensitivity")
+            var _time = (mouseX - MouseUtil.getMouseX()) / this.state.get("mouseXSensitivity")
             time = time == null
               ? clamp(trackService.time - _time, 0, duration)
               : clamp(time - _time, 0, duration)
@@ -1101,7 +1149,7 @@ function VETimeline(_editor) constructor {
           var _x = this.area.x
           var _y = this.area.y
           var width = this.area.getWidth()
-          var viewSize = this.state.get("viewSize")
+          var viewSize = this.state.get("store").getValue("timeline-zoom")
           var stepSize = this.state.get("stepSize")
           var spd = this.state.get("speed")
           var position = this.state.get("position")

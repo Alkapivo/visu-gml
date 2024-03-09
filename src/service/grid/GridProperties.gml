@@ -181,7 +181,7 @@ function GridProperties(config = {}) constructor {
   ///@param {GridService} gridService
   ///@return {GridProperties}
   static update = function(gridService) {
-    this.separatorTimer.amount = this.speed / 1000
+    this.separatorTimer.amount = (this.speed / 1000) - DeltaTime.apply(gridService.view.derivativeY)
     this.separatorTimer.duration = ((gridService.view.height * 2) / this.separators)
     this.separatorTimer.update()
 

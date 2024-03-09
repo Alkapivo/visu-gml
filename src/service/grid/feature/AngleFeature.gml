@@ -14,7 +14,12 @@ function AngleFeature(json = {}) {
       : null,
 
     add: Struct.contains(json, "add")
-      ? new NumberTransformer(json.add)
+      ? new NumberTransformer({
+        value: 0.0,
+        factor: Struct.getDefault(json.add, "factor", 1.0),
+        target: Struct.getDefault(json.add, "target", 1.0),
+        increase: Struct.getDefault(json.add, "increase", 0.0),
+      })
       : null,
 
     ///@override

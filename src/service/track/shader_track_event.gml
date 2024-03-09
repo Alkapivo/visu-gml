@@ -44,7 +44,7 @@ global.__shader_track_event = new Map(String, Callable, {
   },
   "brush_shader_overlay": function(data) {
     var controller = Beans.get(BeanVisuController)
-    if (Struct.get(data, "shader-overlay_use-render-support-grid") == true) {
+    if (Struct.get(data, "shader-overlay_use-render-support-grid")) {
       controller.gridService.properties.renderSupportGrid = Struct.get(data, "shader-overlay_render-support-grid")
     }
 

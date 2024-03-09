@@ -48,6 +48,9 @@ function Player(template): GridItem(template) constructor {
   update = function(controller) {
     this.keyboard.update()
     this._update(controller)
+
+    var _xx = controller.gridService.view.x
+    var _yy = controller.gridService.view.y
     return this
   }
 

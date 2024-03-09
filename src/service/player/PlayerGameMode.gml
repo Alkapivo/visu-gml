@@ -73,6 +73,7 @@ function PlayerBulletHellGameMode(json) {
       }
       
       var keys = player.keyboard.keys
+      /* This will work only if global.GMTF_DATA will be dereferenced by UIService
       if (Optional.is(global.GMTF_DATA.active)) {
         keys.left.on = false
         keys.right.on = false
@@ -80,6 +81,7 @@ function PlayerBulletHellGameMode(json) {
         keys.down.on = false
         keys.action.on = false
       }
+      */
 
       player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
       player.y = player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on)

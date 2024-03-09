@@ -60,7 +60,6 @@ Usage example:
   {
     "feature": "AngleFeature",
     "add": {
-      "value": 0.0,
       "target": 2.0,
       "factor": 0.01,
       "increase": 0.0
@@ -69,8 +68,8 @@ Usage example:
 ]
 ```
 The difference between `transform` and `add` lies in how they affect the internal angle value of each object on the grid.
-For transform, we specify that it should start from the value `"value": 90.0` and end at `"target": 270.0`.
-On the other hand, with add, the value `"value": 0.0` is incremented each frame by `"factor": 0.01`, and then this value is directly added to the angle, which could be in any state.
+For transform, we specify that it should start from the `"value": 90.0` and end at `"target": 270.0`.
+On the other hand, with add, the value is incremented each frame by `"factor": 0.01`, and then this value is directly added to the angle, which could be in any state.
 
 ### BooleanFeature
 Available fields:

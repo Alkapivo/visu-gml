@@ -2287,7 +2287,7 @@ global.__VEComponents = new Map(String, Callable, {
       Struct.appendRecursive(
         { 
           field: { 
-            transformNumericProperty: "value",
+            transformNumericProperty: "increase",
             transformVector2Property: "y",
           }
         },

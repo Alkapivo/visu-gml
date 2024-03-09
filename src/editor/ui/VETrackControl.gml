@@ -40,9 +40,9 @@ function VETrackControl(_editor) constructor {
           },
           toolbar: {
             name: "track-control.toolbar",
-            width: function() { return 200 },
-            height: function() { return 32 },
-            margin: { top: 8, bottom: 0, left: 8, right: 8 },
+            width: function() { return 180 },
+            height: function() { return 32 - this.margin.bottom },
+            margin: { top: 12, bottom: 6 },
             y: function() { return this.context.nodes.timeline.bottom()
               + this.margin.top },
           },
@@ -84,34 +84,65 @@ function VETrackControl(_editor) constructor {
           },
           timestamp: {
             name: "track-control.timestamp",
-            width: function() { return 80 },
+            width: function() { return 56 },
             height: function() { return 32 },
-            margin: { top: 8 },
-            x: function() { return this.context.width() - this.width() },
+            margin: { top: 8, right: 8 },
+            x: function() { return this.context.width() - this.width() - this.margin.right},
             y: function() { return this.context.nodes.timeline.bottom()
               + this.margin.top },
           },
           snap: {
             name: "track-control.snap",
-            width: function() { return 56 },
-            height: function() { return 32 },
-            margin: { top: 8, bottom: 0, left: 8, right: 8 },
-            x: function() { return this.context.nodes.snapLabel.left() 
+            width: function() { return 24 },
+            height: function() { return 24 },
+            margin: { top: 12, bottom: 0, left: 1, right: 8 },
+            x: function() { return this.context.nodes.timestamp.left() 
               - this.width()
-              - this.margin.right
-              - this.margin.left },
+              - this.margin.right },
             y: function() { return this.context.nodes.timeline.bottom()
               + this.margin.top },
           },
           snapLabel: {
             name: "track-control.snapLabel",
-            width: function() { return 56 },
+            width: function() { return 32 },
             height: function() { return 32 },
-            margin: { top: 8, bottom: 0, left: 8, right: 8 },
-            x: function() { return this.context.nodes.timestamp.left()
+            margin: { top: 8, bottom: 0, left: 1, right: 1 },
+            x: function() { return this.context.nodes.snap.left()
               - this.width()
-              - this.margin.right
-              - this.margin.left },
+              - this.margin.right },
+            y: function() { return this.context.nodes.timeline.bottom()
+              + this.margin.top },
+          },
+          zoomIn: {
+            name: "track-control.zoomOut",
+            width: function() { return 24 },
+            height: function() { return 24 },
+            margin: { top: 12, bottom: 0, left: 1, right: 8 },
+            x: function() { return this.context.nodes.snapLabel.left()
+              - this.width()
+              - this.margin.right },
+            y: function() { return this.context.nodes.timeline.bottom()
+              + this.margin.top },
+          },
+          zoomOut: {
+            name: "track-control.zoomIn",
+            width: function() { return 24 },
+            height: function() { return 24 },
+            margin: { top: 12, bottom: 0, left: 2, right: 1 },
+            x: function() { return this.context.nodes.zoomIn.left()
+              - this.width()
+              - this.margin.right },
+            y: function() { return this.context.nodes.timeline.bottom()
+              + this.margin.top },
+          },
+          zoomLabel: {
+            name: "track-control.snapLabel",
+            width: function() { return 32 },
+            height: function() { return 32 },
+            margin: { top: 8, bottom: 0, left: 8, right: 2 },
+            x: function() { return this.context.nodes.zoomOut.left()
+              - this.width()
+              - this.margin.right },
             y: function() { return this.context.nodes.timeline.bottom()
               + this.margin.top },
           },
@@ -279,8 +310,11 @@ function VETrackControl(_editor) constructor {
             name: "horizontal-item",
             type: UILayoutType.HORIZONTAL,
             collection: true,
-            width: function() { return (this.context.width() - this.margin.top - this.margin.bottom) / this.collection.getSize() },
-            x: function() { return this.margin.left + this.collection.getIndex() * this.width() },
+            width: function() { return (this.context.width() - this.margin.top - this.margin.bottom) 
+              / this.collection.getSize() },
+            x: function() { return 8 + this.margin.left
+              + (this.collection.getIndex() * this.width())
+              + (this.collection.getIndex() * this.margin.right)  },
           }
         },
         config: {
@@ -288,7 +322,7 @@ function VETrackControl(_editor) constructor {
           backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
           backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-          backgroundMargin: { top: 2, bottom: 2, right: 2, left: 2 },
+          backgroundMargin: { top: 2, bottom: 2, right: 1, left: 1 },
           callback: function() { 
             this.context.state.get("store")
               .get("tool")
@@ -423,7 +457,7 @@ function VETrackControl(_editor) constructor {
           "text_ve-track-control_timestamp": factoryLabel({
             layout: layout.nodes.timestamp,
             text: "00:00.00",
-            align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            align: { v: VAlign.CENTER, h: HAlign.RIGHT },
             updateCustom: function() {
               this.label.text = String.formatTimestampMilisecond(
                 NumberUtil.parse(Struct
@@ -433,18 +467,13 @@ function VETrackControl(_editor) constructor {
               )
             },
           }),
-          "text_ve-track-control_snapLabel": factoryLabel({
-            layout: layout.nodes.snap,
-            text: "Snap to grid",
-            align: { v: VAlign.CENTER, h: HAlign.LEFT },
-          }),
           "checkbox_ve-track-control_snap": Struct.appendRecursiveUnique(
             {
               type: UICheckbox,
-              layout: layout.nodes.snapLabel,
+              layout: layout.nodes.snap,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-              spriteOn: { name: "visu_texture_checkbox_switch_on" },
-              spriteOff: { name: "visu_texture_checkbox_switch_off" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "snap"},
               config: {
                 callback: function() { 
@@ -457,6 +486,74 @@ function VETrackControl(_editor) constructor {
             VEStyles.get("ve-track-control").button,
             false
           ),
+          "text_ve-track-control_snapLabel": factoryLabel({
+            layout: layout.nodes.snapLabel,
+            text: "Snap",
+            align: { v: VAlign.CENTER, h: HAlign.RIGHT },
+          }),
+          "button-ve-track-control_zoom-in": Struct.appendRecursiveUnique(
+            {
+              type: UIButton,
+              label: { 
+                text: "+",
+                color: VETheme.color.textFocus,
+                align: { v: VAlign.CENTER, h: HAlign.CENTER },
+                font: "font_inter_10_regular",
+              },
+              layout: layout.nodes.zoomIn,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              callback: function() { 
+                var item = Beans.get(BeanVisuController).editor.store
+                  .get("timeline-zoom")
+                item.set(clamp(item.get() - 1, 5, 20))
+              },
+              backgroundColor: VETheme.color.primary,
+              backgroundColorSelected: VETheme.color.accent,
+              backgroundColorOut: VETheme.color.primary,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },
+            },
+            VEStyles.get("ve-track-control").button,
+            false
+          ),
+          "button-ve-track-control_zoom-out": Struct.appendRecursiveUnique(
+            {
+              type: UIButton,
+              label: { 
+                text: "-",
+                color: VETheme.color.textFocus,
+                align: { v: VAlign.CENTER, h: HAlign.CENTER },
+                font: "font_inter_10_regular",
+              },
+              layout: layout.nodes.zoomOut,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              callback: function() { 
+                var item = Beans.get(BeanVisuController).editor.store
+                  .get("timeline-zoom")
+                item.set(clamp(item.get() + 1, 5, 20))
+              },
+              backgroundColor: VETheme.color.primary,
+              backgroundColorSelected: VETheme.color.accent,
+              backgroundColorOut: VETheme.color.primary,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },
+            },
+            VEStyles.get("ve-track-control").button,
+            false
+          ),
+          "text_ve-track-control_zoom": factoryLabel({
+            layout: layout.nodes.zoomLabel,
+            text: "Zoom",
+            align: { v: VAlign.CENTER, h: HAlign.RIGHT },
+          }),
         },
         onInit: function() {
           var container = this

@@ -68,6 +68,13 @@ function VisuEditor(_controller) constructor {
         return clamp(value, 1, 999)
       }
     },
+    "bpm-sub": {
+      type: Number,
+      value: Assert.isType(Core.getProperty("visu.editor.bpm-sub", 1), Number),
+      passthrough: function(value) {
+        return round(clamp(value, 1, 16))
+      }
+    },
     "tool": {
       type: String,
       value: ToolType.BRUSH,
@@ -122,7 +129,14 @@ function VisuEditor(_controller) constructor {
     "target-locked-y": {
       type: Boolean,
       value: false
-    }
+    },
+    "timeline-zoom": {
+      type: Number,
+      value: 10,
+      validate: function(value) {
+        Assert.isTrue(value >= 5 && value <= 20)
+      },
+    },
   })
 
   ///@private

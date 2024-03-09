@@ -80,7 +80,7 @@ function VisuController(layerName) constructor {
   //gridSystem = new GridSystem(this)
 
   ////@type {Gamemode}
-  gameMode = GameMode.PLATFORMER
+  gameMode = GameMode.BULLETHELL
 
   ///@type {Keyboard}
   keyboard = new Keyboard(
@@ -462,7 +462,22 @@ function VisuController(layerName) constructor {
   updateIO = function() {
     this.keyboard.update()
     this.mouse.update()
-    if (keyboard_check_pressed(vk_f1)) {
+
+    if (this.keyboard.keys.controlTrack.pressed) {
+      switch (this.fsm.getStateName()) {
+        case "play": this.send(new Event("pause")) break
+        case "pause": this.send(new Event("play")) break
+      }
+    }
+
+    if (this.keyboard.keys.fullscreen.pressed) {
+      var fullscreen = this.displayService.getFullscreen()
+      Logger.debug("VisuController", String.join("Set fullscreen to ",
+        fullscreen ? "'false'" : "'true'", "."))
+      this.displayService.setFullscreen(!fullscreen)
+    }
+
+    if (this.keyboard.keys.renderUI.pressed) {
       this.renderUI = !this.renderUI
     }
 
@@ -531,33 +546,6 @@ function VisuController(layerName) constructor {
 
   ///@private
   ///@return {VisuController}
-  updateDisplay = function() {
-    if (keyboard_check_pressed(vk_f11)) {
-      var fullscreen = this.displayService.getFullscreen()
-      Logger.debug("VisuController", String.join("Set fullscreen to ",
-        fullscreen ? "'false'" : "'true'", "."))
-      this.displayService.setFullscreen(!fullscreen)
-      if (fullscreen) {
-        window_maximize_set_enable()
-      }
-    }
-
-    return this
-  }
-
-  ///@private
-  ///@return {VisuController}
-  updateCursor = function() {
-    /*
-    cursor_sprite = keyboard_check(vk_control) 
-      ? texture_bazyl_cursor 
-      : texture_baron_cursor
-    */
-    return this
-  }
-
-  ///@private
-  ///@return {VisuController}
   updateExitModal = function() {
     if (keyboard_check_pressed(vk_escape)) {
       this.exitModal.send(new Event("open").setData({
@@ -569,6 +557,7 @@ function VisuController(layerName) constructor {
           height: function() { return GuiHeight() },
         }),
       }))
+      this.gridRenderer.camera.enableMouseLook = false
     }
     this.exitModal.update()
     this.newProjectModal.update()
@@ -577,7 +566,8 @@ function VisuController(layerName) constructor {
   
   ///@return {VisuController}
   update = function() {
-    this.updateIO().updateDisplay().updateCursor().updateExitModal()
+    this.updateIO()
+    this.updateExitModal()
     this.fsm.update()
     this.loader.update()
 
@@ -655,6 +645,9 @@ function VisuController(layerName) constructor {
       var message = $"render throws exception: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
       Logger.error("VisuController", message)
+      GPU.reset.shader()
+      GPU.reset.surface()
+      GPU.reset.blendMode()
     }
     
     return this
@@ -722,6 +715,9 @@ function VisuController(layerName) constructor {
       var message = $"renderGUI throws exception: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
       Logger.error("VisuController", message)
+      GPU.reset.shader()
+      GPU.reset.surface()
+      GPU.reset.blendMode()
     }
 
     return this

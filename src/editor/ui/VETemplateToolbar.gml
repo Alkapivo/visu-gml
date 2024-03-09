@@ -193,7 +193,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           },
         ])
       }),
-      timer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -513,7 +513,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           },
         ]),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -563,7 +563,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -875,7 +875,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -1261,7 +1261,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -1346,7 +1346,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -1432,7 +1432,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           }
         ]),
       }),
-      //timer: new Timer(FRAME_MS * GAME_FPS * 0.33, { loop: Infinity, shuffle: true }),
+      //updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -1445,17 +1445,20 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           && Optional.is(template)
           && this.particleTimer.update().finished) {
 
-          var particleName = template.store.getValue("template-name")
-          var particleService = Beans.get(BeanVisuController).particleService
-          var event = particleService.factoryEventSpawnParticleEmitter({
-            particleName: particleName,
-            beginX: (GuiWidth() / 2) - 32,
-            beginY: (GuiHeight() / 2) - 32,
-            endX: (GuiWidth() / 2) + 32,
-            endY: (GuiHeight() / 2) + 32,
-            amount: 10,
-          })
-          particleService.send(event)
+          var preview = template.store.getValue("particle_use-preview")
+          if (preview) {
+            var particleName = template.store.getValue("template-name")
+            var particleService = Beans.get(BeanVisuController).particleService
+            var event = particleService.factoryEventSpawnParticleEmitter({
+              particleName: particleName,
+              beginX: (GuiWidth() / 2) - 32,
+              beginY: (GuiHeight() / 2) - 32,
+              endX: (GuiWidth() / 2) + 32,
+              endY: (GuiHeight() / 2) + 32,
+              amount: 10,
+            })
+            particleService.send(event)
+          }
         }
       },
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),

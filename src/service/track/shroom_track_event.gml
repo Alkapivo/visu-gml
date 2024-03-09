@@ -4,7 +4,12 @@
 ///@type {Map<String, Callable>}
 global.__shroom_track_event = new Map(String, Callable, {
   "brush_shroom_spawn": function(data) {
-    ///@description composition
+    var controller = Beans.get(BeanVisuController)
+    //controller.gridService.view
+
+
+    //Struct.get(data, "shroom-spawn_use-spawn-x")
+
     var shroom = {
       template: Struct.get(data, "shroom-spawn_template"),
       spawnX: Struct.get(data, "shroom-spawn_spawn-x"),
@@ -12,8 +17,7 @@ global.__shroom_track_event = new Map(String, Callable, {
       angle: Struct.get(data, "shroom-spawn_angle"),
       speed: Struct.get(data, "shroom-spawn_speed"),
     }
-    Beans.get(BeanVisuController).shroomService
-      .send(new Event("spawn-shroom", shroom))
+    controller.shroomService.send(new Event("spawn-shroom", shroom))
   
     ///@description ecs
     /*

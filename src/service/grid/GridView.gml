@@ -10,10 +10,10 @@ function GridView(config = {}) constructor {
   y = Assert.isType(Struct.getDefault(config, "y", 0.0), Number)
 
   ///@type {Number}
-  width = Assert.isType(Struct.getDefault(config, "width", 1.0), Number)
+  width = Assert.isType(Struct.getDefault(config, "width", 1), Number)
 
   ///@type {Number}
-  height = Assert.isType(Struct.getDefault(config, "height", 1.0), Number)
+  height = Assert.isType(Struct.getDefault(config, "height", 1), Number)
 
   ///@type {Number}
   worldWidth = Assert.isType(Struct.getDefault(config, "worldWidth", 2.0) , Number)
@@ -29,6 +29,12 @@ function GridView(config = {}) constructor {
     smooth: Assert.isType(Struct.getDefault(config, "follow.smooth", 32), Number),
   }
 
+  ///@type {Number}
+  derivativeX = 0.0
+
+  ///@type {Number}
+  derivativeY = 0.0
+
   ///@param {GridItem} target
   ///@return {GridView}
   static setFollowTarget = function(target) {
@@ -40,28 +46,39 @@ function GridView(config = {}) constructor {
   static update = function() {
     if (Core.isType(this.follow.target, Struct)) {
       var targetX = this.follow.target.x
+      var _derivativeX = 0.0
       if (targetX >= this.x + this.width - this.follow.xMargin) {
-        var viewXTarget = targetX + this.follow.xMargin - this.width
-        this.x += ((targetX - 1.0 / 2.0) - this.x) / this.follow.smooth
+        _derivativeX = ((targetX - 1.0 / 2.0) - this.x) / this.follow.smooth
+        this.x += _derivativeX
       }
       if (targetX <= this.x + this.follow.xMargin) {
-        var viewXTarget = targetX - this.follow.xMargin
-        this.x += ((targetX - 1.0 / 2.0) - this.x) / this.follow.smooth
+        _derivativeX = ((targetX - 1.0 / 2.0) - this.x) / this.follow.smooth
+        this.x += _derivativeX
       }
+      if (targetX >= this.worldWidth - this.width || targetX <= 0) {
+        _derivativeX = 0.0
+      }
+      this.derivativeX = _derivativeX
+      this.follow.target.x = clamp(targetX, 0, this.worldWidth)
       
+      var _derivativeY = 0.0
       var targetY = this.follow.target.y
       if (targetY >= this.y + this.height - this.follow.yMargin) {
-        this.y += ((targetY - 1.0 / 2.0) - this.y) / this.follow.smooth
+        _derivativeY = ((targetY - 1.0 / 2.0) - this.y) / this.follow.smooth
+        this.y += _derivativeY
       }
       if (targetY <= this.y + this.follow.yMargin) {
-        this.y += ((targetY - 1.0 / 2.0) - this.y) / this.follow.smooth
+        _derivativeY = ((targetY - 1.0 / 2.0) - this.y) / this.follow.smooth
+        this.y += _derivativeY
       }
-
-      this.follow.target.x = clamp(targetX, 0, this.worldWidth)
+      if (targetY >= this.worldHeight - this.height || targetY <= 0) {
+        _derivativeY = 0.0
+      }
+      this.derivativeY = _derivativeY
       this.follow.target.y = clamp(targetY, 0, this.worldHeight)
     }
 
-    this.x = clamp(this.x, -1 * this.width, this.worldWidth)
+    this.x = clamp(this.x, 0.0, this.worldWidth - this.width) //this.x = clamp(this.x, -1 * this.width, this.worldWidth) 
     this.y = clamp(this.y, 0.0, this.worldHeight - this.height)
     return this
   }

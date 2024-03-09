@@ -75,9 +75,23 @@ function VEStatusBar(_editor) constructor {
             margin: { left: 2 },
             width: function() { return 40 },
           },
+          bpmSubLabel: {
+            name: "status-bar.bpmSubLabel",
+            x: function() { return this.context.nodes.bpmValue.right()
+              + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 30 },
+          },
+          bpmSubValue: {
+            name: "status-bar.bpmSubValue",
+            x: function() { return this.context.nodes.bpmSubLabel.right() + this.margin.left },
+            y: function() { return 0 },
+            margin: { left: 2 },
+            width: function() { return 40 },
+          },
           gameModeLabel: {
             name: "status-bar.gameModeLabel",
-            x: function() { return this.context.nodes.bpmValue.right()
+            x: function() { return this.context.nodes.bpmSubValue.right()
               + this.margin.left },
             y: function() { return 0 },
             width: function() { return 86 },
@@ -195,7 +209,7 @@ function VEStatusBar(_editor) constructor {
         store: {
           key: "bpm",
           callback: function(value, data) { 
-            var item = data.store.get()
+            var item = data.store.get("bpm")
             if (item == null) {
               return 
             }
@@ -217,6 +231,53 @@ function VEStatusBar(_editor) constructor {
               return
             }
             item.set(parsedValue)
+
+            Struct.set(global.__VisuTrack, "bpm", parsedValue)
+          },
+        },
+      }
+
+      return Struct.appendRecursiveUnique(
+        struct,
+        VEStyles.get("text-field"),
+        false
+      )
+    }
+
+    static factorySubField = function(json) {
+      var struct = {
+        type: UITextField,
+        layout: json.layout,
+        text: "0",
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        config: { key: "bpm-sub" },
+        store: {
+          key: "bpm-sub",
+          callback: function(value, data) { 
+            var item = data.store.get("bpm-sub")
+            if (item == null) {
+              return 
+            }
+
+            var bpmSub = item.get()
+            if (!Core.isType(bpmSub, Number)) {
+              return 
+            }
+            data.textField.setText(string(bpmSub))
+          },
+          set: function(value) {
+            var item = this.get()
+            if (item == null) {
+              return 
+            }
+
+            var parsedValue = NumberUtil.parse(value, null)
+            if (parsedValue == null) {
+              return
+            }
+            item.set(parsedValue)
+
+            Struct.set(global.__VisuTrack, "bpm-sub", parsedValue)
           },
         },
       }
@@ -288,6 +349,13 @@ function VEStatusBar(_editor) constructor {
           }),
           "text_ve-status-bar_bpmValue": factoryBPMField({
             layout: layout.nodes.bpmValue,
+          }),
+          "text_ve-status-bar_bpmSubLabel": factoryLabel({
+            text: "Sub:",
+            layout: layout.nodes.bpmSubLabel,
+          }),
+          "text_ve-status-bar_bpmSubValue": factorySubField({
+            layout: layout.nodes.bpmSubValue,
           }),
           "text_ve-status-bar_gameModeLabel": factoryLabel({
             text: "Game mode:",

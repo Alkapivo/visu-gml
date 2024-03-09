@@ -60,26 +60,24 @@ function GridRenderer(_controller, config = {}) constructor {
       return this
     }
 
+    var separators = properties.separators
     var primaryColor = properties.separatorsPrimaryColor.toGMColor()
     var primaryAlpha = properties.separatorsPrimaryAlpha
     var primaryThickness = properties.separatorsPrimaryThickness
     var secondaryColor = properties.separatorsSecondaryColor.toGMColor()
     var secondaryAlpha = properties.separatorsSecondaryAlpha
     var secondaryThickness = gridService.properties.separatorsSecondaryThickness
-    var separatorHeight = (view.height * 2) / properties.separators
-
-    var separatorHeight = (view.height * 2) / gridService.properties.separators
+    var separatorHeight = (view.height * 2) / separators
     var time = gridService.properties.separatorTimer.time
-    var offset = view.y - 2.0 - (floor(view.y / separatorHeight) * separatorHeight)
-    var separatorsSize = properties.separators * 3
-
-    for (var index = 0; index <= separatorsSize; index++) {
+    var offset = 2.0
+    var separatorsSize = separators * 3
+    for (var index = 0; index <= floor(separatorsSize); index++) {
       var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
-      var beginY = (-5 * (view.height) + index * separatorHeight - offset + time) 
+      var beginY = ((-5 * view.height) + (index * separatorHeight) + offset + time) 
         * GRID_SERVICE_PIXEL_HEIGHT
       var endX = 5.0 * GRID_SERVICE_PIXEL_WIDTH
       var endY = beginY
-      if (index < properties.separators || index > separatorsSize - properties.separators) {
+      if (index < separators || index > 0) {
         GPU.render.texturedLine(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha, secondaryColor)
       } else {
         GPU.render.texturedLine(beginX, beginY, endX, endY, primaryThickness, primaryAlpha, primaryColor)
@@ -96,25 +94,34 @@ function GridRenderer(_controller, config = {}) constructor {
       var gridService = this.controller.gridService
       var channelWidth = gridService.view.width / gridService.properties.channels
       for (var index = 0; index <= amount; index++) {
-        var beginX = ((index * channelWidth) - viewXOffset) * GRID_SERVICE_PIXEL_WIDTH
+        var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
         var beginY = -5.0 * GRID_SERVICE_PIXEL_HEIGHT
         var endX = beginX
         var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
-        var scale = index >= gridService.properties.channels / 2.0
-          ? index + 1
-          : gridService.properties.channels - index
-        GPU.render.texturedLine(beginX, beginY, endX, endY, thickness + scale, alpha, color)
+        GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
       }
     }
 
-    static renderSecondaryChannels = function(viewXOffset, amount, thickness, color, alpha) {
+    static renderRightChannels = function(viewXOffset, amount, thickness, color, alpha) {
+      var gridService = this.controller.gridService
+      var channelWidth = gridService.view.width / gridService.properties.channels
+      for (var index = 1; index <= amount; index++) {
+        var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
+        var beginY = -5.0 * GRID_SERVICE_PIXEL_HEIGHT
+        var endX = beginX
+        var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
+        GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
+      }
+    }
+
+    static renderLeftChannels = function(viewXOffset, amount, thickness, color, alpha) {
       var gridService = this.controller.gridService
       var channelWidth = gridService.view.width / gridService.properties.channels
       for (var index = 0; index <= amount; index++) {
-        var beginX = ((index * channelWidth) - viewXOffset) * GRID_SERVICE_PIXEL_WIDTH
+        var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
         var beginY = -5.0 * GRID_SERVICE_PIXEL_HEIGHT
         var endX = beginX
-        var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT  
+        var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
         GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
       }
     }
@@ -125,38 +132,36 @@ function GridRenderer(_controller, config = {}) constructor {
       return this
     }
 
+    var view = gridService.view
     var primaryColor = properties.channelsPrimaryColor.toGMColor()
     var primaryAlpha = properties.channelsPrimaryAlpha
     var primaryThickness = properties.channelsPrimaryThickness
     var secondaryColor = properties.channelsSecondaryColor.toGMColor()
     var secondaryAlpha = properties.channelsSecondaryAlpha
-    var secondaryThickness = gridService.properties.channelsSecondaryThickness
-    var separatorHeight = (gridService.view.height * 2) / properties.channels
+    var secondaryThickness = properties.channelsSecondaryThickness
+    var channels = properties.channels
+    var channelWidth = view.width / channels
+    var viewXOffset = channelWidth * (floor(view.x / view.width) - view.x)
 
-    var channelWidth = gridService.view.width / gridService.properties.channels
-    
-    // Left
-    renderSecondaryChannels(
-      gridService.view.x + 2.0 - (floor(gridService.view.x / channelWidth) * channelWidth),
-      properties.channels * 2.0,
+    renderLeftChannels(
+      viewXOffset - ((view.width + ((ceil(channels) - channels) * channelWidth)) * 2.0),
+      ceil(channels * 2.0),
       secondaryThickness, 
       secondaryColor, 
       secondaryAlpha
     )
 
-    // Right
-    renderSecondaryChannels(
-      gridService.view.x - 1.0 - (floor(gridService.view.x / channelWidth) * channelWidth),
-      properties.channels * 2.0,
+    renderRightChannels(
+      viewXOffset + view.width + ((ceil(channels) - channels) * channelWidth),
+      ceil(channels * 2.0),
       secondaryThickness, 
       secondaryColor, 
       secondaryAlpha
     )
 
-    // Center
     renderPrimaryChannels(
-      gridService.view.x - (floor(gridService.view.x / channelWidth) * channelWidth), 
-      gridService.properties.channels,
+      viewXOffset, 
+      ceil(channels),
       primaryThickness,
       primaryColor,
       primaryAlpha
@@ -265,8 +270,8 @@ function GridRenderer(_controller, config = {}) constructor {
     var spawner = this.controller.shroomService.spawner
     if (Core.isType(spawner, Struct)) {
       spawner.sprite.render(
-        spawner.x * GRID_SERVICE_PIXEL_WIDTH, 
-        spawner.y * GRID_SERVICE_PIXEL_HEIGHT
+        (spawner.x * GRID_SERVICE_PIXEL_WIDTH) - ((spawner.sprite.getWidth() * spawner.sprite.getScaleX()) / 2.0), 
+        (spawner.y * GRID_SERVICE_PIXEL_HEIGHT) - ((spawner.sprite.getHeight() * spawner.sprite.getScaleY()) / 2.0)
       )
       this.controller.shroomService.spawner = null
     }
@@ -476,18 +481,21 @@ function GridRenderer(_controller, config = {}) constructor {
       GPU.render.clear(properties.shaderClearColor)
     }
 
-    renderer.controller.shaderPipeline.render(function(task, index, renderer) {
-      var properties = renderer.controller.gridService.properties
-      var alpha = task.state.getDefault("alpha", 1.0)
-      renderer.gridSurface.render(0, 0, alpha)
+    var size = renderer.controller.shaderPipeline
+      .render(function(task, index, renderer) {
+        renderer.gridSurface.render(0, 0, task.state
+          .getDefault("alpha", 1.0))
+      }, renderer)
+      .executor.tasks.size()
 
-      // Render support-grid
-      if (properties.renderSupportGrid && index >= properties.renderSupportGridTreshold) {
-        GPU.set.blendMode(BlendMode.ADD)
-        renderer.gridSurface.render(0, 0, properties.renderSupportGridAlpha)
-        GPU.reset.blendMode()
-      }
-    }, renderer)
+    // Render support-grid
+    if (properties.renderSupportGrid 
+      && size >= properties.renderSupportGridTreshold) {
+
+      GPU.set.blendMode(BlendMode.ADD)
+      renderer.gridSurface.render(0, 0, properties.renderSupportGridAlpha)
+      GPU.reset.blendMode()
+    }
   }
 
   ///@private

@@ -465,6 +465,7 @@ function VisuNewProjectForm(json = null) constructor {
       "model": "io.alkapivo.visu.controller.VisuTrack",
       "data": {  
         "bpm": controller.editor.store.getValue("bpm"),
+        "bpm-sub": controller.editor.store.getValue("bpm-sub"),
         "bullet": "bullet.json",
         "editor": [],
         "lyrics": "lyrics.json",

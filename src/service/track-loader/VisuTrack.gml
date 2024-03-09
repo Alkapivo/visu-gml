@@ -8,7 +8,12 @@ function VisuTrack(_path, json) constructor {
   path = Assert.isType(FileUtil.getDirectoryFromPath(_path), String)
 
   ///@type {Number}
-  bpm = Assert.isType(Struct.getDefault(json, "bpm", Beans.get(BeanVisuController).editor.store.getValue("bpm")), Number)
+  bpm = Assert.isType(Struct.getDefault(json, "bpm", Beans
+    .get(BeanVisuController).editor.store.getValue("bpm")), Number)
+
+  ///@type {Number}
+  bpmSub = Assert.isType(Struct.getDefault(json, "bpm-sub", Beans
+    .get(BeanVisuController).editor.store.getValue("bpm-sub")), Number)
 
   ///@type {String}
   sound = Assert.isType(Struct.get(json, "sound"), String)
@@ -35,8 +40,8 @@ function VisuTrack(_path, json) constructor {
   texture = Assert.isType(Struct.get(json, "texture"), String)
 
   ///@type {?String}
-  video = Optional.is(Struct.get(json, "video"))
-    ? Assert.isType(json.video, String)
+  video = Core.isType(Struct.get(json, "video"), String)
+    ? json.video
     : null
 
   ///@type {Array<String>}
@@ -51,6 +56,7 @@ function VisuTrack(_path, json) constructor {
       "model": "io.alkapivo.visu.controller.VisuTrack",
       "data": {  
         "bpm": this.bpm,
+        "bpm-sub": this.bpmSub,
         "track": this.track,
         "bullet": this.bullet,
         "lyrics": this.lyrics,

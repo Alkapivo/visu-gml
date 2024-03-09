@@ -59,7 +59,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
       layout: brushToolbar.layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -80,8 +80,14 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             }
           },
           updateLayout: new BindIntent(function(position) {
-            var node = Struct.get(Beans.get(BeanVisuController).editor.layout.nodes, "brush-toolbar")
+            var controller = Beans.get(BeanVisuController)
+            var node = Struct.get(controller.editor.layout.nodes, "brush-toolbar")
             node.percentageWidth = abs(GuiWidth() - position) / GuiWidth()
+
+            var events = controller.editor.uiService.find("ve-timeline-events")
+            if (Core.isType(events, UI)) {
+              events.updateAreaTimer.finish()
+            }
           }),
           onMousePressedLeft: function(event) {
             MouseUtil.setClipboard(this)
@@ -220,7 +226,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ]),
       }),
-      timer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -331,7 +337,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ]).map(factoryVEBrushToolbarTypeItem),
       }),
-      timer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -394,7 +400,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -513,7 +519,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         }),
       }),
-      timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -660,7 +666,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -725,7 +731,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      timer: new Timer(FRAME_MS * 12, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -854,7 +860,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           }
         ]),
       }),
-      timer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateAreaTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
