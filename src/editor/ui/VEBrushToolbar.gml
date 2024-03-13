@@ -59,7 +59,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
+      brushToolbar: brushToolbar,
+      updateTimer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
       layout: brushToolbar.layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -68,15 +69,25 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           type: UIButton,
           layout: brushToolbar.layout.nodes.resize,
           backgroundColor: VETheme.color.primary, //resize
+          clipboard: {
+            name: "resize_brush_toolbar",
+            drag: function() {
+              Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_HORIZONTAL)
+            },
+            drop: function() {
+              Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+            }
+          },
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
-            var context = MouseUtil.getClipboard()
-            if (context == this) {
+            if (MouseUtil.getClipboard() == this.clipboard) {
               this.updateLayout(MouseUtil.getMouseX())
-            }
-    
-            if (context == this && !mouse_check_button(mb_left)) {
-              MouseUtil.clearClipboard()
+              this.context.brushToolbar.containers.forEach(function(container) {
+                var minTime = container.updateTimer.duration - (FRAME_MS * 10)
+                if (container.updateTimer.time < minTime) {
+                  container.updateTimer.time = minTime
+                }
+              })
             }
           },
           updateLayout: new BindIntent(function(position) {
@@ -86,24 +97,21 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
             var events = controller.editor.uiService.find("ve-timeline-events")
             if (Core.isType(events, UI)) {
-              events.updateAreaTimer.finish()
+              events.updateTimer.finish()
             }
           }),
           onMousePressedLeft: function(event) {
-            MouseUtil.setClipboard(this)
-          },
-          onMouseReleasedLeft: function(event) {
-            if (MouseUtil.getClipboard() == this) {
-              MouseUtil.clearClipboard()
-            }
+            MouseUtil.setClipboard(this.clipboard)
           },
           onMouseHoverOver: function(event) {
-            Beans.get(BeanVisuController).displayService
-              .setCursor(Cursor.RESIZE_HORIZONTAL)
+            if (!mouse_check_button(mb_left)) {
+              this.clipboard.drag()
+            }
           },
           onMouseHoverOut: function(event) {
-            Beans.get(BeanVisuController).displayService
-              .setCursor(Cursor.DEFAULT)
+            if (!mouse_check_button(mb_left)) {
+              this.clipboard.drop()
+            }
           },
         }
       }
@@ -226,7 +234,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ]),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -337,7 +345,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
         ]).map(factoryVEBrushToolbarTypeItem),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -400,7 +408,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -519,7 +527,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         }),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -666,7 +674,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -676,16 +684,26 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           {
             type: UIText,
             text: "Brush inspector",
+            clipboard: {
+              name: "resize_brush_inspector",
+              drag: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_VERTICAL)
+              },
+              drop: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            },
             __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
             updateCustom: function() {
               this.__update()
-              var context = MouseUtil.getClipboard()
-              if (context == this) {
+              if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
-              }
-      
-              if (context == this && !mouse_check_button(mb_left)) {
-                MouseUtil.clearClipboard()
+                this.context.brushToolbar.containers.forEach(function(container) {
+                  var minTime = container.updateTimer.duration - (FRAME_MS * 10)
+                  if (container.updateTimer.time < minTime) {
+                    container.updateTimer.time = minTime
+                  }
+                })
               }
             },
             updateLayout: new BindIntent(function(_position) {
@@ -703,20 +721,17 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               brushNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
             }),
             onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this)
-            },
-            onMouseReleasedLeft: function(event) {
-              if (MouseUtil.getClipboard() == this) {
-                MouseUtil.clearClipboard()
-              }
+              MouseUtil.setClipboard(this.clipboard)
             },
             onMouseHoverOver: function(event) {
-              Beans.get(BeanVisuController).displayService
-                .setCursor(Cursor.RESIZE_VERTICAL)
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drag()
+              }
             },
             onMouseHoverOut: function(event) {
-              Beans.get(BeanVisuController).displayService
-                .setCursor(Cursor.DEFAULT)
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drop()
+              }
             },
           },
           VEStyles.get("bar-title"),
@@ -731,7 +746,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -860,7 +875,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           }
         ]),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),

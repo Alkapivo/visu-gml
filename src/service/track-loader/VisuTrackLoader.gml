@@ -82,6 +82,9 @@ function VisuTrackLoader(_controller): Service() constructor {
                     var item = Beans.get(BeanVisuController).editor.store.get("bpm")
                     item.set(this.response.bpm)
 
+                    item = Beans.get(BeanVisuController).editor.store.get("bpm-sub")
+                    item.set(this.response.bpmSub)
+
                     return {
                       path: Assert.isType(FileUtil.getDirectoryFromPath(result.path), String),
                       manifest: Assert.isType(this.response, VisuTrack),

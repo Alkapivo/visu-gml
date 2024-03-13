@@ -1081,6 +1081,19 @@ global.__VEComponents = new Map(String, Callable, {
       )
     }
 
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryProperty = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
     var items = new Array(UIItem)
 
     factoryTitle(
@@ -1116,6 +1129,31 @@ global.__VEComponents = new Map(String, Callable, {
           }
         }, 
         Struct.get(config, "texture"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryProperty(
+      "${name}_animate",
+      layout.nodes.animate,
+      Struct.appendRecursive(
+        { 
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.updateValue(value.getAnimate())
+              },
+              set: function(value) { 
+                var item = this.get()
+                item.get().setAnimate(value)
+              },
+            }
+          }
+        }, 
+        Struct.get(config, "animate"),
         false
       )
     ).forEach(addItem, items)

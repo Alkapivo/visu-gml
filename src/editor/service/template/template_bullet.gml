@@ -45,6 +45,14 @@ function template_bullet(json = null) {
             label: { text: "Texture" }, 
             field: { store: { key: "bullet_texture" } },
           },
+          animate: {
+            label: { text: "Animate" }, 
+            checkbox: { 
+              store: { key: "bullet_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+          },
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "bullet_texture" } },

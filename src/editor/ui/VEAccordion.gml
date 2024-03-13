@@ -46,6 +46,7 @@ function VEAccordion(_editor, config = null) constructor {
           "background-alpha": 1.0,
           "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
         }),
+        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         accordion: accordion,
         layout: layout,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -142,15 +143,25 @@ function VEAccordion(_editor, config = null) constructor {
             type: UIButton,
             layout: layout.nodes.resize,
             backgroundColor: VETheme.color.primary, //resize
+            clipboard: {
+              name: "resize_accordion",
+              drag: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_HORIZONTAL)
+              },
+              drop: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             updateCustom: function() {
-              var context = MouseUtil.getClipboard()
-              if (context == this) {
+              if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseX())
-              }
-      
-              if (context == this && !mouse_check_button(mb_left)) {
-                MouseUtil.clearClipboard()
+                this.context.accordion.containers.forEach(function(container) {
+                  var minTime = container.updateTimer.duration - (FRAME_MS * 10)
+                  if (container.updateTimer.time < minTime) {
+                    container.updateTimer.time = minTime
+                  }
+                })
               }
             },
             updateLayout: new BindIntent(function(position) {
@@ -158,20 +169,17 @@ function VEAccordion(_editor, config = null) constructor {
               node.percentageWidth = position / GuiWidth()
             }),
             onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this)
-            },
-            onMouseReleasedLeft: function(event) {
-              if (MouseUtil.getClipboard() == this) {
-                MouseUtil.clearClipboard()
-              }
+              MouseUtil.setClipboard(this.clipboard)
             },
             onMouseHoverOver: function(event) {
-              Beans.get(BeanVisuController).displayService
-                .setCursor(Cursor.RESIZE_HORIZONTAL)
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drag()
+              }
             },
             onMouseHoverOut: function(event) {
-              Beans.get(BeanVisuController).displayService
-                .setCursor(Cursor.DEFAULT)
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drop()
+              }
             },
           }
         }
@@ -362,7 +370,7 @@ function VEAccordion(_editor, config = null) constructor {
   ///@params {Boolean} enable
   updateContainerObject = function(context, enable) {
     if (!context.enable && enable) {
-      context.containers.forEach(function(container, name) {
+      context.containers.forEach(function(container) {
         if (Optional.is(container.updateArea)) {
           container.updateArea()
         }

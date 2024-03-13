@@ -277,7 +277,7 @@ function VEStatusBar(_editor) constructor {
             }
             item.set(parsedValue)
 
-            Struct.set(global.__VisuTrack, "bpm-sub", parsedValue)
+            Struct.set(global.__VisuTrack, "bpmSub", parsedValue)
           },
         },
       }

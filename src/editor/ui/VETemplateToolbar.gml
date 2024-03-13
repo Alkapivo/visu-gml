@@ -193,7 +193,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           },
         ])
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -513,7 +513,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           },
         ]),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 24, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -563,7 +563,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -875,7 +875,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 24, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -1261,7 +1261,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -1271,16 +1271,26 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           {
             type: UIText,
             text: "Template inspector",
+            clipboard: {
+              name: "resize_template_inspector",
+              drag: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_VERTICAL)
+              },
+              drop: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            },
             __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
             updateCustom: function() {
               this.__update()
-              var context = MouseUtil.getClipboard()
-              if (context == this) {
+              if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
-              }
-      
-              if (context == this && !mouse_check_button(mb_left)) {
-                MouseUtil.clearClipboard()
+                this.context.templateToolbar.containers.forEach(function(container) {
+                  var minTime = container.updateTimer.duration - (FRAME_MS * 10)
+                  if (container.updateTimer.time < minTime) {
+                    container.updateTimer.time = minTime
+                  }
+                })
               }
             },
             updateLayout: new BindIntent(function(_position) {
@@ -1317,20 +1327,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               templateViewNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
             }),
             onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this)
-            },
-            onMouseReleasedLeft: function(event) {
-              if (MouseUtil.getClipboard() == this) {
-                MouseUtil.clearClipboard()
-              }
+              MouseUtil.setClipboard(this.clipboard)
             },
             onMouseHoverOver: function(event) {
-              Beans.get(BeanVisuController).displayService
-                .setCursor(Cursor.RESIZE_VERTICAL)
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drag()
+              }
             },
             onMouseHoverOut: function(event) {
-              Beans.get(BeanVisuController).displayService
-                .setCursor(Cursor.DEFAULT)
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drop()
+              }
             },
           },
           VEStyles.get("bar-title"),
@@ -1346,7 +1353,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 24, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -1432,7 +1439,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           }
         ]),
       }),
-      //updateAreaTimer: new Timer(FRAME_MS * 16.0000, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),

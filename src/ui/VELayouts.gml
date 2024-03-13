@@ -543,9 +543,14 @@ global.__VELayouts = new Map(String, Callable, {
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
           height: function() { return 32 },
         },
+        animate: {
+          name: "texture-field-ext.animate",
+          y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
+          height: function() { return 42 },
+        },
         frame: {
           name: "texture-field-ext.frame",
-          y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
+          y: function() { return this.context.nodes.animate.bottom() + this.margin.top },
           height: function() { return 32 },
         },
         speed: {

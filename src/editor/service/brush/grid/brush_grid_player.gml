@@ -124,6 +124,14 @@ function brush_grid_player(json = null) {
             label: { text: "Texture" }, 
             field: { store: { key: "grid-player_texture" } },
           },
+          animate: {
+            label: { text: "Animate" }, 
+            checkbox: { 
+              store: { key: "grid-player_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+          },
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "grid-player_texture" } },

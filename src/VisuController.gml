@@ -77,7 +77,7 @@ function VisuController(layerName) constructor {
   editor = new VisuEditor(this)
 
   ///@type {GridSystem}
-  //gridSystem = new GridSystem(this)
+  //gridSystem = new GridSystem(this) ///@ecs
 
   ////@type {Gamemode}
   gameMode = GameMode.BULLETHELL
@@ -122,7 +122,7 @@ function VisuController(layerName) constructor {
       scaleX: 0.25, 
       scaleY: 0.25,
     }), Sprite)
-
+  
   ///@type {FSM}
   fsm = new FSM(this, {
     initialState: { 
@@ -430,10 +430,46 @@ function VisuController(layerName) constructor {
     "spawn-popup": function(event) {
       this.editor.popupQueue.send(new Event("push", event.data))
     }
+  }, {
+    enableLogger: true,
+    catchException: false,
   }))
 
   ///@type {TaskExecutor}
-  executor = new TaskExecutor(this)
+  executor = new TaskExecutor(this, {
+    enableLogger: true,
+    catchException: false,
+  })
+
+  ///@private
+  ///@type {Array<Struct>}
+  services = new Array(Struct, GMArray.map([
+    "fsm",
+    "loader",
+    "displayService",
+    "fileService",
+    "dispatcher",
+    "executor",
+    "uiService",
+    "particleService",
+    "shaderPipeline",
+    "shaderBackgroundPipeline",
+    "trackService",
+    "gridService",
+    //"gridSystem", ///@ecs
+    "lyricsService",
+    "gridRenderer",
+    "videoService",
+    "editor",
+    "exitModal",
+    "newProjectModal"
+  ], function(name, index, controller) {
+    Logger.debug("VisuController", $"Load service '{name}'")
+    return {
+      name: name,
+      struct: Assert.isType(Struct.get(controller, name), Struct),
+    }
+  }, this))
 
   ///@param {Event}
   ///@return {?Promise}
@@ -461,9 +497,12 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   updateIO = function() {
     this.keyboard.update()
-    this.mouse.update()
+    this.mouse.update()  
 
-    if (this.keyboard.keys.controlTrack.pressed) {
+    global.GMTF_DATA.update()
+    
+    if (!Optional.is(global.GMTF_DATA.active) && 
+      this.keyboard.keys.controlTrack.pressed) {
       switch (this.fsm.getStateName()) {
         case "play": this.send(new Event("pause")) break
         case "pause": this.send(new Event("play")) break
@@ -479,6 +518,20 @@ function VisuController(layerName) constructor {
 
     if (this.keyboard.keys.renderUI.pressed) {
       this.renderUI = !this.renderUI
+    }
+
+    if (!Optional.is(global.GMTF_DATA.active)
+      && this.keyboard.keys.exitModal.pressed) {
+      this.exitModal.send(new Event("open").setData({
+        layout: new UILayout({
+          name: "display",
+          x: function() { return 0 },
+          y: function() { return 0 },
+          width: function() { return GuiWidth() },
+          height: function() { return GuiHeight() },
+        }),
+      }))
+      this.gridRenderer.camera.enableMouseLook = false
     }
 
     if (!this.renderUI) {
@@ -497,6 +550,8 @@ function VisuController(layerName) constructor {
         x: MouseUtil.getMouseX(), 
         y: MouseUtil.getMouseY(),
       }))
+
+      Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
     }
 
     if (this.mouse.buttons.left.drag) {
@@ -545,36 +600,32 @@ function VisuController(layerName) constructor {
   }
 
   ///@private
-  ///@return {VisuController}
-  updateExitModal = function() {
-    if (keyboard_check_pressed(vk_escape)) {
-      this.exitModal.send(new Event("open").setData({
-        layout: new UILayout({
-          name: "display",
-          x: function() { return 0 },
-          y: function() { return 0 },
-          width: function() { return GuiWidth() },
-          height: function() { return GuiHeight() },
-        }),
-      }))
-      this.gridRenderer.camera.enableMouseLook = false
+  ///@param {Struct} service
+  ///@param {Number} iterator
+  ///@param {VisuController} controller
+  updateService = function(service, iterator, controller) {
+    try {
+      service.struct.update()
+    } catch (exception) {
+      var name = Core.isType(Struct.get(controller, "name"), String) 
+        ? service.name 
+        : iterator
+      var message = $"'update-service-{name}' fatal error: {exception.message}"
+      Logger.error("VisuController", message)
+      controller.send(new Event("spawn-popup", { message: message }))
+      fsm.dispatcher.send(new Event("transition", { name: "idle" }))
     }
-    this.exitModal.update()
-    this.newProjectModal.update()
-    return this
   }
   
   ///@return {VisuController}
   update = function() {
-    this.updateIO()
-    this.updateExitModal()
-    this.fsm.update()
-    this.loader.update()
-
-    this.displayService.update()
-    this.fileService.update()
-    this.dispatcher.update()
-    this.executor.update()
+    try {
+      this.updateIO()
+    } catch (exception) {
+      var message = $"'updateIO' set fatal error: {exception.message}"
+      this.send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)
+    }
 
     if (this.renderUI) {
       try {
@@ -585,47 +636,8 @@ function VisuController(layerName) constructor {
         Logger.error("UIService", message)
       }
     }
-    
-	  this.particleService.update()
-	  this.shaderPipeline.update()
-    this.shaderBackgroundPipeline.update()
-	  this.trackService.update()
-    //this.gridSystem.update()
-	  this.gridService.update()
-    this.lyricsService.update()
-	  this.gridRenderer.update()
-    this.videoService.update()
-    this.editor.update()
 
-    return this
-  }
-
-  ///@return {VisuController}
-  onSceneEnter = function() {
-    Logger.info("VisuController", "onSceneEnter")
-    this.editor.send(new Event("open"))
-    return this
-  }
-
-  ///@return {VisuController}
-  onSceneLeave = function() {
-    Logger.info("VisuController", "onSceneLeave")
-    return this
-  }
-
-  ///@return {VisuController}
-  onNetworkEvent = function() {
-    try {
-      var json = json_encode(async_load)
-      var event = JSON.parse(json)
-      var message = buffer_read(event.buffer, buffer_string)
-      Core.print("[onNetworkEvent] event:", event)
-      Core.print("[onNetworkEvent] message:", message)
-    } catch (exception) {
-      var message = $"'onNetworkEvent' fatal error: {exception.message}"
-      this.send(new Event("spawn-popup", { message: message }))
-      Logger.error("VisuController", message)	
-    }
+    this.services.forEach(this.updateService, this)
 
     return this
   }
@@ -724,6 +736,36 @@ function VisuController(layerName) constructor {
   }
 
   ///@return {VisuController}
+  onSceneEnter = function() {
+    Logger.info("VisuController", "onSceneEnter")
+    this.editor.send(new Event("open"))
+    return this
+  }
+
+  ///@return {VisuController}
+  onSceneLeave = function() {
+    Logger.info("VisuController", "onSceneLeave")
+    return this
+  }
+
+  ///@return {VisuController}
+  onNetworkEvent = function() {
+    try {
+      var json = json_encode(async_load)
+      var event = JSON.parse(json)
+      var message = buffer_read(event.buffer, buffer_string)
+      Core.print("[onNetworkEvent] event:", event)
+      Core.print("[onNetworkEvent] message:", message)
+    } catch (exception) {
+      var message = $"'onNetworkEvent' fatal error: {exception.message}"
+      this.send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)	
+    }
+
+    return this
+  }
+
+  ///@return {VisuController}
   free = function() {
     Struct.toMap(this)
       .filter(function(value) {
@@ -750,122 +792,3 @@ function VisuController(layerName) constructor {
 
   this.init()
 }
-
-/*
-
-  ///@type {Socket}
-  socket = new Socket({
-    host: "localhost",
-    port: 8082,
-    type: SocketType.WS,
-  })
-
-  randomShader = function() {
-    if (keyboard_check_pressed(vk_space)) {
-      var keys = this.shaderPipeline.templates.keys()
-      var index = irandom(keys.size() - 1)
-      var key = keys.get(index)
-      
-      Core.print("Shader key:", key)
-
-      shaderPipeline.dispatcher.send(new Event("spawn-shader", {
-        name: key,
-        duration: 7.0
-      }))
-    }
-  }
-
-  testSurface = new Surface({ width: 512, height: 512 })
-  blendModes = [ 
-    bm_zero, 
-    bm_one, 
-    bm_src_colour, 
-    bm_inv_src_colour, 
-    bm_src_alpha, 
-    bm_inv_src_alpha, 
-    bm_dest_alpha, 
-    bm_inv_dest_alpha, 
-    bm_dest_colour, 
-    bm_inv_dest_colour, 
-    bm_src_alpha_sat
-  ]
-  blendSrcPtr = 4
-  blendDestPtr = 5
-  testBlendModes = function() {
-    if (keyboard_check_pressed(ord("I"))) {
-      this.blendSrcPtr = clamp(this.blendSrcPtr + 1, 0, GMArray.size(this.blendModes) - 1)
-      Core.print("BlendSrcPtr+:", this.blendSrcPtr)
-    }
-
-    if (keyboard_check_pressed(ord("K"))) {
-      this.blendSrcPtr = clamp(this.blendSrcPtr - 1, 0, GMArray.size(this.blendModes) - 1)
-      Core.print("BlendSrcPtr-:", this.blendSrcPtr)
-    }
-
-    if (keyboard_check_pressed(ord("O"))) {
-      this.blendDestPtr = clamp(this.blendDestPtr + 1, 0, GMArray.size(this.blendModes) - 1)
-      Core.print("BlendDestPtr+:", this.blendDestPtr)
-    }
-    
-    if (keyboard_check_pressed(ord("L"))) {
-      this.blendDestPtr = clamp(this.blendDestPtr - 1, 0, GMArray.size(this.blendModes) - 1)
-      Core.print("BlendDestPtr-:", this.blendDestPtr)
-    }
-    
-
-    //draw_sprite(texture_test_transparent, 0, 0, 0)
-    //draw_sprite(texture_baron, 0, 0, 0)
-    //draw_sprite(texture_baron, 0, 256, 0)
-    draw_sprite(texture_baron, 0, window_mouse_get_x(), window_mouse_get_y())
-    /*
-    draw_sprite(texture_test_transparent, 0, 512, 0)
-    this.testSurface.update()
-      .renderOn(function(context) {
-        GPU.render.clear(ColorUtil.BLACK_TRANSPARENT)
-        gpu_set_blendmode_ext(context.blendModes[context.blendSrcPtr], context.blendModes[context.blendDestPtr])
-        draw_sprite(texture_baron, 0, 0, 0)
-        draw_sprite(texture_baron, 0, 256, 0)
-        draw_sprite(texture_baron, 0, window_mouse_get_x(), window_mouse_get_y())
-        gpu_set_blendmode(bm_normal)
-      }, this)
-    this.testSurface.render(512, 0)
-  }
-
-///////////////////////
-    if (keyboard_check_pressed(vk_space)) {
-      var fadeSpriteEvent = new Event("fade-sprite", {
-        sprite: SpriteUtil.parse({ name: "texture_particle_default" }),
-        collection: this.gridRenderer.overlayRenderer.foregrounds,
-      })
-      this.send(fadeSpriteEvent)
-    }
-    if (keyboard_check_pressed(vk_control)) {
-      var fadeSpriteEvent = new Event("fade-sprite", {
-        sprite: 
-        ({ name: "texture_test" }),
-        collection: this.gridRenderer.overlayRenderer.foregrounds,
-      })
-      this.send(fadeSpriteEvent)
-    }
-    if (keyboard_check_pressed(vk_space)) {
-      this.videoService.send(new Event("pause-video"))
-    }
-
-    if (keyboard_check_pressed(vk_control)) {
-      this.videoService.send(new Event("resume-video"))
-    }
-
-    if (keyboard_check_pressed(vk_control)) {
-      this.socket.send("ws test message " + string(random(1000)))
-    }
-
-    if (keyboard_check_pressed(vk_space)) {
-      var event = this.particleService.factoryEventSpawnParticleEmitter({
-        beginX: mouse_x,
-        beginY: mouse_y,
-        endX: mouse_x,
-        endY: mouse_y,
-      })
-      this.particleService.send(event)
-    }
-*/

@@ -238,7 +238,8 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
 
         }),
-        updateAreaTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
+        controller: controller,
+        updateTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
         layout: layout.nodes.background,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -247,15 +248,25 @@ function VETimeline(_editor) constructor {
             type: UIButton,
             layout: layout.nodes.resize,
             backgroundColor: VETheme.color.primary,
+            clipboard: {
+              name: "resize_timeline",
+              drag: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_VERTICAL)
+              },
+              drop: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             updateCustom: function() {
-              var context = MouseUtil.getClipboard()
-              if (context == this) {
+              if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
-              }
-      
-              if (context == this && !mouse_check_button(mb_left)) {
-                MouseUtil.clearClipboard()
+                this.context.controller.containers.forEach(function(container) {
+                  var minTime = container.updateTimer.duration - (FRAME_MS * 10)
+                  if (container.updateTimer.time < minTime) {
+                    container.updateTimer.time = minTime
+                  }
+                })
               }
             },
             updateLayout: new BindIntent(function(position) {
@@ -265,24 +276,21 @@ function VETimeline(_editor) constructor {
 
               var events = controller.editor.uiService.find("ve-timeline-events")
               if (Core.isType(events, UI)) {
-                events.updateAreaTimer.finish()
+                events.updateTimer.finish()
               }
             }),
             onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this)
-            },
-            onMouseReleasedLeft: function(event) {
-              if (MouseUtil.getClipboard() == this) {
-                MouseUtil.clearClipboard()
-              }
+              MouseUtil.setClipboard(this.clipboard)
             },
             onMouseHoverOver: function(event) {
-              Beans.get(BeanVisuController).displayService
-                .setCursor(Cursor.RESIZE_VERTICAL)
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drag()
+              }
             },
             onMouseHoverOut: function(event) {
-              Beans.get(BeanVisuController).displayService
-                .setCursor(Cursor.DEFAULT)
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drop()
+              }
             },
           }
         }
@@ -293,7 +301,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
           "store": controller.editor.store,
         }),
-        updateAreaTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.form,
         timeline: controller,
@@ -335,7 +343,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
         }),
-        updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -349,19 +357,19 @@ function VETimeline(_editor) constructor {
           this._onMousePressedLeft(event)
           var events = this.controller.containers.get("ve-timeline-events")
           events.offset.y = this.offset.y
-          events.timer.time = events.timer.duration
+          events.updateTimer.finish()
         },
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
           var events = this.controller.containers.get("ve-timeline-events")
           events.offset.y = this.offset.y
-          events.timer.time = events.timer.duration
+          events.updateTimer.finish()
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
           var events = this.controller.containers.get("ve-timeline-events")
           events.offset.y = this.offset.y
-          events.timer.time = events.timer.duration
+          events.updateTimer.finish()
         },
         onInit: function() {
           this.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
@@ -497,9 +505,17 @@ function VETimeline(_editor) constructor {
           "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           "initialized": false
         }),
-        updateAreaTimer: new Timer(FRAME_MS * 16, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity }),
         controller: controller,
         layout: layout.nodes.events,
+        lastIndex: 0,
+        selectedSprite: SpriteUtil.parse({ 
+          name: "texture_selected_event",
+          speed: 24,
+        }),
+        fetchViewHeight: function() {
+          return 32 * this.state.get("amount")
+        },
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
           if (!this.controller.editor.trackService.isTrackLoaded()) {
@@ -558,17 +574,13 @@ function VETimeline(_editor) constructor {
                 data: container,
               })
           }
-        },
-        fetchViewHeight: function() {
-          return 32 * this.state.get("amount")
-        },
-        lastIndex: 0,
+        }, 
         renderClipboard: new BindIntent(function() {
           var trackEvent = MouseUtil.getClipboard()
           if (!Core.isType(trackEvent, TrackEvent)) {
             return
           }
-          
+
           var index = this.getChannelIndexFromMouseY(MouseUtil.getMouseY())
           if (!Optional.is(index)) {
             index = this.lastIndex
@@ -638,16 +650,9 @@ function VETimeline(_editor) constructor {
             16 + this.offset.y + eventY
           )
         }),
-        selectedSprite: SpriteUtil.parse({ 
-          name: "texture_selected_event",
-          speed: 240,
-        }),
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         renderSurface: function() {
           var trackEvent = MouseUtil.getClipboard()
-          if (!this.updateAreaTimer.finished) {
-            return
-          }
 
           // background
           var color = this.state.get("background-color")
@@ -727,7 +732,6 @@ function VETimeline(_editor) constructor {
           this.state.set("chunkService", controller.factoryChunkService())
         },
         onDestroy: function() {
-          Core.print("on destroy!")
           this.state.get("store")
             .get("timeline-zoom")
             .removeSubscriber(this.name)
@@ -736,19 +740,19 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.updateAreaTimer.finish()
+          this.updateTimer.finish()
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseWheelDown: function(event) {
-          this.updateAreaTimer.finish()
           this._onMouseWheelDown(event)
+          this.updateTimer.finish()
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
         },
         onMouseDropLeft: function(event) {
           var trackEvent = MouseUtil.getClipboard()
           var channelName = Struct.get(trackEvent, "channelName")
           MouseUtil.clearClipboard()
-          this.updateAreaTimer.finish()
+          this.updateTimer.finish()
 
           if (!Core.isType(trackEvent, TrackEvent)
             || !this.controller.editor.trackService.track.channels
@@ -796,7 +800,7 @@ function VETimeline(_editor) constructor {
         },
         onMouseReleasedLeft: function(event) {
           try {
-            this.updateAreaTimer.finish()
+            this.updateTimer.finish()
             var store = Beans.get(BeanVisuController).editor.store
             var tool = store.getValue("tool")
             switch (tool) {
@@ -979,6 +983,10 @@ function VETimeline(_editor) constructor {
                 Struct.set(trackEvent, "eventName", this.name)
                 Struct.set(trackEvent, "channelName", channelName)
                 MouseUtil.setClipboard(trackEvent)
+
+                var events = Beans
+                  .get(BeanVisuController).editor.timeline.containers
+                  .get("ve-timeline-events")
               },
               onMouseReleasedLeft: function(event) {
                 var context = this
@@ -1098,6 +1106,7 @@ function VETimeline(_editor) constructor {
           "mouseX": null,
           "mouseXSensitivity": 30,
         }),
+        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.ruler,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),

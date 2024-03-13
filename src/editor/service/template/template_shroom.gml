@@ -47,6 +47,14 @@ function template_shroom(json = null) {
             label: { text: "Texture" }, 
             field: { store: { key: "shroom_texture" } },
           },
+          animate: {
+            label: { text: "Animate" }, 
+            checkbox: { 
+              store: { key: "shroom_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+          },
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "shroom_texture" } },
