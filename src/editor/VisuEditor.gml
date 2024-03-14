@@ -183,7 +183,7 @@ function VisuEditor(_controller) constructor {
           name: "visu-editor.track-control",
           percentageHeight: 1.0,
           width: function() { return Struct.get(this.context.nodes, "preview").width() },
-          height: function() { return 80.0 * this.percentageHeight },
+          height: function() { return 76.0 * this.percentageHeight },
           x: function() { return this.context.nodes.preview.x() },
           y: function() { return this.context.nodes.preview.bottom()
             - this.height() },

@@ -574,6 +574,13 @@ function VisuController(layerName) constructor {
         y: MouseUtil.getMouseY(),
       }))
     }
+
+    if (this.mouse.buttons.right.released) {
+      this.uiService.send(new Event("MouseReleasedRight", { 
+        x: MouseUtil.getMouseX(), 
+        y: MouseUtil.getMouseY(),
+      }))
+    }
     
     if (this.mouse.buttons.wheelUp.on) {  
       this.uiService.send(new Event("MouseWheelUp", { 

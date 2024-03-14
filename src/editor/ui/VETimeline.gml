@@ -795,9 +795,27 @@ function VETimeline(_editor) constructor {
             .set({
               name: uiItem.name,
               channel: channel,
-              data: trackEvent,
+              data: uiItem.state.get("event"),
             })
+
+          var inspector = Beans
+            .get(BeanVisuController).editor.uiService
+            .find("ve-event-inspector-properties")
+          inspector.updateTimer.time = inspector.updateTimer.duration
+
+          if (Optional.is(inspector.updateArea)) {
+            inspector.updateArea()
+          }
+
+          if (Optional.is(inspector.updateItems)) {
+            inspector.updateItems()
+          }
+
+          if (Optional.is(inspector.updateCustom)) {
+            inspector.updateCustom()
+          }
         },
+        
         onMouseReleasedLeft: function(event) {
           try {
             this.updateTimer.finish()
@@ -820,8 +838,25 @@ function VETimeline(_editor) constructor {
                 store.get("selected-event").set({
                   name: uiItem.name,
                   channel: channel,
-                  data: trackEvent,
+                  data: uiItem.state.get("event"),
                 })
+
+                var inspector = Beans
+                  .get(BeanVisuController).editor.uiService
+                  .find("ve-event-inspector-properties")
+                inspector.updateTimer.time = inspector.updateTimer.duration
+
+                if (Optional.is(inspector.updateArea)) {
+                  inspector.updateArea()
+                }
+
+                if (Optional.is(inspector.updateItems)) {
+                  inspector.updateItems()
+                }
+
+                if (Optional.is(inspector.updateCustom)) {
+                  inspector.updateCustom()
+                }
                 break
               case ToolType.CLONE:
                 var selected = store.getValue("selected-event")
@@ -857,6 +892,23 @@ function VETimeline(_editor) constructor {
                       channel: channel,
                       data: uiItem.state.get("event"),
                     })
+
+                    var inspector = Beans
+                      .get(BeanVisuController).editor.uiService
+                      .find("ve-event-inspector-properties")
+                    inspector.updateTimer.time = inspector.updateTimer.duration
+
+                    if (Optional.is(inspector.updateArea)) {
+                      inspector.updateArea()
+                    }
+
+                    if (Optional.is(inspector.updateItems)) {
+                      inspector.updateItems()
+                    }
+
+                    if (Optional.is(inspector.updateCustom)) {
+                      inspector.updateCustom()
+                    }
                   }
                 }
                 break
@@ -865,6 +917,25 @@ function VETimeline(_editor) constructor {
             var message = $"onMouseReleasedLeft exception: {exception.message}"
             Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
             Logger.error("VETimeline", message)
+          }
+        },
+
+        onMouseReleasedRight: function(event) {
+          this.updateTimer.finish()
+          var store = Beans.get(BeanVisuController).editor.store
+          var tool = store.getValue("tool")
+          Core.print("asd", tool)
+          switch (tool) {
+            case ToolType.SELECT:
+            case ToolType.BRUSH:
+            case ToolType.CLONE:
+            case ToolType.ERASE:
+              ///@description deselect
+              var store = this.controller.editor.store
+              if (Optional.is(store.getValue("selected-event"))) {
+                store.get("selected-event").set(null)
+              }
+              break
           }
         },
     
@@ -1014,6 +1085,7 @@ function VETimeline(_editor) constructor {
                   case ToolType.BRUSH:
                   case ToolType.CLONE:
                   case ToolType.SELECT:
+                    ///@description select
                     Beans.get(BeanVisuController).editor.store
                       .get("selected-event")
                       .set({
@@ -1021,6 +1093,23 @@ function VETimeline(_editor) constructor {
                         channel: channel,
                         data: trackEvent,
                       })
+
+                    var inspector = Beans
+                      .get(BeanVisuController).editor.uiService
+                      .find("ve-event-inspector-properties")
+                    inspector.updateTimer.time = inspector.updateTimer.duration
+
+                    if (Optional.is(inspector.updateArea)) {
+                      inspector.updateArea()
+                    }
+
+                    if (Optional.is(inspector.updateItems)) {
+                      inspector.updateItems()
+                    }
+
+                    if (Optional.is(inspector.updateCustom)) {
+                      inspector.updateCustom()
+                    }
                     break
                 }
               },

@@ -588,6 +588,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                         if (!Core.isType(template.get(), VEBrushTemplate)
                           || template.get().name != this.brushTemplate.name) {
                           template.set(this.brushTemplate)
+
+                          var inspector = this.context.brushToolbar.containers
+                            .get("ve-brush-toolbar_inspector-view")
+                          inspector.updateTimer.time = inspector.updateTimer.duration
                         }
                       },
                       brushTemplate: template,
@@ -853,6 +857,22 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               label: { text: "Save" },
               callback: function() { 
                 var brushToolbar = this.context.brushToolbar
+
+                var inspector = brushToolbar.containers
+                  .get("ve-brush-toolbar_inspector-view")
+                inspector.updateTimer.time = inspector.updateTimer.duration
+                if (Optional.is(inspector.updateArea)) {
+                  inspector.updateArea()
+                }
+
+                if (Optional.is(inspector.updateItems)) {
+                  inspector.updateItems()
+                }
+    
+                if (Optional.is(inspector.updateCustom)) {
+                  inspector.updateCustom()
+                }
+
                 var template = brushToolbar.containers
                   .get("ve-brush-toolbar_inspector-view").state
                   .get("brush")

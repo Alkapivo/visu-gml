@@ -149,6 +149,22 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 this.context.templateToolbar.store
                   .get("template")
                   .set(null)
+
+                var templateBar = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_template-bar")
+                templateBar.updateTimer.time = templateBar.updateTimer.duration
+
+                var templateView = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_template-view")
+                templateView.updateTimer.time = templateView.updateTimer.duration
+
+                var inspectorBar = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_inspector-bar")
+                inspectorBar.updateTimer.time = inspectorBar.updateTimer.duration
+
+                var inspectorView = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_inspector-view")
+                inspectorView.updateTimer.time = inspectorView.updateTimer.duration
               },
               updateCustom: function() {
                 this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
@@ -224,7 +240,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               layout: { type: UILayoutType.VERTICAL },
               label: { text: "Name" },
-              field: { store: { key: "name" } },
+              field: { store: { key: "template_shader_name" } },
             },
           },
           {
@@ -251,6 +267,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
+                this.context.updateTimer.time = this.context.updateTimer.duration
+                if (Optional.is(this.context.updateArea)) {
+                  this.context.updateArea()
+                }
+
+                if (Optional.is(this.context.updateItems)) {
+                  this.context.updateItems()
+                }
+    
+                if (Optional.is(this.context.updateCustom)) {
+                  this.context.updateCustom()
+                }
               },
               label: { text: "Create shader" },
               colorHoverOver: VETheme.color.accept,
@@ -272,7 +300,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               layout: { type: UILayoutType.VERTICAL },
               label: { text: "Name" },
-              field: { store: { key: "name" } },
+              field: { store: { key: "template_shroom_name" } },
             },
           },
           {
@@ -285,6 +313,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
+                this.context.updateTimer.time = this.context.updateTimer.duration
+                if (Optional.is(this.context.updateArea)) {
+                  this.context.updateArea()
+                }
+
+                if (Optional.is(this.context.updateItems)) {
+                  this.context.updateItems()
+                }
+    
+                if (Optional.is(this.context.updateCustom)) {
+                  this.context.updateCustom()
+                }
               },
               label: { text: "Create shroom" },
               colorHoverOver: VETheme.color.accept,
@@ -306,7 +346,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               layout: { type: UILayoutType.VERTICAL },
               label: { text: "Name" },
-              field: { store: { key: "name" } },
+              field: { store: { key: "template_bullet_name" } },
             },
           },
           {
@@ -319,6 +359,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
+                this.context.updateTimer.time = this.context.updateTimer.duration
+                if (Optional.is(this.context.updateArea)) {
+                  this.context.updateArea()
+                }
+
+                if (Optional.is(this.context.updateItems)) {
+                  this.context.updateItems()
+                }
+    
+                if (Optional.is(this.context.updateCustom)) {
+                  this.context.updateCustom()
+                }
               },
               label: { text: "Create bullet" },
               colorHoverOver: VETheme.color.accept,
@@ -340,7 +392,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               layout: { type: UILayoutType.VERTICAL },
               label: { text: "Name" },
-              field: { store: { key: "name" } },
+              field: { store: { key: "template_lyrics_name" } },
             },
           },
           {
@@ -353,6 +405,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
+                this.context.updateTimer.time = this.context.updateTimer.duration
+                if (Optional.is(this.context.updateArea)) {
+                  this.context.updateArea()
+                }
+
+                if (Optional.is(this.context.updateItems)) {
+                  this.context.updateItems()
+                }
+    
+                if (Optional.is(this.context.updateCustom)) {
+                  this.context.updateCustom()
+                }
               },
               label: { text: "Create lyrics" },
               colorHoverOver: VETheme.color.accept,
@@ -374,7 +438,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               layout: { type: UILayoutType.VERTICAL },
               label: { text: "Name" },
-              field: { store: { key: "name" } },
+              field: { store: { key: "template_particle_name" } },
             },
           },
           {
@@ -387,6 +451,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
+                this.context.updateTimer.time = this.context.updateTimer.duration
+                if (Optional.is(this.context.updateArea)) {
+                  this.context.updateArea()
+                }
+
+                if (Optional.is(this.context.updateItems)) {
+                  this.context.updateItems()
+                }
+    
+                if (Optional.is(this.context.updateCustom)) {
+                  this.context.updateCustom()
+                }
               },
               label: { text: "Create particle" },
               colorHoverOver: VETheme.color.accept,
@@ -408,7 +484,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               layout: { type: UILayoutType.VERTICAL },
               label: { text: "Name" },
-              field: { store: { key: "name" } },
+              field: { store: { key: "template_texture_name" } },
             },
           },
           {
@@ -499,6 +575,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
+                this.context.updateTimer.time = this.context.updateTimer.duration
+                if (Optional.is(this.context.updateArea)) {
+                  this.context.updateArea()
+                }
+
+                if (Optional.is(this.context.updateItems)) {
+                  this.context.updateItems()
+                }
+    
+                if (Optional.is(this.context.updateCustom)) {
+                  this.context.updateCustom()
+                }
               },
               label: { text: "Create texture" },
               colorHoverOver: VETheme.color.accept,
@@ -1243,6 +1331,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 )
                 break
             }
+
+            var inspector = data.templateToolbar.containers
+              .get("ve-template-toolbar_inspector-view")
+            inspector.updateTimer.time = inspector.updateTimer.duration
           },
           data: container
         })
@@ -1426,6 +1518,20 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               label: { text: "Save template" },
               callback: function() { 
                 this.context.templateToolbar.send(new Event("save-template"))
+                var inspector = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_inspector-view")
+                inspector.updateTimer.time = inspector.updateTimer.duration
+                if (Optional.is(inspector.updateArea)) {
+                  inspector.updateArea()
+                }
+
+                if (Optional.is(inspector.updateItems)) {
+                  inspector.updateItems()
+                }
+    
+                if (Optional.is(inspector.updateCustom)) {
+                  inspector.updateCustom()
+                }
               },
               colorHoverOver: VETheme.color.accept,
               colorHoverOut: VETheme.color.acceptShadow,
@@ -1503,9 +1609,29 @@ function VETemplateToolbar(_editor) constructor {
       type: String,
       value: VETemplateType.SHADER,
     },
-    "name": {
+    "template_shader_name": {
       type: String,
-      value: "new template",
+      value: "shader",
+    },
+    "template_shroom_name": {
+      type: String,
+      value: "shroom",
+    },
+    "template_bullet_name": {
+      type: String,
+      value: "bullet",
+    },
+    "template_lyrics_name": {
+      type: String,
+      value: "lyrics",
+    },
+    "template_particle_name": {
+      type: String,
+      value: "particle",
+    },
+    "template_texture_name": {
+      type: String,
+      value: "texture",
     },
     "template": {
       type: Optional.of(VETemplate),
@@ -1636,8 +1762,8 @@ function VETemplateToolbar(_editor) constructor {
       this.store.get("template").set(null)
     },
     "add-template": function(event) {
-      var name = this.store.getValue("name")
       var type = this.store.getValue("type")
+      var name = this.store.getValue($"{type}_name")
       if (!Core.isType(name, String) || name == "") {
         return
       }
@@ -1674,10 +1800,6 @@ function VETemplateToolbar(_editor) constructor {
             .set(name, new ParticleTemplate(name, { todo: "json" }))
           break
         case VETemplateType.TEXTURE:
-          if (String.contains(name, " ")) {
-            return
-          }
-
           var intent = this.store.getValue("texture-intent")
           if (!Core.isType(intent, TextureIntent) && intent.file == "") {
             return
