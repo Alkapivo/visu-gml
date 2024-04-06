@@ -48,6 +48,7 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, path) {
             window_set_caption($"{game_display_name}")
+            audio_master_gain(0.0)
 
             var controller = fsm.context.controller
             controller.gridRenderer.clear()
@@ -452,13 +453,14 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, tasks) { 
             window_set_caption($"{game_display_name} - {fsm.context.controller.trackService.track.name}")
-            fsm.context.controller.editor.send(new Event("open"))
-            fsm.context.controller.editor.controller
-              .send(new Event("rewind")
-              .setData({ timestamp: 0.0 }))
+            audio_master_gain(1.0)
 
-            fsm.context.controller.editor.controller.send(new Event("spawn-popup", 
-              { message: $"Project '{fsm.context.controller.trackService.track.name}' loaded successfully" }))
+            var controller = fsm.context.controller
+            controller.editor.send(new Event("open"))
+            controller.playerService.send(new Event("spawn-player"))
+            controller.send(new Event("rewind").setData({ timestamp: 0.0 }))
+            controller.send(new Event("spawn-popup", 
+              { message: $"Project '{controller.trackService.track.name}' loaded successfully" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "parse-manifest" ]),

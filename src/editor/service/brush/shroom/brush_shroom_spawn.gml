@@ -3,41 +3,13 @@
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_shroom_spawn(json = null) {
-
-  generateSpawnerMethods = function() {
-    return {
-      onMouseHoverOver: function(event) { },
-      onMouseHoverOut: function(event) { },
-      preRender: function() {
-        if (!this.isHoverOver) {
-          return
-        }
-
-        var store = null
-        if (Core.isType(this.context.state.get("brush"), VEBrush)) {
-          store = this.context.state.get("brush").store
-        } else if (Core.isType(this.context.state.get("event"), VEEvent)) {
-          store = this.context.state.get("event").store
-        } else {
-          return
-        }
-
-        var shroomService = Beans.get(BeanVisuController).shroomService
-        shroomService.spawner = shroomService.factorySpawner({ 
-          x: store.getValue("shroom-spawn_use-spawn-x") 
-            ? store.getValue("shroom-spawn_spawn-x") 
-            : 0.5, 
-          y: store.getValue("shroom-spawn_use-spawn-y") 
-            ? store.getValue("shroom-spawn_spawn-y") 
-            : 0.5,
-        })
-      },
-    }
-  }
-
   return {
     name: "brush_shroom_spawn",
     store: new Map(String, Struct, {
+      "shroom-spawn_use-preview": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-spawn_use-preview", true),
+      },
       "shroom-spawn_template": {
         type: String,
         value: Struct.getDefault(json, "shroom-spawn_template", "shroom-01"),
@@ -61,7 +33,7 @@ function brush_shroom_spawn(json = null) {
         type: Number,
         value: Struct.getDefault(json, "shroom-spawn_spawn-x", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
+          return clamp(NumberUtil.parse(value, this.value), -1.5, 2.5) 
         },
       },
       "shroom-spawn_use-spawn-y": {
@@ -72,8 +44,16 @@ function brush_shroom_spawn(json = null) {
         type: Number,
         value: Struct.getDefault(json, "shroom-spawn_spawn-y", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
+          return clamp(NumberUtil.parse(value, this.value), -2.5, 1.5) 
         },
+      },
+      "shroom-spawn_use-snap-h": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-spawn_use-snap-x", true),
+      },
+      "shroom-spawn_use-snap-v": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-spawn_use-snap-x", true),
       },
       "shroom-spawn_use-angle": {
         type: Boolean,
@@ -88,6 +68,73 @@ function brush_shroom_spawn(json = null) {
       },
     }),
     components: new Array(Struct, [
+      {
+        name: "shroom-spawn_use-preview",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Spawner preview",
+            enable: { key: "shroom-spawn_use-preview" },
+            backgroundColor: VETheme.color.accentShadow,
+            preRender: function() {
+              var store = null
+              if (Core.isType(this.context.state.get("brush"), VEBrush)) {
+                store = this.context.state.get("brush").store
+              }
+              
+              if (Core.isType(this.context.state.get("event"), VEEvent)) {
+                store = this.context.state.get("event").store
+              }
+
+              if (!Optional.is(store) || !store.getValue("shroom-spawn_use-preview")) {
+                return
+              }
+
+              if (!Struct.contains(this, "spawnerXTimer")) {
+                Struct.set(this, "spawnerXTimer", new Timer(pi * 2, { loop: Infinity, amount: FRAME_MS * 4 }))
+              }
+
+              var view = Beans.get(BeanVisuController).gridService.view
+
+              var _x = store.getValue("shroom-spawn_spawn-x")
+              if (!store.getValue("shroom-spawn_use-spawn-x")) {
+                _x = (sin(this.spawnerXTimer.update().time) * 2.0) + 0.5
+              }
+
+              if (store.getValue("shroom-spawn_use-snap-h")) {
+                _x = _x - (view.x - floor(view.x / view.width) * view.width)
+              }
+
+              if (!Struct.contains(this, "spawnerYTimer")) {
+                Struct.set(this, "spawnerYTimer", new Timer(pi * 2, { loop: Infinity, amount: FRAME_MS * 4 }))
+              }
+
+              var _y = store.getValue("shroom-spawn_spawn-y")
+              if (!store.getValue("shroom-spawn_use-spawn-y")) {
+                _y = (sin(this.spawnerYTimer.update().time) * 2.0) - 0.5
+              }
+
+              if (store.getValue("shroom-spawn_use-snap-v")) {
+                _y = _y - (view.y - floor(view.y / view.height) * view.height)
+              }
+
+              var shroomService = Beans.get(BeanVisuController).shroomService
+              shroomService.spawner = shroomService.factorySpawner({ x: _x, y: _y })
+            },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-spawn_use-preview" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: {
+            backgroundColor: VETheme.color.accentShadow,
+          }
+        },
+      },
       {
         name: "shroom-spawn_template",  
         template: VEComponents.get("text-field"),
@@ -114,23 +161,15 @@ function brush_shroom_spawn(json = null) {
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: Struct.appendUnique(
-            { 
-              text: "Spawn x",
-              enable: { key: "shroom-spawn_use-spawn-x" },
-            },
-            generateSpawnerMethods(),
-            false
-          ),
-          checkbox: Struct.appendUnique(
-            { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "shroom-spawn_use-spawn-x"}
-            },
-            generateSpawnerMethods(),
-            false
-          ),
+          label: { 
+            text: "Spawn x",
+            enable: { key: "shroom-spawn_use-spawn-x" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-spawn_use-spawn-x"}
+          },
         },
       },
       {
@@ -139,32 +178,20 @@ function brush_shroom_spawn(json = null) {
         layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: Struct.appendUnique(
-            { 
-              text: "X",
-              enable: { key: "shroom-spawn_use-spawn-x" },
-            },
-            generateSpawnerMethods(),
-            false
-          ),
-          field: Struct.appendUnique(
-            { 
-              store: { key: "shroom-spawn_spawn-x" },
-              enable: { key: "shroom-spawn_use-spawn-x" },
-            },
-            generateSpawnerMethods(),
-            false
-          ),
-          slider: Struct.appendUnique(
-            { 
-              minValue: -3.0,
-              maxValue: 3.0,
-              store: { key: "shroom-spawn_spawn-x" },
-              enable: { key: "shroom-spawn_use-spawn-x" },
-            },
-            generateSpawnerMethods(),
-            false
-          ),
+          label: { 
+            text: "X",
+            enable: { key: "shroom-spawn_use-spawn-x" },
+          },
+          field: { 
+            store: { key: "shroom-spawn_spawn-x" },
+            enable: { key: "shroom-spawn_use-spawn-x" },
+          },
+          slider:{
+            minValue: -1.5,
+            maxValue: 2.5,
+            store: { key: "shroom-spawn_spawn-x" },
+            enable: { key: "shroom-spawn_use-spawn-x" },
+          },
         },
       },
       {
@@ -173,23 +200,15 @@ function brush_shroom_spawn(json = null) {
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: Struct.appendUnique(
-            { 
-              text: "Spawn y",
-              enable: { key: "shroom-spawn_use-spawn-y" },
-            },
-            generateSpawnerMethods(),
-            false
-          ),
-          checkbox: Struct.appendUnique(
-            { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "shroom-spawn_use-spawn-y"}
-            },
-            generateSpawnerMethods(),
-            false
-          ),
+          label: { 
+            text: "Spawn y",
+            enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-spawn_use-spawn-y"}
+          },
         },
       },
       {
@@ -198,32 +217,54 @@ function brush_shroom_spawn(json = null) {
         layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: Struct.appendUnique(
-            { 
-              text: "Y",
-              enable: { key: "shroom-spawn_use-spawn-y" },
-            },
-            generateSpawnerMethods(),
-            false
-          ),
-          field: Struct.appendUnique(
-            { 
-              store: { key: "shroom-spawn_spawn-y" },
-              enable: { key: "shroom-spawn_use-spawn-y" },
-            },
-            generateSpawnerMethods(),
-            false
-          ),
-          slider: Struct.appendUnique(
-            { 
-              minValue: -3.0,
-              maxValue: 3.0,
-              store: { key: "shroom-spawn_spawn-y" },
-              enable: { key: "shroom-spawn_use-spawn-y" },
-            },
-            generateSpawnerMethods(),
-            false
-          ),
+          label: { 
+            text: "Y",
+            enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+          field: { 
+            store: { key: "shroom-spawn_spawn-y" },
+            enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+          slider: { 
+            minValue: -2.5,
+            maxValue: 1.5,
+            store: { key: "shroom-spawn_spawn-y" },
+            enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_use-snap-h",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Snap horizontal",
+            enable: { key: "particle_use-preview" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-spawn_use-snap-h" },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_use-snap-v",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Snap vertical",
+            enable: { key: "particle_use-preview" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-spawn_use-snap-v" },
+          },
         },
       },
       {

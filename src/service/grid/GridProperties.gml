@@ -46,11 +46,11 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   channelsPrimaryThickness = Assert.isType(Struct
-      .getDefault(config, "properties.channelsPrimaryThickness", 4), Number)
+      .getDefault(config, "properties.channelsPrimaryThickness", 16), Number)
 
   ///@type {Number}
   channelsSecondaryThickness = Assert.isType(Struct
-    .getDefault(config, "properties.channelsSecondaryThickness", 3), Number)
+    .getDefault(config, "properties.channelsSecondaryThickness", 8), Number)
   #endregion
 
   #region separators
@@ -81,6 +81,32 @@ function GridProperties(config = {}) constructor {
   ///@type {Number}
   separatorsSecondaryThickness = Assert.isType(Struct
     .getDefault(config, "properties.separatorsSecondaryThickness", 2), Number)
+  #endregion
+
+  #region borders
+  ///@type {Color}
+  borderBottomColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.borderBottomColor ", "#ff0000")), Color)
+
+  ///@type {Number}
+  borderBottomAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.borderBottomAlpha", 1.0), Number)
+
+  ///@type {Number}
+  borderBottomThickness = Assert.isType(Struct
+      .getDefault(config, "properties.borderBottomThickness", 64), Number)
+
+  ///@type {Color}
+  borderHorizontalColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.borderHorizontalColor ", "#ff0000")), Color)
+
+  ///@type {Number}
+  borderHorizontalAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.borderHorizontalAlpha", 1.0), Number)  
+
+  ///@type {Number}
+  borderHorizontalThickness = Assert.isType(Struct
+    .getDefault(config, "properties.borderHorizontalThickness", 16), Number)
   #endregion
   
   #region enable/disable rendering
@@ -181,9 +207,12 @@ function GridProperties(config = {}) constructor {
   ///@param {GridService} gridService
   ///@return {GridProperties}
   static update = function(gridService) {
-    this.separatorTimer.amount = (this.speed / 1000) - DeltaTime.apply(gridService.view.derivativeY)
     this.separatorTimer.duration = ((gridService.view.height * 2) / this.separators)
     this.separatorTimer.update()
+    this.separatorTimer.amount = (this.speed / 1000) - DeltaTime.apply(gridService.view.derivativeY)
+    
+    
+
 
     this.clearColor.alpha = this.clearFrameAlpha
     this.gridClearColor.alpha = this.gridClearFrameAlpha

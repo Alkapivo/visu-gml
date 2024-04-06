@@ -8,7 +8,7 @@ function template_bullet(json = null) {
     store: new Map(String, Struct, {
       "bullet_texture": {
         type: Sprite,
-        value: SpriteUtil.parse(json.sprite),
+        value: SpriteUtil.parse(json.sprite, { name: "texture_bullet" }),
       },
       "use_bullet_mask": {
         type: Boolean,

@@ -5,17 +5,18 @@
 global.__shroom_track_event = new Map(String, Callable, {
   "brush_shroom_spawn": function(data) {
     var controller = Beans.get(BeanVisuController)
-    //controller.gridService.view
-
-
-    //Struct.get(data, "shroom-spawn_use-spawn-x")
-
     var shroom = {
       template: Struct.get(data, "shroom-spawn_template"),
-      spawnX: Struct.get(data, "shroom-spawn_spawn-x"),
-      spawnY: Struct.get(data, "shroom-spawn_spawn-y"),
+      spawnX: Struct.get(data, "shroom-spawn_use-spawn-x")
+        ? Struct.get(data, "shroom-spawn_spawn-x")
+        : -1.5 + random(4),
+      spawnY: Struct.get(data, "shroom-spawn_use-spawn-y")
+        ? Struct.get(data, "shroom-spawn_spawn-y")
+        : -2.5 + random(4),
       angle: Struct.get(data, "shroom-spawn_angle"),
       speed: Struct.get(data, "shroom-spawn_speed"),
+      snapH: Struct.getDefault(data, "shroom-spawn_use-snap-h", false),
+      snapV: Struct.getDefault(data, "shroom-spawn_use-snap-v", false),
     }
     controller.shroomService.send(new Event("spawn-shroom", shroom))
   

@@ -200,11 +200,13 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     }
 
     if (this.controller.editor.store.getValue("target-locked-x")) {
-      this.targetLocked.setX(this.view.x + (this.view.width / 2))
+      this.targetLocked.setX((this.view.width * floor(this.view.x / this.view.width)) 
+        + (this.view.width / 2))
     }
 
     if (this.controller.editor.store.getValue("target-locked-y")) {
-      this.targetLocked.setY(this.view.y + (this.view.height / 2))
+      this.targetLocked.setY((this.view.height * floor(this.view.y / this.view.height)) 
+        + (this.view.height / 2))
     }
 
     this.view

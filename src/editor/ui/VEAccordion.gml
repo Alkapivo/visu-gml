@@ -301,7 +301,7 @@ function VEAccordion(_editor, config = null) constructor {
             x: function() { return this.context.x()
               + this.context.width()
               - this.width() },
-            y: function() { return this.context.y() },
+            y: function() { return 0 },
             width: function() { return 7 },
             height: function() { return this.context.height() },
           }

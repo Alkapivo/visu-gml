@@ -55,10 +55,9 @@ function brush_view_wallpaper(json = null) {
       },
       "view-wallpaper_texture": {
         type: Sprite,
-        value: SpriteUtil.parse(Struct.getDefault(json, 
-          "view-wallpaper_texture",
-          { name: "texture_button" }
-        )),
+        value: SpriteUtil.parse(Struct
+          .get(json, "view-wallpaper_texture"), 
+          { name: "texture_missing" }),
       },
       "view-wallpaper_use-texture-speed": {
         type: Boolean,

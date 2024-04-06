@@ -36,11 +36,7 @@ function template_particle(json = null) {
       },
       "particle-sprite": {
         type: Sprite,
-        value: SpriteUtil.parse({ 
-          name: Optional.is(Struct.get(json, "sprite")) 
-            ? json.sprite.name 
-            : "texture_empty"
-        }),
+        value: SpriteUtil.parse(Struct.get(json, "sprite"), { name: "texture_particle" }),
       },
       "particle-sprite-animate": {
         type: Boolean,

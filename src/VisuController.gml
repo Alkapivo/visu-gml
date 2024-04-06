@@ -14,117 +14,9 @@ global.__GameMode = new _GameMode()
 ///@param {String} layerName
 function VisuController(layerName) constructor {
 
-  ///@type {DisplayService}
-  displayService = new DisplayService(this)
-
-  ///@type {FileService}
-  fileService = new FileService(this)
-
-  ///@type {ShaderPipeline}
-  shaderPipeline = new ShaderPipeline()
-
-  ///@type {ShaderPipeline}
-  shaderBackgroundPipeline = new ShaderPipeline(shaderPipeline)
-
-  ///@type {ParticleService}
-  particleService = new ParticleService(this, { layerName: layerName })
-
-  ///@type {TrackService}
-  trackService = new TrackService(this, {
-    handlers: new Map(String, Callable)
-      .merge(
-        DEFAULT_TRACK_EVENT_HANDLERS,
-        grid_track_event,
-        shader_track_event,
-        shroom_track_event,
-        view_track_event
-      ),
-    isTrackLoaded: function() {
-      var stateName = this.context.fsm.getStateName()
-      return (stateName == "play" || stateName == "pause") 
-        && Core.isType(this.track, Track)
-    },
-  })
-
-  ///@type {PlayerService}
-  playerService = new PlayerService(this)
-
-	///@type {ShroomService}
-  shroomService = new ShroomService(this)
-
-	///@type {BulletService}
-  bulletService = new BulletService(this)
-
-  ///@type {GridService}
-  gridService = new GridService(this)
-
-  ///@type {GridRenderer}
-  gridRenderer = new GridRenderer(this)
-
-  ///@type {VideoService}
-  videoService = new VideoService(this)
-
-  ///@type {LyricsService}
-  lyricsService = new LyricsService(this)
-
-  ///@type {LyricsRenderer}
-  lyricsRenderer = new LyricsRenderer(this)
-
-  ///@type {UIService}
-  uiService = new UIService(this)
-
-  ///@type {VisuEditor}
-  editor = new VisuEditor(this)
-
-  ///@type {GridSystem}
-  //gridSystem = new GridSystem(this) ///@ecs
-
-  ////@type {Gamemode}
-  gameMode = GameMode.BULLETHELL
-
-  ///@type {Keyboard}
-  keyboard = new Keyboard(
-    { 
-      controlTrack: KeyboardKeyType.SPACE,
-      renderUI: KeyboardKeyType.F1,
-      freeCamera: KeyboardKeyType.F5,
-      fullscreen: KeyboardKeyType.F11,
-      exitModal: KeyboardKeyType.ESC,
-      newProject: "N",
-      loadProject: "L",
-      saveProject: "O",
-    }
-  )
-
-  ///@type {Mouse}
-  mouse = new Mouse({ 
-    left: MouseButtonType.LEFT,
-    right: MouseButtonType.RIGHT,
-    wheelUp: MouseButtonType.WHEEL_UP,
-    wheelDown: MouseButtonType.WHEEL_DOWN,
-  })
-
-  ///@type {VisuTrackLoader}
-  loader = new VisuTrackLoader(this)
-
-  ///@type {Boolean}
-  renderUI = true
-
   ///@private
-  ///@type {Number}
-  spinnerFactor = 0
-
-  ///@private
-  ///@type {Sprite}
-  spinner = Assert.isType(SpriteUtil
-    .parse({ 
-      name: "texture_spinner", 
-      scaleX: 0.25, 
-      scaleY: 0.25,
-    }), Sprite)
-  
-  ///@type {FSM}
-  fsm = new FSM(this, {
+  ///@type {Struct}
+  fsmConfig = {
     initialState: { 
       name: "idle",
       data: Core.getProperty("visu.manifest.autoload", false) 
@@ -359,13 +251,29 @@ function VisuController(layerName) constructor {
         },
       },
     },
-  })
+  }
 
-  ///@type {VisuNewProjectModal}
-  newProjectModal = new VisuNewProjectModal(this)
+  ///@private
+  ///@type {Struct}
+  trackServiceConfig = {
+    handlers: new Map(String, Callable)
+      .merge(
+        DEFAULT_TRACK_EVENT_HANDLERS,
+        grid_track_event,
+        shader_track_event,
+        shroom_track_event,
+        view_track_event
+      ),
+    isTrackLoaded: function() {
+      var stateName = this.context.fsm.getStateName()
+      return (stateName == "play" || stateName == "pause") 
+        && Core.isType(this.track, Track)
+    },
+  }
 
-  ///@type {VisuModal}
-  exitModal = new VisuModal(this, {
+  ///@private
+  ///@type {Struct}
+  exitModalConfig = {
     message: { text: "Changes you made may not be saved." },
     accept: {
       text: "Leave",
@@ -379,7 +287,112 @@ function VisuController(layerName) constructor {
         this.context.modal.send(new Event("close"))
       }
     }
+  }
+
+  ///@private
+  ///@type {Sprite}
+  spinner = Assert.isType(SpriteUtil
+    .parse({ 
+      name: "texture_spinner", 
+      scaleX: 0.25, 
+      scaleY: 0.25,
+    }), Sprite)
+
+
+  ///@private
+  ///@type {Number}
+  spinnerFactor = 0
+
+  ////@type {Gamemode}
+  gameMode = GameMode.BULLETHELL
+
+  ///@type {Keyboard}
+  keyboard = new Keyboard(
+    { 
+      controlTrack: KeyboardKeyType.SPACE,
+      renderUI: KeyboardKeyType.F1,
+      freeCamera: KeyboardKeyType.F5,
+      fullscreen: KeyboardKeyType.F11,
+      exitModal: KeyboardKeyType.ESC,
+      newProject: "N",
+      loadProject: "L",
+      saveProject: "O",
+    }
+  )
+
+  ///@type {Mouse}
+  mouse = new Mouse({ 
+    left: MouseButtonType.LEFT,
+    right: MouseButtonType.RIGHT,
+    wheelUp: MouseButtonType.WHEEL_UP,
+    wheelDown: MouseButtonType.WHEEL_DOWN,
   })
+
+  ///@type {Boolean}
+  renderUI = true
+
+  ///@type {DisplayService}
+  displayService = new DisplayService(this)
+
+  ///@type {FSM}
+  fsm = new FSM(this, this.fsmConfig)
+
+  ///@type {FileService}
+  fileService = new FileService(this)
+
+  ///@type {VisuTrackLoader}
+  loader = new VisuTrackLoader(this)
+
+  ///@type {ShaderPipeline}
+  shaderPipeline = new ShaderPipeline()
+
+  ///@type {ShaderPipeline}
+  shaderBackgroundPipeline = new ShaderPipeline(this.shaderPipeline)
+
+  ///@type {ParticleService}
+  particleService = new ParticleService(this, { layerName: layerName })
+
+  ///@type {TrackService}
+  trackService = new TrackService(this, this.trackServiceConfig)
+
+  ///@type {PlayerService}
+  playerService = new PlayerService(this)
+
+	///@type {ShroomService}
+  shroomService = new ShroomService(this)
+
+	///@type {BulletService}
+  bulletService = new BulletService(this)
+
+  ///@type {GridService}
+  gridService = new GridService(this)
+
+  ///@type {GridRenderer}
+  gridRenderer = new GridRenderer(this)
+
+  ///@type {VideoService}
+  videoService = new VideoService(this)
+
+  ///@type {LyricsService}
+  lyricsService = new LyricsService(this)
+
+  ///@type {LyricsRenderer}
+  lyricsRenderer = new LyricsRenderer(this)
+
+  ///@type {UIService}
+  uiService = new UIService(this)
+
+  ///@type {VisuEditor}
+  editor = new VisuEditor(this)
+
+  ///@type {VisuNewProjectModal}
+  newProjectModal = new VisuNewProjectModal(this)
+
+  ///@type {VisuModal}
+  exitModal = new VisuModal(this, this.exitModalConfig)
+
+  ///@type {GridSystem}
+  //gridSystem = new GridSystem(this) ///@ecs
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
@@ -607,6 +620,8 @@ function VisuController(layerName) constructor {
   }
 
   ///@private
+
+  ///@private
   ///@param {Struct} service
   ///@param {Number} iterator
   ///@param {VisuController} controller
@@ -619,6 +634,7 @@ function VisuController(layerName) constructor {
         : iterator
       var message = $"'update-service-{name}' fatal error: {exception.message}"
       Logger.error("VisuController", message)
+      Core.printStackTrace()
       controller.send(new Event("spawn-popup", { message: message }))
       fsm.dispatcher.send(new Event("transition", { name: "idle" }))
     }
@@ -639,6 +655,7 @@ function VisuController(layerName) constructor {
         this.uiService.update()
       } catch (exception) {
         var message = $"'update' set fatal error: {exception.message}"
+        Core.printStackTrace()
         this.send(new Event("spawn-popup", { message: message }))
         Logger.error("UIService", message)
       }

@@ -8,10 +8,10 @@ function brush_grid_player(json = null) {
     store: new Map(String, Struct, {
       "grid-player_texture": {
         type: Sprite,
-        value: SpriteUtil.parse(Struct.getDefault(json, "grid-player_texture", { 
+        value: SpriteUtil.parse(Struct.get(json, "grid-player_texture"), { 
           name: "texture_player", 
           animate: true 
-        })),
+        }),
       },
       "grid-player_use-mask": {
         type: Boolean,

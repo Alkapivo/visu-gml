@@ -4,50 +4,13 @@
 ///@return {Struct}
 function brush_grid_particle(json = null) {
 
-  generateParticleAreaMethods = function() {
-    return {
-      onMouseHoverOver: function(event) { },
-      onMouseHoverOut: function(event) { },
-      preRender: function() {
-        if (!this.isHoverOver) {
-          return
-        }
-
-        var store = null
-        if (Core.isType(this.context.state.get("brush"), VEBrush)) {
-          store = this.context.state.get("brush").store
-        } else if (Core.isType(this.context.state.get("event"), VEEvent)) {
-          store = this.context.state.get("event").store
-        } else {
-          return
-        }
-
-        var shroomService = Beans.get(BeanVisuController).shroomService
-        shroomService.particleArea = {
-          topLeft: shroomService.factorySpawner({ 
-            x: store.getValue("grid-particle_beginX"), 
-            y: store.getValue("grid-particle_beginY"),
-          }),
-          topRight: shroomService.factorySpawner({ 
-            x: store.getValue("grid-particle_endX"), 
-            y: store.getValue("grid-particle_beginY"),
-          }),
-          bottomLeft: shroomService.factorySpawner({ 
-            x: store.getValue("grid-particle_beginX"), 
-            y: store.getValue("grid-particle_endY"),
-          }),
-          bottomRight: shroomService.factorySpawner({ 
-            x: store.getValue("grid-particle_endX"), 
-            y: store.getValue("grid-particle_endY"),
-          })
-        }
-      },
-    }
-  }
-
   return {
     name: "brush_grid_particle",
     store: new Map(String, Struct, {
+      "grid-particle_use-preview": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-particle_use-preview", true),
+      },
       "grid-particle_template": {
         type: String,
         value: Struct.getDefault(json, "grid-particle_template", "particle_default"),
@@ -56,7 +19,7 @@ function brush_grid_particle(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_beginX", 0.5),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
+          return clamp(NumberUtil.parse(value, this.value), -1.5, 2.5) 
           //return NumberUtil.parse(value, this.value)
         },
       },
@@ -64,7 +27,7 @@ function brush_grid_particle(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_beginY", 0.5),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0)
+          return clamp(NumberUtil.parse(value, this.value), -2.5, 1.5)
           //return NumberUtil.parse(value, this.value)
         },
       },
@@ -72,7 +35,7 @@ function brush_grid_particle(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_endX", 0.5),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
+          return clamp(NumberUtil.parse(value, this.value), -1.5, 2.5) 
           //return NumberUtil.parse(value, this.value)
         },
       },
@@ -80,7 +43,7 @@ function brush_grid_particle(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_endY", 0.5),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -3.0, 3.0) 
+          return clamp(NumberUtil.parse(value, this.value), -2.5, 1.5) 
           //return NumberUtil.parse(value, this.value)
         },
       },
@@ -124,6 +87,62 @@ function brush_grid_particle(json = null) {
     }),
     components: new Array(Struct, [
       {
+        name: "grid-particle_use-preview",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Emitter preview",
+            enable: { key: "grid-particle_use-preview" },
+            backgroundColor: VETheme.color.accentShadow,
+            preRender: function() {
+              var store = null
+              if (Core.isType(this.context.state.get("brush"), VEBrush)) {
+                store = this.context.state.get("brush").store
+              }
+              
+              if (Core.isType(this.context.state.get("event"), VEEvent)) {
+                store = this.context.state.get("event").store
+              }
+
+              if (!Optional.is(store) || !store.getValue("grid-particle_use-preview")) {
+                return
+              }
+              
+              var shroomService = Beans.get(BeanVisuController).shroomService
+              shroomService.particleArea = {
+                topLeft: shroomService.factorySpawner({ 
+                  x: store.getValue("grid-particle_beginX"), 
+                  y: store.getValue("grid-particle_beginY"),
+                }),
+                topRight: shroomService.factorySpawner({ 
+                  x: store.getValue("grid-particle_endX"), 
+                  y: store.getValue("grid-particle_beginY"),
+                }),
+                bottomLeft: shroomService.factorySpawner({ 
+                  x: store.getValue("grid-particle_beginX"), 
+                  y: store.getValue("grid-particle_endY"),
+                }),
+                bottomRight: shroomService.factorySpawner({ 
+                  x: store.getValue("grid-particle_endX"), 
+                  y: store.getValue("grid-particle_endY"),
+                })
+              }
+            },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-particle_use-preview" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: {
+            backgroundColor: VETheme.color.accentShadow,
+          }
+        },
+      },
+      {
         name: "grid-particle_template",  
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
@@ -140,20 +159,12 @@ function brush_grid_particle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Begin X" },
-          field: Struct.appendUnique(
-            { store: { key: "grid-particle_beginX" } },
-            generateParticleAreaMethods(),
-            false
-          ),
-          slider: Struct.appendUnique(
-            { 
-              store: { key: "grid-particle_beginX" },
-              minValue: -3.0,
-              maxValue: 3.0,
-            },
-            generateParticleAreaMethods(),
-            false
-          ),
+          field: { store: { key: "grid-particle_beginX" } },
+          slider: { 
+            store: { key: "grid-particle_beginX" },
+            minValue: -1.5,
+            maxValue: 2.5,
+          },
         },
       },
       {
@@ -163,20 +174,12 @@ function brush_grid_particle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Begin Y" },
-          field: Struct.appendUnique(
-            { store: { key: "grid-particle_beginY" } },
-            generateParticleAreaMethods(),
-            false
-          ),
-          slider: Struct.appendUnique(
-            { 
-              store: { key: "grid-particle_beginY" },
-              minValue: -3.0,
-              maxValue: 3.0,
-            },
-            generateParticleAreaMethods(),
-            false
-          ),
+          field: { store: { key: "grid-particle_beginY" } },
+          slider: { 
+            store: { key: "grid-particle_beginY" },
+            minValue: -2.5,
+            maxValue: 1.5,
+          },
         },
       },
       {
@@ -186,20 +189,12 @@ function brush_grid_particle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "End X" },
-          field: Struct.appendUnique(
-            { store: { key: "grid-particle_endX" } },
-            generateParticleAreaMethods(),
-            false
-          ),
-          slider: Struct.appendUnique(
-            { 
-              store: { key: "grid-particle_endX" },
-              minValue: -3.0,
-              maxValue: 3.0,
-            },
-            generateParticleAreaMethods(),
-            false
-          ),
+          field: { store: { key: "grid-particle_endX" } },
+          slider: { 
+            store: { key: "grid-particle_endX" },
+            minValue: -1.5,
+            maxValue: 2.5,
+          },
         },
       },
       {
@@ -209,20 +204,12 @@ function brush_grid_particle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "End Y" },
-          field: Struct.appendUnique(
-            { store: { key: "grid-particle_endY" } },
-            generateParticleAreaMethods(),
-            false
-          ),
-          slider: Struct.appendUnique(
-            { 
-              store: { key: "grid-particle_endY" },
-              minValue: -3.0,
-              maxValue: 3.0,
-            },
-            generateParticleAreaMethods(),
-            false
-          ),
+          field: { store: { key: "grid-particle_endY" } },
+          slider: { 
+            store: { key: "grid-particle_endY" },
+            minValue: -2.5,
+            maxValue: 1.5,
+          },
         },
       },
       {

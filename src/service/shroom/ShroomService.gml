@@ -54,8 +54,17 @@ function ShroomService(_controller, config = {}): Service() constructor {
       var spd = Assert.isType(Struct
         .getDefault(event.data, "speed", 5), Number)
 
-      Struct.set(template, "x", view.x + spawnX)
-      Struct.set(template, "y", view.y + spawnY)
+      
+      var viewX = Struct.getDefault(event.data, "snapH", true)
+        ? floor(view.x / view.width) * view.width
+        : view.x
+
+      var viewY = Struct.getDefault(event.data, "snapV", true)
+        ? floor(view.y / view.height) * view.height
+        : view.y
+
+      Struct.set(template, "x", viewX + spawnX)
+      Struct.set(template, "y", viewY + spawnY)
       Struct.set(template, "speed", spd / 1000.0)
       Struct.set(template, "angle", angle)
 

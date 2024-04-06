@@ -10,7 +10,7 @@ function template_shroom(json = null) {
     store: new Map(String, Struct, {
       "shroom_texture": {
         type: Sprite,
-        value: SpriteUtil.parse(json.sprite),
+        value: SpriteUtil.parse(json.sprite, { name: "texture_missing" }),
       },
       "use_shroom_mask": {
         type: Boolean,

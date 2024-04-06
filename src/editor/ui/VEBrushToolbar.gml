@@ -527,7 +527,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         }),
       }),
-      updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 45, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -750,7 +750,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 45, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -932,11 +932,11 @@ function VEBrushToolbar(_editor) constructor {
   store = new Store({
     "category": {
       type: String,
-      value: "shader",
+      value: "grid",
     },
     "type": {
       type: String,
-      value: VEBrushType.SHADER_SPAWN,
+      value: VEBrushType.GRID_PLAYER,
     },
     "template": {
       type: Optional.of(VEBrushTemplate),

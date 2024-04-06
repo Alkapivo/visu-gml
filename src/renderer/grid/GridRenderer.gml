@@ -53,6 +53,7 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@private
   ///@return {GridRenderer}
   renderSeparators = function() {
+    //return this;
     var gridService = this.controller.gridService
     var properties = gridService.properties
     var view = gridService.view
@@ -71,17 +72,74 @@ function GridRenderer(_controller, config = {}) constructor {
     var time = gridService.properties.separatorTimer.time
     var offset = 2.0
     var separatorsSize = separators * 3
-    for (var index = 0; index <= floor(separatorsSize); index++) {
+    var secondaryTreshold = separatorsSize / 3
+    var duration = gridService.properties.separatorTimer.duration
+
+    
+    var borderRatio = clamp(1.0 - (time / duration), 0.0, 1.0)
+    var size = floor(separatorsSize)
+    var primaryBegin = round(secondaryTreshold)
+    var primaryEnd = round(size - secondaryTreshold)
+
+    for (var index = 0; index <= primaryBegin; index++) {
       var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
-      var beginY = ((-5 * view.height) + (index * separatorHeight) + offset + time) 
-        * GRID_SERVICE_PIXEL_HEIGHT
-      var endX = 5.0 * GRID_SERVICE_PIXEL_WIDTH
+      var beginY = ((-5 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+      var endX = (view.width + 5.0) * GRID_SERVICE_PIXEL_WIDTH
       var endY = beginY
-      if (index < separators || index > 0) {
-        GPU.render.texturedLine(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha, secondaryColor)
-      } else {
-        GPU.render.texturedLine(beginX, beginY, endX, endY, primaryThickness, primaryAlpha, primaryColor)
+      var _alpha = index == 0 ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
+      if (index + 1 > primaryBegin) {
+        _alpha = secondaryAlpha * borderRatio
       }
+
+      GPU.render.texturedLine(
+        beginX, beginY, 
+        endX, endY, 
+        secondaryThickness, 
+        _alpha, 
+        secondaryColor
+      )
+    }
+
+    for (var index = primaryEnd; index <= size; index++) {
+      var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
+      var beginY = ((-5 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+      var endX = (view.width + 5.0) * GRID_SERVICE_PIXEL_WIDTH
+      var endY = beginY
+      var _alpha = index == primaryEnd ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
+      if (index + 1 > size) {
+        _alpha = secondaryAlpha * borderRatio
+      }
+
+      GPU.render.texturedLine(
+        beginX, beginY, 
+        endX, endY, 
+        secondaryThickness, 
+        _alpha, 
+        secondaryColor
+      )
+    }
+
+    for (var index = primaryBegin; index <= primaryEnd; index++) {
+      var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
+      var beginY = ((-5 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+      var endX = (view.width + 5.0) * GRID_SERVICE_PIXEL_WIDTH
+      var endY = beginY
+      var alpha = index == primaryBegin ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
+      if (index + 1 > primaryEnd) {
+        alpha = primaryAlpha * borderRatio
+      }
+      var thickness = index == primaryBegin ? primaryThickness * (1.0 - borderRatio) : primaryThickness
+      if (index + 1 > primaryEnd) {
+        thickness = primaryThickness * borderRatio
+      }
+
+      GPU.render.texturedLine(
+        beginX, beginY, 
+        endX, endY, 
+        max(thickness, secondaryThickness), 
+        alpha, 
+        primaryColor
+      )
     }
 
     return this
@@ -90,39 +148,67 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@private
   ///@return {GridRenderer}
   renderChannels = function() {
-    static renderPrimaryChannels = function(viewXOffset, amount, thickness, color, alpha) {
+    static _renderPrimaryChannels = function(viewXOffset, amount, thickness, color, alpha) {
       var gridService = this.controller.gridService
       var channelWidth = gridService.view.width / gridService.properties.channels
       for (var index = 0; index <= amount; index++) {
         var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
-        var beginY = -5.0 * GRID_SERVICE_PIXEL_HEIGHT
+        var beginY = -10.0 * GRID_SERVICE_PIXEL_HEIGHT
         var endX = beginX
         var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
         GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
+      }
+    }
+
+    static renderPrimaryChannels = function(viewXOffset, amount, thickness, color, alpha) {
+      var gridService = this.controller.gridService
+      var channelWidth = gridService.view.width / gridService.properties.channels
+      var borderRatio = 1.0 - ((abs(viewXOffset) - floor(abs(viewXOffset))) / channelWidth)
+      var rightBorderRatio = 1.0 - borderRatio
+      var size = ceil(amount)
+      
+      for (var index = 0; index <= size; index++) {
+        var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
+        var beginY = -5.0 * GRID_SERVICE_PIXEL_HEIGHT
+        var endX = beginX
+        var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
+        var _thickness = index == 0 ? thickness * borderRatio : thickness
+        if (index == size) {
+          _thickness = thickness * rightBorderRatio
+        }
+        GPU.render.texturedLine(beginX, beginY, endX, endY, _thickness, alpha, color)
       }
     }
 
     static renderRightChannels = function(viewXOffset, amount, thickness, color, alpha) {
       var gridService = this.controller.gridService
       var channelWidth = gridService.view.width / gridService.properties.channels
-      for (var index = 1; index <= amount; index++) {
+      var borderRatio = (viewXOffset - (floor(amount / 2.0) * channelWidth)) / channelWidth
+      var size = ceil(amount + 1)
+      for (var index = 0; index < size; index++) {
         var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
-        var beginY = -5.0 * GRID_SERVICE_PIXEL_HEIGHT
+        var beginY = -10.0 * GRID_SERVICE_PIXEL_HEIGHT
         var endX = beginX
         var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
-        GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
+        var _alpha = index + 1 < size ? alpha : borderRatio * alpha
+        var _thickness = index == 0 ? thickness * borderRatio : thickness
+        GPU.render.texturedLine(beginX, beginY, endX, endY, _thickness, _alpha, color)
       }
     }
 
     static renderLeftChannels = function(viewXOffset, amount, thickness, color, alpha) {
       var gridService = this.controller.gridService
       var channelWidth = gridService.view.width / gridService.properties.channels
-      for (var index = 0; index <= amount; index++) {
+      var borderRatio = (viewXOffset - (floor(amount / 2.0) * channelWidth)) / channelWidth
+      var size = ceil(amount + 1.0 - borderRatio)
+      for (var index = 0; index < size; index++) {
         var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
-        var beginY = -5.0 * GRID_SERVICE_PIXEL_HEIGHT
+        var beginY = -10.0 * GRID_SERVICE_PIXEL_HEIGHT
         var endX = beginX
         var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
-        GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
+        var _alpha = index == 0 ? alpha * borderRatio : alpha
+        var _thickness = index + 1 > size ? thickness * borderRatio : thickness
+        GPU.render.texturedLine(beginX, beginY, endX, endY, _thickness, _alpha, color)
       }
     }
 
@@ -142,10 +228,10 @@ function GridRenderer(_controller, config = {}) constructor {
     var channels = properties.channels
     var channelWidth = view.width / channels
     var viewXOffset = channelWidth * (floor(view.x / view.width) - view.x)
-
+    
     renderLeftChannels(
       viewXOffset - ((view.width + ((ceil(channels) - channels) * channelWidth)) * 2.0),
-      ceil(channels * 2.0),
+      channels * 2.0,
       secondaryThickness, 
       secondaryColor, 
       secondaryAlpha
@@ -153,7 +239,7 @@ function GridRenderer(_controller, config = {}) constructor {
 
     renderRightChannels(
       viewXOffset + view.width + ((ceil(channels) - channels) * channelWidth),
-      ceil(channels * 2.0),
+      channels * 2.0,
       secondaryThickness, 
       secondaryColor, 
       secondaryAlpha
@@ -161,7 +247,7 @@ function GridRenderer(_controller, config = {}) constructor {
 
     renderPrimaryChannels(
       viewXOffset, 
-      ceil(channels),
+      channels,
       primaryThickness,
       primaryColor,
       primaryAlpha
@@ -172,18 +258,65 @@ function GridRenderer(_controller, config = {}) constructor {
 
   ///@private
   renderBorders = function() {
-    var gridService = this.controller.gridService
-    var view = gridService.view
+    static renderBottom = function(controller) {
+      var gridService = this.controller.gridService
+      var view = gridService.view
+      var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
+      var beginY = (gridService.height - view.y) * GRID_SERVICE_PIXEL_HEIGHT
+      var endX = (5.0 + view.width) * GRID_SERVICE_PIXEL_WIDTH
+      var endY = beginY
 
-    // bottom
-    var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
-    var beginY = (gridService.height - view.y) * GRID_SERVICE_PIXEL_HEIGHT
-    var endX = (5.0 + view.width) * GRID_SERVICE_PIXEL_WIDTH
-    var endY = beginY
-    var thickness = 64
-    var alpha = 1.0
-    var color = c_red
-    GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
+      GPU.render.texturedLine(
+        beginX, beginY, endX, endY, 
+        gridService.properties.borderBottomThickness, 
+        gridService.properties.borderBottomAlpha,
+        gridService.properties.borderBottomColor.toGMColor()
+      )
+    }
+
+    static renderRight = function(controller) {
+      if (!controller.editor.store.getValue("target-locked-x")) {
+        return
+      }
+
+      var gridService = this.controller.gridService
+      var view = gridService.view
+      var beginX = 2.5 * GRID_SERVICE_PIXEL_WIDTH
+      var beginY = -5 * GRID_SERVICE_PIXEL_HEIGHT
+      var endX = beginX
+      var endY = (5 + view.height) * GRID_SERVICE_PIXEL_HEIGHT
+
+      GPU.render.texturedLine(
+        beginX, beginY, endX, endY, 
+        gridService.properties.borderHorizontalThickness, 
+        gridService.properties.borderHorizontalAlpha,
+        gridService.properties.borderHorizontalColor.toGMColor()
+      )
+    }
+
+    static renderLeft = function(controller) {
+      if (!controller.editor.store.getValue("target-locked-x")) {
+        return
+      }
+
+      var gridService = this.controller.gridService
+      var view = gridService.view
+      var beginX = -1.5 * GRID_SERVICE_PIXEL_WIDTH
+      var beginY = -5 * GRID_SERVICE_PIXEL_HEIGHT
+      var endX = beginX
+      var endY = (5 + view.height) * GRID_SERVICE_PIXEL_HEIGHT
+      
+      GPU.render.texturedLine(
+        beginX, beginY, endX, endY, 
+        gridService.properties.borderHorizontalThickness, 
+        gridService.properties.borderHorizontalAlpha,
+        gridService.properties.borderHorizontalColor.toGMColor()
+      )
+    }
+
+    renderBottom(this.controller)
+    renderLeft(this.controller)
+    renderRight(this.controller)
   }
 
   ///@private
@@ -427,7 +560,6 @@ function GridRenderer(_controller, config = {}) constructor {
       1, 1, 1
     ))
     renderer.renderChannels()
-    renderer.renderBorders()
     
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.separatorZ, 
@@ -464,6 +596,7 @@ function GridRenderer(_controller, config = {}) constructor {
       0, 0, 0, 
       1, 1, 1
     ))
+    renderer.renderBorders()
     renderer.renderPlayer()
 
     matrix_set(matrix_world, matrix_build_identity())
@@ -508,6 +641,17 @@ function GridRenderer(_controller, config = {}) constructor {
     renderer.renderForeground()
   }
 
+  ///@private
+  ///@return {GridRenderer}
+  renderBKTGlitch = function(config) {
+    var width = Struct.contains(config, "width") ? config.width : GuiWidth()
+    var height = Struct.contains(config, "height") ? config.height : GuiHeight()
+    var _x = Struct.contains(config, "x") ? config.x : 0
+    var _y = Struct.contains(config, "y") ? config.y : 0
+    this.gameSurface.update(width, height).render(_x, _y)
+    return this
+  }
+
   ///@return {GridRenderer}
   clear = function() {
     this.camera = new GridCamera()
@@ -541,18 +685,10 @@ function GridRenderer(_controller, config = {}) constructor {
     return this
   }
 
-  renderBKTGlitch = function(config) {
-    var width = Struct.contains(config, "width") ? config.width : GuiWidth()
-    var height = Struct.contains(config, "height") ? config.height : GuiHeight()
-    var _x = Struct.contains(config, "x") ? config.x : 0
-    var _y = Struct.contains(config, "y") ? config.y : 0
-    this.gameSurface.update(width, height).render(_x, _y)
-  }
-
   ///@param {?Struct} [config]
   ///@return {GridRenderer}
   renderGUI = function(config = null) {
-    this.bktGlitchService.renderOn(renderBKTGlitch, config)
+    this.bktGlitchService.renderOn(this.renderBKTGlitch, config)
     return this
   }
 

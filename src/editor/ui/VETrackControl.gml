@@ -156,7 +156,7 @@ function VETrackControl(_editor) constructor {
           minValue: 0.0,
           maxValue: 1.0,
           pointer: {
-            name: "texture_slider_pointer_default",
+            name: "texture_slider_pointer_track_control",
             scaleX: 0.125,
             scaleY: 0.125,
           },
@@ -172,7 +172,7 @@ function VETrackControl(_editor) constructor {
           updateCustom: function() {
             var mousePromise = MouseUtil.getClipboard()
             if (Struct.get(Struct.get(mousePromise, "state"), "context") == this) {
-              this.updatePosition(MouseUtil.getMouseX())
+              this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
               return
             }
 
@@ -197,9 +197,8 @@ function VETrackControl(_editor) constructor {
             )
           },
           updatePosition: function(mouseX) {
-            var position = mouseX - this.context.area.getX()
             var width = this.area.getWidth() - (this.area.getX() * 2)
-            this.value = clamp(position / width, this.minValue, this.maxValue)
+            this.value = clamp(mouseX / width, this.minValue, this.maxValue)
 
             var rulerView = this.context.controller.uiService
               .find("ve-timeline-ruler")
@@ -215,8 +214,11 @@ function VETrackControl(_editor) constructor {
                 * this.context.controller.editor.trackService.duration)
             }
           },
+          onMousePressedLeft: function(event) {
+            this.updatePosition(event.data.x - this.context.area.getX())
+          },
           onMouseReleasedLeft: function(event) {
-            this.updatePosition(event.data.x)
+            this.updatePosition(event.data.x - this.context.area.getX())
             this.sendEvent()
           },
           onMouseDragLeft: function(event) {

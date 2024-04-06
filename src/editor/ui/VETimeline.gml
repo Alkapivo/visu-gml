@@ -343,7 +343,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
         }),
-        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * 45, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -406,12 +406,8 @@ function VETimeline(_editor) constructor {
                   name: "texture_ve_icon_trash",
                   blend: VETheme.color.textShadow,
                 },
-                removeUIItemfromUICollection: new BindIntent(Callable.run(
-                  UIUtil.templates.get("removeUIItemfromUICollection"))
-                ),
                 callback: function() {
                   this.context.removeChannel(this.component.name)
-                  this.removeUIItemfromUICollection()
                 },
               },
               up: {
@@ -436,9 +432,7 @@ function VETimeline(_editor) constructor {
                   targetChannel.index = source
 
                   this.context.onInit()
-                  this.context.controller.containers
-                    .get("ve-timeline-events")
-                    .onInit()
+                  this.context.controller.containers.get("ve-timeline-events").onInit()
                 },
               },
               down: {
@@ -463,9 +457,7 @@ function VETimeline(_editor) constructor {
                   targetChannel.index = source
 
                   this.context.onInit()
-                  this.context.controller.containers
-                    .get("ve-timeline-events")
-                    .onInit()
+                  this.context.controller.containers.get("ve-timeline-events").onInit()
                 },
               },
             },
@@ -474,19 +466,10 @@ function VETimeline(_editor) constructor {
 
         ///@param {String} name
         removeChannel: new BindIntent(function(name) {
-          // remove event and channel from ui and trackservice
-          var eventsContainer = this.controller.containers
-            .get("ve-timeline-events")
-          eventsContainer.state.get("chunkService")
-            .filter(function(item, key, channel) {
-              return item.state.get("channel") == channel
-            }, name)
-            .forEach(function(item, key, container) {
-              container.removeEvent(item.state.get("channel"), key)
-            }, eventsContainer)
-
-          this.controller.editor.trackService.track
-            .removeChannel(name)
+          this.controller.editor.trackService.track.removeChannel(name)
+          this.onInit()
+          this.controller.containers.get("ve-timeline-events").onInit()
+          
         }),
       }),
       "ve-timeline-events": new UI({
@@ -505,7 +488,7 @@ function VETimeline(_editor) constructor {
           "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           "initialized": false
         }),
-        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity }),
+        updateTimer: new Timer(FRAME_MS * 45, { loop: Infinity }),
         controller: controller,
         layout: layout.nodes.events,
         lastIndex: 0,
@@ -514,7 +497,7 @@ function VETimeline(_editor) constructor {
           speed: 24,
         }),
         fetchViewHeight: function() {
-          return 32 * this.state.get("amount")
+          return (32 * this.state.get("amount")) + 8
         },
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
@@ -572,6 +555,7 @@ function VETimeline(_editor) constructor {
                   context.state.set("viewSize", zoom)
                 },
                 data: container,
+                overrideSubscriber: true,
               })
           }
         }, 
@@ -728,8 +712,12 @@ function VETimeline(_editor) constructor {
         render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
         onInit: function() {
           this.scrollbarY = null
+          this.lastIndex = 0
+          this.state.set("amount", 0)
           this.state.set("initialized", false)
-          this.state.set("chunkService", controller.factoryChunkService())
+          this.state.set("chunkService", this.controller.factoryChunkService())
+          this.updateCustom()
+          this.updateArea()
         },
         onDestroy: function() {
           this.state.get("store")
@@ -924,7 +912,6 @@ function VETimeline(_editor) constructor {
           this.updateTimer.finish()
           var store = Beans.get(BeanVisuController).editor.store
           var tool = store.getValue("tool")
-          Core.print("asd", tool)
           switch (tool) {
             case ToolType.SELECT:
             case ToolType.BRUSH:
