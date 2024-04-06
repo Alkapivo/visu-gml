@@ -44,13 +44,6 @@ function GridCamera(config = {}) constructor {
 	///@return {Camera}
 	update = function() {
 		this.executor.update()
-		this.enableKeyboardLook = keyboard_check_pressed(vk_f5)
-			? !this.enableKeyboardLook 
-			: this.enableKeyboardLook
-		this.enableMouseLook = keyboard_check_pressed(vk_f6)
-			? !this.enableMouseLook 
-			: this.enableMouseLook
-			
 		if (this.enableMouseLook) {
 			this.angle -= (window_mouse_get_x() - GuiWidth() / 2) / 10
 			this.pitch -= (window_mouse_get_y() - GuiHeight() / 2) / 10

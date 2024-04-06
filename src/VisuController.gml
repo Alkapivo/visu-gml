@@ -578,11 +578,11 @@ function VisuController(layerName) constructor {
     }
 
     if (this.keyboard.keys.cameraKeyboardLook.pressed) {
-      this.gridRenderer.camera.enableMouseLook = !this.gridRenderer.camera.enableMouseLook
+      this.gridRenderer.camera.enableKeyboardLook = !this.gridRenderer.camera.enableKeyboardLook
     }
 
     if (this.keyboard.keys.cameraMouseLook.pressed) {
-      this.gridRenderer.camera.enableKeyboardLook = !this.gridRenderer.camera.enableKeyboardLook
+      this.gridRenderer.camera.enableMouseLook = !this.gridRenderer.camera.enableMouseLook
     }
 
     if (this.keyboard.keys.controlLeft.on 

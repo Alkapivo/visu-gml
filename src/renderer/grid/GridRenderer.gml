@@ -148,70 +148,6 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@private
   ///@return {GridRenderer}
   renderChannels = function() {
-    static _renderPrimaryChannels = function(viewXOffset, amount, thickness, color, alpha) {
-      var gridService = this.controller.gridService
-      var channelWidth = gridService.view.width / gridService.properties.channels
-      for (var index = 0; index <= amount; index++) {
-        var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
-        var beginY = -10.0 * GRID_SERVICE_PIXEL_HEIGHT
-        var endX = beginX
-        var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
-        GPU.render.texturedLine(beginX, beginY, endX, endY, thickness, alpha, color)
-      }
-    }
-
-    static renderPrimaryChannels = function(viewXOffset, amount, thickness, color, alpha) {
-      var gridService = this.controller.gridService
-      var channelWidth = gridService.view.width / gridService.properties.channels
-      var borderRatio = 1.0 - ((abs(viewXOffset) - floor(abs(viewXOffset))) / channelWidth)
-      var rightBorderRatio = 1.0 - borderRatio
-      var size = ceil(amount)
-      
-      for (var index = 0; index <= size; index++) {
-        var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
-        var beginY = -5.0 * GRID_SERVICE_PIXEL_HEIGHT
-        var endX = beginX
-        var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
-        var _thickness = index == 0 ? thickness * borderRatio : thickness
-        if (index == size) {
-          _thickness = thickness * rightBorderRatio
-        }
-        GPU.render.texturedLine(beginX, beginY, endX, endY, _thickness, alpha, color)
-      }
-    }
-
-    static renderRightChannels = function(viewXOffset, amount, thickness, color, alpha) {
-      var gridService = this.controller.gridService
-      var channelWidth = gridService.view.width / gridService.properties.channels
-      var borderRatio = (viewXOffset - (floor(amount / 2.0) * channelWidth)) / channelWidth
-      var size = ceil(amount + 1)
-      for (var index = 0; index < size; index++) {
-        var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
-        var beginY = -10.0 * GRID_SERVICE_PIXEL_HEIGHT
-        var endX = beginX
-        var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
-        var _alpha = index + 1 < size ? alpha : borderRatio * alpha
-        var _thickness = index == 0 ? thickness * borderRatio : thickness
-        GPU.render.texturedLine(beginX, beginY, endX, endY, _thickness, _alpha, color)
-      }
-    }
-
-    static renderLeftChannels = function(viewXOffset, amount, thickness, color, alpha) {
-      var gridService = this.controller.gridService
-      var channelWidth = gridService.view.width / gridService.properties.channels
-      var borderRatio = (viewXOffset - (floor(amount / 2.0) * channelWidth)) / channelWidth
-      var size = ceil(amount + 1.0 - borderRatio)
-      for (var index = 0; index < size; index++) {
-        var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
-        var beginY = -10.0 * GRID_SERVICE_PIXEL_HEIGHT
-        var endX = beginX
-        var endY = (gridService.view.height + 5.0) * GRID_SERVICE_PIXEL_HEIGHT
-        var _alpha = index == 0 ? alpha * borderRatio : alpha
-        var _thickness = index + 1 > size ? thickness * borderRatio : thickness
-        GPU.render.texturedLine(beginX, beginY, endX, endY, _thickness, _alpha, color)
-      }
-    }
-
     var gridService = this.controller.gridService
     var properties = gridService.properties
     if (!gridService.properties.renderGrid || properties.channels <= 0) {
@@ -228,31 +164,39 @@ function GridRenderer(_controller, config = {}) constructor {
     var channels = properties.channels
     var channelWidth = view.width / channels
     var viewXOffset = channelWidth * (floor(view.x / view.width) - view.x)
-    
-    renderLeftChannels(
-      viewXOffset - ((view.width + ((ceil(channels) - channels) * channelWidth)) * 2.0),
-      channels * 2.0,
-      secondaryThickness, 
-      secondaryColor, 
-      secondaryAlpha
-    )
-
-    renderRightChannels(
-      viewXOffset + view.width + ((ceil(channels) - channels) * channelWidth),
-      channels * 2.0,
-      secondaryThickness, 
-      secondaryColor, 
-      secondaryAlpha
-    )
-
-    renderPrimaryChannels(
-      viewXOffset, 
-      channels,
-      primaryThickness,
-      primaryColor,
-      primaryAlpha
-    )
-
+    var thickness = primaryThickness
+    var alpha = primaryAlpha
+    var color = primaryColor
+    var viewHeight = gridService.view.height
+    var borderSize = 3.0
+    var primaryBeginIdx = ceil(borderSize * channels)
+    var primaryEndIdx = primaryBeginIdx + floor(channels) 
+    var idx = 0
+    for (var index = -1 * borderSize * channels; index <= channels + borderSize * channels; index++) {
+      var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
+      var beginY = -10.0 * GRID_SERVICE_PIXEL_HEIGHT
+      var endX = beginX
+      var endY = (viewHeight + 10.0) * GRID_SERVICE_PIXEL_HEIGHT
+      var _thickness = index >= 0 && index < channels ? primaryThickness : secondaryThickness
+      var _alpha = _thickness == primaryThickness ? primaryAlpha : secondaryAlpha
+      var _color = _thickness == primaryThickness ? primaryColor : secondaryColor
+      
+      if (idx == primaryBeginIdx) {
+        var factorA = (abs(viewXOffset) / channelWidth)
+        var factorB = 1.0 - (abs(viewXOffset) / channelWidth)
+        GPU.render.texturedLine(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * factorA, secondaryColor) 
+        GPU.render.texturedLine(beginX, beginY, endX, endY, primaryThickness * factorB, primaryAlpha, primaryColor)
+      } else if (idx == primaryEndIdx) {
+        var factorA = 1.0 - (abs(viewXOffset) / channelWidth)
+        var factorB = (abs(viewXOffset) / channelWidth)
+        GPU.render.texturedLine(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * factorA, secondaryColor) 
+        GPU.render.texturedLine(beginX, beginY, endX, endY, primaryThickness * factorB, primaryAlpha, primaryColor)
+      } else {
+        GPU.render.texturedLine(beginX, beginY, endX, endY, _thickness, _alpha, _color)
+      }
+      
+      idx = idx + 1
+    }
     return this
   }
 

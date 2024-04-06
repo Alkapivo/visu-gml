@@ -597,7 +597,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                             .get("ve-brush-toolbar_inspector-view")
 
                           if (Core.isType(inspector, UI) 
-                            && Optional.is(inspector.container.updateTimer)) {
+                            && Optional.is(inspector.updateTimer)) {
                             inspector.updateTimer.time = inspector.updateTimer.duration
                           }
                         }
@@ -873,7 +873,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   .get("ve-brush-toolbar_inspector-view")
 
                 if (Core.isType(inspector, UI) 
-                  && Optional.is(inspector.container.updateTimer)) {
+                  && Optional.is(inspector.updateTimer)) {
                   inspector.updateTimer.time = inspector.updateTimer.duration
                 }
 

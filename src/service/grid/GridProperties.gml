@@ -34,7 +34,7 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Color}
   channelsSecondaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.channelsSecondaryColor ", "#4c47cc")), Color)
+    .getDefault(config, "properties.channelsSecondaryColor ", "#ff11bb")), Color)
 
   ///@type {Number}
   channelsPrimaryAlpha = Assert.isType(Struct

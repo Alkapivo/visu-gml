@@ -75,7 +75,7 @@ function brush_shader_config(json = null) {
         },
       },
       {
-        name: "shader-config_render-background-shaders",
+        name: "shader-config_background-grid-shaders",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
@@ -92,7 +92,7 @@ function brush_shader_config(json = null) {
           input: { 
             spriteOn: { name: "visu_texture_checkbox_switch_on" },
             spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "shader-config_render-background-shaders" },
+            store: { key: "shader-config_background-grid-shaders" },
             enable: { key: "shader-config_use-background-grid-shaders" },
           },
         },

@@ -145,20 +145,18 @@ global.__shader_track_event = new Map(String, Callable, {
   },
   "brush_shader_config": function(data) {
     var controller = Beans.get(BeanVisuController)
+    var properties = controller.gridService.properties
     
     if (Struct.get(data, "shader-config_use-render-grid-shaders")) {
-      controller.gridService.properties.renderGridShaders = Struct
-        .get(data, "shader-config_render-grid-shaders")
+      properties.renderGridShaders = Struct.get(data, "shader-config_render-grid-shaders")
     }
 
     if (Struct.get(data, "shader-config_use-background-grid-shaders")) {
-      controller.gridService.properties.renderBackgroundShaders = Struct
-        .get(data, "shader-config_render-background-shaders")
+      properties.renderBackgroundShaders = Struct.get(data, "shader-config_background-grid-shaders")
     }
 
-    if (Struct.get(data, "shader-config_use-clear-frame") == true) {
-      controller.gridService.properties.shaderClearFrame = Struct
-        .get(data, "shader-config_clear-frame")
+    if (Struct.get(data, "shader-config_use-clear-frame")) {
+      properties.shaderClearFrame = Struct.get(data, "shader-config_clear-frame")
     }
 
     if (Struct.get(data, "shader-config_use-clear-color") == true) {
