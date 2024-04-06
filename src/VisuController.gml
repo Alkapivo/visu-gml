@@ -338,7 +338,7 @@ function VisuController(layerName) constructor {
   renderUI = true
 
   ///@type {DisplayService}
-  displayService = new DisplayService(this)
+  displayService = new DisplayService(this, { minWidth: 800, minHeight: 480 })
 
   ///@type {FSM}
   fsm = new FSM(this, this.fsmConfig)

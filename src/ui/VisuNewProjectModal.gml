@@ -365,6 +365,15 @@ function VisuNewProjectForm(json = null) constructor {
       },
     },
     {
+      name: "warning",
+      template: VEComponents.get("property-bar"),
+      layout: VELayouts.get("property-bar"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        label: { text: "Remember to save the project in an empty folder" },
+      },
+    },
+    {
       name: "button_create",
       template: VEComponents.get("button"),
       layout: VELayouts.get("button"),
@@ -381,7 +390,7 @@ function VisuNewProjectForm(json = null) constructor {
         onMouseHoverOut: function(event) {
           this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
         },
-        onMousePressedLeft: function(event) {
+        onMouseReleasedLeft: function(event) {
           var path = FileUtil.getPathToSaveWithDialog({ 
             description: "JSON file",
             filename: "manifest", 
@@ -414,7 +423,7 @@ function VisuNewProjectForm(json = null) constructor {
         onMouseHoverOut: function(event) {
           this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
         },
-        onMousePressedLeft: function(event) {
+        onMouseReleasedLeft: function(event) {
           this.context.modal.send(new Event("close"))
         },
       },
@@ -624,8 +633,8 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
         name: "visu-new-project-modal",
         x: function() { return (this.context.width() - this.width()) / 2 },
         y: function() { return (this.context.height() - this.height()) / 2 },
-        width: function() { return 480 },
-        height: function() { return 380 },
+        width: function() { return 500 },
+        height: function() { return 412 },
       },
       parent
     )
@@ -645,6 +654,7 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
         }),
         modal: modal,
         layout: layout,
+        propagate: false,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
