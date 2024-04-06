@@ -167,9 +167,35 @@ function VETitleBar(_editor) constructor {
                 }))
             }
           }),
+          "button_ve-title-bar_view": factoryTextButton({
+            text: "Open",
+            layout: layout.nodes.edit,
+            options: new Array(),
+            callback: function() {
+              try {
+                var manifest = FileUtil.getPathToOpenWithDialog({ 
+                  description: "Visu track file",
+                  filename: "manifest", 
+                  extension: "visu"
+                })
+  
+                if (!FileUtil.fileExists(manifest)) {
+                  return
+                }
+
+                Beans.get(BeanVisuController).send(new Event("load", {
+                  manifest: manifest,
+                  autoplay: false
+                }))
+              } catch (exception) {
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                  { message: $"Cannot load the project: {exception.message}" }))
+              }
+            }
+          }),
           "button_ve-title-bar_edit": factoryTextButton({
             text: "Save",
-            layout: layout.nodes.edit,
+            layout: layout.nodes.view,
             options: new Array(),
             callback: function() {
               try {
@@ -192,32 +218,6 @@ function VETitleBar(_editor) constructor {
                 var message = $"Cannot save the project: {exception.message}"
                 Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
                 Logger.error("VETitleBar", message)
-              }
-            }
-          }),
-          "button_ve-title-bar_view": factoryTextButton({
-            text: "Open",
-            layout: layout.nodes.view,
-            options: new Array(),
-            callback: function() {
-              try {
-                var manifest = FileUtil.getPathToOpenWithDialog({ 
-                  description: "Visu track file",
-                  filename: "manifest", 
-                  extension: "visu"
-                })
-  
-                if (!FileUtil.fileExists(manifest)) {
-                  return
-                }
-
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: manifest,
-                  autoplay: false
-                }))
-              } catch (exception) {
-                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-                  { message: $"Cannot load the project: {exception.message}" }))
               }
             }
           }),
