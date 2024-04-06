@@ -311,12 +311,18 @@ function VisuController(layerName) constructor {
     { 
       controlTrack: KeyboardKeyType.SPACE,
       renderUI: KeyboardKeyType.F1,
-      freeCamera: KeyboardKeyType.F5,
+      renderTrackControl: KeyboardKeyType.F2,
+      renderLeftPane: KeyboardKeyType.F3,
+      renderBottomPane: KeyboardKeyType.F4,
+      renderRightPane: KeyboardKeyType.F5,
+      cameraKeyboardLook: KeyboardKeyType.F6,
+      cameraMouseLook: KeyboardKeyType.F7,
       fullscreen: KeyboardKeyType.F11,
       exitModal: KeyboardKeyType.ESC,
       newProject: "N",
-      loadProject: "L",
-      saveProject: "O",
+      openProject: "O",
+      saveProject: "S",
+      controlLeft: KeyboardKeyType.CONTROL_LEFT,
     }
   )
 
@@ -535,7 +541,55 @@ function VisuController(layerName) constructor {
 
     if (!Optional.is(global.GMTF_DATA.active)
       && this.keyboard.keys.exitModal.pressed) {
-      this.exitModal.send(new Event("open").setData({
+
+      if (Core.isType(this.uiService.find("visu-new-project-modal"), UI)) {
+        this.newProjectModal.send(new Event("close"))
+      } else if (Core.isType(this.uiService.find("visu-modal"), UI)) {
+        this.exitModal.send(new Event("close"))
+      } else {
+        this.exitModal.send(new Event("open").setData({
+          layout: new UILayout({
+            name: "display",
+            x: function() { return 0 },
+            y: function() { return 0 },
+            width: function() { return GuiWidth() },
+            height: function() { return GuiHeight() },
+          }),
+        }))
+        this.gridRenderer.camera.enableMouseLook = false
+        this.gridRenderer.camera.enableKeyboardLook = false
+      }
+    }
+
+    if (this.keyboard.keys.renderTrackControl.pressed) {
+      this.editor.store.get("render-trackControl").set(!this.editor.store.getValue("render-trackControl"))
+    }
+
+    if (this.keyboard.keys.renderLeftPane.pressed) {
+      this.editor.store.get("render-event").set(!this.editor.store.getValue("render-event"))
+    }
+
+    if (this.keyboard.keys.renderBottomPane.pressed) {
+      this.editor.store.get("render-timeline").set(!this.editor.store.getValue("render-timeline"))
+    }
+
+    if (this.keyboard.keys.renderRightPane.pressed) {
+      this.editor.store.get("render-brush").set(!this.editor.store.getValue("render-brush"))
+    }
+
+    if (this.keyboard.keys.cameraKeyboardLook.pressed) {
+      this.gridRenderer.camera.enableMouseLook = !this.gridRenderer.camera.enableMouseLook
+    }
+
+    if (this.keyboard.keys.cameraMouseLook.pressed) {
+      this.gridRenderer.camera.enableKeyboardLook = !this.gridRenderer.camera.enableKeyboardLook
+    }
+
+    if (this.keyboard.keys.controlLeft.on 
+      && this.keyboard.keys.newProject.pressed
+      && !Optional.is(global.GMTF_DATA.active)) {
+      Beans.get(BeanVisuController).newProjectModal
+      .send(new Event("open").setData({
         layout: new UILayout({
           name: "display",
           x: function() { return 0 },
@@ -544,7 +598,56 @@ function VisuController(layerName) constructor {
           height: function() { return GuiHeight() },
         }),
       }))
-      this.gridRenderer.camera.enableMouseLook = false
+    }
+
+    if (this.keyboard.keys.controlLeft.on 
+      && this.keyboard.keys.openProject.pressed
+      && !Optional.is(global.GMTF_DATA.active)) {
+      try {
+        var manifest = FileUtil.getPathToOpenWithDialog({ 
+          description: "Visu track file",
+          filename: "manifest", 
+          extension: "visu"
+        })
+
+        if (!FileUtil.fileExists(manifest)) {
+          return
+        }
+
+        Beans.get(BeanVisuController).send(new Event("load", {
+          manifest: manifest,
+          autoplay: false
+        }))
+      } catch (exception) {
+        Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+          { message: $"Cannot load the project: {exception.message}" }))
+      }
+    }
+
+    if (this.keyboard.keys.controlLeft.on 
+      && this.keyboard.keys.saveProject.pressed
+      && !Optional.is(global.GMTF_DATA.active)) {
+      try {
+        var path = FileUtil.getPathToSaveWithDialog({ 
+          description: "Visu track file",
+          filename: "manifest", 
+          extension: "visu",
+        })
+
+        if (path == null) {
+          return
+        }
+
+        global.__VisuTrack.saveProject(path)
+
+        var controller = Beans.get(BeanVisuController)
+        controller.send(new Event("spawn-popup", 
+          { message: $"Project '{controller.trackService.track.name}' saved successfully at: '{path}'" }))
+      } catch (exception) {
+        var message = $"Cannot save the project: {exception.message}"
+        Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+        Logger.error("VETitleBar", message)
+      }
     }
 
     if (!this.renderUI) {
@@ -618,8 +721,6 @@ function VisuController(layerName) constructor {
 
     return this
   }
-
-  ///@private
 
   ///@private
   ///@param {Struct} service
