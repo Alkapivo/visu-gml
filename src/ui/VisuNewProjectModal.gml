@@ -370,7 +370,7 @@ function VisuNewProjectForm(json = null) constructor {
       layout: VELayouts.get("property-bar"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: "Remember to save the project in an empty folder" },
+        label: { text: "Remember to create project in an empty folder!" },
       },
     },
     {
