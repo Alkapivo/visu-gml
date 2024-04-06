@@ -458,7 +458,6 @@ function VisuTrackLoader(_controller): Service() constructor {
             var controller = fsm.context.controller
             controller.editor.send(new Event("open"))
             controller.playerService.send(new Event("spawn-player"))
-            controller.send(new Event("rewind").setData({ timestamp: 0.0 }))
             controller.send(new Event("spawn-popup", 
               { message: $"Project '{controller.trackService.track.name}' loaded successfully" }))
           }
