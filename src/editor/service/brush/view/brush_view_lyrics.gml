@@ -1,5 +1,16 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
+global.__VISU_FONT = new Array(String, [
+  "font_inter_8_regular",
+  "font_inter_10_regular",
+  "font_inter_12_regular",
+  "font_inter_24_regular",
+  "font_consolas_10_regular",
+  "font_consolas_10_bold",
+  "font_consolas_12_bold",
+])
+#macro VISU_FONT global.__VISU_FONT
+
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_view_lyrics(json = null) {
@@ -8,18 +19,19 @@ function brush_view_lyrics(json = null) {
     store: new Map(String, Struct, {
       "view-lyrics_template": {
         type: String,
-        value: Struct.getDefault(json, "view-lyrics-template", "lyrics-01"),
+        value: Struct.getDefault(json, "view-lyrics-template", "lyrics ID"),
         passthrough: function(value) {
           return Beans.get(BeanVisuController).lyricsService.templates
-            .contains(value) ? value : this.value
+            .contains(value) ? value : "lyrics ID"
         },
       },
       "view-lyrics_font": {
         type: String,
-        value: Struct.getDefault(json, "view-lyrics_font", "font_basic"),
-        passthrough: function(value) {
-          return Core.isType(asset_get_index(value), GMFont) ? value : this.value
+        value: Struct.getDefault(json, "view-lyrics_font", VISU_FONT.get(0)),
+        validate: function(value) {
+          Assert.areEqual(true, this.data.contains(value))
         },
+        data: VISU_FONT
       },
       "view-lyrics_font-height": {
         type: Number,
@@ -159,13 +171,17 @@ function brush_view_lyrics(json = null) {
         },
       },
       {
-        name: "view-lyrics_font",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        name: "view-lyrics_font",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Font" },
-          field: { store: { key: "view-lyrics_font" } },
+          previous: { store: { key: "view-lyrics_font" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "view-lyrics_font" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "view-lyrics_font" } },
         },
       },
       {
