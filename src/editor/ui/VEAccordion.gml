@@ -157,6 +157,10 @@ function VEAccordion(_editor, config = null) constructor {
               if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseX())
                 this.context.accordion.containers.forEach(function(container) {
+                  if (!Optional.is(container.updateTimer)) {
+                    return
+                  }
+                  
                   var minTime = container.updateTimer.duration - (FRAME_MS * 10)
                   if (container.updateTimer.time < minTime) {
                     container.updateTimer.time = minTime

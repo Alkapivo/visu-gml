@@ -262,6 +262,10 @@ function VETimeline(_editor) constructor {
               if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
                 this.context.controller.containers.forEach(function(container) {
+                  if (!Optional.is(container.updateTimer)) {
+                    return
+                  }
+
                   var minTime = container.updateTimer.duration - (FRAME_MS * 10)
                   if (container.updateTimer.time < minTime) {
                     container.updateTimer.time = minTime
@@ -275,7 +279,7 @@ function VETimeline(_editor) constructor {
               node.percentageHeight = abs((GuiHeight() - 24) - position) / (GuiHeight() - 24)
 
               var events = controller.editor.uiService.find("ve-timeline-events")
-              if (Core.isType(events, UI)) {
+              if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
                 events.updateTimer.finish()
               }
             }),
@@ -357,7 +361,10 @@ function VETimeline(_editor) constructor {
           this._onMousePressedLeft(event)
           var events = this.controller.containers.get("ve-timeline-events")
           events.offset.y = this.offset.y
-          events.updateTimer.finish()
+
+          if (Optional.is(events.updateTimer)) {
+            events.updateTimer.finish()
+          }
         },
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
@@ -369,7 +376,10 @@ function VETimeline(_editor) constructor {
           this._onMouseWheelDown(event)
           var events = this.controller.containers.get("ve-timeline-events")
           events.offset.y = this.offset.y
-          events.updateTimer.finish()
+          
+          if (Optional.is(events.updateTimer)) {
+            events.updateTimer.finish()
+          }
         },
         onInit: function() {
           this.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
@@ -728,19 +738,25 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.updateTimer.finish()
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
+          if (Optional.is(this.updateTimer)) {
+            this.updateTimer.finish()
+          }
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
-          this.updateTimer.finish()
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
+          if (Optional.is(this.updateTimer)) {
+            this.updateTimer.finish()
+          }
         },
         onMouseDropLeft: function(event) {
           var trackEvent = MouseUtil.getClipboard()
           var channelName = Struct.get(trackEvent, "channelName")
           MouseUtil.clearClipboard()
-          this.updateTimer.finish()
+          if (Optional.is(this.updateTimer)) {
+            this.updateTimer.finish()
+          }
 
           if (!Core.isType(trackEvent, TrackEvent)
             || !this.controller.editor.trackService.track.channels
@@ -789,7 +805,9 @@ function VETimeline(_editor) constructor {
           var inspector = Beans
             .get(BeanVisuController).editor.uiService
             .find("ve-event-inspector-properties")
-          inspector.updateTimer.time = inspector.updateTimer.duration
+          if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+            inspector.updateTimer.time = inspector.updateTimer.duration
+          }
 
           if (Optional.is(inspector.updateArea)) {
             inspector.updateArea()
@@ -806,7 +824,10 @@ function VETimeline(_editor) constructor {
         
         onMouseReleasedLeft: function(event) {
           try {
-            this.updateTimer.finish()
+            if (Optional.is(this.updateTimer)) {
+              this.updateTimer.finish()
+            }
+            
             var store = Beans.get(BeanVisuController).editor.store
             var tool = store.getValue("tool")
             switch (tool) {
@@ -832,7 +853,9 @@ function VETimeline(_editor) constructor {
                 var inspector = Beans
                   .get(BeanVisuController).editor.uiService
                   .find("ve-event-inspector-properties")
-                inspector.updateTimer.time = inspector.updateTimer.duration
+                if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+                  inspector.updateTimer.time = inspector.updateTimer.duration
+                }
 
                 if (Optional.is(inspector.updateArea)) {
                   inspector.updateArea()
@@ -884,8 +907,10 @@ function VETimeline(_editor) constructor {
                     var inspector = Beans
                       .get(BeanVisuController).editor.uiService
                       .find("ve-event-inspector-properties")
-                    inspector.updateTimer.time = inspector.updateTimer.duration
-
+                    if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+                      inspector.updateTimer.time = inspector.updateTimer.duration
+                    }
+                    
                     if (Optional.is(inspector.updateArea)) {
                       inspector.updateArea()
                     }
@@ -909,7 +934,10 @@ function VETimeline(_editor) constructor {
         },
 
         onMouseReleasedRight: function(event) {
-          this.updateTimer.finish()
+          if (Optional.is(this.updateTimer)) {
+            this.updateTimer.finish()
+          }
+          
           var store = Beans.get(BeanVisuController).editor.store
           var tool = store.getValue("tool")
           switch (tool) {
@@ -1084,7 +1112,9 @@ function VETimeline(_editor) constructor {
                     var inspector = Beans
                       .get(BeanVisuController).editor.uiService
                       .find("ve-event-inspector-properties")
-                    inspector.updateTimer.time = inspector.updateTimer.duration
+                    if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+                      inspector.updateTimer.time = inspector.updateTimer.duration
+                    }
 
                     if (Optional.is(inspector.updateArea)) {
                       inspector.updateArea()

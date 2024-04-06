@@ -249,10 +249,13 @@ function VEPopupQueue(_editor) constructor {
         .clear()
     },
     "remove": function(event) {
-      var index = Assert.isType(this.containers
-        .findIndex(function(container, index, target) { ///@todo move to Lambda util
-          return container.name == target
-        }, event.data), Number)
+      var index = this.containers.findIndex(function(container, index, target) { ///@todo move to Lambda util
+        return container.name == target
+      }, event.data)
+
+      if (!Core.isType(index, Number)) {
+        return
+      }
       
       this.uiService.send(new Event("remove", { 
         name: event.data, 

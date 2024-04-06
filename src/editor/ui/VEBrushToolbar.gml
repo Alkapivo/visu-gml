@@ -83,6 +83,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             if (MouseUtil.getClipboard() == this.clipboard) {
               this.updateLayout(MouseUtil.getMouseX())
               this.context.brushToolbar.containers.forEach(function(container) {
+                if (!Optional.is(container.updateTimer)) {
+                  return
+                }
+
                 var minTime = container.updateTimer.duration - (FRAME_MS * 10)
                 if (container.updateTimer.time < minTime) {
                   container.updateTimer.time = minTime
@@ -96,7 +100,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             node.percentageWidth = abs(GuiWidth() - position) / GuiWidth()
 
             var events = controller.editor.uiService.find("ve-timeline-events")
-            if (Core.isType(events, UI)) {
+            if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
               events.updateTimer.finish()
             }
           }),
@@ -104,12 +108,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             MouseUtil.setClipboard(this.clipboard)
           },
           onMouseHoverOver: function(event) {
-            if (!mouse_check_button(mb_left)) {
+            if (!mouse_check_button(mb_left)) { ///@todo replace mouse_check_button
               this.clipboard.drag()
             }
           },
           onMouseHoverOut: function(event) {
-            if (!mouse_check_button(mb_left)) {
+            if (!mouse_check_button(mb_left)) { ///@todo replace mouse_check_button
               this.clipboard.drop()
             }
           },
@@ -591,7 +595,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
                           var inspector = this.context.brushToolbar.containers
                             .get("ve-brush-toolbar_inspector-view")
-                          inspector.updateTimer.time = inspector.updateTimer.duration
+
+                          if (Core.isType(inspector, UI) 
+                            && Optional.is(inspector.container.updateTimer)) {
+                            inspector.updateTimer.time = inspector.updateTimer.duration
+                          }
                         }
                       },
                       brushTemplate: template,
@@ -703,6 +711,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
                 this.context.brushToolbar.containers.forEach(function(container) {
+                  if (!Optional.is(container.updateTimer)) {
+                    return
+                  }
+
                   var minTime = container.updateTimer.duration - (FRAME_MS * 10)
                   if (container.updateTimer.time < minTime) {
                     container.updateTimer.time = minTime
@@ -857,10 +869,14 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               label: { text: "Save" },
               callback: function() { 
                 var brushToolbar = this.context.brushToolbar
-
                 var inspector = brushToolbar.containers
                   .get("ve-brush-toolbar_inspector-view")
-                inspector.updateTimer.time = inspector.updateTimer.duration
+
+                if (Core.isType(inspector, UI) 
+                  && Optional.is(inspector.container.updateTimer)) {
+                  inspector.updateTimer.time = inspector.updateTimer.duration
+                }
+
                 if (Optional.is(inspector.updateArea)) {
                   inspector.updateArea()
                 }

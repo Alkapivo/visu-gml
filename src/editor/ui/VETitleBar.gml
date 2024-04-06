@@ -196,7 +196,7 @@ function VETitleBar(_editor) constructor {
             }
           }),
           "button_ve-title-bar_view": factoryTextButton({
-            text: "Load",
+            text: "Open",
             layout: layout.nodes.view,
             options: new Array(),
             callback: function() {
@@ -210,21 +210,8 @@ function VETitleBar(_editor) constructor {
                 if (!FileUtil.fileExists(manifest)) {
                   return
                 }
-  
-                var controller = Beans.get(BeanVisuController)
-                /*
-                controller.gridRenderer.clear()
-                controller.trackService.send(new Event("close-track"))
-                controller.videoService.send(new Event("close-video"))
-                controller.gridService.send(new Event("clear-grid"))
-                controller.playerService.send(new Event("clear-player"))
-                controller.shroomService.send(new Event("clear-shrooms"))
-                controller.bulletService.send(new Event("clear-bullets"))
-                controller.lyricsService.send(new Event("clear-lyrics"))
-                controller.particleService.send(new Event("clear-particles"))
-                Beans.get(BeanTextureService).send(new Event("free"))
-                */
-                controller.send(new Event("load", {
+
+                Beans.get(BeanVisuController).send(new Event("load", {
                   manifest: manifest,
                   autoplay: false
                 }))

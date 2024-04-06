@@ -152,19 +152,27 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
                 var templateBar = this.context.templateToolbar.containers
                   .get("ve-template-toolbar_template-bar")
-                templateBar.updateTimer.time = templateBar.updateTimer.duration
+                if (Optional.is(templateBar)) {
+                  templateBar.updateTimer.time = templateBar.updateTimer.duration
+                }
 
                 var templateView = this.context.templateToolbar.containers
                   .get("ve-template-toolbar_template-view")
-                templateView.updateTimer.time = templateView.updateTimer.duration
+                if (Optional.is(templateView)) {
+                  templateView.updateTimer.time = templateView.updateTimer.duration
+                }
 
                 var inspectorBar = this.context.templateToolbar.containers
                   .get("ve-template-toolbar_inspector-bar")
-                inspectorBar.updateTimer.time = inspectorBar.updateTimer.duration
+                if (Optional.is(inspectorBar)) {
+                  inspectorBar.updateTimer.time = inspectorBar.updateTimer.duration
+                }
 
                 var inspectorView = this.context.templateToolbar.containers
                   .get("ve-template-toolbar_inspector-view")
-                inspectorView.updateTimer.time = inspectorView.updateTimer.duration
+                if (Optional.is(inspectorView)) {
+                  inspectorView.updateTimer.time = inspectorView.updateTimer.duration
+                }
               },
               updateCustom: function() {
                 this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
@@ -267,7 +275,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
-                this.context.updateTimer.time = this.context.updateTimer.duration
+
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration
+                }
+
                 if (Optional.is(this.context.updateArea)) {
                   this.context.updateArea()
                 }
@@ -313,7 +325,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
-                this.context.updateTimer.time = this.context.updateTimer.duration
+
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration
+                }
+
                 if (Optional.is(this.context.updateArea)) {
                   this.context.updateArea()
                 }
@@ -359,7 +375,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
-                this.context.updateTimer.time = this.context.updateTimer.duration
+                
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration
+                }
+
                 if (Optional.is(this.context.updateArea)) {
                   this.context.updateArea()
                 }
@@ -405,7 +425,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
-                this.context.updateTimer.time = this.context.updateTimer.duration
+
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration
+                }
+
                 if (Optional.is(this.context.updateArea)) {
                   this.context.updateArea()
                 }
@@ -451,7 +475,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
-                this.context.updateTimer.time = this.context.updateTimer.duration
+                
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration
+                }
+
                 if (Optional.is(this.context.updateArea)) {
                   this.context.updateArea()
                 }
@@ -575,7 +603,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
                 this.context.templateToolbar.send(new Event("add-template"))
-                this.context.updateTimer.time = this.context.updateTimer.duration
+
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration
+                }
+
                 if (Optional.is(this.context.updateArea)) {
                   this.context.updateArea()
                 }
@@ -1334,7 +1366,9 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
             var inspector = data.templateToolbar.containers
               .get("ve-template-toolbar_inspector-view")
-            inspector.updateTimer.time = inspector.updateTimer.duration
+            if (Optional.is(inspector)) {
+              inspector.updateTimer.time = inspector.updateTimer.duration
+            }
           },
           data: container
         })
@@ -1378,6 +1412,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
                 this.context.templateToolbar.containers.forEach(function(container) {
+                  if (!Optional.is(container.updateTimer)) {
+                    return
+                  }
+
                   var minTime = container.updateTimer.duration - (FRAME_MS * 10)
                   if (container.updateTimer.time < minTime) {
                     container.updateTimer.time = minTime
@@ -1520,7 +1558,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 this.context.templateToolbar.send(new Event("save-template"))
                 var inspector = this.context.templateToolbar.containers
                   .get("ve-template-toolbar_inspector-view")
-                inspector.updateTimer.time = inspector.updateTimer.duration
+                if (Optional.is(inspector)) {
+                  inspector.updateTimer.time = inspector.updateTimer.duration
+                }
+                
                 if (Optional.is(inspector.updateArea)) {
                   inspector.updateArea()
                 }
