@@ -452,7 +452,7 @@ function VisuTrackLoader(_controller): Service() constructor {
       "loaded": {
         actions: {
           onStart: function(fsm, fsmState, tasks) { 
-            window_set_caption($"{game_display_name} - {fsm.context.controller.trackService.track.name}")
+            window_set_caption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {global.__VisuTrack.path}")
             audio_master_gain(1.0)
 
             var controller = fsm.context.controller
