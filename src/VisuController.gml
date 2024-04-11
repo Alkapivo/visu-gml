@@ -752,6 +752,18 @@ function VisuController(layerName) constructor {
 
     if (this.renderUI) {
       try {
+        // reset UI timers after resize to avoid ghost effect
+        if (this.displayService.state == "resized") {
+          this.uiService.containers.forEach(function(container) {
+            if (!Optional.is(container.updateTimer)) {
+              return
+            }
+
+            container.renderSurfaceTick = false
+            container.updateTimer.time = container.updateTimer.duration
+          })
+        }
+        
         this.uiService.update()
       } catch (exception) {
         var message = $"'update' set fatal error: {exception.message}"
