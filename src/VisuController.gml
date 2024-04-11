@@ -469,7 +469,6 @@ function VisuController(layerName) constructor {
     "fileService",
     "dispatcher",
     "executor",
-    "uiService",
     "particleService",
     "shaderPipeline",
     "shaderBackgroundPipeline",
