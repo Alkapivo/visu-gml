@@ -266,11 +266,14 @@ function VETimeline(_editor) constructor {
                     return
                   }
 
-                  var minTime = container.updateTimer.duration - (FRAME_MS * 10)
-                  if (container.updateTimer.time < minTime) {
-                    container.updateTimer.time = minTime
-                  }
+                  container.renderSurfaceTick = false
+                  container.updateTimer.time = container.updateTimer.duration
                 })
+
+                if (!mouse_check_button(mb_left)) {
+                  MouseUtil.clearClipboard()
+                  Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+                }
               }
             },
             updateLayout: new BindIntent(function(position) {
@@ -347,7 +350,7 @@ function VETimeline(_editor) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
         }),
-        updateTimer: new Timer(FRAME_MS * 45, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -498,7 +501,7 @@ function VETimeline(_editor) constructor {
           "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
           "initialized": false
         }),
-        updateTimer: new Timer(FRAME_MS * 45, { loop: Infinity }),
+        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity }),
         controller: controller,
         layout: layout.nodes.events,
         lastIndex: 0,

@@ -87,11 +87,26 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   return
                 }
 
-                var minTime = container.updateTimer.duration - (FRAME_MS * 10)
-                if (container.updateTimer.time < minTime) {
-                  container.updateTimer.time = minTime
-                }
+                container.renderSurfaceTick = false
+                container.updateTimer.time = container.updateTimer.duration
               })
+
+              // reset timeline timer to avoid ghost effect,
+              // because brushtoolbar height is affecting timeline height
+              this.context.brushToolbar.editor.timeline.containers.forEach(function(container) {
+                if (!Optional.is(container.updateTimer)) {
+                  return
+                }
+
+                container.renderSurfaceTick = false
+                container.updateTimer.time = container.updateTimer.duration
+              })
+              
+
+              if (!mouse_check_button(mb_left)) {
+                MouseUtil.clearClipboard()
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
             }
           },
           updateLayout: new BindIntent(function(position) {
@@ -531,7 +546,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         }),
       }),
-      updateTimer: new Timer(FRAME_MS * 45, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -715,11 +730,14 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                     return
                   }
 
-                  var minTime = container.updateTimer.duration - (FRAME_MS * 10)
-                  if (container.updateTimer.time < minTime) {
-                    container.updateTimer.time = minTime
-                  }
+                  container.renderSurfaceTick = false
+                  container.updateTimer.time = container.updateTimer.duration
                 })
+
+                if (!mouse_check_button(mb_left)) {
+                  MouseUtil.clearClipboard()
+                  Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+                }
               }
             },
             updateLayout: new BindIntent(function(_position) {
@@ -762,7 +780,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      updateTimer: new Timer(FRAME_MS * 45, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },

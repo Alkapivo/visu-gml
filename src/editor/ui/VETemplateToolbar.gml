@@ -1415,12 +1415,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   if (!Optional.is(container.updateTimer)) {
                     return
                   }
-
-                  var minTime = container.updateTimer.duration - (FRAME_MS * 10)
-                  if (container.updateTimer.time < minTime) {
-                    container.updateTimer.time = minTime
-                  }
+                  
+                  container.renderSurfaceTick = false
+                  container.updateTimer.time = container.updateTimer.duration
                 })
+
+                if (!mouse_check_button(mb_left)) {
+                  MouseUtil.clearClipboard()
+                  Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+                }
               }
             },
             updateLayout: new BindIntent(function(_position) {
