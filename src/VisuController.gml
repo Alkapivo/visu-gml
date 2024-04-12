@@ -310,11 +310,11 @@ function VisuController(layerName) constructor {
   keyboard = new Keyboard(
     { 
       controlTrack: KeyboardKeyType.SPACE,
-      renderUI: KeyboardKeyType.F1,
-      renderTrackControl: KeyboardKeyType.F2,
-      renderLeftPane: KeyboardKeyType.F3,
-      renderBottomPane: KeyboardKeyType.F4,
-      renderRightPane: KeyboardKeyType.F5,
+      renderLeftPane: KeyboardKeyType.F1,
+      renderBottomPane: KeyboardKeyType.F2,
+      renderRightPane: KeyboardKeyType.F3,
+      renderTrackControl: KeyboardKeyType.F4,
+      renderUI: KeyboardKeyType.F5,
       cameraKeyboardLook: KeyboardKeyType.F6,
       cameraMouseLook: KeyboardKeyType.F7,
       fullscreen: KeyboardKeyType.F11,
@@ -322,6 +322,12 @@ function VisuController(layerName) constructor {
       newProject: "N",
       openProject: "O",
       saveProject: "S",
+      selectTool: "S",
+      eraseTool: "E",
+      brushTool: "B",
+      cloneTool: "C",
+      previewBrush: "P",
+      previewEvent: "P",
       controlLeft: KeyboardKeyType.CONTROL_LEFT,
     }
   )
@@ -646,6 +652,39 @@ function VisuController(layerName) constructor {
         var message = $"Cannot save the project: {exception.message}"
         Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
         Logger.error("VETitleBar", message)
+      }
+    }
+
+    if (this.keyboard.keys.selectTool.pressed) {
+      this.editor.store.get("tool").set("tool_select")
+    }
+
+    if (this.keyboard.keys.eraseTool.pressed) {
+      this.editor.store.get("tool").set("tool_erase")
+    }
+
+    if (this.keyboard.keys.brushTool.pressed) {
+      this.editor.store.get("tool").set("tool_brush")
+    }
+
+    if (this.keyboard.keys.cloneTool.pressed) {
+      this.editor.store.get("tool").set("tool_clone")
+    }
+
+    if (!this.keyboard.keys.controlLeft.on 
+      && this.keyboard.keys.previewBrush.pressed) {
+      var brush = this.editor.brushToolbar.store.getValue("brush")
+      if (Core.isType(brush, VEBrush)) {
+        var handler = this.trackService.handlers.get(brush.type)
+        handler(brush.toTemplate().properties)
+      }
+    }
+
+    if (this.keyboard.keys.controlLeft.on && this.keyboard.keys.previewEvent.pressed) {
+      var event = this.editor.accordion.eventInspector.store.getValue("event")
+      if (Core.isType(event, VEEvent)) {
+        var handler = this.trackService.handlers.get(event.type)
+        handler(event.toTemplate().event.data)
       }
     }
 
