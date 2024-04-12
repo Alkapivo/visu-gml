@@ -274,22 +274,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
+                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
+                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
+                    global.GMTF_DATA.active.uiItem.update()
+                  }
+                  global.GMTF_DATA.active.unfocus()
+                }
+
                 this.context.templateToolbar.send(new Event("add-template"))
 
                 if (Optional.is(this.context.updateTimer)) {
                   this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-
-                if (Optional.is(this.context.updateArea)) {
-                  this.context.updateArea()
-                }
-
-                if (Optional.is(this.context.updateItems)) {
-                  this.context.updateItems()
-                }
-    
-                if (Optional.is(this.context.updateCustom)) {
-                  this.context.updateCustom()
                 }
               },
               label: { text: "Create shader" },
@@ -324,22 +319,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
+                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
+                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
+                    global.GMTF_DATA.active.uiItem.update()
+                  }
+                  global.GMTF_DATA.active.unfocus()
+                }
+
                 this.context.templateToolbar.send(new Event("add-template"))
 
                 if (Optional.is(this.context.updateTimer)) {
                   this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-
-                if (Optional.is(this.context.updateArea)) {
-                  this.context.updateArea()
-                }
-
-                if (Optional.is(this.context.updateItems)) {
-                  this.context.updateItems()
-                }
-    
-                if (Optional.is(this.context.updateCustom)) {
-                  this.context.updateCustom()
                 }
               },
               label: { text: "Create shroom" },
@@ -374,22 +364,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
+                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
+                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
+                    global.GMTF_DATA.active.uiItem.update()
+                  }
+                  global.GMTF_DATA.active.unfocus()
+                }
+
                 this.context.templateToolbar.send(new Event("add-template"))
                 
                 if (Optional.is(this.context.updateTimer)) {
                   this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-
-                if (Optional.is(this.context.updateArea)) {
-                  this.context.updateArea()
-                }
-
-                if (Optional.is(this.context.updateItems)) {
-                  this.context.updateItems()
-                }
-    
-                if (Optional.is(this.context.updateCustom)) {
-                  this.context.updateCustom()
                 }
               },
               label: { text: "Create bullet" },
@@ -424,22 +409,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
+                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
+                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
+                    global.GMTF_DATA.active.uiItem.update()
+                  }
+                  global.GMTF_DATA.active.unfocus()
+                }
+
                 this.context.templateToolbar.send(new Event("add-template"))
 
                 if (Optional.is(this.context.updateTimer)) {
                   this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-
-                if (Optional.is(this.context.updateArea)) {
-                  this.context.updateArea()
-                }
-
-                if (Optional.is(this.context.updateItems)) {
-                  this.context.updateItems()
-                }
-    
-                if (Optional.is(this.context.updateCustom)) {
-                  this.context.updateCustom()
                 }
               },
               label: { text: "Create lyrics" },
@@ -474,22 +454,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
+                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
+                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
+                    global.GMTF_DATA.active.uiItem.update()
+                  }
+                  global.GMTF_DATA.active.unfocus()
+                }
+
                 this.context.templateToolbar.send(new Event("add-template"))
                 
                 if (Optional.is(this.context.updateTimer)) {
                   this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-
-                if (Optional.is(this.context.updateArea)) {
-                  this.context.updateArea()
-                }
-
-                if (Optional.is(this.context.updateItems)) {
-                  this.context.updateItems()
-                }
-    
-                if (Optional.is(this.context.updateCustom)) {
-                  this.context.updateCustom()
                 }
               },
               label: { text: "Create particle" },
@@ -602,22 +577,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
+                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
+                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
+                    global.GMTF_DATA.active.uiItem.update()
+                  }
+                  global.GMTF_DATA.active.unfocus()
+                }
+
                 this.context.templateToolbar.send(new Event("add-template"))
 
                 if (Optional.is(this.context.updateTimer)) {
                   this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-
-                if (Optional.is(this.context.updateArea)) {
-                  this.context.updateArea()
-                }
-
-                if (Optional.is(this.context.updateItems)) {
-                  this.context.updateItems()
-                }
-    
-                if (Optional.is(this.context.updateCustom)) {
-                  this.context.updateCustom()
                 }
               },
               label: { text: "Create texture" },
@@ -1558,6 +1528,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               label: { text: "Save template" },
               callback: function() { 
+                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
+                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
+                    global.GMTF_DATA.active.uiItem.update()
+                  }
+                  global.GMTF_DATA.active.unfocus()
+                }
+
                 this.context.templateToolbar.send(new Event("save-template"))
                 var inspector = this.context.templateToolbar.containers
                   .get("ve-template-toolbar_inspector-view")

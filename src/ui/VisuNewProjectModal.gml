@@ -391,6 +391,13 @@ function VisuNewProjectForm(json = null) constructor {
           this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
         },
         onMouseReleasedLeft: function(event) {
+          if (Core.isType(global.GMTF_DATA.active, gmtf)) {
+            if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
+              global.GMTF_DATA.active.uiItem.update()
+            }
+            global.GMTF_DATA.active.unfocus()
+          }
+          
           var path = FileUtil.getPathToSaveWithDialog({ 
             description: "JSON file",
             filename: "manifest", 
