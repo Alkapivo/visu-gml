@@ -101,7 +101,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 container.renderSurfaceTick = false
                 container.updateTimer.time = container.updateTimer.duration
               })
-              
 
               if (!mouse_check_button(mb_left)) {
                 MouseUtil.clearClipboard()

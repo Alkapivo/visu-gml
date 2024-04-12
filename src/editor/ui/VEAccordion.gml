@@ -396,10 +396,8 @@ function VEAccordion(_editor, config = null) constructor {
   update = function() { 
     try {
       this.dispatcher.update()
-      this.updateContainerObject(this.eventInspector, this.store
-        .getValue("render-event-inspector"))
-      this.updateContainerObject(this.templateToolbar, this.store
-        .getValue("render-template-toolbar"))
+      this.updateContainerObject(this.eventInspector, this.store.getValue("render-event-inspector"))
+      this.updateContainerObject(this.templateToolbar, this.store.getValue("render-template-toolbar"))
     } catch (exception) {
       var message = $"VEAccordion dispatcher fatal error: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))

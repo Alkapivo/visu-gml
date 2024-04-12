@@ -279,6 +279,7 @@ function VisuEditor(_controller) constructor {
       this.store.get("_render-brush").set(this.store.getValue("render-brush"))
       this.store.get("render-brush").set(false)
       this.store.get("render-trackControl").set(false)
+      this.store.get("selected-event").set(null)
 
       return {
         //"titleBar": this.titleBar.send(new Event("close")),

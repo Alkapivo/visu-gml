@@ -270,6 +270,17 @@ function VETimeline(_editor) constructor {
                   container.updateTimer.time = container.updateTimer.duration
                 })
 
+                // reset accordion timer to avoid ghost effect,
+                // because timeline height is affecting accordion height
+                this.context.controller.editor.accordion.containers.forEach(function(container) {
+                  if (!Optional.is(container.updateTimer)) {
+                    return
+                  }
+
+                  container.renderSurfaceTick = false
+                  container.updateTimer.time = container.updateTimer.duration
+                })
+
                 if (!mouse_check_button(mb_left)) {
                   MouseUtil.clearClipboard()
                   Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
@@ -445,7 +456,16 @@ function VETimeline(_editor) constructor {
                   targetChannel.index = source
 
                   this.context.onInit()
-                  this.context.controller.containers.get("ve-timeline-events").onInit()
+                  if (Optional.is(this.context.updateTimer)) {
+                    this.context.updateTimer.finish()
+                  }
+
+                  var events = this.context.controller.containers.get("ve-timeline-events")
+                  events.onInit()
+
+                  if (Optional.is(events.updateTimer)) {
+                    events.updateTimer.finish()
+                  }
                 },
               },
               down: {
@@ -470,7 +490,16 @@ function VETimeline(_editor) constructor {
                   targetChannel.index = source
 
                   this.context.onInit()
-                  this.context.controller.containers.get("ve-timeline-events").onInit()
+                  if (Optional.is(this.context.updateTimer)) {
+                    this.context.updateTimer.finish()
+                  }
+
+                  var events = this.context.controller.containers.get("ve-timeline-events")
+                  events.onInit()
+                  
+                  if (Optional.is(events.updateTimer)) {
+                    events.updateTimer.finish()
+                  }
                 },
               },
             },
@@ -805,23 +834,10 @@ function VETimeline(_editor) constructor {
               data: uiItem.state.get("event"),
             })
 
-          var inspector = Beans
-            .get(BeanVisuController).editor.uiService
+          var inspector = Beans.get(BeanVisuController).editor.uiService
             .find("ve-event-inspector-properties")
           if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-            inspector.updateTimer.time = inspector.updateTimer.duration
-          }
-
-          if (Optional.is(inspector.updateArea)) {
-            inspector.updateArea()
-          }
-
-          if (Optional.is(inspector.updateItems)) {
-            inspector.updateItems()
-          }
-
-          if (Optional.is(inspector.updateCustom)) {
-            inspector.updateCustom()
+            inspector.updateTimer.finish()
           }
         },
         
@@ -842,6 +858,14 @@ function VETimeline(_editor) constructor {
                 }
                 break
               case ToolType.BRUSH:
+                var brush = this.controller.editor.brushToolbar.store
+                  .getValue("brush")
+                if (!Optional.is(brush)) {
+                  Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                    { message: "No brush has been selected!" }))
+                  break
+                }
+
                 var trackEvent = this.factoryTrackEventFromEvent(event)
                 var channel = this.getChannelNameFromMouseY(event.data.y)
                 var uiItem = this.addEvent(channel, trackEvent)
@@ -853,23 +877,10 @@ function VETimeline(_editor) constructor {
                   data: uiItem.state.get("event"),
                 })
 
-                var inspector = Beans
-                  .get(BeanVisuController).editor.uiService
+                var inspector = Beans.get(BeanVisuController).editor.uiService
                   .find("ve-event-inspector-properties")
                 if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                  inspector.updateTimer.time = inspector.updateTimer.duration
-                }
-
-                if (Optional.is(inspector.updateArea)) {
-                  inspector.updateArea()
-                }
-
-                if (Optional.is(inspector.updateItems)) {
-                  inspector.updateItems()
-                }
-
-                if (Optional.is(inspector.updateCustom)) {
-                  inspector.updateCustom()
+                  inspector.updateTimer.finish()
                 }
                 break
               case ToolType.CLONE:
@@ -907,23 +918,10 @@ function VETimeline(_editor) constructor {
                       data: uiItem.state.get("event"),
                     })
 
-                    var inspector = Beans
-                      .get(BeanVisuController).editor.uiService
+                    var inspector = Beans.get(BeanVisuController).editor.uiService
                       .find("ve-event-inspector-properties")
                     if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                      inspector.updateTimer.time = inspector.updateTimer.duration
-                    }
-                    
-                    if (Optional.is(inspector.updateArea)) {
-                      inspector.updateArea()
-                    }
-
-                    if (Optional.is(inspector.updateItems)) {
-                      inspector.updateItems()
-                    }
-
-                    if (Optional.is(inspector.updateCustom)) {
-                      inspector.updateCustom()
+                      inspector.updateTimer.finish()
                     }
                   }
                 }
@@ -1111,24 +1109,11 @@ function VETimeline(_editor) constructor {
                         channel: channel,
                         data: trackEvent,
                       })
-
-                    var inspector = Beans
-                      .get(BeanVisuController).editor.uiService
+                    
+                    var inspector = Beans.get(BeanVisuController).editor.uiService
                       .find("ve-event-inspector-properties")
                     if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                      inspector.updateTimer.time = inspector.updateTimer.duration
-                    }
-
-                    if (Optional.is(inspector.updateArea)) {
-                      inspector.updateArea()
-                    }
-
-                    if (Optional.is(inspector.updateItems)) {
-                      inspector.updateItems()
-                    }
-
-                    if (Optional.is(inspector.updateCustom)) {
-                      inspector.updateCustom()
+                      inspector.updateTimer.finish()
                     }
                     break
                 }

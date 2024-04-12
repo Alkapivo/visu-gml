@@ -111,13 +111,14 @@ function VEEventInspector(_editor) constructor {
           this.collection = new UICollection(this, { layout: container.layout })
 
           if (!Core.isType(this.eventInspector.editor.trackService.track, Track)) {
-            return
+            //return
           }
 
           Beans.get(BeanVisuController).editor.store
             .get("selected-event")
             .addSubscriber({ 
               name: container.name,
+              overrideSubscriber: true, ///@todo investigate
               callback: function(selectedEvent, data) { 
                 if (!Optional.is(selectedEvent)) {
                   data.collection.components.clear() ///@todo replace with remove lambda
