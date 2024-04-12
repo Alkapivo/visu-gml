@@ -128,7 +128,7 @@ function VETrackControl(_editor) constructor {
           },
           toolbar: {
             name: "track-control.toolbar",
-            width: function() { return 144 },
+            width: function() { return 68 },
             height: function() { return 24 },
             margin: { top: 12, bottom: 0, right: 6, left: 2 },
             x: function() { return this.context.nodes.timeline.right() 
@@ -330,6 +330,44 @@ function VETrackControl(_editor) constructor {
           onMouseHoverOut: function(event) { },
           label: { text: json.text },
           tool: json.tool,
+          description: json.description,
+          render: function() {
+            if (Optional.is(this.preRender)) {
+              this.preRender()
+            }
+            this.renderBackgroundColor()
+      
+            if (this.sprite != null) {
+              var alpha = this.sprite.getAlpha()
+              this.sprite
+                .setAlpha(alpha * (Struct.get(this.enable, "value") == false ? 0.5 : 1.0))
+                .scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+                .render(
+                  this.context.area.getX() + this.area.getX(),
+                  this.context.area.getY() + this.area.getY())
+                .setAlpha(alpha)
+            }
+      
+            if (this.label != null) {
+              this.label.render(
+                // todo VALIGN HALIGN
+                this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+              )
+            }
+
+            if (this.isHoverOver) {
+              var text = this.label.text
+              this.label.text = this.description
+              this.label.render(
+                // todo VALIGN HALIGN
+                this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 24
+              )
+              this.label.text = text
+            }
+            return this
+          },
         },
       }
     }
@@ -346,22 +384,26 @@ function VETrackControl(_editor) constructor {
           "tools": new Array(Struct, [
             factoryToolItem({ 
               name: "ve-track-control_tool_brush", 
-              text: "Brush", 
+              text: "B", 
+              description: "Brush", 
               tool: "tool_brush",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_eraser", 
-              text: "Erase", 
+              text: "E", 
+              description: "Erase", 
               tool: "tool_erase",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_clone", 
-              text: "Clone", 
+              text: "C", 
+              description: "Clone", 
               tool: "tool_clone",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_select", 
-              text: "Select", 
+              text: "S", 
+              description: "Select", 
               tool: "tool_select",
             }),
           ])
