@@ -68,7 +68,6 @@
 [ DONE ] add error popup queue
 [ DONE ] add player event to brush
 [ DONE ] add particle burst event to brush
-[      ] add "?" button to json text fields
 L O W P R I O R I T Y
 [      ] keyboard shortcuts
 [      ] context menu

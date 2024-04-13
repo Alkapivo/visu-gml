@@ -327,7 +327,7 @@ function VisuController(layerName) constructor {
       brushTool: "B",
       cloneTool: "C",
       previewBrush: "P",
-      previewEvent: "P",
+      previewEvent: "I",
       controlLeft: KeyboardKeyType.CONTROL_LEFT,
     }
   )
@@ -518,6 +518,39 @@ function VisuController(layerName) constructor {
   }
 
   ///@private
+  ///@type {Timer}
+  autosaveTimer = new Timer(Core.getProperty("visu.autosave.interval", 1)  * 60, { loop: Infinity })
+
+  ///@return {VisuController}
+  autosave = function() {
+    try {
+      var path = $"{global.__VisuTrack.path}manifest.visu"
+      if (!FileUtil.fileExists(path)) {
+        return
+      }
+
+      global.__VisuTrack.saveProject(path)
+
+      this.send(new Event("spawn-popup", 
+        { message: $"Project '{this.trackService.track.name}' auto saved successfully at: '{path}'" }))
+    } catch (exception) {
+      this.send(new Event("spawn-popup", { message: $"Cannot save the project: {exception.message}" }))
+      Logger.error("VETitleBar", $"Cannot auto save the project: {exception.message}")
+    }
+
+    return this
+  }
+
+  ///@return {VisuController}
+  autosaveHandler = function() {
+    if (this.fsm.getStateName() != "pause") {
+      return this
+    }
+
+    return this.autosaveTimer.update().finished ? this.autosave() : this
+  }
+
+  ///@private
   ///@return {VisuController}
   updateIO = function() {
     this.keyboard.update()
@@ -680,7 +713,7 @@ function VisuController(layerName) constructor {
       }
     }
 
-    if (this.keyboard.keys.controlLeft.on && this.keyboard.keys.previewEvent.pressed) {
+    if (this.keyboard.keys.previewEvent.pressed) {
       var event = this.editor.accordion.eventInspector.store.getValue("event")
       if (Core.isType(event, VEEvent)) {
         var handler = this.trackService.handlers.get(event.type)
@@ -813,6 +846,8 @@ function VisuController(layerName) constructor {
     }
 
     this.services.forEach(this.updateService, this)
+
+    this.autosaveHandler()
 
     return this
   }
