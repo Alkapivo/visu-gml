@@ -2148,10 +2148,10 @@ global.__VEComponents = new Map(String, Callable, {
     ).forEach(addItem, items)
 
     factoryTextField(
-      $"{name}_increment",
-      layout.nodes.increment, 
+      $"{name}_increase",
+      layout.nodes.increase, 
       Struct.appendRecursive(
-        Struct.get(config, "increment"), 
+        Struct.get(config, "increase"), 
         { field: { transformNumericProperty: "increase" } },
         false
       )
@@ -2161,7 +2161,7 @@ global.__VEComponents = new Map(String, Callable, {
     return items
   },
 
-    ///@param {String} name
+  ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
@@ -2380,6 +2380,636 @@ global.__VEComponents = new Map(String, Callable, {
     ).forEach(addItem, items)
     #endregion
 
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec3-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec3 = Struct.get(data, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title",
+      layout.nodes.title,
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    #region X
+    factoryTextField(
+      $"{name}_valueX",
+      layout.nodes.valueX,
+      Struct.appendRecursive(
+        Struct.get(config, "valueX"), 
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector3Property: "x",
+          }
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextField(
+      $"{name}_targetX",
+      layout.nodes.targetX,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector3Property: "x",
+          },
+        },
+        Struct.get(config, "targetX"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorX", 
+      layout.nodes.factorX, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector3Property: "x",
+          }
+        },
+        Struct.get(config, "factorX"), 
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextField(
+      $"{name}_incrementX",
+      layout.nodes.incrementX, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "increase",
+            transformVector3Property: "x",
+          }
+        },
+        Struct.get(config, "incrementX"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    #region Y
+    factoryTextField(
+      $"{name}_valueY",
+      layout.nodes.valueY,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector3Property: "y",
+          }
+        },
+        Struct.get(config, "valueY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_targetY",
+      layout.nodes.targetY,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          }
+        },
+        Struct.get(config, "targetY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorY", 
+      layout.nodes.factorY, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          }
+        },
+        Struct.get(config, "factorY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_incrementY",
+      layout.nodes.incrementY, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          }
+        },
+        Struct.get(config, "incrementY"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    #region Z
+    factoryTextField(
+      $"{name}_valueZ",
+      layout.nodes.valueZ,
+      Struct.appendRecursive(
+        Struct.get(config, "valueZ"), 
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          }
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextField(
+      $"{name}_targetZ",
+      layout.nodes.targetZ,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector3Property: "z",
+          },
+        },
+        Struct.get(config, "targetZ"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorZ", 
+      layout.nodes.factorZ, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector3Property: "z",
+          }
+        },
+        Struct.get(config, "factorZ"), 
+        false
+      )
+    ).forEach(addItem, items)
+  
+    factoryTextField(
+      $"{name}_incrementZ",
+      layout.nodes.incrementZ, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "increase",
+            transformVector3Property: "z",
+          }
+        },
+        Struct.get(config, "incrementZ"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+    
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec4-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec4 = Struct.get(data, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title",
+      layout.nodes.title,
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    #region X
+    factoryTextField(
+      $"{name}_valueX",
+      layout.nodes.valueX,
+      Struct.appendRecursive(
+        Struct.get(config, "valueX"), 
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector4Property: "x",
+          }
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextField(
+      $"{name}_targetX",
+      layout.nodes.targetX,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector4Property: "x",
+          },
+        },
+        Struct.get(config, "targetX"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorX", 
+      layout.nodes.factorX, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          }
+        },
+        Struct.get(config, "factorX"), 
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextField(
+      $"{name}_incrementX",
+      layout.nodes.incrementX, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "increase",
+            transformVector4Property: "x",
+          }
+        },
+        Struct.get(config, "incrementX"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    #region Y
+    factoryTextField(
+      $"{name}_valueY",
+      layout.nodes.valueY,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector4Property: "y",
+          }
+        },
+        Struct.get(config, "valueY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_targetY",
+      layout.nodes.targetY,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector4Property: "y",
+          }
+        },
+        Struct.get(config, "targetY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorY", 
+      layout.nodes.factorY, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector4Property: "y",
+          }
+        },
+        Struct.get(config, "factorY"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_incrementY",
+      layout.nodes.incrementY, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "increase",
+            transformVector4Property: "y",
+          }
+        },
+        Struct.get(config, "incrementY"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    #region Z
+    factoryTextField(
+      $"{name}_valueZ",
+      layout.nodes.valueZ,
+      Struct.appendRecursive(
+        Struct.get(config, "valueZ"), 
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector4Property: "z",
+          }
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextField(
+      $"{name}_targetZ",
+      layout.nodes.targetZ,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector4Property: "z",
+          },
+        },
+        Struct.get(config, "targetZ"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorZ", 
+      layout.nodes.factorZ, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector4Property: "z",
+          }
+        },
+        Struct.get(config, "factorZ"), 
+        false
+      )
+    ).forEach(addItem, items)
+  
+    factoryTextField(
+      $"{name}_incrementZ",
+      layout.nodes.incrementZ, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "increase",
+            transformVector4Property: "z",
+          }
+        },
+        Struct.get(config, "incrementZ"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    #region A
+    factoryTextField(
+      $"{name}_valueA",
+      layout.nodes.valueA,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          }
+        },
+        Struct.get(config, "valueA"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_targetA",
+      layout.nodes.targetA,
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          }
+        },
+        Struct.get(config, "targetA"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factorA", 
+      layout.nodes.factorA, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          }
+        },
+        Struct.get(config, "factorA"), 
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_incrementA",
+      layout.nodes.incrementA, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          }
+        },
+        Struct.get(config, "incrementA"), 
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+    
     return items
   },
 

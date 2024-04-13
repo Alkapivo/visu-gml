@@ -402,6 +402,20 @@ global.__VEStyles = new Map(String, Struct, {
       align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
     }
   },
+  "transform-vec3-uniform": {
+    label: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
+    }
+  },
+  "transform-vec4-uniform": {
+    label: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
+    }
+  },
   "texture-field-ext": {
     resolution: {
       font: "font_inter_10_regular",

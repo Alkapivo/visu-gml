@@ -191,7 +191,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shaderPipeline.templates,
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: MAGIC_NUMBER_TASK * 10,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -223,7 +223,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.bulletService.templates,
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: MAGIC_NUMBER_TASK * 10,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -239,7 +239,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.lyricsService.templates,
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: MAGIC_NUMBER_TASK * 10,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -255,7 +255,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shroomService.templates,
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: MAGIC_NUMBER_TASK * 10,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -271,7 +271,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.particleService.templates,
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: MAGIC_NUMBER_TASK * 10,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -321,7 +321,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         saveTemplate: acc.controller.editor.brushService.saveTemplate,
                         file: file,
                       },
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: MAGIC_NUMBER_TASK * 10,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)

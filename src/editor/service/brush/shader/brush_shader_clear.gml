@@ -28,6 +28,17 @@ function brush_shader_clear(json = null) {
         passthrough: function(value) {
           return round(clamp(NumberUtil.parse(value, this.value), 1, 999))
         },
+      },
+      "shader-clear_use-fade-out": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shader-clear_use-fade-out", false),
+      },
+      "shader-clear_fade-out": {
+        type: Number,
+        value: Struct.getDefault(json, "shader-clear_fade-out", 0.0),
+        passthrough: function(value) {
+          return round(clamp(NumberUtil.parse(value, this.value), 0, 999))
+        },
       }
     }),
     components: new Array(Struct, [
@@ -92,6 +103,39 @@ function brush_shader_clear(json = null) {
           field: { 
             store: { key: "shader-clear_clear-amount" },
             enable: { key: "shader-clear_use-clear-amount" },
+          },
+        },
+      },
+      {
+        name: "shader-clear_use-fade-out",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Fade out",
+            enable: { key: "shader-clear_use-fade-out" },
+          },  
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shader-clear_use-fade-out" },
+          },
+        },
+      },
+      {
+        name: "shader-clear_fade-out",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Time",
+            enable: { key: "shader-clear_use-fade-out" },
+          },  
+          field: { 
+            store: { key: "shader-clear_fade-out" },
+            enable: { key: "shader-clear_use-fade-out" },
           },
         },
       },

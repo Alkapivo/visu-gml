@@ -75,8 +75,8 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
             label: { text: "factor" },
             field: { store: { key: uniform.name } },
           },
-          increment: {
-            label: { text: "increment" },
+          increase: {
+            label: { text: "increase" },
             field: { store: { key: uniform.name } },
           },
         }
@@ -140,71 +140,171 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       }
     }
   })
-  /*
-  .set(ShaderUniformType.findKey(ShaderUniformType.VECTOR3), function(uniform) {
+  .set(ShaderUniformType.findKey(ShaderUniformType.VECTOR3), function(uniform, json) {
     return {
       store: {
-        name: uniform.name,
+        key: uniform.name,
         item: {
-          type: Number,
-          value: 0,
+          type: Vector3Transformer,
+          value: new Vector3Transformer(Struct
+            .getDefault(json, uniform.name, { 
+              x: { value: 1.0 }, 
+              y: { value: 1.0 },
+              z: { value: 1.0 },
+            })),
         },
       },
       component: {
         name: $"shader-uniform_{uniform.name}",
-        template: VEComponents.get("shader-property"),
-        layout: VELayouts.get("shader-property"),
+        template: VEComponents.get("transform-vec3-uniform"),
+        layout: VELayouts.get("transform-vec3-uniform"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: uniform.name },
-          field: { store: { key: uniform.name } }
+          title: { label: { text: uniform.name } },
+          valueX: {
+            label: { text: "value X" },
+            field: { store: { key: uniform.name } },
+          },
+          targetX: {
+            label: { text: "target X" },
+            field: { store: { key: uniform.name } },
+          },
+          factorX: {
+            label: { text: "factor X" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementX: {
+            label: { text: "inc. X" },
+            field: { store: { key: uniform.name } },
+          },
+          valueY: {
+            label: { text: "value Y" },
+            field: { store: { key: uniform.name } },
+          },
+          targetY: {
+            label: { text: "target Y" },
+            field: { store: { key: uniform.name } },
+          },
+          factorY: {
+            label: { text: "factor Y" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementY: {
+            label: { text: "inc. Y" },
+            field: { store: { key: uniform.name } },
+          },
+          valueZ: {
+            label: { text: "value Z" },
+            field: { store: { key: uniform.name } },
+          },
+          targetZ: {
+            label: { text: "target Z" },
+            field: { store: { key: uniform.name } },
+          },
+          factorZ: {
+            label: { text: "factor Z" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementZ: {
+            label: { text: "inc. Z" },
+            field: { store: { key: uniform.name } },
+          },
         }
       }
     }
   })
-  .set(ShaderUniformType.findKey(ShaderUniformType.VECTOR4), function(uniform) {
+  .set(ShaderUniformType.findKey(ShaderUniformType.VECTOR4), function(uniform, json) {
     return {
       store: {
-        name: uniform.name,
+        key: uniform.name,
         item: {
-          type: Number,
-          value: 0,
+          type: Vector4Transformer,
+          value: new Vector4Transformer(Struct
+            .getDefault(json, uniform.name, { 
+              x: { value: 1.0 }, 
+              y: { value: 1.0 },
+              z: { value: 1.0 },
+              a: { value: 1.0 },
+            })),
         },
       },
       component: {
         name: $"shader-uniform_{uniform.name}",
-        template: VEComponents.get("shader-property"),
-        layout: VELayouts.get("shader-property"),
+        template: VEComponents.get("transform-vec4-uniform"),
+        layout: VELayouts.get("transform-vec4-uniform"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: uniform.name },
-          field: { store: { key: uniform.name } }
+          title: { label: { text: uniform.name } },
+          valueX: {
+            label: { text: "value X" },
+            field: { store: { key: uniform.name } },
+          },
+          targetX: {
+            label: { text: "target X" },
+            field: { store: { key: uniform.name } },
+          },
+          factorX: {
+            label: { text: "factor X" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementX: {
+            label: { text: "inc. X" },
+            field: { store: { key: uniform.name } },
+          },
+          valueY: {
+            label: { text: "value Y" },
+            field: { store: { key: uniform.name } },
+          },
+          targetY: {
+            label: { text: "target Y" },
+            field: { store: { key: uniform.name } },
+          },
+          factorY: {
+            label: { text: "factor Y" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementY: {
+            label: { text: "inc. Y" },
+            field: { store: { key: uniform.name } },
+          },
+          valueZ: {
+            label: { text: "value Z" },
+            field: { store: { key: uniform.name } },
+          },
+          targetZ: {
+            label: { text: "target Z" },
+            field: { store: { key: uniform.name } },
+          },
+          factorZ: {
+            label: { text: "factor Z" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementZ: {
+            label: { text: "inc. Z" },
+            field: { store: { key: uniform.name } },
+          },
+          valueA: {
+            label: { text: "value A" },
+            field: { store: { key: uniform.name } },
+          },
+          targetA: {
+            label: { text: "target A" },
+            field: { store: { key: uniform.name } },
+          },
+          factorA: {
+            label: { text: "factor A" },
+            field: { store: { key: uniform.name } },
+          },
+          incrementA: {
+            label: { text: "inc. A" },
+            field: { store: { key: uniform.name } },
+          },
         }
       }
     }
   })
-  .set(ShaderUniformType.findKey(ShaderUniformType.RESOLUTION), function(uniform) {
-    return {
-      store: {
-        name: uniform.name,
-        item: {
-          type: Number,
-          value: 0,
-        },
-      },
-      component: {
-        name: $"shader-uniform_{uniform.name}",
-        template: VEComponents.get("shader-property"),
-        layout: VELayouts.get("shader-property"),
-        config: {
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: uniform.name },
-          field: { store: { key: uniform.name } }
-        }
-      }
-    }
-  })
-  */
 #macro ShaderUniformTemplates global.__ShaderUniformTemplates
 
 

@@ -375,8 +375,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_alpha-start",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Start" },
@@ -406,12 +406,40 @@ function template_particle(json = null) {
               },
             },
           },
+          slider: {
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                var parsed = NumberUtil.parse(value.alpha.start)
+                if (!Core.isType(parsed, Number)) {
+                  return
+                }
+
+                data.value = parsed
+              },
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), ParticleTemplate)) {
+                  return
+                }
+
+                var template = item.get()
+                template.alpha.start = clamp(parsed, 0.0, 1.0)
+                item.set(template)
+              },
+            },
+            minValue: 0.0,
+            maxValue: 1.0,
+          }
         },
       },
       {
         name: "particle_alpha-halfway",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Halfway" },
@@ -441,12 +469,40 @@ function template_particle(json = null) {
               },
             },
           },
+          slider: { 
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                var parsed = NumberUtil.parse(value.alpha.halfway)
+                if (!Core.isType(parsed, Number)) {
+                  return
+                }
+
+                data.value = parsed
+              },
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), ParticleTemplate)) {
+                  return
+                }
+
+                var template = item.get()
+                template.alpha.halfway = clamp(parsed, 0.0, 1.0)
+                item.set(template)
+              },
+            },
+            minValue: 0.0,
+            maxValue: 1.0,
+          },
         },
       },
       {
         name: "particle_alpha-finish",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Finish" },
@@ -476,7 +532,36 @@ function template_particle(json = null) {
               },
             },
           },
-        },
+          slider: {
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                var parsed = NumberUtil.parse(value.alpha.finish)
+                if (!Core.isType(parsed, Number)) {
+                  return
+                }
+
+                data.value = parsed
+              },
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), ParticleTemplate)) {
+                  return
+                }
+
+                var template = item.get()
+                template.alpha.finish = clamp(parsed, 0.0, 1.0)
+                item.set(template)
+              },
+            },
+            minValue: 0.0,
+            maxValue: 1.0,
+          }
+        },minValue: 0.0,
+            maxValue: 1.0,
       },
       #endregion
       #region Angle
@@ -561,8 +646,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_angle-minValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -592,12 +677,40 @@ function template_particle(json = null) {
               },
             },
           },
+          slider: {
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                var parsed = NumberUtil.parse(value.angle.minValue)
+                if (!Core.isType(parsed, Number)) {
+                  return
+                }
+
+                data.value = parsed
+              },
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), ParticleTemplate)) {
+                  return
+                }
+
+                var template = item.get()
+                template.angle.minValue = parsed
+                item.set(template)
+              },
+            },
+            minValue: 0.0,
+            maxValue: 360.0
+          }
         },
       },
       {
         name: "particle_angle-maxValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -627,6 +740,34 @@ function template_particle(json = null) {
               },
             },
           },
+          slider: {
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                var parsed = NumberUtil.parse(value.angle.maxValue)
+                if (!Core.isType(parsed, Number)) {
+                  return
+                }
+
+                data.value = parsed
+              },
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), ParticleTemplate)) {
+                  return
+                }
+
+                var template = item.get()
+                template.angle.maxValue = parsed
+                item.set(template)
+              },
+            },
+            minValue: 0.0,
+            maxValue: 360.0,
+          }
         },
       },
       #endregion
@@ -1025,8 +1166,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_gravity-angle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Angle" },
@@ -1056,6 +1197,34 @@ function template_particle(json = null) {
               },
             },
           },
+          slider: {
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                var parsed = NumberUtil.parse(value.gravity.angle)
+                if (!Core.isType(parsed, Number)) {
+                  return
+                }
+
+                data.value = parsed
+              },
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), ParticleTemplate)) {
+                  return
+                }
+
+                var template = item.get()
+                template.gravity.angle = parsed
+                item.set(template)
+              },
+            },
+            minValue: 0.0,
+            maxValue: 360.0,
+          }
         },
       },
       {
@@ -1292,8 +1461,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_orientation-minValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -1323,12 +1492,40 @@ function template_particle(json = null) {
               },
             },
           },
+          slider: {
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                var parsed = NumberUtil.parse(value.orientation.minValue)
+                if (!Core.isType(parsed, Number)) {
+                  return
+                }
+
+                data.value = parsed
+              },
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), ParticleTemplate)) {
+                  return
+                }
+
+                var template = item.get()
+                template.orientation.minValue = parsed
+                item.set(template)
+              },
+            },
+            minValue: 0.0,
+            maxValue: 360.0,
+          }
         },
       },
       {
         name: "particle_orientation-maxValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -1358,11 +1555,38 @@ function template_particle(json = null) {
               },
             },
           },
+          slider: {
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                var parsed = NumberUtil.parse(value.orientation.maxValue)
+                if (!Core.isType(parsed, Number)) {
+                  return
+                }
+
+                data.value = parsed
+              },
+              set: function(value) { 
+                var parsed = NumberUtil.parse(value)
+                var item = this.get()
+                if (!Core.isType(parsed, Number)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), ParticleTemplate)) {
+                  return
+                }
+
+                var template = item.get()
+                template.orientation.maxValue = parsed
+                item.set(template)
+              },
+            },
+            minValue: 0.0,
+            maxValue: 360.0,
+          }
         },
       },
       #endregion
     ]),
   }
-
   return template
 }

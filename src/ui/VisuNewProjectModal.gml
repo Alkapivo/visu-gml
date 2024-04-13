@@ -399,10 +399,15 @@ function VisuNewProjectForm(json = null) constructor {
           }
           
           var path = FileUtil.getPathToSaveWithDialog({ 
-            description: "JSON file",
+            description: "VISU file",
             filename: "manifest", 
-            xtension: "json" 
+            extension: "visu" 
           })
+
+          if (!Optional.is(path)) {
+            return
+          }
+
           try {
             this.context.state.get("form").save(path)
           } catch (exception) {
@@ -410,6 +415,17 @@ function VisuNewProjectForm(json = null) constructor {
               { message: $"Cannot create project: {exception.message}" }))
           }
           this.context.modal.send(new Event("close"))
+
+          try {
+            Assert.isTrue(FileUtil.fileExists(path))
+            Beans.get(BeanVisuController).send(new Event("load", {
+              manifest: path,
+              autoplay: false
+            }))
+          } catch (exception) {
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+              { message: $"Cannot load the project: {exception.message}" }))
+          }
         },
       },
     },
@@ -578,33 +594,23 @@ function VisuNewProjectForm(json = null) constructor {
 
     templates.forEach(function(template, key, acc) {
       var filename = Assert.isType(Struct.get(acc.manifest.data, key), String)
-      acc.fs.send(new Event("save-file-sync")
-        .setData(new File({
-          path: $"{acc.path}{filename}" ,
-          data: String.replaceAll(JSON.stringify(template, { pretty: true }), "\\", ""),
-      })))
+      FileUtil.writeFileSync(new File({
+        path: $"{acc.path}{filename}" ,
+        data: String.replaceAll(JSON.stringify(template, { pretty: true }), "\\", ""),
+      }))
     }, {
       fs: fileService,
       manifest: manifest,
       path: path,
     })
 
-    fileService.send(new Event("save-file-sync")
-      .setData(new File({
-        path: $"{path}manifest.visu" ,
-        data: String.replaceAll(JSON.stringify(manifest, { pretty: true }), "\\", ""),
-      }))
-      .setPromise(new Promise()
-        .setState({ name: json.name, path: path })
-        .whenSuccess(function(result) {
-          Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-            { message: $"Project '{this.state.name}' created successfully at: '{this.state.path}'" }))
-        })
-        .whenFailure(function(result) {
-          Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-            { message: $"Cannot create project '{this.state.name}' at: '{this.state.path}'" }))
-        })
-      ))
+    FileUtil.writeFileSync(new File({
+      path: $"{path}manifest.visu" ,
+      data: String.replaceAll(JSON.stringify(manifest, { pretty: true }), "\\", ""),
+    }))
+
+    Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+      { message: $"Project '{json.name}' created successfully at: '{path}'" }))
 
     return this
   }

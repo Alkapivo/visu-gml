@@ -773,8 +773,8 @@ global.__VELayouts = new Map(String, Callable, {
           y: function() { return this.context.nodes.target.bottom() + this.margin.top },
           height: function() { return 32 },
         },
-        increment: {
-          name: "transform-numeric-uniform.increment",
+        increase: {
+          name: "transform-numeric-uniform.increase",
           y: function() { return this.context.nodes.factor.bottom() + this.margin.top },
           height: function() { return 32 },
         },
@@ -782,7 +782,7 @@ global.__VELayouts = new Map(String, Callable, {
     }
   },
 
-    ///@param {?Struct} [config]
+  ///@param {?Struct} [config]
   ///@return {Struct}
   "transform-vec2-uniform": function(config = null) {
     return {
@@ -840,6 +840,194 @@ global.__VELayouts = new Map(String, Callable, {
         incrementY: {
           name: "transform-vec2-uniform.incrementY",
           y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec3-uniform": function(config = null) {
+    return {
+      name: "transform-vec3-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        var fieldHeight = this.nodes.title.valueX.height()
+         + this.nodes.title.valueX().margin.top
+         + this.nodes.title.valueX().margin.bottom
+        return this.nodes.title.height()
+          + this.nodes.title.margin.top
+          + this.nodes.title.margin.bottom
+          + (fieldHeight * 12)
+      },
+      nodes: {
+        title: {
+          name: "transform-vec3-uniform.title",
+          height: function() { return 42 },
+        },
+        valueX: {
+          name: "transform-vec3-uniform.valueX",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        targetX: {
+          name: "transform-vec3-uniform.targetX",
+          y: function() { return this.context.nodes.valueX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factorX: {
+          name: "transform-vec3-uniform.factorX",
+          y: function() { return this.context.nodes.targetX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        incrementX: {
+          name: "transform-vec3-uniform.incrementX",
+          y: function() { return this.context.nodes.factorX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        valueY: {
+          name: "transform-vec3-uniform.valueY",
+          y: function() { return this.context.nodes.incrementX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        targetY: {
+          name: "transform-vec3-uniform.targetY",
+          y: function() { return this.context.nodes.valueY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factorY: {
+          name: "transform-vec3-uniform.factorY",
+          y: function() { return this.context.nodes.targetY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        incrementY: {
+          name: "transform-vec3-uniform.incrementY",
+          y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        valueZ: {
+          name: "transform-vec3-uniform.valueZ",
+          y: function() { return this.context.nodes.incrementY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        targetZ: {
+          name: "transform-vec3-uniform.targetZ",
+          y: function() { return this.context.nodes.valueZ.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factorZ: {
+          name: "transform-vec3-uniform.factorZ",
+          y: function() { return this.context.nodes.targetZ.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        incrementZ: {
+          name: "transform-vec3-uniform.incrementZ",
+          y: function() { return this.context.nodes.factorZ.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec4-uniform": function(config = null) {
+    return {
+      name: "transform-vec4-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        var fieldHeight = this.nodes.title.valueX.height()
+         + this.nodes.title.valueX().margin.top
+         + this.nodes.title.valueX().margin.bottom
+        return this.nodes.title.height()
+          + this.nodes.title.margin.top
+          + this.nodes.title.margin.bottom
+          + (fieldHeight * 16)
+      },
+      nodes: {
+        title: {
+          name: "transform-vec4-uniform.title",
+          height: function() { return 42 },
+        },
+        valueX: {
+          name: "transform-vec4-uniform.valueX",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        targetX: {
+          name: "transform-vec4-uniform.targetX",
+          y: function() { return this.context.nodes.valueX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factorX: {
+          name: "transform-vec4-uniform.factorX",
+          y: function() { return this.context.nodes.targetX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        incrementX: {
+          name: "transform-vec4-uniform.incrementX",
+          y: function() { return this.context.nodes.factorX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        valueY: {
+          name: "transform-vec4-uniform.valueY",
+          y: function() { return this.context.nodes.incrementX.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        targetY: {
+          name: "transform-vec4-uniform.targetY",
+          y: function() { return this.context.nodes.valueY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factorY: {
+          name: "transform-vec4-uniform.factorY",
+          y: function() { return this.context.nodes.targetY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        incrementY: {
+          name: "transform-vec4-uniform.incrementY",
+          y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        valueZ: {
+          name: "transform-vec4-uniform.valueZ",
+          y: function() { return this.context.nodes.incrementY.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        targetZ: {
+          name: "transform-vec4-uniform.targetZ",
+          y: function() { return this.context.nodes.valueZ.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factorZ: {
+          name: "transform-vec4-uniform.factorZ",
+          y: function() { return this.context.nodes.targetZ.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        incrementZ: {
+          name: "transform-vec4-uniform.incrementZ",
+          y: function() { return this.context.nodes.factorZ.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        valueA: {
+          name: "transform-vec4-uniform.valueA",
+          y: function() { return this.context.nodes.incrementZ.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        targetA: {
+          name: "transform-vec4-uniform.targetA",
+          y: function() { return this.context.nodes.valueA.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        factorA: {
+          name: "transform-vec4-uniform.factorA",
+          y: function() { return this.context.nodes.targetA.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
+        incrementA: {
+          name: "transform-vec4-uniform.incrementA",
+          y: function() { return this.context.nodes.factorA.bottom() + this.margin.top },
           height: function() { return 32 },
         },
       }

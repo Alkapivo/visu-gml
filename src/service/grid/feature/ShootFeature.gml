@@ -26,7 +26,7 @@ function ShootFeature(json) {
 
     ///@private
     ///@type {Timer}
-    timer: new Timer(this.interval, { 
+    timer: new Timer(Struct.getDefault(json, "interval", 1.0), { 
       loop: Struct.contains(json, "bullets") ? json.bullets : Infinity 
     }),
 
@@ -34,7 +34,7 @@ function ShootFeature(json) {
     ///@param {GridItem} item
     ///@param {VisuController} controller
     update: function(item, controller) {
-      if (!this.timer.update().finished) {
+      if (!this.timer.update().finished || this.timer.loop == this.timer.loopCounter) {
         return
       }
 

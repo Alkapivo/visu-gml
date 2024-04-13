@@ -533,7 +533,7 @@ function VETrackControl(_editor) constructor {
                 text: "+",
                 color: VETheme.color.textFocus,
                 align: { v: VAlign.CENTER, h: HAlign.CENTER },
-                font: "font_inter_10_regular",
+                font: "font_inter_8_regular",
               },
               layout: layout.nodes.zoomIn,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -551,6 +551,44 @@ function VETrackControl(_editor) constructor {
               onMouseHoverOut: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
               },
+              description: "Zoom in",
+              render: function() {
+                if (Optional.is(this.preRender)) {
+                  this.preRender()
+                }
+                this.renderBackgroundColor()
+          
+                if (this.sprite != null) {
+                  var alpha = this.sprite.getAlpha()
+                  this.sprite
+                    .setAlpha(alpha * (Struct.get(this.enable, "value") == false ? 0.5 : 1.0))
+                    .scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+                    .render(
+                      this.context.area.getX() + this.area.getX(),
+                      this.context.area.getY() + this.area.getY())
+                    .setAlpha(alpha)
+                }
+          
+                if (this.label != null) {
+                  this.label.render(
+                    // todo VALIGN HALIGN
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                  )
+                }
+    
+                if (this.isHoverOver) {
+                  var text = this.label.text
+                  this.label.text = this.description
+                  this.label.render(
+                    // todo VALIGN HALIGN
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 24
+                  )
+                  this.label.text = text
+                }
+                return this
+              },
             },
             VEStyles.get("ve-track-control").button,
             false
@@ -562,7 +600,7 @@ function VETrackControl(_editor) constructor {
                 text: "-",
                 color: VETheme.color.textFocus,
                 align: { v: VAlign.CENTER, h: HAlign.CENTER },
-                font: "font_inter_10_regular",
+                font: "font_inter_8_regular",
               },
               layout: layout.nodes.zoomOut,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -579,6 +617,44 @@ function VETrackControl(_editor) constructor {
               },
               onMouseHoverOut: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },
+              description: "Zoom out",
+              render: function() {
+                if (Optional.is(this.preRender)) {
+                  this.preRender()
+                }
+                this.renderBackgroundColor()
+          
+                if (this.sprite != null) {
+                  var alpha = this.sprite.getAlpha()
+                  this.sprite
+                    .setAlpha(alpha * (Struct.get(this.enable, "value") == false ? 0.5 : 1.0))
+                    .scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+                    .render(
+                      this.context.area.getX() + this.area.getX(),
+                      this.context.area.getY() + this.area.getY())
+                    .setAlpha(alpha)
+                }
+          
+                if (this.label != null) {
+                  this.label.render(
+                    // todo VALIGN HALIGN
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                  )
+                }
+    
+                if (this.isHoverOver) {
+                  var text = this.label.text
+                  this.label.text = this.description
+                  this.label.render(
+                    // todo VALIGN HALIGN
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 24
+                  )
+                  this.label.text = text
+                }
+                return this
               },
             },
             VEStyles.get("ve-track-control").button,

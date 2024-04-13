@@ -469,7 +469,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       acc: {
                         saveTemplate: saveTemplate,
                       },
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: MAGIC_NUMBER_TASK * 10,
                     })
                     .whenSuccess(function(result) {
                       var task = JSON.parserTask(result.data, this.state)
@@ -972,11 +972,11 @@ function VEBrushToolbar(_editor) constructor {
   store = new Store({
     "category": {
       type: String,
-      value: "grid",
+      value: "shader",
     },
     "type": {
       type: String,
-      value: VEBrushType.GRID_PLAYER,
+      value: VEBrushType.SHADER_SPAWN,
     },
     "template": {
       type: Optional.of(VEBrushTemplate),

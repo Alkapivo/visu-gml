@@ -79,10 +79,13 @@ global.__shader_track_event = new Map(String, Callable, {
     }
   },
   "brush_shader_clear": function(data) {
-    static fadeOutTask = function(task) {
-      var fadeOut = task.state.getDefault("fadeOut", 0.0)
+    static fadeOutTask = function(task, iterator, _fadeOut) {
+      var fadeOut = Core.isType(_fadeOut, Number) 
+        ? _fadeOut
+        : task.state.getDefault("fadeOut", 0.0)
+      task.state.set("fadeOut", fadeOut)
       if (task.timeout.time < task.timeout.duration - fadeOut) {
-        task.timeout.time = task.timeout.duration - fadeOut
+        task.timeout.time = clamp(task.timeout.duration - fadeOut, 0.0, task.timeout.duration)
       }
     }
 
@@ -91,11 +94,19 @@ global.__shader_track_event = new Map(String, Callable, {
         return BREAK_LOOP
       }
 
-      if (task.timeout.time < task.timeout.duration 
-         - task.state.getDefault("fadeOut", 0.0)) {
-        acc.handler(task)
+      var fadeOut = Core.isType(acc.fadeOut, Number) 
+        ? acc.fadeOut
+        : task.state.getDefault("fadeOut", 0.0)
+      task.state.set("fadeOut", fadeOut)
+      if (task.timeout.time < task.timeout.duration - fadeOut) {
+        acc.handler(task, iterator, fadeOut)
         acc.amount = acc.amount - 1
       }
+    }
+
+    fadeOut = null
+    if (Struct.get(data, "shader-clear_use-fade-out")) {
+      fadeOut = Struct.get(data, "shader-clear_fade-out")
     }
 
     var controller = Beans.get(BeanVisuController)
@@ -103,14 +114,14 @@ global.__shader_track_event = new Map(String, Callable, {
     if (Struct.get(data, "shader-clear_use-clear-all-shaders") == true) {
       switch (pipeline) {
         case "Grid":
-          controller.shaderPipeline.executor.tasks.forEach(fadeOutTask)
+          controller.shaderPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
           break
         case "Background":
-          controller.shaderBackgroundPipeline.executor.tasks.forEach(fadeOutTask)
+          controller.shaderBackgroundPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
           break
         case "All":
-          controller.shaderPipeline.executor.tasks.forEach(fadeOutTask)
-          controller.shaderBackgroundPipeline.executor.tasks.forEach(fadeOutTask)
+          controller.shaderPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
+          controller.shaderBackgroundPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
           break
       }
     }
@@ -122,22 +133,26 @@ global.__shader_track_event = new Map(String, Callable, {
           controller.shaderPipeline.executor.tasks.forEach(amountTask, {
             amount: amount,
             handler: fadeOutTask,
+            fadeOut: fadeOut,
           })
           break
         case "Background":
           controller.shaderBackgroundPipeline.executor.tasks.forEach(amountTask, {
             amount: amount,
             handler: fadeOutTask,
+            fadeOut: fadeOut,
           })
           break
         case "All":
           controller.shaderPipeline.executor.tasks.forEach(amountTask, {
             amount: amount,
             handler: fadeOutTask,
+            fadeOut: fadeOut,
           })
           controller.shaderBackgroundPipeline.executor.tasks.forEach(amountTask, {
             amount: amount,
             handler: fadeOutTask,
+            fadeOut: fadeOut,
           })
           break
       }
