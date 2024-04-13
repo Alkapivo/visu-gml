@@ -168,15 +168,15 @@ function GridRenderer(_controller, config = {}) constructor {
     var alpha = primaryAlpha
     var color = primaryColor
     var viewHeight = gridService.view.height
-    var borderSize = 3.0
+    var borderSize = 5.0
     var primaryBeginIdx = ceil(borderSize * channels)
     var primaryEndIdx = primaryBeginIdx + floor(channels) 
     var idx = 0
     for (var index = -1 * borderSize * channels; index <= channels + borderSize * channels; index++) {
       var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
-      var beginY = -10.0 * GRID_SERVICE_PIXEL_HEIGHT
+      var beginY = -20.0 * GRID_SERVICE_PIXEL_HEIGHT
       var endX = beginX
-      var endY = (viewHeight + 10.0) * GRID_SERVICE_PIXEL_HEIGHT
+      var endY = (viewHeight + 20.0) * GRID_SERVICE_PIXEL_HEIGHT
       var _thickness = index >= 0 && index < channels ? primaryThickness : secondaryThickness
       var _alpha = _thickness == primaryThickness ? primaryAlpha : secondaryAlpha
       var _color = _thickness == primaryThickness ? primaryColor : secondaryColor
@@ -350,7 +350,11 @@ function GridRenderer(_controller, config = {}) constructor {
         (spawner.x * GRID_SERVICE_PIXEL_WIDTH) - ((spawner.sprite.getWidth() * spawner.sprite.getScaleX()) / 2.0), 
         (spawner.y * GRID_SERVICE_PIXEL_HEIGHT) - ((spawner.sprite.getHeight() * spawner.sprite.getScaleY()) / 2.0)
       )
-      this.controller.shroomService.spawner = null
+
+      this.controller.shroomService.spawner.timeout--
+      if (this.controller.shroomService.spawner.timeout <= 0) {
+        this.controller.shroomService.spawner = null
+      }
     }
 
     // Render particleArea
@@ -373,7 +377,10 @@ function GridRenderer(_controller, config = {}) constructor {
         particleArea.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
       )
 
-      this.controller.shroomService.particleArea = null
+      this.controller.shroomService.particleArea.timeout--
+      if (this.controller.shroomService.particleArea.timeout <= 0) {
+        this.controller.shroomService.particleArea = null
+      }
     }
 
     return this
@@ -557,6 +564,8 @@ function GridRenderer(_controller, config = {}) constructor {
     if (properties.shaderClearFrame) {
       GPU.render.clear(properties.shaderClearColor)
     }
+
+    
 
     var size = renderer.controller.shaderPipeline
       .render(function(task, index, renderer) {

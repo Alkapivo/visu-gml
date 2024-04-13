@@ -127,7 +127,8 @@ function brush_grid_particle(json = null) {
                 bottomRight: shroomService.factorySpawner({ 
                   x: store.getValue("grid-particle_endX"), 
                   y: store.getValue("grid-particle_endY"),
-                })
+                }),
+                timeout: 2,
               }
             },
           },
