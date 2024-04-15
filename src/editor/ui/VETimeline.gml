@@ -1196,6 +1196,7 @@ function VETimeline(_editor) constructor {
           "speed": 2.0,
           "position": 0,
           "camera": 0,
+          "cameraPrevious": null,
           "time": null,
           "mouseX": null,
           "mouseXSensitivity": 30,
@@ -1222,15 +1223,25 @@ function VETimeline(_editor) constructor {
           
           var position = time == null ? spd * trackService.time : spd * time
           var camera = this.state.get("camera")
+          var cameraPrevious = this.state.get("cameraPrevious")
           var maxWidth = spd * duration
           if (position > camera + width) || (position < camera) {
             camera = clamp(position - width / 2, 0, maxWidth - width)
           }
           this.state.set("camera", camera)
+          this.state.set("cameraPrevious", camera)
           this.state.set("position", position)
           this.state.set("speed", spd)
           this.state.set("time", null)
           this.offset.x = -1 * camera
+
+          if (camera != cameraPrevious) {
+            var events = this.controller.containers.get("ve-timeline-events")
+            if (Core.isType(events, UI) 
+              && Core.isType(events.updateTimer, Timer)) {
+              events.updateTimer.finish()
+            }
+          }
 
           if (Optional.is(mouseX) && !mouse_check_button(mb_left)) {
             var timestamp = this.state.get("mouseXTime")
