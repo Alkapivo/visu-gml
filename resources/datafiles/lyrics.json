@@ -1,9 +1,21 @@
 {
   "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
   "data":{
-    "lyrics-01":{
+    "lyrics 1 ":{
       "lines":[
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu viverra dolor, at condimentum eros. Integer tellus ipsum, varius vitae purus sed, dapibus pharetra augue. Maecenas hendrerit neque et dignissim sodales. Aliquam dolor sem, commodo ac ipsum eget, porttitor semper mauris. Curabitur id massa lectus. Praesent pharetra dui ex, quis pretium metus tincidunt eu. Integer pulvinar nibh sed turpis efficitur, laoreet sagittis arcu suscipit. Vestibulum at metus tincidunt, condimentum ante id, ultricies lacus. Ut vestibulum lacinia maximus. Maecenas tempus arcu sit amet elit sollicitudin auctor. Suspendisse potenti. Curabitur vel urna quis leo volutpat luctus. Vivamus felis ligula, consequat vel rutrum vitae, volutpat vel leo. Pellentesque consectetur consectetur ante vitae tincidunt."
+        "I'm an error; an intentional mistake.",
+        "birthed from those atomic numbers that encompass us.",
+        "yet i blame them, the easy impossible.",
+        "because if i don't have a reason, I'm better off",
+        "",
+        "that's right, i'm the victim here",
+        "but this time, the choice is mine.",
+        "",
+        "is this really the paradise i asked for?",
+        "yes, yes it is.",
+        "i could never be happier.",
+        "i am happy. forever.",
+        ""
       ]
     }
   }
