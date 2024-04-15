@@ -370,7 +370,21 @@ function VisuNewProjectForm(json = null) constructor {
       layout: VELayouts.get("property-bar"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: "Remember to create project in an empty folder!" },
+        label: { 
+          text: "Remember to create project in an empty folder!",
+          updateCustom: function() {
+            if (!Optional.is(Struct.get(this, "flickeringTimer"))) {
+              Struct.set(this, "flickeringTimer", new Timer(0.5, { loop: Infinity }))
+            }
+            
+            if (this.flickeringTimer.update().finished) {
+              var color = this.backgroundColor == ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor()
+                ? ColorUtil.fromHex(VETheme.color.denyShadow).toGMColor()
+                : ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor()
+              this.backgroundColor = color
+            }
+          }
+        },
       },
     },
     {
