@@ -360,13 +360,41 @@ function VETimeline(_editor) constructor {
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": controller.editor.store,
+          "dragItem": null,
         }),
         updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
-        render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+        _render: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+        updateVerticalSelectedIndex: new BindIntent(Callable.run(UIUtil.templates.get("updateVerticalSelectedIndex"))),
+        render: function() {
+          this.updateVerticalSelectedIndex(32)
+          this._render()
+
+          ///@todo replace with Promise in clipboard
+          var dragItem = this.state.get("dragItem")
+          if (Optional.is(dragItem) 
+            && !mouse_check_button(mb_left) 
+            && !mouse_check_button_released(mb_left)) {
+            this.state.set("dragItem", null)
+            dragItem = null
+          }
+
+          if (Optional.is(dragItem)) {
+            var mouseX = device_mouse_x_to_gui(0)
+            var mouseY = device_mouse_y_to_gui(0)
+            var areaX = this.area.getX()
+            var areaY = this.area.getY()
+            var areaWidth = this.area.getWidth()
+            var areaHeight = this.area.getHeight()
+            if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+              draw_sprite_ext(texture_bazyl_cursor, 0, mouseX, mouseY, 1.0, 1.0, 0.0, c_white, 0.5)
+            }
+          }
+          return this
+        },
         scrollbarY: { align: HAlign.LEFT },
         _onMousePressedLeft: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY"))),
         _onMouseWheelUp: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY"))),
@@ -393,6 +421,72 @@ function VETimeline(_editor) constructor {
           
           if (Optional.is(events.updateTimer)) {
             events.updateTimer.finish()
+          }
+        },
+        onMouseDragLeft: function(event) {
+          var component = this.collection.components.find(function(component) {
+            var text = component.items.find(function(item) {
+              return item.type == UIText
+            })
+  
+            return Optional.is(text)
+              ? text.backgroundColor == ColorUtil.fromHex(text.colorHoverOver).toGMColor()
+              : false
+          })
+  
+          if (Optional.is(component)) {
+            this.state.set("dragItem", component)
+            MouseUtil.setClipboard(component)
+          }
+        },
+        onMouseDropLeft: function(event) {
+          var dragItem = this.state.get("dragItem")
+          if (Optional.is(dragItem) && MouseUtil.getClipboard() == dragItem) {
+            this.state.set("dragItem", null)
+            MouseUtil.setClipboard(null)
+
+            var component = this.collection.components.find(function(component) {
+              var text = component.items.find(function(item) {
+                return item.type == UIText
+              })
+
+              return Optional.is(text)
+                ? text.backgroundColor == ColorUtil.fromHex(text.colorHoverOver).toGMColor()
+                : false
+            })
+
+            if (Optional.is(component)) {
+              var track = Beans.get(BeanVisuController).trackService.track
+              var from = dragItem.index
+              var to = component.index
+              var size = track.channels.size()
+              if (from < 0 || from >= size)
+                || (to < 0 || to >= size) {
+                return
+              }
+
+              var array = GMArray.create(String, size, "")
+              track.channels.forEach(function(channel, key, array) {
+                array.set(channel.index, channel.name)
+              }, array)
+
+              array.move(from, to)
+                .forEach(function(name, index, channels) {
+                  channels.get(name).index = index
+                }, track.channels)
+
+              this.onInit()
+              if (Optional.is(this.updateTimer)) {
+                this.updateTimer.finish()
+              }
+
+              var events = this.controller.containers.get("ve-timeline-events")
+              events.onInit()
+
+              if (Optional.is(events.updateTimer)) {
+                events.updateTimer.finish()
+              }
+            }
           }
         },
         onInit: function() {
@@ -424,7 +518,11 @@ function VETimeline(_editor) constructor {
             template: VEComponents.get("channel-entry"),
             layout: VELayouts.get("channel-entry"),
             config: {
-              label: { text: name },
+              label: { 
+                text: name,
+                colorHoverOver: VETheme.color.accentShadow,
+                colorHoverOut: VETheme.color.primaryShadow,
+              },
               button: { 
                 sprite: {
                   name: "texture_ve_icon_trash",
