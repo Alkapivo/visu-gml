@@ -130,19 +130,8 @@ global.__VEStyles = new Map(String, Struct, {
         color: VETheme.color.textShadow,
       }
     },
-    up: {
+    mute: {
       backgroundColor: VETheme.color.primaryShadow,
-      sprite: { 
-        name: "texture_ve_button_item_up",
-        blend: VETheme.color.textShadow,
-      },
-    },
-    down: {
-      backgroundColor: VETheme.color.primaryShadow,
-      sprite: { 
-        name: "texture_ve_button_item_down",
-        blend: VETheme.color.textShadow,
-      },
     },
   },
   "brush-entry": {
@@ -153,20 +142,6 @@ global.__VEStyles = new Map(String, Struct, {
       font: "font_inter_10_regular",
       color: VETheme.color.textShadow,
       offset: { x: 4 },
-    },
-    up: {
-      backgroundColor: VETheme.color.primaryShadow,
-      sprite: { 
-        name: "texture_ve_button_item_up",
-        blend: VETheme.color.textShadow,
-      },
-    },
-    down: {
-      backgroundColor: VETheme.color.primaryShadow,
-      sprite: { 
-        name: "texture_ve_button_item_down",
-        blend: VETheme.color.textShadow,
-      },
     },
     remove: {
       backgroundColor: VETheme.color.primaryShadow,

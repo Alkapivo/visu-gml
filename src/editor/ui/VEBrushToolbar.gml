@@ -680,36 +680,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       },
                       brushTemplate: template,
                     },
-                    up: {
-                      onMouseReleasedLeft: function() {
-                        var brushToolbar = this.context.brushToolbar
-                        var type = brushToolbar.store.getValue("type")
-                        var templates = brushToolbar.editor.brushService.fetchTemplates(type)
-                        var size = templates.size()
-                        var index = this.component.index
-                        if (index <= 0 || size < 2) {
-                          return
-                        }
-
-                        templates.swapItems(index, index - 1)  
-                        brushToolbar.store.get("type").set(type)
-                      },
-                    },
-                    down: {
-                      onMouseReleasedLeft: function() {
-                        var brushToolbar = this.context.brushToolbar
-                        var type = brushToolbar.store.getValue("type")
-                        var templates = brushToolbar.editor.brushService.fetchTemplates(type)
-                        var size = templates.size()
-                        var index = this.component.index
-                        if (index >= size - 1 || size < 2) {
-                          return
-                        }
-                        
-                        templates.swapItems(index, index + 1)
-                        brushToolbar.store.get("type").set(type)
-                      },
-                    },
                     button: { 
                       sprite: {
                         name: "texture_ve_icon_trash",

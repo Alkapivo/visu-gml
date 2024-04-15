@@ -511,7 +511,7 @@ function VETimeline(_editor) constructor {
 
         ///@param {String} name
         addChannel: new BindIntent(function(name) {
-          Assert.isType(this.controller.editor.trackService.track
+          var channel = Assert.isType(this.controller.editor.trackService.track
             .addChannel(name).channels.get(name), TrackChannel)
           this.collection.add(new UIComponent({
             name: name,
@@ -532,73 +532,22 @@ function VETimeline(_editor) constructor {
                   this.context.removeChannel(this.component.name)
                 },
               },
-              up: {
-                onMouseReleasedLeft: function() {
-                  if (this.component.index <= 0) {
-                    return
-                  }
-
-                  var track = Beans.get(BeanVisuController).trackService.track
-                  var source = this.component.index
-                  var target = source - 1
-                  var sourceChannel = Assert.isType(track.channels
+              mute: {
+                channelIndex: channel.index,
+                spriteOn: { name: "visu_texture_checkbox_muted_on" },
+                spriteOff: { name: "visu_texture_checkbox_muted_off" },
+                value: channel.muted,
+                callback: function(event) {
+                  var controller = Beans.get(BeanVisuController)
+                  var channel = controller.trackService.track.channels
                     .find(function(channel, name, index) {
                       return channel.index == index
-                    }, source), TrackChannel)
-                  var targetChannel = Assert.isType(track.channels
-                    .find(function(channel, name, index) {
-                      return channel.index == index
-                    }, target), TrackChannel)
-
-                  sourceChannel.index = target
-                  targetChannel.index = source
-
-                  this.context.onInit()
-                  if (Optional.is(this.context.updateTimer)) {
-                    this.context.updateTimer.finish()
-                  }
-
-                  var events = this.context.controller.containers.get("ve-timeline-events")
-                  events.onInit()
-
-                  if (Optional.is(events.updateTimer)) {
-                    events.updateTimer.finish()
-                  }
-                },
-              },
-              down: {
-                onMouseReleasedLeft: function() {
-                  var track = Beans.get(BeanVisuController).trackService.track
-                  if (this.component.index >= track.channels.size() - 1) {
-                    return
-                  }
-
-                  var source = this.component.index
-                  var target = source + 1
-                  var sourceChannel = Assert.isType(track.channels
-                    .find(function(channel, name, index) {
-                      return channel.index == index
-                    }, source), TrackChannel)
-                  var targetChannel = Assert.isType(track.channels
-                    .find(function(channel, name, index) {
-                      return channel.index == index
-                    }, target), TrackChannel)
-
-                  sourceChannel.index = target
-                  targetChannel.index = source
-
-                  this.context.onInit()
-                  if (Optional.is(this.context.updateTimer)) {
-                    this.context.updateTimer.finish()
-                  }
-
-                  var events = this.context.controller.containers.get("ve-timeline-events")
-                  events.onInit()
+                    }, this.channelIndex)
                   
-                  if (Optional.is(events.updateTimer)) {
-                    events.updateTimer.finish()
+                  if (Optional.is(channel)) {
+                    channel.muted = this.value
                   }
-                },
+                }
               },
             },
           }))

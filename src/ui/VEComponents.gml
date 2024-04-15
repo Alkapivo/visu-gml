@@ -104,33 +104,18 @@ global.__VEComponents = new Map(String, Callable, {
           false
         )
       ),
-      UIButton(
-        $"{name}_channel-entry_up", 
+      UICheckbox(
+        $"{name}_channel-entry_mute", 
         Struct.appendRecursive(
           Struct.appendRecursive(
             { 
-              layout: layout.nodes.up,
+              layout: layout.nodes.mute,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
             }, 
-            VEStyles.get("channel-entry").up,
+            VEStyles.get("channel-entry").mute,
             false
           ),
-          Struct.get(config, "up"),
-          false
-        )
-      ),
-      UIButton(
-        $"{name}_channel-entry_down", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.down,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
-            }, 
-            VEStyles.get("channel-entry").down,
-            false
-          ),
-          Struct.get(config, "down"),
+          Struct.get(config, "mute"),
           false
         )
       ),
@@ -173,36 +158,6 @@ global.__VEComponents = new Map(String, Callable, {
             false
           ),
           Struct.get(config, "label"),
-          false
-        )
-      ),
-      UIButton(
-        $"{name}_brush-entry_up", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.up,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
-            }, 
-            VEStyles.get("brush-entry").up,
-            false
-          ),
-          Struct.get(config, "up"),
-          false
-        )
-      ),
-      UIButton(
-        $"{name}_brush-entry_down", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.down,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
-            }, 
-            VEStyles.get("brush-entry").down,
-            false
-          ),
-          Struct.get(config, "down"),
           false
         )
       ),
