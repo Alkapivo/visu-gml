@@ -544,6 +544,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           color: VETheme.color.textShadow,
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         }),
+        "dragItem": null,
       }),
       updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
@@ -564,10 +565,71 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             this.area.getY() + (this.area.getHeight() / 2)
           )
         }
+
+        ///@todo replace with Promise in clipboard
+        var dragItem = this.state.get("dragItem")
+        if (Optional.is(dragItem) 
+          && !mouse_check_button(mb_left) 
+          && !mouse_check_button_released(mb_left)) {
+          this.state.set("dragItem", null)
+          dragItem = null
+        }
+
+        if (Optional.is(dragItem)) {
+          var mouseX = device_mouse_x_to_gui(0)
+          var mouseY = device_mouse_y_to_gui(0)
+          var areaX = this.area.getX()
+          var areaY = this.area.getY()
+          var areaWidth = this.area.getWidth()
+          var areaHeight = this.area.getHeight()
+          if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+            draw_sprite_ext(texture_baron_cursor, 0, mouseX, mouseY, 1.0, 1.0, 0.0, c_white, 0.5)
+          }
+        }
       },
       onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
+      onMouseDragLeft: function(event) {
+        var component = this.collection.components.find(function(component) {
+          var text = component.items.find(function(item) {
+            return item.type == UIText
+          })
+
+          return Optional.is(text)
+            ? text.backgroundColor == ColorUtil.fromHex(text.colorHoverOver).toGMColor()
+            : false
+        })
+
+        if (Optional.is(component)) {
+          this.state.set("dragItem", component)
+          MouseUtil.setClipboard(component)
+        }
+      },
+      onMouseDropLeft: function(event) {
+        var dragItem = this.state.get("dragItem")
+        if (Optional.is(dragItem) && MouseUtil.getClipboard() == dragItem) {
+          this.state.set("dragItem", null)
+          MouseUtil.setClipboard(null)
+
+          var component = this.collection.components.find(function(component) {
+            var text = component.items.find(function(item) {
+              return item.type == UIText
+            })
+  
+            return Optional.is(text)
+              ? text.backgroundColor == ColorUtil.fromHex(text.colorHoverOver).toGMColor()
+              : false
+          })
+  
+          if (Optional.is(component)) {
+            var type = this.brushToolbar.store.getValue("type")
+            var templates = brushToolbar.editor.brushService.fetchTemplates(type)
+            templates.move(dragItem.index, component.index)  
+            this.brushToolbar.store.get("type").set(type)
+          }
+        }
+      },
       onInit: function() {
         var container = this
         this.collection = new UICollection(this, { layout: this.layout })
@@ -654,13 +716,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                         blend: VETheme.color.textShadow,
                       },
                       callback: function() {
-                        this.removeUIItemfromUICollection()
                         this.context.brushToolbar.editor.brushService
                           .removeTemplate(this.brushTemplate)
                       },
                       brushTemplate: template,
-                      removeUIItemfromUICollection: new BindIntent(Callable
-                        .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
                     },
                   },
                 }
