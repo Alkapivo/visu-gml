@@ -521,6 +521,21 @@ function VisuController(layerName) constructor {
   ///@type {Timer}
   autosaveTimer = new Timer(Core.getProperty("visu.autosave.interval", 1)  * 60, { loop: Infinity })
 
+  ///@private
+  ///@type {Boolean}
+  autosaveEnabled = true
+
+  ///@private
+  ///@return {VisuController}
+  autosaveHandler = function() {
+    if (!this.autosaveEnabled || this.fsm.getStateName() != "pause") {
+      return this
+    }
+
+    return this.autosaveTimer.update().finished ? this.autosave() : this
+  }
+
+  ///@private
   ///@return {VisuController}
   autosave = function() {
     try {
@@ -539,15 +554,6 @@ function VisuController(layerName) constructor {
     }
 
     return this
-  }
-
-  ///@return {VisuController}
-  autosaveHandler = function() {
-    if (this.fsm.getStateName() != "pause") {
-      return this
-    }
-
-    return this.autosaveTimer.update().finished ? this.autosave() : this
   }
 
   ///@private

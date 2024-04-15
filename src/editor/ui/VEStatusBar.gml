@@ -103,12 +103,18 @@ function VEStatusBar(_editor) constructor {
             margin: { left: 2 },
             width: function() { return 80 },
           },
-          showHideUI: {
-            name: "status-bar.showHideUI",
+          autosaveLabel: {
+            name: "status-bar.autosaveLabel",
             x: function() { return this.context.nodes.gameModeValue.right() + this.margin.left },
             y: function() { return 0 },
             margin: { left: 6 },
-            width: function() { return 80 },
+            width: function() { return 64 },
+          },
+          autosaveCheckbox: {
+            name: "status-bar.autosaveLabel",
+            x: function() { return this.context.nodes.autosaveLabel.right() + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 24 },
           },
           stateLabel: {
             name: "status-bar.stateLabel",
@@ -289,8 +295,31 @@ function VEStatusBar(_editor) constructor {
       )
     }
 
+    static factoryCheckbox = function(json) {
+      var struct = {
+        type: UICheckbox,
+        value: Struct.get(json, "value") == true,
+        layout: json.layout,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+      }
+
+      if (Struct.contains(json, "callback")) {
+        Struct.set(struct, "callback", json.callback)
+      }
+
+      return Struct.appendRecursiveUnique(
+        struct,
+        {
+          spriteOn: { name: "visu_texture_checkbox_on" },
+          spriteOff: { name: "visu_texture_checkbox_off" },
+        },
+        false
+      )
+    }
+
     var controller = this
     var layout = this.factoryLayout(parent)
+    var autosaveEnabled = Beans.get(BeanVisuController).autosaveEnabled
     return new Map(String, UI, {
       "ve-status-bar": new UI({
         name: "ve-status-bar",
@@ -399,12 +428,19 @@ function VEStatusBar(_editor) constructor {
               controller.send(new Event("change-gamemode").setData(gameMode))
             },
           }),
-          "text_ve-status-bar_showHideUI": factoryLabel({
-            text: "F1: UI on/off",
-            layout: layout.nodes.showHideUI,
-            onMouseReleasedLeft: function() {
+          "text_ve-status-bar_autosaveLabel": factoryLabel({
+            text: "Autosave:",
+            layout: layout.nodes.autosaveLabel,
+          }),
+          "text_ve-status-bar_autosaveCheckbox": factoryCheckbox({
+            layout: layout.nodes.autosaveCheckbox,
+            value: autosaveEnabled,
+            callback: function() {
               var controller = Beans.get(BeanVisuController)
-              controller.renderUI = !controller.renderUI
+              controller.autosaveEnabled = this.value
+              if (!controller.autosaveEnabled) {
+                controller.autosaveTimer.time = 0
+              }
             },
           }),
           "text_ve-status-bar_stateLabel": factoryLabel({
