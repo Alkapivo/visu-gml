@@ -19,7 +19,7 @@ function brush_view_lyrics(json = null) {
     store: new Map(String, Struct, {
       "view-lyrics_template": {
         type: String,
-        value: Struct.getDefault(json, "view-lyrics-template", "lyrics ID"),
+        value: Struct.getDefault(json, "view-lyrics_template", "lyrics ID"),
         passthrough: function(value) {
           return Beans.get(BeanVisuController).lyricsService.templates
             .contains(value) ? value : "lyrics ID"
@@ -562,9 +562,9 @@ function brush_view_lyrics(json = null) {
               enable: { key: "view-lyrics_use-transform-angle" },
             },
           },
-          increment: {
+          increase: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-lyrics_use-transform-angle" },
             },
             field: {
@@ -573,7 +573,7 @@ function brush_view_lyrics(json = null) {
             },
           },
         },
-      },
+      }, 
       {
         name: "view-lyrics_transform-speed",
         template: VEComponents.get("transform-numeric-uniform"),
@@ -621,9 +621,9 @@ function brush_view_lyrics(json = null) {
               enable: { key: "view-lyrics_use-transform-speed" },
             },
           },
-          increment: {
+          increase: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-lyrics_use-transform-speed" },
             },
             field: {
