@@ -25,6 +25,32 @@ function LyricsRenderer(_controller, config = {}) constructor {
       var linePointer = task.state.linePointer
       var displayLines = (lyrics.area.getHeight()) / (lyrics.fontHeight / guiHeight)
       var lineStartPointer = clamp(linePointer - displayLines, 0, lyrics.lines.size() - 1);
+      var alpha = 1.0
+      
+      if (lyrics.fadeIn > task.state.time) {
+        alpha = task.state.time / lyrics.fadeIn
+      }
+
+      if (Optional.is(lyrics.finishDelay)) {
+        if (lyrics.finishDelay.time >= lyrics.finishDelay.duration - lyrics.fadeOut) {
+          alpha = (lyrics.finishDelay.duration - lyrics.finishDelay.time) / lyrics.fadeOut
+        }
+
+        if (lyrics.finishDelay.finished) {
+          alpha = 0.0
+        }
+      }
+
+      if (Optional.is(task.timeout)) {
+        if (task.timeout.time >= task.timeout.duration - lyrics.fadeOut) {
+          alpha = min(alpha, (task.timeout.duration - task.timeout.time) / lyrics.fadeOut)
+        }
+
+        if (task.timeout.finished) {
+          alpha = 0.0
+        }
+      }
+
       for (var index = lineStartPointer; index <= linePointer; index++) {
         if (index >= lyrics.lines.size()) {
           break
@@ -36,7 +62,6 @@ function LyricsRenderer(_controller, config = {}) constructor {
         var text = index == linePointer ? String.copy(line, 0, floor(charPointer)) : line
         var color = lyrics.color
         var outline = lyrics.outline
-        var alpha = 1.0
 
         if (lyrics.align.h == HAlign.CENTER) {
           _x = _x + ((lyrics.area.getWidth()) / 2.0)

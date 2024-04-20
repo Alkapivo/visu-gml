@@ -158,6 +158,20 @@ function brush_view_lyrics(json = null) {
           { value: 0, target: 8, factor: 0.01, increase: 0 }
         )),
       },
+      "view-lyrics_fade-in": {
+        type: Number,
+        value: Struct.getDefault(json, "view-lyrics_fade-in", 1.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.0) 
+        },
+      },
+      "view-lyrics_fade-out": {
+        type: Number,
+        value: Struct.getDefault(json, "view-lyrics_fade-out", 1.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.0) 
+        },
+      },
     }),
     components: new Array(Struct, [
       {
@@ -631,6 +645,27 @@ function brush_view_lyrics(json = null) {
               enable: { key: "view-lyrics_use-transform-speed" },
             },
           },
+        },
+      },
+
+      {
+        name: "view-lyrics_fade-in",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Fade in" },
+          field: { store: { key: "view-lyrics_fade-in" } },
+        },
+      },
+      {
+        name: "view-lyrics_fade-out",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Fade out" },
+          field: { store: { key: "view-lyrics_fade-out" } },
         },
       },
     ]),
