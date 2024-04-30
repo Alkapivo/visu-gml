@@ -14,6 +14,16 @@ function GridItemMovement(json = null) constructor {
   
   ///@type {Number}
   friction = Assert.isType(Struct.getDefault(json, "friction", 9.3) / 10000.0, Number)
+
+  ///@return {Struct}
+  serialize = function() {
+    return {
+      speed: this.speed * 100.0,
+      speedMax: this.speedMax * 100.0,
+      acceleration: this.acceleration * 1000.0,
+      friction: this.friction * 10000.0,
+    }
+  }
 }
 
 
@@ -85,7 +95,6 @@ function GridItem(config = {}) constructor {
       width: this.sprite.getWidth(), 
       height: this.sprite.getHeight()
   })
-
 
   ///@type {Number}
   speed = Assert.isType(Struct.getDefault(config, "speed", 0), Number)

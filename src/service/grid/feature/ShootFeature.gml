@@ -26,22 +26,26 @@ function ShootFeature(json) {
 
     ///@private
     ///@type {Timer}
-    timer: new Timer(Struct.getDefault(json, "interval", 1.0), { 
+    cooldown: new Timer(Struct.getDefault(json, "interval", 1.0), { 
       loop: Struct.contains(json, "bullets") ? json.bullets : Infinity 
     }),
+
+    ///@private
+    ///@type {Number}
+    angle: Assert.isType(Struct.getDefault(json, "angle", 0.0), Number),
 
     ///@override
     ///@param {GridItem} item
     ///@param {VisuController} controller
     update: function(item, controller) {
-      if (!this.timer.update().finished || this.timer.loop == this.timer.loopCounter) {
+      if (!this.cooldown.update().finished || this.cooldown.loop == this.cooldown.loopCounter) {
         return
       }
 
       controller.bulletService.send(new Event("spawn-bullet", {
         x: item.x,
         y: item.y,
-        angle: item.angle,
+        angle: item.angle + this.angle,
         speed: this.speed,
         producer: Shroom,
         template: this.bullet,
