@@ -53,7 +53,7 @@ function brush_view_lyrics(json = null) {
       },
       "view-lyrics_color": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.getDefault(json, "view-lyrics-color"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.getDefault(json, "view-lyrics_color"), "#ffffff"),
       },
       "view-lyrics_use-outline": {
         type: Boolean,
@@ -61,7 +61,7 @@ function brush_view_lyrics(json = null) {
       },
       "view-lyrics_outline": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.getDefault(json, "view-lyrics-outline"), "#000000"),
+        value: ColorUtil.fromHex(Struct.getDefault(json, "view-lyrics_outline"), "#000000"),
       },
       "view-lyrics_align-v": {
         type: String,
