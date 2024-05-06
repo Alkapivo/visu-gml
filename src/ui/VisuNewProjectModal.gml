@@ -62,6 +62,14 @@ function VisuNewProjectForm(json = null) constructor {
       type: Optional.of(String),
       value: Struct.getDefault(json, "particle", ""),
     },
+    "use-texture": {
+      type: Boolean,
+      value: Struct.getDefault(json, "use-texture", false),
+    },
+    "texture": {
+      type: Optional.of(String),
+      value: Struct.getDefault(json, "texture", ""),
+    },
     "include-brushes": {
       type: Boolean,
       value: Struct.getDefault(json, "include-brushes", false),
@@ -482,6 +490,64 @@ function VisuNewProjectForm(json = null) constructor {
       },
     },
     {
+      name: "texture",  
+      template: VEComponents.get("text-field-button-checkbox"),
+      layout: VELayouts.get("text-field-button-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        checkbox: { 
+          store: { key: "use-texture" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          
+        },
+        label: { 
+          text: "Textures",
+          enable: { key: "use-texture" },
+        },
+        field: { 
+          read_only: true,
+          updateCustom: function() {
+            var text = this.context.state.get("store").getValue("texture")
+            if (Core.isType(text, String)) {
+              this.textField.setText(FileUtil.getFilenameFromPath(text))
+            } else {
+              this.textField.setText("")
+            }
+          },
+          enable: { key: "use-texture"},
+        },
+        button: { 
+          label: { text: "Open" },
+          enable: { key: "use-texture"},
+          callback: function() {
+            var path = FileUtil.getPathToOpenWithDialog({
+              description: "JSON file",
+              extension: "json",
+            })
+            if (!FileUtil.fileExists(path)) {
+              return
+            }
+
+            this.context.state.get("store")
+              .get("texture")
+              .set(path)
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
       name: "include-brushes",
       template: VEComponents.get("boolean-field"),
       layout: VELayouts.get("text-field-checkbox"),
@@ -637,6 +703,11 @@ function VisuNewProjectForm(json = null) constructor {
       Struct.set(json, "particle", this.store.getValue("particle"))
     }
 
+    if (this.store.getValue("use-texture")
+      && Core.isType(this.store.getValue("texture"), String)) {
+      Struct.set(json, "texture", this.store.getValue("texture"))
+    }
+
     return json
   }
 
@@ -746,7 +817,18 @@ function VisuNewProjectForm(json = null) constructor {
       templates.remove("particle")
       FileUtil.copyFile(json.particle, $"{path}{manifest.data.particle}")
     }
-    
+    if (Struct.contains(json, "texture")) {
+      templates.remove("texture")
+      var textures = JSON.parse(FileUtil.readFileSync(json.texture).getData()).data
+      Struct.forEach(textures, function(config, name, acc) {
+        var filename = String.replaceAll(config.file, "texture/", "")
+        FileUtil.copyFile($"{acc.sourceDirectory}{filename}", $"{acc.targetDirectory}{filename}")
+      }, {
+        sourceDirectory: Assert.isType(FileUtil.getDirectoryFromPath(json.texture), String),
+        targetDirectory: $"{path}texture/",
+      })
+      FileUtil.copyFile(json.texture, $"{path}{manifest.data.texture}")
+    }
 
     var visuTrack = global.__VisuTrack
     if (json.includeBrushes && Core.isType(visuTrack, VisuTrack)) {
@@ -825,7 +907,7 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
         x: function() { return (this.context.width() - this.width()) / 2 },
         y: function() { return (this.context.height() - this.height()) / 2 },
         width: function() { return 500 },
-        height: function() { return 492 },
+        height: function() { return 532 },
       },
       parent
     )
