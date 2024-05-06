@@ -194,7 +194,7 @@ function VisuController(layerName) constructor {
                 }
               } catch (exception) {
                 var message = $"Rewind exception: {exception.message}"
-                Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+                //Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
                 Logger.warn("VisuController", message)
                 if (!promises.contains("rewind-video")) {
                   return
@@ -525,7 +525,7 @@ function VisuController(layerName) constructor {
 
   ///@private
   ///@type {Boolean}
-  autosaveEnabled = false
+  autosaveEnabled = Core.getProperty("visu.autosave", false)
 
   ///@private
   ///@return {VisuController}
