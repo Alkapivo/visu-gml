@@ -1,9 +1,10 @@
 {
   "visu.debug-overlay": false,
   "visu.fullscreen": false,
-  "visu.autoplay": false,
-  "visu.autosave.interval": 5,
-  "visu.manifest.autoload": true,
+  "visu.autosave.interval": 0.2,
+  "visu.manifest.load-on-start": false,
+  "visu.manifest.play-on-start": false,
+  "visu.manifest.path": "track/lolratz/KAIDECA/manifest.visu",
   "visu.window.width": 1400,
   "visu.window.height": 900,
   "visu.editor.bpm": 90,

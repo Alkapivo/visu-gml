@@ -554,12 +554,12 @@ function VisuNewProjectForm(json = null) constructor {
             return
           }
 
-          //try {
+          try {
             this.context.state.get("form").save(path)
-          //} catch (exception) {
-          //  Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-          //    { message: $"Cannot create project: {exception.message}" }))
-          //}
+          } catch (exception) {
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+              { message: $"Cannot create project: {exception.message}" }))
+          }
           this.context.modal.send(new Event("close"))
 
           try {
@@ -647,21 +647,21 @@ function VisuNewProjectForm(json = null) constructor {
     var controller = Beans.get(BeanVisuController)
     var fileService = controller.fileService
 
-    var filename = Assert.isType(FileUtil.getFilenameFromPath(manifestPath), String)
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {
       "model": "io.alkapivo.visu.controller.VisuTrack",
+      "version": "1",
       "data": {  
         "bpm": controller.editor.store.getValue("bpm"),
         "bpm-sub": controller.editor.store.getValue("bpm-sub"),
-        "bullet": "bullet.json",
+        "bullet": "template/bullet.json",
         "editor": [],
-        "lyrics": "lyrics.json",
-        "particle": "particle.json",
-        "shader": "shader.json",
-        "shroom": "shroom.json",
+        "lyrics": "template/lyrics.json",
+        "particle": "template/particle.json",
+        "shader": "template/shader.json",
+        "shroom": "template/shroom.json",
         "sound": "sound.json",
-        "texture": "texture.json",
+        "texture": "texture/texture.json",
         "track": "track.json"
       }
     }
@@ -669,26 +669,32 @@ function VisuNewProjectForm(json = null) constructor {
     var templates = new Map(String, any, {
       "bullet": {
         "model": "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
+        "version": "1",
         "data": {},
       },
       "lyrics": {
         "model": "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+        "version": "1",
         "data": {},
       },
       "particle": {
         "model": "Collection<io.alkapivo.core.service.particle.ParticleTemplate>",
+        "version": "1",
         "data": {},
       },
       "shader": {
         "model": "Collection<io.alkapivo.core.service.shader.ShaderTemplate>",
+        "version": "1",
         "data": {},
       },
       "shroom": {
         "model": "Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
+        "version": "1",
         "data": {},
       },
       "sound": {
         "model": "Collection<io.alkapivo.core.service.sound.SoundIntent>",
+        "version": "1",
         "data": {
           "sound_external": {
             "file": FileUtil.getFilenameFromPath(json.audio)
@@ -697,10 +703,12 @@ function VisuNewProjectForm(json = null) constructor {
       },
       "texture": {
         "model": "Collection<io.alkapivo.core.service.texture.TextureIntent>",
+        "version": "1",
         "data": {},
       },
       "track": {
         "model":"io.alkapivo.core.service.track.Track",
+        "version": "1",
         "data":{
           "name": json.name,
           "audio": "sound_external",
@@ -713,6 +721,10 @@ function VisuNewProjectForm(json = null) constructor {
         }
       }
     })
+
+    FileUtil.createDirectory($"{path}brush")
+    FileUtil.createDirectory($"{path}template")
+    FileUtil.createDirectory($"{path}texture")
 
     if (Struct.contains(json, "shader")) {
       templates.remove("shader")
