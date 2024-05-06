@@ -19,13 +19,13 @@ function VisuController(layerName) constructor {
   fsmConfig = {
     initialState: { 
       name: "idle",
-      data: Core.getProperty("visu.manifest.autoload", false) 
+      data: Core.getProperty("visu.manifest.load-on-start", false) 
         ? new Event("load", {
-            manifest: FileUtil.get(Core
-              .getProperty("visu.manifest.path", 
-                $"{working_directory}manifest.visu")),
+            manifest: FileUtil.get(String.concat(
+              working_directory, 
+              Core.getProperty("visu.manifest.path"))),
             autoplay: Assert.isType(Core
-              .getProperty("visu.autoplay", false), Boolean),
+              .getProperty("visu.manifest.play-on-start", false), Boolean),
           })
         : null,
     },

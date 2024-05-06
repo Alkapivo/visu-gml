@@ -1,5 +1,4 @@
 {
-  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
   "data":{
     "lyrics_lolratz_kaideca_scanning":{
       "lines":[
@@ -63,5 +62,7 @@
         "ERROR         "
       ]
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+  "version":"1"
 }

@@ -1,18 +1,6 @@
 {
-  "model":"Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
   "data":{
     "bullet_shroom_404":{
-      "sprite":{
-        "animate":1.0,
-        "alpha":1.0,
-        "scaleX":2.0,
-        "scaleY":2.0,
-        "speed":10.0,
-        "angle":0.0,
-        "blend":"#FFFFFF",
-        "name":"texture_lolratz_heart_1",
-        "frame":0.68894666666666671
-      },
       "gameModes":{
         "platformer":{
           "features":[
@@ -25,48 +13,48 @@
         "bulletHell":{
           "features":[
             {
-              "feature":"AngleFeature",
               "value":{
-                "increase":0.0,
-                "target":0.0,
                 "value":0.0,
-                "factor":1.0
+                "factor":1.0,
+                "target":0.0,
+                "increase":0.0
               },
+              "feature":"AngleFeature",
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
                     "value":1.0,
                     "operator":"greater"
-                  }
+                  },
+                  "type":"lifespawn"
                 }
               ]
             },
             {
-              "duration":10.0,
-              "feature":"LifespawnFeature"
+              "feature":"LifespawnFeature",
+              "duration":10.0
             },
             {
-              "amount":8.0,
+              "size":3.2999999999999998,
               "feature":"SwingFeature",
-              "size":3.2999999999999998
+              "amount":8.0
             }
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":2.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_heart_1",
+        "scaleY":2.0,
+        "speed":10.0,
+        "frame":0.68894666666666671,
+        "blend":"#FFFFFF"
       }
     },
     "bullet_lolratz_muck":{
-      "sprite":{
-        "animate":1.0,
-        "alpha":1.0,
-        "scaleX":2.0,
-        "scaleY":2.0,
-        "speed":10.0,
-        "angle":0.0,
-        "blend":"#FFFFFF",
-        "name":"texture_lolratz_heart_1",
-        "frame":2.1968870000000007
-      },
       "gameModes":{
         "platformer":{
           "features":[
@@ -79,25 +67,25 @@
         "bulletHell":{
           "features":[
             {
-              "duration":10.0,
-              "feature":"LifespawnFeature"
+              "feature":"LifespawnFeature",
+              "duration":10.0
             }
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":2.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_heart_1",
+        "scaleY":2.0,
+        "speed":10.0,
+        "frame":2.1968870000000007,
+        "blend":"#FFFFFF"
       }
     },
     "bullet_lolratz_tomo":{
-      "sprite":{
-        "animate":1.0,
-        "alpha":1.0,
-        "scaleX":2.0,
-        "scaleY":2.0,
-        "speed":10.0,
-        "angle":0.0,
-        "blend":"#FFFFFF",
-        "name":"texture_lolratz_heart_1",
-        "frame":1.9992803333333329
-      },
       "gameModes":{
         "platformer":{
           "features":[
@@ -110,25 +98,25 @@
         "bulletHell":{
           "features":[
             {
-              "duration":10.0,
-              "feature":"LifespawnFeature"
+              "feature":"LifespawnFeature",
+              "duration":10.0
             }
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":2.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_heart_1",
+        "scaleY":2.0,
+        "speed":10.0,
+        "frame":1.9992803333333329,
+        "blend":"#FFFFFF"
       }
     },
     "bullet_lolratz_heart_1":{
-      "sprite":{
-        "animate":1.0,
-        "alpha":1.0,
-        "scaleX":2.0,
-        "scaleY":2.0,
-        "speed":10.0,
-        "angle":0.0,
-        "blend":"#FFFFFF",
-        "name":"texture_lolratz_heart_1",
-        "frame":0.68924666666666679
-      },
       "gameModes":{
         "platformer":{
           "features":[
@@ -141,48 +129,48 @@
         "bulletHell":{
           "features":[
             {
-              "feature":"AngleFeature",
               "value":{
-                "increase":0.01,
-                "target":0.0,
                 "value":0.0,
-                "factor":180.0
+                "factor":180.0,
+                "target":0.0,
+                "increase":0.01
               },
+              "feature":"AngleFeature",
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
                     "value":1.0,
                     "operator":"greater"
-                  }
+                  },
+                  "type":"lifespawn"
                 }
               ]
             },
             {
-              "duration":10.0,
-              "feature":"LifespawnFeature"
+              "feature":"LifespawnFeature",
+              "duration":10.0
             },
             {
-              "amount":3.0,
+              "size":2.2999999999999998,
               "feature":"SwingFeature",
-              "size":2.2999999999999998
+              "amount":3.0
             }
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":2.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_heart_1",
+        "scaleY":2.0,
+        "speed":10.0,
+        "frame":0.68924666666666679,
+        "blend":"#FFFFFF"
       }
     },
     "bullet_lolratz_spot":{
-      "sprite":{
-        "animate":1.0,
-        "alpha":1.0,
-        "scaleX":2.0,
-        "scaleY":2.0,
-        "speed":10.0,
-        "angle":0.0,
-        "blend":"#FFFFFF",
-        "name":"texture_lolratz_heart_1",
-        "frame":0.062427000000000898
-      },
       "gameModes":{
         "platformer":{
           "features":[
@@ -195,24 +183,25 @@
         "bulletHell":{
           "features":[
             {
-              "duration":10.0,
-              "feature":"LifespawnFeature"
+              "feature":"LifespawnFeature",
+              "duration":10.0
             }
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":2.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_heart_1",
+        "scaleY":2.0,
+        "speed":10.0,
+        "frame":0.062427000000000898,
+        "blend":"#FFFFFF"
       }
     },
     "bullet_player":{
-      "sprite":{
-        "animate":1.0,
-        "alpha":1.0,
-        "scaleX":3.0,
-        "scaleY":3.0,
-        "angle":0.0,
-        "blend":"#FFFFFF",
-        "name":"texture_bullet",
-        "frame":0.87182333333335071
-      },
       "gameModes":{
         "platformer":{
           "features":[
@@ -227,17 +216,24 @@
           ]
         }
       },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":3.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_bullet",
+        "scaleY":3.0,
+        "frame":0.87182333333335071,
+        "blend":"#FFFFFF"
+      },
       "mask":{
         "x":4.0,
-        "y":4.0,
+        "width":56.0,
         "height":56.0,
-        "width":56.0
+        "y":4.0
       }
     },
     "bullet_default":{
-      "sprite":{
-        "name":"texture_bullet"
-      },
       "gameModes":{
         "platformer":{
         },
@@ -246,39 +242,44 @@
         "bulletHell":{
           "features":[
             {
-              "feature":"AngleFeature",
               "value":{
-                "increase":0.0,
-                "target":0.0,
                 "value":0.0,
-                "factor":1.0
+                "factor":1.0,
+                "target":0.0,
+                "increase":0.0
               },
+              "feature":"AngleFeature",
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
                     "value":1.0,
                     "operator":"greater"
-                  }
+                  },
+                  "type":"lifespawn"
                 }
               ]
             },
             {
-              "duration":10.0,
-              "feature":"LifespawnFeature"
+              "feature":"LifespawnFeature",
+              "duration":10.0
             },
             {
-              "amount":8.0,
+              "size":3.2999999999999998,
               "feature":"SwingFeature",
-              "size":3.2999999999999998
+              "amount":8.0
             }
           ]
         }
       },
+      "sprite":{
+        "name":"texture_bullet"
+      },
       "mask":{
-        "height":128.0,
-        "width":128.0
+        "width":128.0,
+        "height":128.0
       }
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
+  "version":"1"
 }
