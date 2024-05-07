@@ -14,6 +14,9 @@ function AngleFeature(json) {
       ? new NumberTransformer(data.transform)
       : null,
 
+    ///@type {Boolean}
+    isAngleSet: false,
+
     add: Struct.contains(data, "add")
       ? new NumberTransformer({
         value: 0.0,
@@ -27,11 +30,17 @@ function AngleFeature(json) {
     ///@param {GridItem} item
     ///@param {VisuController} controller
     update: function(item, controller) {
-      if (Optional.is(this.transform)) {
+      if (this.transform != null) {
+        if (!this.isAngleSet) {
+          this.transform.value = item.angle
+          this.transform.startValue = item.angle
+          this.transform.target = this.transform.target + item.angle
+          this.isAngleSet = true
+        }
         item.setAngle(this.transform.update().value)
       }
 
-      if (Optional.is(this.add)) {
+      if (this.add != null) {
         item.setAngle(item.angle + this.add.update().value)
       }
     },
