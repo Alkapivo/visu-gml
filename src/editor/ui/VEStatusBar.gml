@@ -338,9 +338,15 @@ function VEStatusBar(_editor) constructor {
           }),
           "text_ve-status-bar_fpsValue": factoryValue({
             layout: layout.nodes.fpsValue,
-            updateCustom: function() {
-              this.label.text = string(clamp(ceil(fps_real + 1), 0, 60))
-            },
+            updateCustom: Core.getProperty("visu.editor.status-bar.render-average-fps", true)
+              ? function() {
+                this.label.text = string(fps);//string(clamp(ceil(fps_real + 1), 0, 60))
+              }
+              :
+              function() {
+                this.label.text = string(clamp(ceil(fps_real + 1), 0, 60))
+              }
+              ,
           }),
           "text_ve-status-bar_timestampLabel": factoryLabel({
             text: "Timestamp:",

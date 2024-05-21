@@ -16,5 +16,6 @@
   "visu.editor.render-brush": false,
   "visu.editor.accordion.render-event-inspector": true,
   "visu.editor.accordion.render-template-toolbar": true,
+  "visu.editor.status-bar.render-average-fps": true,
   "end-property": null
 }

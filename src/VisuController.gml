@@ -22,7 +22,7 @@ function VisuController(layerName) constructor {
       data: Core.getProperty("visu.manifest.load-on-start", false) 
         ? new Event("load", {
             manifest: FileUtil.get(String.concat(
-              working_directory, 
+              (Core.getProperty("visu.manifest.path.absolute", false) ? "" : working_directory), 
               Core.getProperty("visu.manifest.path"))),
             autoplay: Assert.isType(Core
               .getProperty("visu.manifest.play-on-start", false), Boolean),
