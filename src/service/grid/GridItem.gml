@@ -1,27 +1,39 @@
 ///@package com.alkapivo.visu.service.grid.GridItem
 
 ///@param {?Struct} [json]
-function GridItemMovement(json = null) constructor {
+///@param {Boolean} [useScale]
+function GridItemMovement(json = null, _useScale = true) constructor {
+  
+  ///@type {Boolean}
+  useScale = _useScale
+
+  ///@type {Number}
+  speed = Assert.isType(Struct
+    .getDefault(json, "speed", 0.0) 
+    / (this.useScale ? 100.0 : 1.0), Number)
   
   ///@type {Number}
-  speed = Assert.isType(Struct.getDefault(json, "speed", 0.0) / 100.0, Number)
+  speedMax = Assert.isType(Struct
+    .getDefault(json, "speedMax", 2.1) 
+    / (this.useScale ? 100.0 : 1.0), Number)
   
   ///@type {Number}
-  speedMax = Assert.isType(Struct.getDefault(json, "speedMax", 2.1) / 100.0, Number)
+  acceleration = Assert.isType(Struct
+    .getDefault(json, "acceleration", 1.92) 
+    / (this.useScale ? 1000.0 : 1.0), Number)
   
   ///@type {Number}
-  acceleration = Assert.isType(Struct.getDefault(json, "acceleration", 1.92) / 1000.0, Number)
-  
-  ///@type {Number}
-  friction = Assert.isType(Struct.getDefault(json, "friction", 9.3) / 10000.0, Number)
+  friction = Assert.isType(Struct
+    .getDefault(json, "friction", 9.3) 
+    / (this.useScale ? 10000.0 : 1.0), Number)
 
   ///@return {Struct}
   serialize = function() {
     return {
-      speed: this.speed * 100.0,
-      speedMax: this.speedMax * 100.0,
-      acceleration: this.acceleration * 1000.0,
-      friction: this.friction * 10000.0,
+      speed: this.speed * (this.useScale ? 100.0 : 1.0),
+      speedMax: this.speedMax * (this.useScale ? 100.0 : 1.0),
+      acceleration: this.acceleration * (this.useScale ? 1000.0 : 1.0),
+      friction: this.friction * (this.useScale ? 10000.0 : 1.0),
     }
   }
 }
