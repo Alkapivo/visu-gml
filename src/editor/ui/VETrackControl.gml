@@ -494,12 +494,15 @@ function VETrackControl(_editor) constructor {
             text: "00:00.00",
             align: { v: VAlign.CENTER, h: HAlign.LEFT },
             updateCustom: function() {
-              this.label.text = String.formatTimestampMilisecond(
-                NumberUtil.parse(Struct
-                  .get(this.context.controller.editor.trackService, "time"), 
-                  0.0
-                )
-              )
+              var value = Struct.get(this.context.items
+                .get("slider_ve-track-control_timeline"), "value")
+              if (!Core.isType(value, Number)) {
+                return
+              }
+
+              this.label.text = String
+                .formatTimestampMilisecond(NumberUtil
+                .parse(this.context.controller.editor.trackService.duration * value, 0.0))
             },
           }),
           "checkbox_ve-track-control_snap": Struct.appendRecursiveUnique(
