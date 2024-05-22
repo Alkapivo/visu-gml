@@ -87,7 +87,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   return
                 }
 
-                container.renderSurfaceTick = false
+                container.surfaceTick.skip()
                 container.updateTimer.time = container.updateTimer.duration
               })
 
@@ -98,7 +98,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   return
                 }
 
-                container.renderSurfaceTick = false
+                container.surfaceTick.skip()
                 container.updateTimer.time = container.updateTimer.duration
               })
 
@@ -758,7 +758,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                     return
                   }
 
-                  container.renderSurfaceTick = false
+                  container.surfaceTick.skip()
                   container.updateTimer.time = container.updateTimer.duration
                 })
 
@@ -1064,7 +1064,7 @@ function VEBrushToolbar(_editor) constructor {
           },
           "category": {
             name: "brush-toolbar.category",
-            x: function() { return this.context.x() - this.width() - 1 },
+            x: function() { return this.context.x() - this.width() },
             width: function() { return 24 },
             height: function() { return 420 },
           },

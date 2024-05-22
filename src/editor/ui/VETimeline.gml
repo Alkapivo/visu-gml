@@ -266,7 +266,7 @@ function VETimeline(_editor) constructor {
                     return
                   }
 
-                  container.renderSurfaceTick = false
+                  container.surfaceTick.skip()
                   container.updateTimer.time = container.updateTimer.duration
                 })
 
@@ -277,7 +277,7 @@ function VETimeline(_editor) constructor {
                     return
                   }
 
-                  container.renderSurfaceTick = false
+                  container.surfaceTick.skip()
                   container.updateTimer.time = container.updateTimer.duration
                 })
 
@@ -736,11 +736,14 @@ function VETimeline(_editor) constructor {
           // items
           var areaX = this.area.x
           var areaY = this.area.y
+          var delta = DeltaTime.deltaTime
+          DeltaTime.deltaTime += this.surfaceTick.delta
           this.area.x = this.offset.x
           this.area.y = this.offset.y
           this.items.forEach(this.renderItem, this.area)
           this.area.x = areaX
           this.area.y = areaY
+          
 
           var offsetX = this.offset.x
           var offsetY = this.offset.y
@@ -796,6 +799,8 @@ function VETimeline(_editor) constructor {
             var yy = this.getYFromChannelName(selectedItem.channel) + this.offset.y
             this.selectedSprite.render(xx, yy)
           }
+
+          DeltaTime.deltaTime = delta
         },
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),

@@ -356,8 +356,7 @@ function VEStatusBar(_editor) constructor {
             layout: layout.nodes.timestampValue,
             updateCustom: function() {
               try {
-                this.label.text = String.formatTimestamp(Beans
-                  .get(BeanVisuController).trackService.time)
+                this.label.text = String.formatTimestamp(Beans.get(BeanVisuController).trackService.time)
               } catch (exception) {
                 this.label.text = "N/A"
               }
