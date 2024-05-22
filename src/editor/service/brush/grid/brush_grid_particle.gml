@@ -128,7 +128,7 @@ function brush_grid_particle(json = null) {
                   x: store.getValue("grid-particle_endX"), 
                   y: store.getValue("grid-particle_endY"),
                 }),
-                timeout: 2,
+                timeout: 5.0,
               }
             },
           },
