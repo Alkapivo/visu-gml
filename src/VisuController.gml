@@ -2,7 +2,7 @@
 
 ///@enum
 function _GameMode(): Enum() constructor {
-  IDLE = "idle"
+  RACING = "racing"
   BULLETHELL = "bulletHell"
   PLATFORMER = "platformer"
 }

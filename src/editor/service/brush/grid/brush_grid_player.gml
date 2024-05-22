@@ -84,13 +84,13 @@ function brush_grid_player(json = null) {
           Assert.isType(JSON.parse(value), Struct)
         },
       },
-      "grid-player_use-idle": {
+      "grid-player_use-racing": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-player_use-idle", true),
+        value: Struct.getDefault(json, "grid-player_use-racing", true),
       },
-      "grid-player_idle": {
+      "grid-player_racing": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json, "grid-player_idle", {}), { pretty: true }),
+        value: JSON.stringify(Struct.getDefault(json, "grid-player_racing", {}), { pretty: true }),
         serialize: function() {
           return JSON.parse(this.get())
         },
@@ -288,24 +288,24 @@ function brush_grid_player(json = null) {
         },
       },
       {
-        name: "grid-player_idle",
+        name: "grid-player_racing",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Idle",
-            enable: { key: "grid-player_use-idle" },
+            text: "Racing",
+            enable: { key: "grid-player_use-racing" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "grid-player_use-idle" },
+            store: { key: "grid-player_use-racing" },
           },
         },
       },
       {
-        name: "grid-player_idle",
+        name: "grid-player_racing",
         template: VEComponents.get("text-area"),
         layout: VELayouts.get("text-area"),
         config: { 
@@ -313,8 +313,8 @@ function brush_grid_player(json = null) {
           field: { 
             v_grow: true,
             w_min: 570,
-            store: { key: "grid-player_idle" },
-            enable: { key: "grid-player_use-idle" },
+            store: { key: "grid-player_racing" },
+            enable: { key: "grid-player_use-racing" },
           },
         },
       },

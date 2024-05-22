@@ -23,11 +23,11 @@ If `Animate` is set to true then ignore `Frame` input.
 ### Mask
 Define custom rectangular collision mask, usefull if sprite contains transparent borders.
 
-### Bullethell, Platformer, Idle
+### Bullethell, Platformer, Racing
 Valid JSON Array of `Feature` objects. See `utilizing-json-for-behavior-definition.md`.
 
 ## Bullet
-Name can be used as an ID in `shroom templates` within JSON configs (BulletHell, Platformer, Idle).
+Name can be used as an ID in `shroom templates` within JSON configs (BulletHell, Platformer, Racing).
 
 ### Set texture
 Use texture name from `texture templates`.
@@ -36,7 +36,7 @@ If `Animate` is set to true then ignore `Frame` input.
 ### Mask
 Define custom rectangular collision mask, usefull if sprite contains transparent borders.
 
-### Bullethell, Platformer, Idle
+### Bullethell, Platformer, Racing
 Valid JSON Array of `Feature` objects. See `utilizing-json-for-behavior-definition.md`.
 
 ## Lyrics

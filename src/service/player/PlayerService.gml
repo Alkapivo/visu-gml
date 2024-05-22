@@ -39,7 +39,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
           action: "Z",
         },
         gameModes: {
-          idle: JSON.clone(Struct.getDefault(event.data, "idle", {})),
+          racing: JSON.clone(Struct.getDefault(event.data, "racing", {})),
           bulletHell: JSON.clone(Struct.getDefault(event.data, "bulletHell", {})),
           platformer: JSON.clone(Struct.getDefault(event.data, "platformer", {})),
         },

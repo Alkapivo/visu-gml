@@ -397,13 +397,13 @@ function VEStatusBar(_editor) constructor {
             layout: layout.nodes.gameModeLabel,
             onMouseReleasedLeft: function() {
               var controller = Beans.get(BeanVisuController)
-              var gameMode = GameMode.IDLE
+              var gameMode = GameMode.RACING
               switch (controller.gameMode) {
-                case GameMode.IDLE: gameMode = GameMode.BULLETHELL
+                case GameMode.RACING: gameMode = GameMode.BULLETHELL
                   break
                 case GameMode.BULLETHELL: gameMode = GameMode.PLATFORMER
                   break
-                case GameMode.PLATFORMER: gameMode = GameMode.IDLE
+                case GameMode.PLATFORMER: gameMode = GameMode.RACING
                   break
                 default:
                   throw new Exception($"Found unsupported gameMode: {controller.gameMode}")
@@ -420,13 +420,13 @@ function VEStatusBar(_editor) constructor {
             backgroundColor: VETheme.color.accentShadow,
             onMouseReleasedLeft: function() {
               var controller = Beans.get(BeanVisuController)
-              var gameMode = GameMode.IDLE
+              var gameMode = GameMode.RACING
               switch (controller.gameMode) {
-                case GameMode.IDLE: gameMode = GameMode.BULLETHELL
+                case GameMode.RACING: gameMode = GameMode.BULLETHELL
                   break
                 case GameMode.BULLETHELL: gameMode = GameMode.PLATFORMER
                   break
-                case GameMode.PLATFORMER: gameMode = GameMode.IDLE
+                case GameMode.PLATFORMER: gameMode = GameMode.RACING
                   break
                 default:
                   throw new Exception($"Found unsupported gameMode: {controller.gameMode}")

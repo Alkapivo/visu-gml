@@ -168,8 +168,8 @@ function VETemplate(json) constructor {
         platformer: {
           features: JSON.parse(this.store.getValue("shroom_game-mode_platformer_features")).getContainer()
         },
-        idle: {
-          features: JSON.parse(this.store.getValue("shroom_game-mode_idle_features")).getContainer()
+        racing: {
+          features: JSON.parse(this.store.getValue("shroom_game-mode_racing_features")).getContainer()
         },
       }
     }
@@ -194,8 +194,8 @@ function VETemplate(json) constructor {
         platformer: {
           features: JSON.parse(this.store.getValue("bullet_game-mode_platformer_features")).getContainer()
         },
-        idle: {
-          features: JSON.parse(this.store.getValue("bullet_game-mode_idle_features")).getContainer()
+        racing: {
+          features: JSON.parse(this.store.getValue("bullet_game-mode_racing_features")).getContainer()
         },
       }
     }
