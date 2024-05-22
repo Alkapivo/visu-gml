@@ -863,9 +863,9 @@ function VisuController(layerName) constructor {
         this.uiService.update()
       } catch (exception) {
         var message = $"'update' set fatal error: {exception.message}"
+        Logger.error("UIService", message)
         Core.printStackTrace()
         this.send(new Event("spawn-popup", { message: message }))
-        Logger.error("UIService", message)
       }
     }
 

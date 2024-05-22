@@ -171,9 +171,26 @@ function VETrackControl(_editor) constructor {
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
             var mousePromise = MouseUtil.getClipboard()
-            if (Struct.get(Struct.get(mousePromise, "state"), "context") == this) {
-              this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
-              return
+            var context = Struct.get(Struct.get(mousePromise, "state"), "context")
+            if (context != null) {
+              if (context == this) {
+                this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
+                return
+              }
+
+              var ruler = this.context.controller.editor.timeline.containers.get("ve-timeline-ruler")
+              if (context == ruler) {
+                var trackService = this.context.controller.editor.trackService
+                var mouseXTime = context.state.get("mouseXTime")
+                if (Core.isType(mouseXTime, Number)) {
+                  this.value = clamp(
+                    mouseXTime / trackService.duration, 
+                    this.minValue, 
+                    this.maxValue
+                  )
+                  return
+                }
+              }
             }
 
             if (this.state.contains("promise")) {

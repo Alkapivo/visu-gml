@@ -1176,6 +1176,7 @@ function VETimeline(_editor) constructor {
                   this.context.removeEvent(channelName, this.name)
                 }
 
+                var store = Beans.get(BeanVisuController).editor.store
                 var selected = store.getValue("selected-event")
                 if (Optional.is(selected) && selected.name == this.name) {
                   store.get("selected-event").set(null)
