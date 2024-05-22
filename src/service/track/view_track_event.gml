@@ -56,6 +56,23 @@ global.__view_track_event = {
   },
   "brush_view_camera": function(data) {
     var controller = Beans.get(BeanVisuController)
+
+    if (Struct.get(data, "view-config_use-movement")) {
+      controller.gridService.movement.enable = Struct
+        .get(data, "view-config_movement-enable")
+      controller.gridService.movement.angle = Struct
+        .get(data, "view-config_movement-angle")
+
+      var movementSpeed = Struct.get(data, "view-config_movement-speed")
+      controller.gridService.movement.speed = new NumberTransformer({
+        value: controller.gridService.movement.speed.get(),
+        target: movementSpeed.target,
+        factor: movementSpeed.factor,
+        increase: movementSpeed.increase,
+      })
+    }
+    
+
     if (Struct.get(data, "view-config_use-lock-target-x")) {
       controller.editor.store
         .get("target-locked-x")

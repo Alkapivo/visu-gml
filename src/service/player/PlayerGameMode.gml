@@ -25,8 +25,8 @@ function PlayerRacingGameMode(json) {
     ///@type {GridItemMovement}
     wheel: new GridItemMovement(Struct.getDefault(json, "wheel", {
       acceleration: 0.1,
-      speedMax: 5,
-      friction: 0.06,
+      speedMax: 3.5,
+      friction: 0.1,
     }), false),
  
     ///@override

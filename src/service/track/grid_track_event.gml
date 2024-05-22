@@ -334,6 +334,19 @@ global.__grid_track_event = {
         })
       }))
     }
+
+    if (Struct.get(data, "grid-player_use-margin")) {
+      controller.gridService.targetLocked.margin.top = Struct
+        .get(data, "grid-player_margin-top")
+      controller.gridService.targetLocked.margin.right = Struct
+        .get(data, "grid-player_margin-right")
+      controller.gridService.targetLocked.margin.bottom = Struct
+        .get(data, "grid-player_margin-bottom")
+      controller.gridService.targetLocked.margin.left = Struct
+        .get(data, "grid-player_margin-left")
+
+      Core.print(JSON.stringify(controller.gridService.targetLocked, { pretty: true }))
+    }
   },
   "brush_grid_separator": function(data) {
     var controller = Beans.get(BeanVisuController)

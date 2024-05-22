@@ -109,8 +109,182 @@ function brush_grid_player(json = null) {
           { value: 0, target: 2100, factor: 50.0, increase: 0 }
         )),
       },
+      "grid-player_use-margin": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-player_use-margin", false),
+      },
+      "grid-player_margin-top": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-player_margin-top", 0.2),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 3.0) 
+        },
+      },
+      "grid-player_margin-right": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-player_margin-right", 0.5),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 3.0) 
+        },
+      },
+      "grid-player_margin-bottom": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-player_margin-bottom", 0.2),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 3.0) 
+        },
+      },
+      "grid-player_margin-left": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-player_margin-left", 0.5),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 3.0) 
+        },
+      },
     }),
     components: new Array(Struct, [
+      {
+        name: "grid-player_use-margin",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Margins",
+            enable: { key: "grid-player_use-margin" },
+            preRender: function() {
+              var store = null
+              if (Core.isType(this.context.state.get("brush"), VEBrush)) {
+                store = this.context.state.get("brush").store
+              }
+              
+              if (Core.isType(this.context.state.get("event"), VEEvent)) {
+                store = this.context.state.get("event").store
+              }
+
+              if (!Optional.is(store) || !store.getValue("grid-player_use-margin")) {
+                return
+              }
+              
+              var controller = Beans.get(BeanVisuController)
+              var shroomService = controller.shroomService
+              var gridService = controller.gridService
+              shroomService.particleArea = {
+                topLeft: shroomService.factorySpawner({ 
+                  x: 0.0 - store.getValue("grid-player_margin-left"),
+                  y: 0.0 - store.getValue("grid-player_margin-top"),
+                }),
+                topRight: shroomService.factorySpawner({ 
+                  x: 1.0 + store.getValue("grid-player_margin-right"),
+                  y: 0.0 - store.getValue("grid-player_margin-top"),
+                }),
+                bottomLeft: shroomService.factorySpawner({ 
+                  x: 0.0 - store.getValue("grid-player_margin-left"), 
+                  y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                }),
+                bottomRight: shroomService.factorySpawner({ 
+                  x: 1.0 + store.getValue("grid-player_margin-right"), 
+                  y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                }),
+                timeout: 5.0,
+              }
+            },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-player_use-margin" },
+          },
+        },
+      },
+      {
+        name: "grid-player_margin-top",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Top",
+            enable: { key: "grid-player_use-margin" },
+          },
+          field: { 
+            store: { key: "grid-player_margin-top" },
+            enable: { key: "grid-player_use-margin" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 3.0,
+            store: { key: "grid-player_margin-top" },
+            enable: { key: "grid-player_use-margin" },
+          },
+        },
+      },
+      {
+        name: "grid-player_margin-right",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Right",
+            enable: { key: "grid-player_use-margin" },
+          },
+          field: { 
+            store: { key: "grid-player_margin-right" },
+            enable: { key: "grid-player_use-margin" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 3.0,
+            store: { key: "grid-player_margin-right" },
+            enable: { key: "grid-player_use-margin" },
+          },
+        },
+      },
+      {
+        name: "grid-player_margin-bottom",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Bottom",
+            enable: { key: "grid-player_use-margin" },
+          },
+          field: { 
+            store: { key: "grid-player_margin-bottom" },
+            enable: { key: "grid-player_use-margin" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 3.0,
+            store: { key: "grid-player_margin-bottom" },
+            enable: { key: "grid-player_use-margin" },
+          },
+        },
+      },
+      {
+        name: "grid-player_margin-left",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Bottom",
+            enable: { key: "grid-player_use-margin" },
+          },
+          field: { 
+            store: { key: "grid-player_margin-left" },
+            enable: { key: "grid-player_use-margin" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 3.0,
+            store: { key: "grid-player_margin-left" },
+            enable: { key: "grid-player_use-margin" },
+          },
+        },
+      },
       {
         name: "grid-player_texture",
         template: VEComponents.get("texture-field-ext"),
