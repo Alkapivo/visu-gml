@@ -152,6 +152,26 @@ function brush_grid_player(json = null) {
           label: { 
             text: "Margins",
             enable: { key: "grid-player_use-margin" },
+            updateCustom: function() {
+              this.preRender()
+              if (Core.isType(this.context.updateTimer, Timer)) {
+                var inspectorType = this.context.state.get("inspectorType")
+                switch (inspectorType) {
+                  case VEEventInspector:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.playerBorderEvent != null) {
+                      shroomService.playerBorderEvent.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                  case VEBrushToolbar:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.playerBorder != null) {
+                      shroomService.playerBorder.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                }
+              }
+            },
             preRender: function() {
               var store = null
               if (Core.isType(this.context.state.get("brush"), VEBrush)) {
@@ -165,28 +185,61 @@ function brush_grid_player(json = null) {
               if (!Optional.is(store) || !store.getValue("grid-player_use-margin")) {
                 return
               }
-              
-              var controller = Beans.get(BeanVisuController)
-              var shroomService = controller.shroomService
-              var gridService = controller.gridService
-              shroomService.particleArea = {
-                topLeft: shroomService.factorySpawner({ 
-                  x: 0.0 - store.getValue("grid-player_margin-left"),
-                  y: 0.0 - store.getValue("grid-player_margin-top"),
-                }),
-                topRight: shroomService.factorySpawner({ 
-                  x: 1.0 + store.getValue("grid-player_margin-right"),
-                  y: 0.0 - store.getValue("grid-player_margin-top"),
-                }),
-                bottomLeft: shroomService.factorySpawner({ 
-                  x: 0.0 - store.getValue("grid-player_margin-left"), 
-                  y: 1.0 + store.getValue("grid-player_margin-bottom"),
-                }),
-                bottomRight: shroomService.factorySpawner({ 
-                  x: 1.0 + store.getValue("grid-player_margin-right"), 
-                  y: 1.0 + store.getValue("grid-player_margin-bottom"),
-                }),
-                timeout: 5.0,
+
+              var inspectorType = this.context.state.get("inspectorType")
+              switch (inspectorType) {
+                case VEEventInspector:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.playerBorderEvent = {
+                    topLeft: shroomService.factorySpawner({ 
+                      x: 0.0 - store.getValue("grid-player_margin-left"),
+                      y: 0.0 - store.getValue("grid-player_margin-top"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    topRight: shroomService.factorySpawner({ 
+                      x: 1.0 + store.getValue("grid-player_margin-right"),
+                      y: 0.0 - store.getValue("grid-player_margin-top"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    bottomLeft: shroomService.factorySpawner({ 
+                      x: 0.0 - store.getValue("grid-player_margin-left"), 
+                      y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    bottomRight: shroomService.factorySpawner({ 
+                      x: 1.0 + store.getValue("grid-player_margin-right"), 
+                      y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    timeout: 5.0,
+                  }
+                  break
+                case VEBrushToolbar:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.playerBorder = {
+                    topLeft: shroomService.factorySpawner({ 
+                      x: 0.0 - store.getValue("grid-player_margin-left"),
+                      y: 0.0 - store.getValue("grid-player_margin-top"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    topRight: shroomService.factorySpawner({ 
+                      x: 1.0 + store.getValue("grid-player_margin-right"),
+                      y: 0.0 - store.getValue("grid-player_margin-top"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    bottomLeft: shroomService.factorySpawner({ 
+                      x: 0.0 - store.getValue("grid-player_margin-left"), 
+                      y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    bottomRight: shroomService.factorySpawner({ 
+                      x: 1.0 + store.getValue("grid-player_margin-right"), 
+                      y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    timeout: 5.0,
+                  }
+                  break
               }
             },
           },

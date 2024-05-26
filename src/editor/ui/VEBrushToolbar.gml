@@ -812,6 +812,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "inspectorType": VEBrushToolbar,
       }),
       updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,

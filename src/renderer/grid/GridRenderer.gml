@@ -357,6 +357,19 @@ function GridRenderer(_controller, config = {}) constructor {
       }
     }
 
+    var spawnerEvent = this.controller.shroomService.spawnerEvent
+    if (Core.isType(spawnerEvent, Struct)) {
+      spawnerEvent.sprite.render(
+        (spawnerEvent.x * GRID_SERVICE_PIXEL_WIDTH) - ((spawnerEvent.sprite.getWidth() * spawnerEvent.sprite.getScaleX()) / 2.0), 
+        (spawnerEvent.y * GRID_SERVICE_PIXEL_HEIGHT) - ((spawnerEvent.sprite.getHeight() * spawnerEvent.sprite.getScaleY()) / 2.0)
+      )
+
+      this.controller.shroomService.spawnerEvent.timeout--
+      if (this.controller.shroomService.spawnerEvent.timeout <= 0) {
+        this.controller.shroomService.spawnerEvent = null
+      }
+    }
+
     // Render particleArea
     var particleArea = this.controller.shroomService.particleArea
     if (Core.isType(particleArea, Struct)) {
@@ -380,6 +393,82 @@ function GridRenderer(_controller, config = {}) constructor {
       this.controller.shroomService.particleArea.timeout--
       if (this.controller.shroomService.particleArea.timeout <= 0) {
         this.controller.shroomService.particleArea = null
+      }
+    }
+
+    var particleAreaEvent = this.controller.shroomService.particleAreaEvent
+    if (Core.isType(particleAreaEvent, Struct)) {
+      particleAreaEvent.topLeft.sprite.render(
+        particleAreaEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleAreaEvent.topRight.sprite.render(
+        particleAreaEvent.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleAreaEvent.bottomLeft.sprite.render(
+        particleAreaEvent.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleAreaEvent.bottomRight.sprite.render(
+        particleAreaEvent.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+
+      this.controller.shroomService.particleAreaEvent.timeout--
+      if (this.controller.shroomService.particleAreaEvent.timeout <= 0) {
+        this.controller.shroomService.particleAreaEvent = null
+      }
+    }
+
+    // Render playerBorder
+    var playerBorder = this.controller.shroomService.playerBorder
+    if (Core.isType(playerBorder, Struct)) {
+      playerBorder.topLeft.sprite.render(
+        playerBorder.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorder.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorder.topRight.sprite.render(
+        playerBorder.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorder.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorder.bottomLeft.sprite.render(
+        playerBorder.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorder.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorder.bottomRight.sprite.render(
+        playerBorder.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorder.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+
+      this.controller.shroomService.playerBorder.timeout--
+      if (this.controller.shroomService.playerBorder.timeout <= 0) {
+        this.controller.shroomService.playerBorder = null
+      }
+    }
+
+    var playerBorderEvent = this.controller.shroomService.playerBorderEvent
+    if (Core.isType(playerBorderEvent, Struct)) {
+      playerBorderEvent.topLeft.sprite.render(
+        playerBorderEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorderEvent.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorderEvent.topRight.sprite.render(
+        playerBorderEvent.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorderEvent.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorderEvent.bottomLeft.sprite.render(
+        playerBorderEvent.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorderEvent.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorderEvent.bottomRight.sprite.render(
+        playerBorderEvent.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorderEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+
+      this.controller.shroomService.playerBorderEvent.timeout--
+      if (this.controller.shroomService.playerBorderEvent.timeout <= 0) {
+        this.controller.shroomService.playerBorderEvent = null
       }
     }
 

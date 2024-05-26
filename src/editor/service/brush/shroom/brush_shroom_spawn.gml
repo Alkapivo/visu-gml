@@ -92,6 +92,26 @@ function brush_shroom_spawn(json = null) {
             text: "Spawner preview",
             enable: { key: "shroom-spawn_use-preview" },
             backgroundColor: VETheme.color.accentShadow,
+            updateCustom: function() {
+              this.preRender()
+              if (Core.isType(this.context.updateTimer, Timer)) {
+                var inspectorType = this.context.state.get("inspectorType")
+                switch (inspectorType) {
+                  case VEEventInspector:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.spawnerEvent != null) {
+                      shroomService.spawnerEvent.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                  case VEBrushToolbar:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.spawner != null) {
+                      shroomService.spawner.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                }
+              }
+            },
             preRender: function() {
               var store = null
               if (Core.isType(this.context.state.get("brush"), VEBrush)) {
@@ -134,8 +154,25 @@ function brush_shroom_spawn(json = null) {
                 _y = _y - (view.y - floor(view.y / view.height) * view.height)
               }
 
-              var shroomService = Beans.get(BeanVisuController).shroomService
-              shroomService.spawner = shroomService.factorySpawner({ x: _x, y: _y })
+              var inspectorType = this.context.state.get("inspectorType")
+              switch (inspectorType) {
+                case VEEventInspector:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.spawnerEvent = shroomService.factorySpawner({ 
+                    x: _x, 
+                    y: _y, 
+                    sprite: SpriteUtil.parse({ name: "texture_bazyl" })
+                  })
+                  break
+                case VEBrushToolbar:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.spawner = shroomService.factorySpawner({ 
+                    x: _x, 
+                    y: _y, 
+                    sprite: SpriteUtil.parse({ name: "texture_baron" })
+                  })
+                  break
+              }
             },
           },
           checkbox: { 
