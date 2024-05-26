@@ -948,10 +948,15 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   inspector.updateCustom()
                 }
 
-                var template = brushToolbar.containers
+                var brush = brushToolbar.containers
                   .get("ve-brush-toolbar_inspector-view").state
                   .get("brush")
-                  .toTemplate()
+
+                if (brush == null) {
+                  return
+                }
+
+                var template = brush.toTemplate()
 
                 brushToolbar.editor.brushService
                   .saveTemplate(template)
@@ -1202,6 +1207,19 @@ function VEBrushToolbar(_editor) constructor {
       this.store.get("template").set(null)
       this.store.get("brush").set(null)
     },
+    "save-brush": function(event) {
+      var control = this.containers.get("ve-brush-toolbar_control")
+      if (control == null) {
+        return
+      }
+
+      var button = control.items.get("button_control-save_category-button")
+      if (button == null) {
+        return
+      }
+
+      button.callback()
+    }
   }), { 
     enableLogger: false, 
     catchException: false,

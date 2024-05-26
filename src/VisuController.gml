@@ -320,6 +320,7 @@ function VisuController(layerName) constructor {
       openProject: "O",
       saveProject: "S",
       saveTemplate: "T",
+      saveBrush: "U",
       selectTool: "S",
       eraseTool: "E",
       brushTool: "B",
@@ -701,6 +702,14 @@ function VisuController(layerName) constructor {
       
       this.editor.accordion.templateToolbar.send(new Event("save-template"))
     }
+
+    if (!isGMTFFocus 
+      && this.keyboard.keys.saveBrush.pressed 
+      && this.editor.store.getValue("render-brush")) {
+      
+      this.editor.brushToolbar.send(new Event("save-brush"))
+    }
+
 
     if (!isGMTFFocus && this.keyboard.keys.selectTool.pressed) {
       this.editor.store.get("tool").set("tool_select")
