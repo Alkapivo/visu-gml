@@ -357,6 +357,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             brushType: VEBrushType.VIEW_LYRICS,
           },
           {
+            name: "button_category-view_type-glitch",
+            text: "Glitch",
+            brushType: VEBrushType.VIEW_GLITCH,
+          },
+          {
             name: "button_category-view_type-config",
             text: "Config",
             brushType: VEBrushType.VIEW_CONFIG,
@@ -1039,7 +1044,9 @@ function VEBrushToolbar(_editor) constructor {
     ]),
     "view": new Array(String, [ 
       VEBrushType.VIEW_WALLPAPER, 
-      VEBrushType.VIEW_CAMERA, 
+      VEBrushType.VIEW_CAMERA,
+      VEBrushType.VIEW_LYRICS,
+      VEBrushType.VIEW_GLITCH,
       VEBrushType.VIEW_CONFIG 
     ]),
   })
