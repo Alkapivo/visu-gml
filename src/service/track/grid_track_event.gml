@@ -344,8 +344,6 @@ global.__grid_track_event = {
         .get(data, "grid-player_margin-bottom")
       controller.gridService.targetLocked.margin.left = Struct
         .get(data, "grid-player_margin-left")
-
-      Core.print(JSON.stringify(controller.gridService.targetLocked, { pretty: true }))
     }
   },
   "brush_grid_separator": function(data) {

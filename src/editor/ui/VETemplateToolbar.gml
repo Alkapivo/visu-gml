@@ -1460,6 +1460,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
+      updateCustom: function() {
+        var previousOffset = this.state.get("previousOffset");
+        if (previousOffset != null) {
+          this.offset.x = previousOffset.x
+          this.offset.y = previousOffset.y
+          this.offsetMax.x = previousOffset.xMax
+          this.offsetMax.y = previousOffset.yMax
+          this.state.remove("previousOffset")
+          Core.print("boom, restored!", irandom(99))
+        }
+      },
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
       scrollbarY: { align: HAlign.LEFT },
@@ -1501,6 +1512,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 width: function() { return this.area.getWidth() },
               })
             )
+
+            data.state.set("previousOffset", {
+              x: data.offset.x,
+              y: data.offset.y,
+              xMax: data.offsetMax.x,
+              yMax: data.offsetMax.y,
+            })
           },
           data: container
         })

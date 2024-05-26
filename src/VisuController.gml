@@ -319,6 +319,7 @@ function VisuController(layerName) constructor {
       newProject: "N",
       openProject: "O",
       saveProject: "S",
+      saveTemplate: "T",
       selectTool: "S",
       eraseTool: "E",
       brushTool: "B",
@@ -692,6 +693,13 @@ function VisuController(layerName) constructor {
         Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
         Logger.error("VETitleBar", message)
       }
+    }
+
+    if (!isGMTFFocus 
+      && this.keyboard.keys.saveTemplate.pressed 
+      && this.editor.store.getValue("render-event")) {
+      
+      this.editor.accordion.templateToolbar.send(new Event("save-template"))
     }
 
     if (!isGMTFFocus && this.keyboard.keys.selectTool.pressed) {
