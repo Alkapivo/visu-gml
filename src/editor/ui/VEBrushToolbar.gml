@@ -694,6 +694,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
               })
 
+            data.executor.tasks.clear()
             data.executor.add(task)
           },
           data: container
