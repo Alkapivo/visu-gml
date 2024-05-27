@@ -1468,7 +1468,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           this.offsetMax.x = previousOffset.xMax
           this.offsetMax.y = previousOffset.yMax
           this.state.remove("previousOffset")
-          Core.print("boom, restored!", irandom(99))
         }
       },
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
