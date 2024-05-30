@@ -125,6 +125,12 @@ function GridItem(config = {}) constructor {
   ///@type {?GridItemGameMode}
   gameMode = null
 
+  ///@type {Number}
+  fadeIn = 0.0
+
+  ///@type {Number}
+  fadeInFactor = 0.1
+
   ///@param {Number} angle
   ///@return {GridItem}
   setAngle = function(angle) {
@@ -210,6 +216,8 @@ function GridItem(config = {}) constructor {
     if (Optional.is(this.gameMode)) {
       gameMode.update(this, controller)
     }
+
+    this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
 
     return this
   }
