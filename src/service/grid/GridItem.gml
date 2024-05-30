@@ -187,6 +187,7 @@ function GridItem(config = {}) constructor {
       var halfSourceHeight = (this.mask.getHeight() * this.sprite.scaleY) / 2.0
       var halfTargetWidth = (target.mask.getWidth() * target.sprite.scaleX) / 2.0
       var halfTargetHeight = (target.mask.getHeight() * target.sprite.scaleY) / 2.0
+            
       var sourceX = this.x * GRID_SERVICE_PIXEL_WIDTH
       var sourceY = this.y * GRID_SERVICE_PIXEL_HEIGHT
       var targetX = target.x * GRID_SERVICE_PIXEL_WIDTH

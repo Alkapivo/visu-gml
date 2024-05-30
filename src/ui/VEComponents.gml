@@ -29,7 +29,7 @@ global.__VEComponents = new Map(String, Callable, {
   },
 
   "image": function(name, layout, config = null) {
-    return new Array(UIItem, [
+    var items = new Array(UIItem, [
       UIImage(
         $"{name}_image",
         Struct.appendRecursive(
@@ -42,6 +42,41 @@ global.__VEComponents = new Map(String, Callable, {
         )
       )
     ])
+
+    if (Struct.contains(config, "resolution")) {
+      items.add(UIText(
+        name,
+        Struct.appendRecursive(
+          {
+            layout: layout.nodes.resolution,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          Struct.appendRecursive(
+            Struct.appendRecursive(
+              { 
+                store: { 
+                  callback: function(value, data) {
+                    if (!Core.isType(value, Sprite)) {
+                      return
+                    }
+  
+                    data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
+                  },
+                  set: function(value) { },
+                }
+              },
+              VEStyles.get("texture-field-ext").resolution,
+              false
+            ),
+            Struct.get(config, "resolution"),
+            false
+          ),
+          false
+        )
+      ))
+    }
+
+    return items
   },
 
   ///@param {String} name
@@ -1347,7 +1382,7 @@ global.__VEComponents = new Map(String, Callable, {
                     return
                   }
 
-                  data.label.text = $"x: {value.getWidth()} y: {value.getHeight()}"
+                  data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
                 },
                 set: function(value) { },
               }
