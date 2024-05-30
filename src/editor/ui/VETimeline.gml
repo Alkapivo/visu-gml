@@ -138,7 +138,7 @@ function VETimeline(_editor) constructor {
           || !this.activeChunks.chunks.contains(keyPresent)
           || !this.activeChunks.chunks.contains(keyFuture)) {
           
-          Logger.debug("TrackEditor::ChunkService", $"New keys: keyPast: {keyPast}, keyPresent: {keyPresent}, keyFuture: {keyFuture}")
+          Logger.debug("ChunkService", $"Update keys, past: {keyPast}, present: {keyPresent}, future: {keyFuture}")
           this.activeChunks.chunks.clear()
             .set(keyPast, this.fetch(keyPast))
             .set(keyPresent, this.fetch(keyPresent))

@@ -474,7 +474,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       acc: {
                         saveTemplate: saveTemplate,
                       },
-                      steps: MAGIC_NUMBER_TASK * 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       var task = JSON.parserTask(result.data, this.state)

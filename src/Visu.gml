@@ -1,6 +1,6 @@
 ///@package io.alkapivo.visu
 
-global.__MAGIC_NUMBER_TASK = 1
+global.__MAGIC_NUMBER_TASK = 5
 #macro MAGIC_NUMBER_TASK global.__MAGIC_NUMBER_TASK
 
 function _Visu() constructor {

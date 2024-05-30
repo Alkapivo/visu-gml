@@ -85,7 +85,14 @@ global.__view_track_event = {
         .set(Struct.get(data, "view-config_lock-target-y"))
     }
 
-    if (Struct.get(data, "view-config_use-transform-x") == true) {
+    if (Struct.get(data, "view-config_use-follow-properties")) {
+      var follow = controller.gridService.view.follow
+      follow.xMargin = Struct.get(data, "view-config_follow-margin-x")
+      follow.yMargin = Struct.get(data, "view-config_follow-margin-y")
+      follow.smooth = Struct.get(data, "view-config_follow-smooth")
+    }
+
+    if (Struct.get(data, "view-config_use-transform-x")) {
       var transformer = Struct.get(data, "view-config_transform-x")
       controller.gridService.send(new Event("transform-property", {
         key: "x",
@@ -100,7 +107,7 @@ global.__view_track_event = {
       }))
     }
     
-    if (Struct.get(data, "view-config_use-transform-y") == true) {
+    if (Struct.get(data, "view-config_use-transform-y")) {
       var transformer = Struct.get(data, "view-config_transform-y")
       controller.gridService.send(new Event("transform-property", {
         key: "y",
@@ -115,7 +122,7 @@ global.__view_track_event = {
       }))
     }
     
-    if (Struct.get(data, "view-config_use-transform-z") == true) {
+    if (Struct.get(data, "view-config_use-transform-z")) {
       var transformer = Struct.get(data, "view-config_transform-z")
       controller.gridService.send(new Event("transform-property", {
         key: "z",
@@ -130,7 +137,7 @@ global.__view_track_event = {
       }))
     }
     
-    if (Struct.get(data, "view-config_use-transform-zoom") == true) {
+    if (Struct.get(data, "view-config_use-transform-zoom")) {
       var transformer = Struct.get(data, "view-config_transform-zoom")
       controller.gridService.send(new Event("transform-property", {
         key: "zoom",
@@ -145,7 +152,7 @@ global.__view_track_event = {
       }))
     }
     
-    if (Struct.get(data, "view-config_use-transform-angle") == true) {
+    if (Struct.get(data, "view-config_use-transform-angle")) {
       var transformer = Struct.get(data, "view-config_transform-angle")
       controller.gridService.send(new Event("transform-property", {
         key: "angle",
@@ -161,7 +168,7 @@ global.__view_track_event = {
     }
 
     
-    if (Struct.get(data, "view-config_use-transform-pitch") == true) {
+    if (Struct.get(data, "view-config_use-transform-pitch")) {
       var transformer = Struct.get(data, "view-config_transform-pitch")
       controller.gridService.send(new Event("transform-property", {
         key: "pitch",

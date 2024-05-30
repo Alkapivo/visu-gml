@@ -745,7 +745,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load shader '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load shader '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shaderPipeline.templates,
@@ -768,7 +768,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load shroom template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load shroom template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shroomService.templates,
@@ -814,7 +814,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load lyrics template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.lyricsService.templates,
@@ -837,7 +837,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load particle template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load particle template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.particleService.templates,

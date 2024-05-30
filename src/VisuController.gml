@@ -443,7 +443,11 @@ function VisuController(layerName) constructor {
         data: {
           resume: this.fsm.getStateName() == "play",
           timestamp: Assert.isType(event.data.timestamp, Number),
-          videoServiceAttempts: Struct.getDefault(event.data, "videoServiceAttempts", 5),
+          videoServiceAttempts: Struct.getDefault(
+            event.data, 
+            "videoServiceAttempts", 
+            Core.getProperty("core.video-service.attempts", 3)
+          ),
         }
       })
       
@@ -930,7 +934,7 @@ function VisuController(layerName) constructor {
       this.lyricsRenderer.renderGUI()
       if (this.renderUI) {
         this.uiService.render()
-        var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
+        var loaderState = this.loader.fsm.getStateName()
         if (loaderState != "idle" && loaderState != "loaded") {
           var color = c_black
           this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)

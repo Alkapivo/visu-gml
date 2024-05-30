@@ -22,6 +22,31 @@ function brush_view_camera(json = null) {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_lock-target-y", false),
       },
+      "view-config_use-follow-properties": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_use-follow-properties", false),
+      },
+      "view-config_follow-margin-x": {
+        type: Number,
+        value: Struct.getDefault(json, "view-config_follow-margin-x", 0.35),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0)
+        },
+      },
+      "view-config_follow-margin-y": {
+        type: Number,
+        value: Struct.getDefault(json, "view-config_follow-margin-y", 0.40),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0)
+        },
+      },
+      "view-config_follow-smooth": {
+        type: Number,
+        value: Struct.getDefault(json, "view-config_follow-smooth", 32),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 1.0, 256.0)
+        },
+      },
       "view-config_use-transform-x": {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_use-transform-x", false),
@@ -287,6 +312,80 @@ function brush_view_camera(json = null) {
             enable: { key: "view-config_use-lock-target-y" },
           },
         },
+      },
+      {
+        name: "view-config_use-follow-properties",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Follow properties",
+            enable: { key: "view-config_use-follow-properties" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-follow-properties" },
+          },
+        },
+      },
+      {
+        name: "view-config_follow-margin-x",
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL},
+          label: { 
+            text: "X margin",
+            enable: { key: "view-config_use-follow-properties" },
+          },
+          field: { store: { key: "view-config_follow-margin-x" }},
+          slider: {
+            minValue: 0.0,
+            maxValue: 1.0,
+            store: { key: "view-config_follow-margin-x" },
+            enable: { key: "view-config_use-follow-properties" },
+          },
+        }
+      },
+      {
+        name: "view-config_follow-margin-y",
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL},
+          label: { 
+            text: "Y margin",
+            enable: { key: "view-config_use-follow-properties" },
+          },
+          field: { store: { key: "view-config_follow-margin-y" }},
+          slider: {
+            minValue: 0.0,
+            maxValue: 1.0,
+            store: { key: "view-config_follow-margin-y" },
+            enable: { key: "view-config_use-follow-properties" },
+          },
+        }
+      },
+      {
+        name: "view-config_follow-smooth",
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL},
+          label: { 
+            text: "Smooth",
+            enable: { key: "view-config_use-follow-properties" },
+          },
+          field: { store: { key: "view-config_follow-smooth" }},
+          slider: {
+            minValue: 1.0,
+            maxValue: 256.0,
+            store: { key: "view-config_follow-smooth" },
+            enable: { key: "view-config_use-follow-properties" },
+          },
+        }
       },
       {
         name: "view-config_transform-x",
