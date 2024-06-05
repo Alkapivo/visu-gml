@@ -98,8 +98,8 @@ function GridItem(config = {}) constructor {
   sprite = Assert.isType(SpriteUtil.parse(Struct.get(config, "sprite"), { name: "texture_missing" }), Sprite)
 
   ///@type {Rectangle}
-  mask = Core.isType(Struct.get(config, "mask"), Rectangle)
-    ? config.mask
+  mask = Core.isType(Struct.get(config, "mask"), Struct)
+    ? new Rectangle(config.mask)
     : new Rectangle({ 
       x: 0, 
       y: 0, 
@@ -129,7 +129,7 @@ function GridItem(config = {}) constructor {
   fadeIn = 0.0
 
   ///@type {Number}
-  fadeInFactor = 0.1
+  fadeInFactor = 0.03
 
   ///@param {Number} angle
   ///@return {GridItem}

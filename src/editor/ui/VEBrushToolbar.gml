@@ -913,11 +913,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               label: { text: "Save" },
               callback: function() { 
-                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-                    global.GMTF_DATA.active.uiItem.update()
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
                   }
-                  global.GMTF_DATA.active.unfocus()
+                  GMTFContext.get().unfocus()
                 }
                 
                 var brushToolbar = this.context.brushToolbar

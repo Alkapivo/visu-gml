@@ -45,7 +45,7 @@ function PlayerRacingGameMode(json) {
       }
 
       var keys = player.keyboard.keys
-      if (Optional.is(global.GMTF_DATA.active)) {
+      if (GMTFContext.isFocused()) {
         keys.left.on = false
         keys.right.on = false
         keys.up.on = false
@@ -127,7 +127,7 @@ function PlayerBulletHellGameMode(json) {
       }
       
       var keys = player.keyboard.keys
-      if (Optional.is(global.GMTF_DATA.active)) {
+      if (GMTFContext.isFocused()) {
         keys.left.on = false
         keys.right.on = false
         keys.up.on = false
@@ -217,7 +217,14 @@ function PlayerPlatformerGameMode(json) {
 
       var gridService = controller.gridService
       var view = gridService.view
-      var keys = player.keyboard.keys    
+      var keys = player.keyboard.keys
+      if (GMTFContext.isFocused()) {
+        keys.left.on = false
+        keys.right.on = false
+        keys.up.on = false
+        keys.down.on = false
+        keys.action.on = false
+      }
       player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
 
       var shroomCollision = player.signals.shroomCollision

@@ -311,6 +311,7 @@ function GridRenderer(_controller, config = {}) constructor {
         c_lime
       )
       */
+      
     }
     
     return this
@@ -328,7 +329,7 @@ function GridRenderer(_controller, config = {}) constructor {
           (shroom.y - ((shroom.sprite.texture.height * shroom.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((shroom.sprite.texture.offsetY * shroom.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
         )
         .setAlpha(alpha)
-
+      
       /*
       GPU.render.rectangle(
         (shroom.x - ((shroom.mask.getWidth() * shroom.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
@@ -485,7 +486,6 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@return {GridRenderer}
   renderBullets = function() {
     static renderBullet = function(bullet, index, gridService) {
-      Core.print("bullet.sprite.texture.offsetX", bullet.sprite.texture.offsetX, sprite_get_xoffset(bullet.sprite.texture.asset), "bullet.sprite.texture.offsetY", bullet.sprite.texture.offsetY, sprite_get_yoffset(bullet.sprite.texture.asset))
       bullet.sprite
         .setAngle(bullet.angle)
         .render(
@@ -493,7 +493,7 @@ function GridRenderer(_controller, config = {}) constructor {
           (bullet.y - ((bullet.sprite.texture.height * bullet.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((bullet.sprite.texture.offsetY * bullet.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
         )
 
-      /* 
+      /*
       GPU.render.rectangle(
         (bullet.x - ((bullet.mask.getWidth() * bullet.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
         (bullet.y - ((bullet.mask.getHeight() * bullet.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
