@@ -1064,7 +1064,7 @@ function VisuNewProjectForm(json = null) constructor {
                   "callable":"brush_grid_config",
                   "timestamp":0.0,
                   "data":{
-                    "grid-config_transform-speed":{
+                    "grid-config_speed":{
                       "value":4.166666666666667,
                       "factor":0.5,
                       "overrideValue":false,
@@ -1077,8 +1077,8 @@ function VisuNewProjectForm(json = null) constructor {
                     "grid-config_clear-frame":1.0,
                     "grid-config_use-clear-color":true,
                     "grid-config_clear-color":"#FFFFFF",
-                    "grid-config_use-transform-clear-frame-alpha":true,
-                    "grid-config_transform-clear-frame-alpha":{
+                    "grid-config_use-clear-frame-alpha":true,
+                    "grid-config_clear-frame-alpha":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1092,8 +1092,8 @@ function VisuNewProjectForm(json = null) constructor {
                     "grid-config_use-border-bottom-color":true,
                     "grid-config_border-bottom-color":"#FF0000ED",
                     "grid-config_border-bottom-color-speed":1.0,
-                    "grid-config_use-transform-border-bottom-alpha":true,
-                    "grid-config_transform-border-bottom-alpha":{
+                    "grid-config_use-border-bottom-alpha":true,
+                    "grid-config_border-bottom-alpha":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1106,8 +1106,8 @@ function VisuNewProjectForm(json = null) constructor {
                       "name":"texture_visu_editor_icon_event_grid_config",
                       "blend":"#FFFF00"
                     },
-                    "grid-config_use-transform-border-bottom-size":true,
-                    "grid-config_transform-border-bottom-size":{
+                    "grid-config_use-border-bottom-size":true,
+                    "grid-config_border-bottom-size":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1119,8 +1119,8 @@ function VisuNewProjectForm(json = null) constructor {
                     "grid-config_use-border-horizontal-color":true,
                     "grid-config_border-horizontal-color":"#FF0000ED",
                     "grid-config_border-horizontal-color-speed":1.0,
-                    "grid-config_use-transform-border-horizontal-alpha":true,
-                    "grid-config_transform-border-horizontal-alpha":{
+                    "grid-config_use-border-horizontal-alpha":true,
+                    "grid-config_border-horizontal-alpha":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1129,8 +1129,8 @@ function VisuNewProjectForm(json = null) constructor {
                       "startValue":0.0,
                       "finished":false
                     },
-                    "grid-config_use-transform-border-horizontal-size":true,
-                    "grid-config_transform-border-horizontal-size":{
+                    "grid-config_use-border-horizontal-size":true,
+                    "grid-config_border-horizontal-size":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1143,7 +1143,7 @@ function VisuNewProjectForm(json = null) constructor {
                     "grid-config_render-grid":1.0,
                     "grid-config_use-render-grid-elements":true,
                     "grid-config_render-grid-elements":true,
-                    "grid-config_use-transform-speed":true
+                    "grid-config_use-speed":true
                   }
                 }
               ]
