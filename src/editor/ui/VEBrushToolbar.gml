@@ -962,6 +962,18 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   this.context.brushToolbar.containers
                     .get("ve-brush-toolbar_brush-view").collection
                     .add(this.context.brushToolbar.parseBrushTemplate(template))
+                } else {
+                  var component = this.context.brushToolbar.containers
+                    .get("ve-brush-toolbar_brush-view").collection.components
+                    .find(function(component, key, name) {
+                      return component.name == name
+                    }, template.name)
+                  var item = component.items.find(function(item) {
+                    return item.type == UIImage
+                  })
+
+                  item.image.texture = TextureUtil.parse(template.texture)
+                  item.image.setBlend(ColorUtil.fromHex(template.color).toGMColor())
                 }
               },
               onMouseHoverOver: function(event) {
@@ -971,7 +983,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
               },
             },
-            
           }
         ]),
       }),
