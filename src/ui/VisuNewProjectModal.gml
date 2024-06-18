@@ -609,6 +609,18 @@ function VisuNewProjectForm(json = null) constructor {
             }
             GMTFContext.get().unfocus()
           }
+
+          if (String.isEmpty(this.context.state.get("form").store.getValue("project-name"))) {
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+              { message: "Name cannot be empty" }))
+            return
+          }
+      
+          if (!FileUtil.fileExists(this.context.state.get("form").store.getValue("file-audio"))) {
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+              { message: "Audio must be selected" }))
+            return
+          }
           
           var path = FileUtil.getPathToSaveWithDialog({ 
             description: "VISU file",
@@ -716,7 +728,6 @@ function VisuNewProjectForm(json = null) constructor {
   save = function(manifestPath) {
     var json = this.serialize()
     var controller = Beans.get(BeanVisuController)
-    var fileService = controller.fileService
 
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {
