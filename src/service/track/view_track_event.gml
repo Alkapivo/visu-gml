@@ -81,15 +81,11 @@ global.__view_track_event = {
     
 
     if (Struct.get(data, "view-config_use-lock-target-x")) {
-      controller.editor.store
-        .get("target-locked-x")
-        .set(Struct.get(data, "view-config_lock-target-x"))
+      controller.gridService.targetLocked.isLockedX = Struct.get(data, "view-config_lock-target-x")
     }
     
     if (Struct.get(data, "view-config_use-lock-target-y")) {
-      controller.editor.store
-        .get("target-locked-y")
-        .set(Struct.get(data, "view-config_lock-target-y"))
+      controller.gridService.targetLocked.isLockedY = Struct.get(data, "view-config_lock-target-y")
     }
 
     if (Struct.get(data, "view-config_use-follow-properties")) {

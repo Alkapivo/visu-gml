@@ -15,7 +15,7 @@ function LyricsRenderer(_controller, config = {}) constructor {
       GPU.set.font(lyrics.font.asset).align.h(lyrics.align).align.v(lyrics.align)
 
       var enable = renderer.controller.renderUI
-      var preview = renderer.controller.editor.layout.nodes.preview
+      var preview = Beans.get(BeanVisuEditor).layout.nodes.preview
       var guiWidth = enable ? ceil(preview.width()) : GuiWidth()
       var guiHeight = enable ? ceil(preview.height()) : GuiHeight()
       var guiX = enable ? ceil(preview.x()) : 0 

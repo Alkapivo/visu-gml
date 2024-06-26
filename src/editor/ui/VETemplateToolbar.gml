@@ -740,7 +740,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load shader '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load shader '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shaderPipeline.templates,
@@ -763,7 +763,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load shroom template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load shroom template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shroomService.templates,
@@ -809,7 +809,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.lyricsService.templates,
@@ -832,7 +832,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load particle template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load particle template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.particleService.templates,
@@ -851,10 +851,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     })
                   break
                 case VETemplateType.TEXTURE:
-                  Logger.error("VETemplate", $"Load type '{VETemplateType.TEXTURE}' is not supported")
+                  Logger.warn("VETemplate", $"Load type '{VETemplateType.TEXTURE}' is not supported")
                   return
                 default:
-                  throw new Exception($"Load dispatcher for type '{type}' wasn't found")
+                  var message = $"Load dispatcher for type '{type}' wasn't found"
+                  Logger.error("VETemplate", message)
+                  throw new Exception(message)
                   break
               }
 
@@ -1317,7 +1319,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 })
                 break
               default:
-                Logger.error(
+                Logger.warn(
                   "VETemplateToolbar", 
                   $"template-view dispatcher for type '{type}' wasn't found"
                 )
@@ -1387,8 +1389,9 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               }
             },
             updateLayout: new BindIntent(function(_position) {
-              var titleBar = this.context.templateToolbar.uiService.find("ve-title-bar")
-              var statusBar = this.context.templateToolbar.uiService.find("ve-status-bar")
+              var uiService = Beans.get(BeanVisuController).uiService
+              var titleBar = uiService.find("ve-title-bar")
+              var statusBar = uiService.find("ve-status-bar")
 
               var typeNode = Struct.get(this.context.layout.context.nodes, "type")
               var addNode = Struct.get(this.context.layout.context.nodes, "add")
@@ -1397,11 +1400,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               var controlNode = Struct.get(this.context.layout.context.nodes, "control")
               var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
 
-              var nodes = this.context.templateToolbar.editor.accordion.layout.nodes
+              var editor = Beans.get(BeanVisuEditor)
+              var nodes = editor.accordion.layout.nodes
               var barEventInspectorNode = Struct.get(nodes, "bar_event-inspector")
               var viewEventInspectorNode = Struct.get(nodes, "view_event-inspector")
               var barTemplateToolbarNode = Struct.get(nodes, "bar_template-toolbar")
-              var timelineNode = Beans.get(BeanVisuController).editor.layout.nodes.timeline
+              var timelineNode = editor.layout.nodes.timeline
               
               var top = titleBar.layout.height() + titleBar.margin.top + titleBar.margin.bottom
                 + barEventInspectorNode.height() + barEventInspectorNode.margin.top + barEventInspectorNode.margin.bottom
@@ -1618,9 +1622,6 @@ function VETemplateToolbar(_editor) constructor {
   ///@type {VisuEditor}
   editor = Assert.isType(_editor, VisuEditor)
 
-  ///@type {UIService}
-  uiService = Assert.isType(this.editor.uiService, UIService)
-
   ///@type {?UILayout}
   layout = null
 
@@ -1772,7 +1773,7 @@ function VETemplateToolbar(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, this.uiService)
+      }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -1781,7 +1782,7 @@ function VETemplateToolbar(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
 
       this.store.get("template").set(null)
     },

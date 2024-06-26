@@ -71,6 +71,36 @@ function _Visu() constructor {
         )
       ))
     }
+
+    if (!Beans.exists(BeanVisuIO)) {
+      Beans.add(BeanVisuIO, new Bean(VisuIO,
+        GMObjectUtil.factoryGMObject(
+          GMServiceInstance, 
+          layerId, 0, 0, 
+          new VisuIO()
+        )
+      ))
+    }
+
+    if (!Beans.exists(BeanVisuEditor)) {
+      Beans.add(BeanVisuEditor, new Bean(VisuEditor,
+        GMObjectUtil.factoryGMObject(
+          GMServiceInstance, 
+          layerId, 0, 0, 
+          new VisuEditor()
+        )
+      ))
+    }
+
+    if (!Beans.exists(BeanVisuTestRunner)) {
+      Beans.add(BeanVisuTestRunner, new Bean(VisuTestRunner,
+        GMObjectUtil.factoryGMObject(
+          GMServiceInstance, 
+          layerId, 0, 0, 
+          new VisuTestRunner()
+        )
+      ))
+    }
     
     Beans.add(BeanVisuController, new Bean(VisuController,
       GMObjectUtil.factoryGMObject(
@@ -79,6 +109,7 @@ function _Visu() constructor {
         new VisuController(layerName)
       )
     ))
+    
     return this
   }
 }

@@ -4,9 +4,11 @@
 global.__GRID_SERVICE_PIXEL_WIDTH = 2048
 #macro GRID_SERVICE_PIXEL_WIDTH global.__GRID_SERVICE_PIXEL_WIDTH
 
+
 ///@type {Number}
 global.__GRID_SERVICE_PIXEL_HEIGHT = 2048
 #macro GRID_SERVICE_PIXEL_HEIGHT global.__GRID_SERVICE_PIXEL_HEIGHT
+
 
 ///@type {Number}
 global.__GRID_ITEM_FRUSTUM_RANGE = 3.5
@@ -52,6 +54,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   targetLocked = {
     x: this.view.x,
     y: this.view.y,
+    isLockedX: false,
+    isLockedY: false,
     setX: function(x) {
       this.x = x
       return this
@@ -86,6 +90,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       this.targetLocked = {
         x: this.view.x,
         y: this.view.y,
+        isLockedX: false,
+        isLockedY: false,
         setX: function(x) {
           this.x = x
           return this
@@ -226,11 +232,12 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
         this.targetLocked.setY(player.y)
       }
 
-      if (this.controller.editor.store.getValue("target-locked-x")) {
+      var editor = Beans.get(BeanVisuEditor)
+      if (this.targetLocked.isLockedX) {
         this.targetLocked.setX((this.view.width * floor(this.view.x / this.view.width)) + (this.view.width / 2))
       }
   
-      if (this.controller.editor.store.getValue("target-locked-y")) {
+      if (this.targetLocked.isLockedY) {
         this.targetLocked.setY((this.view.height * floor(this.view.y / this.view.height)) + (this.view.height / 2))
       }
     }

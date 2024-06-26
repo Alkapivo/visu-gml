@@ -734,8 +734,8 @@ function VisuNewProjectForm(json = null) constructor {
       "model": "io.alkapivo.visu.controller.VisuTrack",
       "version": "1",
       "data": {  
-        "bpm": controller.editor.store.getValue("bpm"),
-        "bpm-sub": controller.editor.store.getValue("bpm-sub"),
+        "bpm": Beans.get(BeanVisuEditor).store.getValue("bpm"),
+        "bpm-sub": Beans.get(BeanVisuEditor).store.getValue("bpm-sub"),
         "bullet": "template/bullet.json",
         "editor": [],
         "lyrics": "template/lyrics.json",
@@ -1473,15 +1473,9 @@ function VisuNewProjectForm(json = null) constructor {
   }
 }
 
-///@param {VisuController} _controller
+
 ///@param {?Struct} [_config]
-function VisuNewProjectModal(_controller, _config = null) constructor {
-
-  ///@type {VisuController}
-  controller = Assert.isType(_controller, VisuController)
-
-  ///@type {UIService}
-  uiService = Assert.isType(this.controller.uiService, UIService)
+function VisuNewProjectModal(_config = null) constructor {
 
   ///@type {?Struct}
   config = Optional.is(_config) ? Assert.isType(_config, Struct) : null
@@ -1564,7 +1558,7 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
           container: container,
           replace: true,
         }))
-      }, this.uiService)
+      }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -1573,7 +1567,7 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
     },
   }))
 

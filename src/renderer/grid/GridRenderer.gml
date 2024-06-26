@@ -250,7 +250,7 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@private
   renderBorders = function() {
     static renderTop = function(controller) {
-      if (!controller.editor.store.getValue("target-locked-y")) {
+      if (!controller.gridService.targetLocked.isLockedY) {
         return
       }
 
@@ -276,7 +276,7 @@ function GridRenderer(_controller, config = {}) constructor {
       var height = gridService.properties.borderVerticalLength
       var anchorY = view.y//view.height * floor(view.y / view.height)
       var beginX = GRID_SERVICE_PIXEL_WIDTH * -5.0
-      var beginY = GRID_SERVICE_PIXEL_HEIGHT * (controller.editor.store.getValue("target-locked-y")
+      var beginY = GRID_SERVICE_PIXEL_HEIGHT * (controller.gridService.targetLocked.isLockedY
         ? clamp(anchorY + height + (view.height / 2.0), 0.0, view.worldHeight) - view.y
         : clamp(view.worldHeight - view.y, 0.0, view.worldHeight))
       var endX = GRID_SERVICE_PIXEL_WIDTH * (view.width + 5.0)

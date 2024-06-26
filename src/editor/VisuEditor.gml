@@ -1,48 +1,13 @@
 ///@package io.alkapivo.visu.service.ui.track
 
-///@enum
-function _ToolType(): Enum() constructor {
-  SELECT = "tool_select"
-  BRUSH = "tool_brush"
-  ERASE = "tool_erase"
-  CLONE = "tool_clone"
-}
-global.__ToolType = new _ToolType()
-#macro ToolType global.__ToolType
-
-
-///@param {VisuController} _controller
-function VisuEditor(_controller) constructor {
-  
-  ///@type {VisuController}
-  controller = Assert.isType(_controller, VisuController)
-
-  ///@type {FileService}
-  fileService = Assert.isType(this.controller.fileService, FileService)
-  
-  ///@type {UIService}
-  uiService = Assert.isType(this.controller.uiService, UIService)
-  
-  ///@type {TrackService}
-  trackService = Assert.isType(this.controller.trackService, TrackService)
-
-  ///@type {ShaderPipeline}
-  shaderPipeline = Assert.isType(this.controller.shaderPipeline, ShaderPipeline)
-
-  ///@type {ShroomService}
-  shroomService = Assert.isType(this.controller.shroomService, ShroomService)
-
-  ///@type {VEBrushService}
-  brushService = new VEBrushService(this)
+#macro BeanVisuEditor "VisuEditor"
+function VisuEditor() constructor {
   
   ///@type {VETitleBar}
   titleBar = new VETitleBar(this)
 
   ///@type {VEAccordion}
   accordion = new VEAccordion(this)
-
-  ///@type {VEPreview}
-  //preview = new VEPreview(this)
 
   ///@type {VETrackControl}
   trackControl = new VETrackControl(this)
@@ -58,6 +23,29 @@ function VisuEditor(_controller) constructor {
 
   ///@type {VEPopupQueue}
   popupQueue = new VEPopupQueue(this)
+
+  ///@type {VEBrushService}
+  brushService = new VEBrushService(this)
+
+  ///@type {VisuNewProjectModal}
+  newProjectModal = new VisuNewProjectModal()
+
+  ///@type {VisuModal}
+  exitModal = new VisuModal({
+    message: { text: "Changes you made may not be saved." },
+    accept: {
+      text: "Leave",
+      callback: function() {
+        game_end()
+      }
+    },
+    deny: {
+      text: "Cancel",
+      callback: function() {
+        this.context.modal.send(new Event("close"))
+      }
+    }
+  })
 
   ///@type {Store}
   store = new Store({
@@ -126,14 +114,6 @@ function VisuEditor(_controller) constructor {
       type: Optional.of(Struct),
       value: null,
     },
-    "target-locked-x": {
-      type: Boolean,
-      value: false
-    },
-    "target-locked-y": {
-      type: Boolean,
-      value: false
-    },
     "timeline-zoom": {
       type: Number,
       value: 10,
@@ -143,23 +123,70 @@ function VisuEditor(_controller) constructor {
     },
   })
 
-  var generateSettingsSubscriber = function(name) {
-    return { 
-      name: name,
-      callback: function(value) {
-        Visu.settings.setValue(this.name, value).save()
-      },
-    }
-  }
+  ///@type {EventPump}
+  dispatcher = new EventPump(this, new Map(String, Callable, {
+    "open": function(event) {
+      this.store.get("render-event").set(this.store.getValue("_render-event"))
+      this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
+      this.store.get("render-brush").set(this.store.getValue("_render-brush"))
+      this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
+      return {
+        "titleBar": this.titleBar.send(new Event("open")
+          .setData({ layout: Struct.get(this.layout.nodes, "title-bar") })),
+        "accordion": this.accordion.send(new Event("open")
+          .setData({ layout: Struct.get(this.layout.nodes, "accordion") })),
+        "trackControl": this.trackControl.send(new Event("open")
+          .setData({ layout: Struct.get(this.layout.nodes, "track-control") })),
+        "brushToolbar": this.brushToolbar.send(new Event("open")
+          .setData({ layout: Struct.get(this.layout.nodes, "brush-toolbar") })),
+        "timeline": this.timeline.send(new Event("open")
+          .setData({ layout: Struct.get(this.layout.nodes, "timeline") })),
+        "statusBar": this.statusBar.send(new Event("open")
+          .setData({ layout: Struct.get(this.layout.nodes, "status-bar") })),
+      }
+    },
+    "close": function(event) {
+      this.store.get("_render-event").set(this.store.getValue("render-event"))
+      this.store.get("render-event").set(false)
+      this.store.get("_render-timeline").set(this.store.getValue("render-timeline"))
+      this.store.get("render-timeline").set(false)
+      this.store.get("_render-brush").set(this.store.getValue("render-brush"))
+      this.store.get("render-brush").set(false)
+      this.store.get("_render-trackControl").set(this.store.getValue("render-trackControl"))
+      this.store.get("render-trackControl").set(false)
+      this.store.get("selected-event").set(null)
 
-  store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
-  store.get("bpm-sub").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-sub"))
-  store.get("snap").addSubscriber(generateSettingsSubscriber("visu.editor.snap"))
-  store.get("render-event").addSubscriber(generateSettingsSubscriber("visu.editor.render-event"))
-  store.get("render-timeline").addSubscriber(generateSettingsSubscriber("visu.editor.render-timeline"))
-  store.get("render-trackControl").addSubscriber(generateSettingsSubscriber("visu.editor.render-track-control"))
-  store.get("render-brush").addSubscriber(generateSettingsSubscriber("visu.editor.render-brush"))
-  store.get("timeline-zoom").addSubscriber(generateSettingsSubscriber("visu.editor.timeline-zoom"))
+      return {
+        "accordion": this.accordion.send(new Event("close")),
+        "trackControl": this.trackControl.send(new Event("close")),
+        "brushToolbar": this.brushToolbar.send(new Event("close")),
+        "timeline": this.timeline.send(new Event("close")),
+      }
+    },
+  }), {
+    enableLogger: true,
+    catchException: false,
+  })
+
+  ///@private
+  ///@type {Array<Struct>}
+  services = new Array(Struct, GMArray.map([
+    "titleBar",
+    "accordion",
+    "trackControl",
+    "brushToolbar",
+    "timeline",
+    "statusBar",
+    "popupQueue",
+    "exitModal",
+    "newProjectModal"
+  ], function(name, index, editor) {
+    Logger.debug(BeanVisuEditor, $"Load service '{name}'")
+    return {
+      name: name,
+      struct: Assert.isType(Struct.get(editor, name), Struct),
+    }
+  }, this))
 
   ///@private
   ///@return {UILayout}
@@ -249,102 +276,25 @@ function VisuEditor(_controller) constructor {
   ///@type {UILayout}
   layout = this.factoryLayout()
 
-  ///@debug
-  render = function() {
-    static renderLayout = function(layout, color) {
-      var beginX = layout.x()
-      var beginY = layout.y()
-      var endX = beginX + layout.width()
-      var endY = beginY + layout.height()
-      GPU.render.rectangle(beginX, beginY, endX, endY, false, color, color, color, color, 0.5)
-    }
-
-    renderLayout(this.layout, c_red)
-    renderLayout(Struct.get(this.layout.nodes, "title-bar"), c_blue)
-    renderLayout(Struct.get(this.layout.nodes, "accordion"), c_yellow)
-    renderLayout(Struct.get(this.layout.nodes, "preview"), c_fuchsia)
-    renderLayout(Struct.get(this.layout.nodes, "track-control"), c_lime)
-    renderLayout(Struct.get(this.layout.nodes, "brush-toolbar"), c_orange)
-    renderLayout(Struct.get(this.layout.nodes, "timeline"), c_green)
-    renderLayout(Struct.get(this.layout.nodes, "status-bar"), c_grey)
-  }
-
-  ///@type {EventPump}
-  dispatcher = new EventPump(this, new Map(String, Callable, {
-    "open": function(event) {
-      this.store.get("render-event").set(this.store.getValue("_render-event"))
-      this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
-      this.store.get("render-brush").set(this.store.getValue("_render-brush"))
-      this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
-      return {
-        "titleBar": this.titleBar.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "title-bar") })),
-        "accordion": this.accordion.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "accordion") })),
-        //"preview": this.preview.send(new Event("open")
-        //  .setData({ layout: Struct.get(this.layout.nodes, "preview") })),
-        "trackControl": this.trackControl.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "track-control") })),
-        "brushToolbar": this.brushToolbar.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "brush-toolbar") })),
-        "timeline": this.timeline.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "timeline") })),
-        "statusBar": this.statusBar.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "status-bar") })),
-      }
-    },
-    "close": function(event) {
-      this.store.get("_render-event").set(this.store.getValue("render-event"))
-      this.store.get("render-event").set(false)
-      this.store.get("_render-timeline").set(this.store.getValue("render-timeline"))
-      this.store.get("render-timeline").set(false)
-      this.store.get("_render-brush").set(this.store.getValue("render-brush"))
-      this.store.get("render-brush").set(false)
-      this.store.get("_render-trackControl").set(this.store.getValue("render-trackControl"))
-      this.store.get("render-trackControl").set(false)
-      this.store.get("selected-event").set(null)
-
-      return {
-        //"titleBar": this.titleBar.send(new Event("close")),
-        "accordion": this.accordion.send(new Event("close")),
-        //"preview": this.preview.send(new Event("close")),
-        "trackControl": this.trackControl.send(new Event("close")),
-        "brushToolbar": this.brushToolbar.send(new Event("close")),
-        "timeline": this.timeline.send(new Event("close")),
-        //"statusBar": this.statusBar.send(new Event("close")),
-      }
-    },
-  }), {
-    enableLogger: true,
-    catchException: false,
-  })
-
-  ///@param {Event} event
-  ///@return {?Promise}
-  send = function(event) {
-    return this.dispatcher.send(event)
-  }
-
+  ///@private
   ///@return {VisuEditor}
-  update = function() {
-    try {
-      this.dispatcher.update()
-    } catch (exception) {
-      var message = $"VisuEditor dispatcher fatal error: {exception.message}"
-      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-      Logger.error("UI", message)
-    }
+  init = function() {
+    var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
+    store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
+    store.get("bpm-sub").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-sub"))
+    store.get("snap").addSubscriber(generateSettingsSubscriber("visu.editor.snap"))
+    store.get("render-event").addSubscriber(generateSettingsSubscriber("visu.editor.render-event"))
+    store.get("render-timeline").addSubscriber(generateSettingsSubscriber("visu.editor.render-timeline"))
+    store.get("render-trackControl").addSubscriber(generateSettingsSubscriber("visu.editor.render-track-control"))
+    store.get("render-brush").addSubscriber(generateSettingsSubscriber("visu.editor.render-brush"))
+    store.get("timeline-zoom").addSubscriber(generateSettingsSubscriber("visu.editor.timeline-zoom"))
 
-    this.titleBar.update()
-    this.accordion.update()
-    //this.preview.update()
-    this.trackControl.update()
-    this.brushToolbar.update()
-    this.timeline.update()
-    this.statusBar.update()
+    return this
+  }
 
-    this.popupQueue.update()
-
+  ///@private
+  ///@return {VisuEditor}
+  updateLayout = function() {
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
     brushNode.minWidth = renderBrush ? 270 : 0
@@ -381,4 +331,69 @@ function VisuEditor(_controller) constructor {
 
     return this
   }
+
+  ///@private
+  ///@return {VisuEditor}
+  render = function() {
+    static renderLayout = function(layout, color) {
+      var beginX = layout.x()
+      var beginY = layout.y()
+      var endX = beginX + layout.width()
+      var endY = beginY + layout.height()
+      GPU.render.rectangle(beginX, beginY, endX, endY, false, color, color, color, color, 0.5)
+    }
+
+    renderLayout(this.layout, c_red)
+    renderLayout(Struct.get(this.layout.nodes, "title-bar"), c_blue)
+    renderLayout(Struct.get(this.layout.nodes, "accordion"), c_yellow)
+    renderLayout(Struct.get(this.layout.nodes, "preview"), c_fuchsia)
+    renderLayout(Struct.get(this.layout.nodes, "track-control"), c_lime)
+    renderLayout(Struct.get(this.layout.nodes, "brush-toolbar"), c_orange)
+    renderLayout(Struct.get(this.layout.nodes, "timeline"), c_green)
+    renderLayout(Struct.get(this.layout.nodes, "status-bar"), c_grey)
+
+    return this
+  }
+
+  ///@private
+  ///@param {Struct} service
+  ///@param {Number} iterator
+  ///@param {VisuController} controller
+  updateService = function(service, iterator, controller) {
+    try {
+      service.struct.update()
+    } catch (exception) {
+      var message = $"'update-service-{service.name}' fatal error: {exception.message}"
+      Logger.error(BeanVisuEditor, message)
+      Core.printStackTrace()
+      controller.send(new Event("spawn-popup", { message: message }))
+    }
+  }
+
+  ///@param {Event} event
+  ///@return {?Promise}
+  send = function(event) {
+    return this.dispatcher.send(event)
+  }
+
+  ///@return {VisuEditor}
+  update = function() {
+    try {
+      this.dispatcher.update()
+    } catch (exception) {
+      var message = $"VisuEditor dispatcher fatal error: {exception.message}"
+      Logger.error("UI", message)
+      var controller = Beans.get(BeanVisuController)
+      if (Core.isType(controller, VisuController)) {
+        controller.send(new Event("spawn-popup", { message: message }))
+      }
+    }
+
+    this.services.forEach(this.updateService, Beans.get(BeanVisuController))
+
+    this.updateLayout()
+    return this
+  }
+  
+  this.init()
 }

@@ -36,7 +36,7 @@ function VisuTrackLoader(_controller): Service() constructor {
       "idle": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            fsm.context.controller.editor.send(new Event("open"))
+            Beans.get(BeanVisuEditor).send(new Event("open"))
             if (Core.isType(data, String)) {
               Logger.info("VisuTrackLoader", $"message: '{data}'")
             }
@@ -50,10 +50,11 @@ function VisuTrackLoader(_controller): Service() constructor {
             window_set_caption($"{game_display_name}")
             audio_master_gain(0.0)
 
-            var controller = fsm.context.controller
+            var controller = Beans.get(BeanVisuController)
+            var editor = Beans.get(BeanVisuEditor)
             controller.gridRenderer.clear()
-            controller.editor.popupQueue.dispatcher.execute(new Event("clear"))
-            controller.editor.dispatcher.execute(new Event("close"))
+            editor.popupQueue.dispatcher.execute(new Event("clear"))
+            editor.dispatcher.execute(new Event("close"))
             controller.trackService.dispatcher.execute(new Event("close-track"))
             controller.videoService.dispatcher.execute(new Event("close-video"))
             controller.gridService.dispatcher.execute(new Event("clear-grid"))
@@ -80,10 +81,10 @@ function VisuTrackLoader(_controller): Service() constructor {
                       },
                     }).update()
                     
-                    var item = Beans.get(BeanVisuController).editor.store.get("bpm")
+                    var item = Beans.get(BeanVisuEditor).store.get("bpm")
                     item.set(this.response.bpm)
 
-                    item = Beans.get(BeanVisuController).editor.store.get("bpm-sub")
+                    item = Beans.get(BeanVisuEditor).store.get("bpm-sub")
                     item.set(this.response.bpmSub)
 
                     return {
@@ -130,7 +131,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, iterator, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load texture '{json.name}'")
+                        //Logger.debug("VisuTrackLoader", $"Load texture '{json.name}'")
                         acc.promises.forEach(function(promise, key) {
                           if (promise.status == PromiseStatus.REJECTED) {
                             throw new Exception($"Found rejected load-texture promise for key '{key}'")
@@ -162,7 +163,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load sound intent '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load sound intent '{key}'")
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
                         if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
@@ -192,7 +193,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load shader template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load shader template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shaderPipeline.templates,
@@ -209,7 +210,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
                         var name = Struct.get(json, "name")
-                        Logger.debug("VisuTrackLoader", $"Load track '{name}'")
+                        //Logger.debug("VisuTrackLoader", $"Load track '{name}'")
                         acc.openTrack(new prototype(json, { handlers: acc.handlers }))
                       },
                       acc: controller.trackService
@@ -224,7 +225,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load bullet template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load bullet template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.bulletService.templates,
@@ -240,7 +241,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.lyricsService.templates,
@@ -256,7 +257,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load shroom template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load shroom template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shroomService.templates,
@@ -272,7 +273,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load particle template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load particle template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.particleService.templates,
@@ -319,11 +320,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, index, acc) {
-                        Logger.debug("VisuTrackLoader", $"Load brush '{json.name}'")
+                        //Logger.debug("VisuTrackLoader", $"Load brush '{json.name}'")
                         acc.saveTemplate(new prototype(json))
                       },
                       acc: {
-                        saveTemplate: acc.controller.editor.brushService.saveTemplate,
+                        saveTemplate: Beans.get(BeanVisuEditor).brushService.saveTemplate,
                         file: file,
                       },
                       steps: MAGIC_NUMBER_TASK,
@@ -363,7 +364,7 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, tasks) { 
             var addTask = fsm.context.utils.addTask
-            var executor = fsm.context.controller.executor
+            var executor = fsm.context.executor
             fsmState.state.set("tasks", tasks).set("promises", new Map(String, Promise, {
               "texture": addTask(tasks.get("texture"), executor),
               "sound": addTask(tasks.get("sound"), executor),
@@ -460,10 +461,9 @@ function VisuTrackLoader(_controller): Service() constructor {
             window_set_caption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {global.__VisuTrack.path}")
             audio_master_gain(1.0)
 
-            var controller = fsm.context.controller
-            controller.editor.send(new Event("open"))
-            controller.send(new Event("spawn-popup", 
-              { message: $"Project '{controller.trackService.track.name}' loaded successfully" }))
+            Beans.get(BeanVisuEditor).send(new Event("open"))
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+              { message: $"Project '{Beans.get(BeanVisuController).trackService.track.name}' loaded successfully" }))
           }
         },
         transitions: GMArray.toStruct([ "idle", "parse-manifest" ]),
