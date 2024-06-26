@@ -63,14 +63,14 @@ function VisuEditor(_controller) constructor {
   store = new Store({
     "bpm": {
       type: Number,
-      value: Assert.isType(Core.getProperty("visu.editor.bpm", 120), Number),
+      value: Assert.isType(Visu.settings.getValue("visu.editor.bpm", 120), Number),
       passthrough: function(value) {
         return clamp(value, 1, 999)
       }
     },
     "bpm-sub": {
       type: Number,
-      value: Assert.isType(Core.getProperty("visu.editor.bpm-sub", 1), Number),
+      value: Assert.isType(Visu.settings.getValue("visu.editor.bpm-sub", 2), Number),
       passthrough: function(value) {
         return round(clamp(value, 1, 16))
       }
@@ -84,39 +84,39 @@ function VisuEditor(_controller) constructor {
     },
     "snap": {
       type: Boolean,
-      value: true,
+      value: Assert.isType(Visu.settings.getValue("visu.editor.snap", true), Boolean),
     },
     "render-event": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty("visu.editor.render-event", false), Boolean)
+      value: Assert.isType(Visu.settings.getValue("visu.editor.render-event", false), Boolean)
     },
     "_render-event": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty("visu.editor.render-event", false), Boolean)
+      value: Assert.isType(Visu.settings.getValue("visu.editor.render-event", false), Boolean)
     },
     "render-timeline": {
       type: Boolean,
-      value:Assert.isType(Core.getProperty("visu.editor.render-timeline", false), Boolean)
+      value:Assert.isType(Visu.settings.getValue("visu.editor.render-timeline", false), Boolean)
     },
     "_render-timeline": {
       type: Boolean,
-      value:Assert.isType(Core.getProperty("visu.editor.render-timeline", false), Boolean)
+      value:Assert.isType(Visu.settings.getValue("visu.editor.render-timeline", false), Boolean)
     },
     "render-brush": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty("visu.editor.render-brush", false), Boolean)
+      value: Assert.isType(Visu.settings.getValue("visu.editor.render-brush", false), Boolean)
     },
     "_render-brush": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty("visu.editor.render-brush", false), Boolean)
+      value: Assert.isType(Visu.settings.getValue("visu.editor.render-brush", false), Boolean)
     },
     "render-trackControl": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty("visu.editor.render-track-control", false), Boolean)
+      value: Assert.isType(Visu.settings.getValue("visu.editor.render-track-control", false), Boolean)
     },
     "_render-trackControl": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty("visu.editor.render-track-control", false), Boolean)
+      value: Assert.isType(Visu.settings.getValue("visu.editor.render-track-control", false), Boolean)
     },
     "new-channel-name": {
       type: String,
@@ -137,11 +137,29 @@ function VisuEditor(_controller) constructor {
     "timeline-zoom": {
       type: Number,
       value: 10,
-      validate: function(value) {
-        Assert.isTrue(value >= 5 && value <= 20)
+      passthrough: function(value) {
+        return clamp(value, 5, 20)
       },
     },
   })
+
+  var generateSettingsSubscriber = function(name) {
+    return { 
+      name: name,
+      callback: function(value) {
+        Visu.settings.setValue(this.name, value).save()
+      },
+    }
+  }
+
+  store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
+  store.get("bpm-sub").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-sub"))
+  store.get("snap").addSubscriber(generateSettingsSubscriber("visu.editor.snap"))
+  store.get("render-event").addSubscriber(generateSettingsSubscriber("visu.editor.render-event"))
+  store.get("render-timeline").addSubscriber(generateSettingsSubscriber("visu.editor.render-timeline"))
+  store.get("render-trackControl").addSubscriber(generateSettingsSubscriber("visu.editor.render-track-control"))
+  store.get("render-brush").addSubscriber(generateSettingsSubscriber("visu.editor.render-brush"))
+  store.get("timeline-zoom").addSubscriber(generateSettingsSubscriber("visu.editor.timeline-zoom"))
 
   ///@private
   ///@return {UILayout}

@@ -38,6 +38,29 @@ function BulletService(_controller, config = {}): Service() constructor {
 
   ///@type {Map<String, BulletTemplate>}
   templates = new Map(String, BulletTemplate)
+  this.templates.set("bullet-default", new BulletTemplate("bullet-default", {
+    "gameModes":{
+      "racing": { "features": [] },
+      "bulletHell": {
+        "features": [
+          {
+            "feature":"LifespawnFeature",
+            "data":{
+              "duration":10.0
+            }
+          }
+        ]
+      },
+      "platformer": { "features": [] }
+    },
+    "sprite":{
+      "name":"texture_bullet"
+    },
+    "mask":{
+      "width":128.0,
+      "height":128.0
+    }
+  }))
 
   ///@type {Stack<Number>}
   gc = new Stack(Number)

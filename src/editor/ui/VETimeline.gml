@@ -511,6 +511,10 @@ function VETimeline(_editor) constructor {
 
         ///@param {String} name
         addChannel: new BindIntent(function(name) {
+          if (!Core.isType(this.controller.editor.trackService.track, Track)) {
+            throw new Exception("Load track before adding new channel")
+          }
+
           var channel = Assert.isType(this.controller.editor.trackService.track
             .addChannel(name).channels.get(name), TrackChannel)
           this.collection.add(new UIComponent({
@@ -1192,6 +1196,10 @@ function VETimeline(_editor) constructor {
         addEvent: new BindIntent(function(channelName, event) {
           if (!Core.isType(event, TrackEvent)) {
             return null
+          }
+
+          if (!Core.isType(this.controller.editor.trackService.track, Track)) {
+            throw new Exception("Load track before adding event on timeline")
           }
 
           var track = this.controller.editor.trackService.track

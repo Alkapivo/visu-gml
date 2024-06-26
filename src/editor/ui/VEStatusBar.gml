@@ -443,6 +443,7 @@ function VEStatusBar(_editor) constructor {
             callback: function() {
               var controller = Beans.get(BeanVisuController)
               controller.autosaveEnabled = this.value
+              Visu.settings.setValue("visu.autosave", this.value).save()
               if (!controller.autosaveEnabled) {
                 controller.autosaveTimer.time = 0
               }

@@ -513,11 +513,11 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   init = function() {
     Core.debugOverlay(Assert.isType(Core.getProperty("visu.debug-overlay", false), Boolean))
-    var fullscreen = Assert.isType(Core.getProperty("visu.fullscreen", false), Boolean)
+    var fullscreen = Assert.isType(Visu.settings.getValue("visu.fullscreen", false), Boolean)
     this.displayService
       .resize(
-        Assert.isType(Core.getProperty("visu.window.width", 1280), Number),
-        Assert.isType(Core.getProperty("visu.window.height", 720), Number)
+        Assert.isType(Visu.settings.getValue("visu.window.width", 1280), Number),
+        Assert.isType(Visu.settings.getValue("visu.window.height", 720), Number)
       )
       .setFullscreen(fullscreen)
       .setCursor(Cursor.DEFAULT)
@@ -531,7 +531,7 @@ function VisuController(layerName) constructor {
 
   ///@private
   ///@type {Boolean}
-  autosaveEnabled = Core.getProperty("visu.autosave", false)
+  autosaveEnabled = Visu.settings.getValue("visu.autosave", false)
 
   ///@private
   ///@return {VisuController}
@@ -880,6 +880,15 @@ function VisuController(layerName) constructor {
             container.surfaceTick.skip()
             container.updateTimer.time = container.updateTimer.duration
           })
+
+          Visu.settings.setValue("visu.fullscreen", this.displayService.getFullscreen()).save()
+
+          if (!this.displayService.getFullscreen()) {
+            Visu.settings
+              .setValue("visu.window.width", this.displayService.getWidth())
+              .setValue("visu.window.height", this.displayService.getHeight())
+              .save()
+          }
         }
         
         this.uiService.update()
@@ -994,7 +1003,6 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   onSceneEnter = function() {
     Logger.info("VisuController", "onSceneEnter")
-    this.editor.send(new Event("open"))
     return this
   }
 

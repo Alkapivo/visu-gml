@@ -5,6 +5,7 @@ function LyricsService(config = null): Service() constructor {
 
   ///@type {Map<String, LyricsTemplate>}
   templates = new Map(String, LyricsTemplate)
+  this.templates.set("lyrics-default", new LyricsTemplate("lyrics-default", { "lines": [ "Lorem ipsum" ] }))
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {

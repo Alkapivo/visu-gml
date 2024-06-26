@@ -13,7 +13,7 @@ function brush_grid_particle(json = null) {
       },
       "grid-particle_template": {
         type: String,
-        value: Struct.getDefault(json, "grid-particle_template", "particle_default"),
+        value: Struct.getDefault(json, "grid-particle_template", "particle-default"),
       },
       "grid-particle_beginX": {
         type: Number,

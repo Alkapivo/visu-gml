@@ -377,10 +377,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: this.layout })
         var container = this
         var store = this.brushToolbar.store
-
-        if (!Core.isType(this.brushToolbar.editor.trackService.track, Track)) {
-          return
-        }
         
         store.get("category").addSubscriber({ 
           name: this.name,
@@ -470,6 +466,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       callback: function(prototype, json, index, acc) {
                         var template = new prototype(json)
                         acc.saveTemplate(template)
+                        var type = Beans.get(BeanVisuController).editor.brushToolbar.store.get("type")
+                        type.set(type.get())
                       },
                       acc: {
                         saveTemplate: saveTemplate,
@@ -658,11 +656,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
         var container = this
         this.collection = new UICollection(this, { layout: this.layout })
-
-        if (!Core.isType(this.brushToolbar.editor.trackService.track, Track)) {
-          return
-        }
-
         this.brushToolbar.store.get("type").addSubscriber({ 
           name: container.name,
           callback: function(type, data) {
@@ -681,6 +674,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               .whenUpdate(function(executor) {
                 if (this.state.templates.size() == 0) {
                   this.fullfill()
+                }
+
+                if (this.state.pointer >= this.state.templates.size()) {
+                  return
                 }
 
                 var template = this.state.templates.get(this.state.pointer)
@@ -820,11 +817,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       onInit: function() {
         var container = this
         this.collection = new UICollection(this, { layout: container.layout })
-
-        if (!Core.isType(this.brushToolbar.editor.trackService.track, Track)) {
-          return
-        }
-
         this.brushToolbar.store.get("template").addSubscriber({ 
           name: this.name,
           callback: function(template, data) {

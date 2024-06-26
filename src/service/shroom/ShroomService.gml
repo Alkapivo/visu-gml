@@ -16,6 +16,33 @@ function ShroomService(_controller, config = {}): Service() constructor {
 
   ///@type {Map<String, ShroomTemplate>}
   templates = new Map(String, ShroomTemplate)
+  this.templates.set("shroom-default", new ShroomTemplate("shroom-default", {
+    "gameModes":{
+      "racing":{ "features": [] },
+      "bulletHell":{
+        "features":[
+          {
+            "feature":"KillFeature",
+            "conditions":[
+              {
+                "type":"player-collision"
+              }
+            ]
+          },
+          {
+            "feature":"KillFeature",
+            "conditions":[
+              {
+                "type":"bullet-collision"
+              }
+            ]
+          }
+        ]
+      },
+      "platformer": { "features": [] }
+    },
+    "sprite": { "name": "texture_baron" },
+  }))
 
   ///@type {Stack<Number>}
   gc = new Stack(Number)

@@ -12,8 +12,8 @@ global.__view_track_event = {
           ? controller.gridRenderer.overlayRenderer.backgroundColors
           : controller.gridRenderer.overlayRenderer.foregroundColors,
         type: Struct.get(data, "view-wallpaper_type"),
-        fadeInSpeed: Struct.get(data, "view-wallpaper_fade-in-speed"),
-        fadeOutSpeed: Struct.get(data, "view-wallpaper_fade-out-speed"),
+        fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
+        fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
         executor: controller.gridService.executor,
       }))
     }
@@ -40,8 +40,8 @@ global.__view_track_event = {
           ? controller.gridRenderer.overlayRenderer.backgrounds
           : controller.gridRenderer.overlayRenderer.foregrounds,
         type: Struct.get(data, "view-wallpaper_type"),
-        fadeInSpeed: Struct.get(data, "view-wallpaper_fade-in-speed"),
-        fadeOutSpeed: Struct.get(data, "view-wallpaper_fade-out-speed"),
+        fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
+        fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
         executor: controller.gridService.executor,
       }))
     }

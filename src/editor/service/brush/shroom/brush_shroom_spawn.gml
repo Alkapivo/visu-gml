@@ -12,10 +12,10 @@ function brush_shroom_spawn(json = null) {
       },
       "shroom-spawn_template": {
         type: String,
-        value: Struct.getDefault(json, "shroom-spawn_template", "shroom-01"),
-        validate: function(value) {
-          Assert.areEqual(true, Beans.get(BeanVisuController)
-            .shroomService.templates.contains(value))
+        value: Struct.getDefault(json, "shroom-spawn_template", "shroom-default"),
+        passthrough: function(value) {
+          ///@todo weird bug
+          return Beans.get(BeanVisuController).shroomService.templates.contains(value) ? value : (Core.isType(this.value, String) ? this.value : "shroom-default")
         },
       },
       "shroom-spawn_speed": {

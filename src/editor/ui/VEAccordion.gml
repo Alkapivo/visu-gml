@@ -26,15 +26,25 @@ function VEAccordion(_editor, config = null) constructor {
   store = new Store({
     "render-event-inspector": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty(
-        "visu.editor.accordion.render-event-inspector", false), Boolean),
+      value: Assert.isType(Visu.settings.getValue("visu.editor.accordion.render-event-inspector", false), Boolean),
     },
     "render-template-toolbar": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty(
-        "visu.editor.accordion.render-template-toolbar", false), Boolean),
+      value: Assert.isType(Visu.settings.getValue("visu.editor.accordion.render-template-toolbar", false), Boolean),
     },
   })
+
+  var generateSettingsSubscriber = function(name) {
+    return { 
+      name: name,
+      callback: function(value) {
+        Visu.settings.setValue(this.name, value).save()
+      },
+    }
+  }
+
+  store.get("render-event-inspector").addSubscriber(generateSettingsSubscriber("visu.editor.accordion.render-event-inspector"))
+  store.get("render-template-toolbar").addSubscriber(generateSettingsSubscriber("visu.editor.accordion.render-template-toolbar"))
   
   ///@private
   ///@type {Map<String, Callable>}

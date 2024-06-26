@@ -513,10 +513,12 @@ function VETrackControl(_editor) constructor {
             updateCustom: function() {
               var value = Struct.get(this.context.items
                 .get("slider_ve-track-control_timeline"), "value")
-              if (!Core.isType(value, Number)) {
+              if (!Core.isType(value, Number) 
+                || Math.isNaN(value) 
+                || Math.isNaN(this.context.controller.editor.trackService.duration)) {
                 return
               }
-
+              
               this.label.text = String
                 .formatTimestampMilisecond(NumberUtil
                 .parse(this.context.controller.editor.trackService.duration * value, 0.0))
