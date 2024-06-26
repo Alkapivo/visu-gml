@@ -1,0 +1,48 @@
+{
+  "version": "1",
+  "model": "io.alkapivo.visu.TestSuite",
+  "data":{
+    "name": "Basic suite",
+    "stopAfterFailure": true,
+    "tests": [
+      {
+        "handler": "TestEvent_VisuController_load",
+        "description": "Load Perturbator - Sentient",
+        "data": {
+          "trackName": "Perturbator - Sentient",
+          "timeout": 10.0,
+          "cooldown": 1.5,
+          "path": "C:/Users/Alkapivo/projects/io.alkapivo/gm_modules/visu-track/resource/datafiles/track/Perturbator/Sentient/manifest.visu"
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_playback",
+        "description": "Play whole Perturbator - Sentient (5:44)",
+        "data": {
+          "timeout": 360.0,
+          "duration": 344.0,
+          "cooldown": 1.5
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_load",
+        "description": "Load lolratz - KAIDECA",
+        "data": {
+          "trackName": "lolratz - KAIDECA",
+          "timeout": 10.0,
+          "cooldown": 1.5,
+          "path": "C:/Users/Alkapivo/projects/io.alkapivo/gm_modules/visu-track/resource/datafiles/track/lolratz/KAIDECA/manifest.visu"
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_playback",
+        "description": "Play whole lolratz - KAIDECA (3:47)",
+        "data": {
+          "timeout": 235.0,
+          "duration": 227.0,
+          "cooldown": 1.5
+        }
+      }
+    ]
+  }
+}
