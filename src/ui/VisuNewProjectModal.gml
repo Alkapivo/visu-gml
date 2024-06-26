@@ -628,7 +628,7 @@ function VisuNewProjectForm(json = null) constructor {
             extension: "visu" 
           })
 
-          if (!Optional.is(path)) {
+          if (!Core.isType(path, String) || String.isEmpty(path)) {
             return
           }
 

@@ -685,7 +685,7 @@ function VisuController(layerName) constructor {
           extension: "visu",
         })
 
-        if (path == null) {
+        if (!Core.isType(path, String) || String.isEmpty(path)) {
           return
         }
 
