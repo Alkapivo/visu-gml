@@ -126,7 +126,27 @@ function _Visu() constructor {
           handler: function(args) {
             Logger.debug("CLIParamParser", $"Run --test {args.get(0)}")
             Beans.get(BeanVisuTestRunner).start(args.get(0))
+            Core.setProperty("visu.manifest.load-on-start", false)
           },
+        }),
+        new CLIParam({
+          name: "-l",
+          fullName: "--load",
+          description: "Load track from file",
+          args: [
+            {
+              name: "file",
+              type: "String",
+              descritpion: "Path to manifest.visu"
+            }
+          ],
+          handler: function(args) {
+            Logger.debug("CLIParamParser", $"Run --load {args.get(0)}")
+            Beans.get(BeanVisuController).send(new Event("load", {
+              manifest: FileUtil.get(args.get(0)),
+              autoplay: false,
+            }))
+          }
         })
       ])
     })

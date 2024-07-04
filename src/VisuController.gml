@@ -31,18 +31,7 @@ function VisuController(layerName) constructor {
 
   ///@type {FSM}
   fsm = new FSM(this, {
-    initialState: { 
-      name: "idle",
-      data: Core.getProperty("visu.manifest.load-on-start", false) 
-        ? new Event("load", {
-            manifest: FileUtil.get(String.concat(
-              (Core.getProperty("visu.manifest.path.absolute", false) ? "" : working_directory), 
-              Core.getProperty("visu.manifest.path"))),
-            autoplay: Assert.isType(Core
-              .getProperty("visu.manifest.play-on-start", false), Boolean),
-          })
-        : null,
-    },
+    initialState: { name: "idle" },
     states: {
       "idle": {
         actions: {
@@ -625,6 +614,13 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   onSceneEnter = function() {
     Logger.info("VisuController", "onSceneEnter")
+    if (Core.getProperty("visu.manifest.load-on-start", false)) {
+      this.send(new Event("load", {
+        manifest: FileUtil.get(Core.getProperty("visu.manifest.path")),
+        autoplay: Assert.isType(Core.getProperty("visu.manifest.play-on-start", false), Boolean),
+      }))
+    }
+    
     return this
   }
 
