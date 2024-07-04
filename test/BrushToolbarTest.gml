@@ -24,12 +24,9 @@ function TestEvent_BrushToolbar_save(json = {}) {
             types: new Stack(Struct)
           }
 
-          editor.store.get("render-brush").set(true)
           editor.brushToolbar.categories.forEach(function(types, category, acc) {
-            Core.print("Category", category)
             acc.currentCategory = category
             types.forEach(function(type, index, acc) {
-              Core.print("Type", type)
               acc.types.push({
                 category: acc.currentCategory,
                 type: type
@@ -85,6 +82,9 @@ function TestEvent_BrushToolbar_save(json = {}) {
             var template = brush.toTemplate()
             var brushService = Beans.get(BeanVisuEditor).brushService
             brushService.saveTemplate(template)
+
+            var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)
+            handler(brush.toTemplate().properties)
           }
         },
         cooldownAfter: function(task) {
@@ -106,16 +106,19 @@ function TestEvent_BrushToolbar_save(json = {}) {
       stage(this)
     })
     .whenStart(function(executor) {
-      Core.print("Start TestEvent_BrushToolbar_save")
+      Logger.test("BrushToolbarTest", "Start TestEvent_BrushToolbar_save")
       Beans.get(BeanVisuTestRunner).installHooks()
+      Beans.get(BeanVisuEditor).store.get("render-brush").set(true)
     })
     .whenFinish(function(data) {
-      Core.print("TestEvent_BrushToolbar_save:", data)
+      Logger.test("BrushToolbarTest", $"TestEvent_BrushToolbar_save: {data}")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanVisuEditor).store.get("render-brush").set(false)
     })
     .whenTimeout(function() {
-      Core.print("TestEvent_BrushToolbar_save: Timeout")
+      Logger.test("BrushToolbarTest", "TestEvent_BrushToolbar_save: Timeout")
       this.reject("failure")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanVisuEditor).store.get("render-brush").set(false)
     })
 }

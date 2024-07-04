@@ -1632,7 +1632,7 @@ function VETemplateToolbar(_editor) constructor {
   store = new Store({
     "type": {
       type: String,
-      value: VETemplateType.SHADER,
+      value: VETemplateType.TEXTURE
     },
     "template_shader_name": {
       type: String,

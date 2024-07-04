@@ -298,7 +298,7 @@ function VisuController(layerName) constructor {
   gridRenderer = new GridRenderer(this)
 
   ///@type {VideoService}
-  videoService = new VideoService(this)
+  videoService = new VideoService()
 
   ///@type {LyricsService}
   lyricsService = new LyricsService(this)
@@ -614,6 +614,7 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   onSceneEnter = function() {
     Logger.info("VisuController", "onSceneEnter")
+    VideoUtil.runGC()
     if (Core.getProperty("visu.manifest.load-on-start", false)) {
       this.send(new Event("load", {
         manifest: FileUtil.get(Core.getProperty("visu.manifest.path")),
@@ -627,6 +628,7 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   onSceneLeave = function() {
     Logger.info("VisuController", "onSceneLeave")
+    VideoUtil.runGC()
     return this
   }
 

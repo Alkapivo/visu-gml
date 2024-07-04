@@ -61,8 +61,6 @@ function VisuTestRunner() constructor {
       },
       acc: context,
     }).update()
-
-    Core.print("status", task.status)
   }
   
   ///@type {TaskExecutor}
@@ -76,10 +74,19 @@ function VisuTestRunner() constructor {
 
       if (this.testSuite.finished && !this.asd) {
         this.asd = true
-        this.testSuite.report.forEach(function(entry) {
+        var stringBuilder = new StringBuilder()
+        this.testSuite.report.forEach(function(entry, index, stringBuilder) {
           var status = entry.result.status == PromiseStatus.FULLFILLED ? "Passed" : "Failed"
-          Logger.info("VisuTestRunner", $"{entry.test} ({entry.description}): {status}")
-        })
+          var message = $"{entry.test} ({entry.description}): {status}"
+          Logger.info("VisuTestRunner", message)
+          stringBuilder.append($"{message}\n")
+        }, stringBuilder)
+
+        FileUtil.writeFileSync(new File({
+          path: FileUtil.get($"{working_directory}test_results.txt"),
+          data: stringBuilder.get()
+        }))
+        game_end()
       }
     }
     this.executor.update()

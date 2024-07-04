@@ -57,15 +57,15 @@ function TestEvent_VisuController_load(json = {}) {
       stage(this)
     })
     .whenStart(function(executor) {
-      Core.print("Start TestEvent_VisuController_load")
+      Logger.test("VisuControllerTest", "Start TestEvent_VisuController_load")
       Beans.get(BeanVisuTestRunner).installHooks()
     })
     .whenFinish(function(data) {
-      Core.print("TestEvent_VisuController_load:", data)
+      Logger.test("VisuControllerTest", $"TestEvent_VisuController_load: {data}")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
     })
     .whenTimeout(function() {
-      Core.print("TestEvent_VisuController_load: Timeout")
+      Logger.test("VisuControllerTest", "TestEvent_VisuController_load: Timeout")
       this.reject("failure")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
     })
@@ -137,15 +137,15 @@ function TestEvent_VisuController_playback(json = {}) {
       stage(this)
     })
     .whenStart(function(executor) {
-      Core.print("Start TestEvent_VisuController_playback")
+      Logger.test("VisuControllerTest", "Start TestEvent_VisuController_playback")
       Beans.get(BeanVisuTestRunner).installHooks()
     })
     .whenFinish(function(data) {
-      Core.print("TestEvent_VisuController_playback:", data)
+      Logger.test("VisuControllerTest", $"TestEvent_VisuController_playback: {data}")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
     })
     .whenTimeout(function() {
-      Core.print("TestEvent_VisuController_playback: Timeout")
+      Logger.test("VisuControllerTest", "TestEvent_VisuController_playback: Timeout")
       this.reject("failure")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
     })
@@ -227,15 +227,15 @@ function TestEvent_VisuController_rewind(json = {}) {
       stage(this)
     })
     .whenStart(function(executor) {
-      Core.print("Start TestEvent_VisuController_rewind")
+      Logger.test("VisuControllerTest", "TestEvent_VisuController_rewind started")
       Beans.get(BeanVisuTestRunner).installHooks()
     })
     .whenFinish(function(data) {
-      Core.print("TestEvent_VisuController_rewind:", data)
+      Logger.test("VisuControllerTest", $"TestEvent_VisuController_rewind: {data}")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
     })
     .whenTimeout(function() {
-      Core.print("TestEvent_VisuController_rewind: Timeout")
+      Logger.test("VisuControllerTest", "TestEvent_VisuController_rewind: Timeout")
       this.reject("failure")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
     })
