@@ -109,6 +109,28 @@ function _Visu() constructor {
         new VisuController(layerName)
       )
     ))
+
+    var parser = new CLIParamParser({
+      cliParams: new Array(CLIParam, [
+        new CLIParam({
+          name: "-t",
+          fullName: "--test",
+          description: "Run tests from test suite",
+          args: [
+            {
+              name: "file",
+              type: "String",
+              description: "Path to test suite JSON"
+            }
+          ],
+          handler: function(args) {
+            Logger.debug("CLIParamParser", $"Run --test {args.get(0)}")
+            Beans.get(BeanVisuTestRunner).start(args.get(0))
+          },
+        })
+      ])
+    })
+    parser.parse()
     
     return this
   }

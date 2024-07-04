@@ -374,11 +374,6 @@ function VisuController(layerName) constructor {
     catchException: false,
   })
 
-  ///@todo
-  if (Core.getProperty("visu.test.run-integration")) {
-    Beans.get(BeanVisuTestRunner).start()
-  }
-
   ///@private
   ///@type {Array<Struct>}
   services = new Array(Struct, GMArray.map([

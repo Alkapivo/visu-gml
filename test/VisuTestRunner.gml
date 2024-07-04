@@ -39,16 +39,21 @@ function VisuTestRunner() constructor {
   ///@return {VisuTestRunner}
   uninstallHooks = function() {
     Logger.info(BeanVisuTestRunner, "uninstall hook 'Logger.error'")
-    Logger.error = method(Logger, this.restoreHooks.get("Logger.error"))
+    var hook = this.restoreHooks.get("Logger.error")
+    if (Core.isType(Logger, Struct) && Core.isType(hook, Callable))  {
+      Logger.error = method(Logger, hook)
+    }
+
     return this
   }
 
   ///@type {?TestSuite}
   this.testSuite = null
 
-  start = function() {
+  ///@param {String} path
+  start = function(path) {
     var context = this
-    var json = FileUtil.readFileSync($"{working_directory}test/VisuControllerTestSuite.json").getData()
+    var json = FileUtil.readFileSync(path).getData()
     var task = JSON.parserTask(json, {
       callback: function(prototype, json, index, acc) {
         var testSuite = new prototype(json)
@@ -58,7 +63,6 @@ function VisuTestRunner() constructor {
     }).update()
 
     Core.print("status", task.status)
-
   }
   
   ///@type {TaskExecutor}
@@ -73,7 +77,8 @@ function VisuTestRunner() constructor {
       if (this.testSuite.finished && !this.asd) {
         this.asd = true
         this.testSuite.report.forEach(function(entry) {
-          Logger.info("VisuTestRunner", $"{entry.test} ({entry.description}): {entry.result.status}")
+          var status = entry.result.status == PromiseStatus.FULLFILLED ? "Passed" : "Failed"
+          Logger.info("VisuTestRunner", $"{entry.test} ({entry.description}): {status}")
         })
       }
     }
