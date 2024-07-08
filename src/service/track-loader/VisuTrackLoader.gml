@@ -42,7 +42,10 @@ function VisuTrackLoader(_controller): Service() constructor {
             }
           },
         },
-        transitions: GMArray.toStruct([ "idle", "parse-manifest" ]),
+        transitions: { 
+          "idle": null,
+          "parse-manifest": null,
+        },
       },
       "parse-manifest": {
         actions: {
@@ -119,7 +122,10 @@ function VisuTrackLoader(_controller): Service() constructor {
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "create-parser-tasks" ]),
+        transitions: { 
+          "idle": null, 
+          "create-parser-tasks": null,
+        },
       },
       "create-parser-tasks": {
         actions: {
@@ -360,7 +366,10 @@ function VisuTrackLoader(_controller): Service() constructor {
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "parse-primary-assets" ]),
+        transitions: {
+          "idle": null, 
+          "parse-primary-assets": null,
+        },
       },
       "parse-primary-assets": {
         actions: {
@@ -405,7 +414,10 @@ function VisuTrackLoader(_controller): Service() constructor {
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "parse-secondary-assets" ]),
+        transitions: {
+          "idle": null,
+          "parse-secondary-assets": null,
+        },
       },
       "parse-secondary-assets": {
         actions: {
@@ -455,7 +467,10 @@ function VisuTrackLoader(_controller): Service() constructor {
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "loaded" ]),
+        transitions: {
+          "idle": null, 
+          "loaded": null,
+        },
       },
       "loaded": {
         actions: {
@@ -468,7 +483,10 @@ function VisuTrackLoader(_controller): Service() constructor {
               { message: $"Project '{Beans.get(BeanVisuController).trackService.track.name}' loaded successfully" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "parse-manifest" ]),
+        transitions: {
+          "idle": null,
+          "parse-manifest": null,
+        },
       }
     }
   })

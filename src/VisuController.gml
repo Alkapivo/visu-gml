@@ -41,7 +41,13 @@ function VisuController(layerName) constructor {
             }
           },
         },
-        transitions: GMArray.toStruct([ "idle", "load", "play", "pause", "quit" ]),
+        transitions: { 
+          "idle": null, 
+          "load": null, 
+          "play": null, 
+          "pause": null, 
+          "quit": null,
+        },
       },
       "load": {
         actions: {
@@ -75,7 +81,11 @@ function VisuController(layerName) constructor {
             fsm.context.loader.fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "play", "pause" ]),
+        transitions: { 
+          "idle": null, 
+          "play": null, 
+          "pause": null,
+        },
       },
       "play": {
         actions: {
@@ -118,7 +128,13 @@ function VisuController(layerName) constructor {
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "load", "pause", "rewind", "quit" ]),
+        transitions: { 
+          "idle": null, 
+          "load": null, 
+          "pause": null, 
+          "rewind": null, 
+          "quit": null,
+        },
       },
       "pause": {
         actions: {
@@ -156,7 +172,13 @@ function VisuController(layerName) constructor {
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "load", "play", "rewind", "quit" ]),
+        transitions: { 
+          "idle": null, 
+          "load": null, 
+          "play": null, 
+          "rewind": null, 
+          "quit": null,
+        },
       },
       "rewind": {
         actions: {
@@ -240,7 +262,12 @@ function VisuController(layerName) constructor {
             }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "play", "pause", "quit" ]),
+        transitions: {
+          "idle": null, 
+          "play": null, 
+          "pause": null, 
+          "quit": null,
+        },
       },
       "quit": {
         actions: {

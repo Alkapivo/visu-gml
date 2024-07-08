@@ -8,10 +8,13 @@ function _Visu() constructor {
   ///@type {Settings}
   settings = new Settings($"{working_directory}visu-settings.json")
 
+
+
   ///@param {String} [layerName]
   ///@param {Number} [layerDefaultDepth]
   ///@return {Visu}
   static run = function(layerName = "layer_main", layerDefaultDepth = 100) {
+    window_set_caption($"{game_display_name}")
 
     initGPU()
     initBeans()
@@ -20,6 +23,7 @@ function _Visu() constructor {
     Core.loadProperties(FileUtil.get($"{working_directory}core-properties.json"))
     Core.loadProperties(FileUtil.get($"{working_directory}visu-properties.json"))
     this.settings.set(new SettingEntry({ name: "visu.autosave", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.language", type: SettingTypes.STRING, defaultValue: LanguageType.en_US }))
       .set(new SettingEntry({ name: "visu.fullscreen", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.window.width", type: SettingTypes.NUMBER, defaultValue: 1400 }))
       .set(new SettingEntry({ name: "visu.window.height", type: SettingTypes.NUMBER, defaultValue: 900 }))
@@ -34,8 +38,8 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.editor.accordion.render-template-toolbar", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.editor.timeline-zoom", type: SettingTypes.NUMBER, defaultValue: 10 }))
       .load()
-
-    window_set_caption($"{game_display_name}")
+    
+    initLanguage(this.settings.getValue("visu.language", LanguageType.en_US))
 
     var layerId = layer_get_id(layerName)
     if (layerId == -1) {
@@ -157,24 +161,3 @@ function _Visu() constructor {
 }
 global.__Visu = new _Visu()
 #macro Visu global.__Visu
-
-
-global.timer_counter = {
-  time: 0,
-  current: 0,
-  amount: 0,
-  get: function() {
-    return this.time / this.amount
-  },
-  add: function(time) {
-    this.time += time
-    this.current = time
-    this.amount += 1
-    return this
-  },
-  reset: function() {
-    this.time = 0
-    this.amount = 0
-    return this
-  }
-}
