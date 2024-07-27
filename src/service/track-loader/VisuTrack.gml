@@ -7,13 +7,13 @@ function VisuTrack(_path, json) constructor {
   ///@type {String}
   path = Assert.isType(FileUtil.getDirectoryFromPath(_path), String)
 
-  ///@type {Number}
-  bpm = Assert.isType(Struct.getDefault(json, "bpm", Beans
-      .get(BeanVisuEditor).store.getValue("bpm")), Number)
+  var _editor = Beans.get(BeanVisuEditor)
 
   ///@type {Number}
-  bpmSub = Assert.isType(Struct.getDefault(json, "bpm-sub", Beans
-    .get(BeanVisuEditor).store.getValue("bpm-sub")), Number)
+  bpm = Assert.isType(Struct.getDefault(json, "bpm", _editor == null ? 120 : _editor.store.getValue("bpm")), Number)
+
+  ///@type {Number}
+  bpmSub = Assert.isType(Struct.getDefault(json, "bpm-sub", _editor == null ? 2 : _editor.store.getValue("bpm-sub")), Number)
 
   ///@type {String}
   sound = Assert.isType(Struct.get(json, "sound"), String)
@@ -49,7 +49,7 @@ function VisuTrack(_path, json) constructor {
 
   saveProject = function(manifestPath) {
     var controller = Beans.get(BeanVisuController)
-    var fileService = controller.fileService
+    var fileService = Beans.get(BeanFileService)
     var previousPath = this.path
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {

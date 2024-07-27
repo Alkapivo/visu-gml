@@ -11,7 +11,7 @@ global.__GRID_SERVICE_PIXEL_HEIGHT = 2048
 
 
 ///@type {Number}
-global.__GRID_ITEM_FRUSTUM_RANGE = 3.5
+global.__GRID_ITEM_FRUSTUM_RANGE = 5
 #macro GRID_ITEM_FRUSTUM_RANGE global.__GRID_ITEM_FRUSTUM_RANGE
 
 
@@ -232,7 +232,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
         this.targetLocked.setY(player.y)
       }
 
-      var editor = Beans.get(BeanVisuEditor)
       if (this.targetLocked.isLockedX) {
         this.targetLocked.setX((this.view.width * floor(this.view.x / this.view.width)) + (this.view.width / 2))
       }

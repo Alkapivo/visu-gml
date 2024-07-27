@@ -56,6 +56,16 @@ function _Visu() constructor {
       ))
     }
 
+    if (!Beans.exists(BeanFileService)) {
+      Beans.add(BeanFileService, new Bean(FileService,
+        GMObjectUtil.factoryGMObject(
+          GMServiceInstance, 
+          layerId, 0, 0, 
+          new FileService()
+        )
+      ))
+    }
+
     if (!Beans.exists(BeanTextureService)) {
       Beans.add(BeanTextureService, new Bean(TextureService,
         GMObjectUtil.factoryGMObject(
@@ -85,7 +95,7 @@ function _Visu() constructor {
         )
       ))
     }
-
+    
     if (!Beans.exists(BeanVisuEditor)) {
       Beans.add(BeanVisuEditor, new Bean(VisuEditor,
         GMObjectUtil.factoryGMObject(
@@ -105,7 +115,7 @@ function _Visu() constructor {
         )
       ))
     }
-    
+
     Beans.add(BeanVisuController, new Bean(VisuController,
       GMObjectUtil.factoryGMObject(
         GMControllerInstance, 

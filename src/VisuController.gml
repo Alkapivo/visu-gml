@@ -20,9 +20,6 @@ function VisuController(layerName) constructor {
   ///@type {Boolean}
   renderUI = true
 
-  ///@type {FileService}
-  fileService = new FileService(this)
-
   ///@type {UIService}
   uiService = new UIService(this)
 
@@ -336,6 +333,26 @@ function VisuController(layerName) constructor {
   ///@type {GridSystem}
   //gridSystem = new GridSystem(this) ///@ecs
 
+  ///@type {Boolean}
+  renderEnabled = true
+
+  ///@type {Boolean}
+  renderGUIEnabled = true
+
+  ///@param {Boolean} value
+  ///@return {TopDownController}
+  setRenderEnabled = function(value) {
+    this.renderEnabled = value
+    return this
+  }
+
+  ///@param {Boolean} value
+  ///@return {TopDownController}
+  setRenderGUIEnabled = function(value) {
+    this.renderEnabled = value
+    return this
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "change-gamemode": function(event) {
@@ -377,7 +394,10 @@ function VisuController(layerName) constructor {
       this.fsm.dispatcher.send(new Event("transition", { name: "quit" }))
     },
     "spawn-popup": function(event) {
-      Beans.get(BeanVisuEditor).popupQueue.send(new Event("push", event.data))
+      var _editor = Beans.get(BeanVisuEditor)
+      if (Core.isType(_editor, VisuEditor)) {
+        _editor.popupQueue.send(new Event("push", event.data))
+      }
     }
   }, {
     enableLogger: true,
@@ -396,7 +416,6 @@ function VisuController(layerName) constructor {
     "fsm",
     "loader",
     "displayService",
-    "fileService",
     "dispatcher",
     "executor",
     "particleService",
@@ -434,7 +453,82 @@ function VisuController(layerName) constructor {
       )
       .setFullscreen(fullscreen)
       .setCursor(Cursor.DEFAULT)
-    
+         
+    var tree = new Tree({
+      name: "root-node",
+      value: 0,
+      type: "Number",
+      childrens: [
+        {
+          name: "children-1",
+          value: 1,
+          type: "Number"
+        },
+        {
+          name: "children-2",
+          value: 2,
+          type: "Number",
+          childrens: [
+            {
+              name: "children-2.1",
+              value: 2.1,
+              type: "Number"
+            }
+          ]
+        }
+      ]
+    })
+    tree.print()
+
+    var _player = {
+      "map": {
+        "name": "neon-pub",
+        "x": 0,
+        "y": 0
+      },
+      "level": 1,
+      "exp": 0,
+      "sp": 0,
+      "credits": 100,
+      "visu": {
+        "life": {
+          "value": 1,
+          "max": 3
+        },
+        "bomb": {
+          "value": 2,
+          "max": 3
+        },
+        "slotA": "chip-bomb-01",
+        "slotB": null,
+        "slotC": null
+      },
+      "schematics": [ "chip-bomb-01" ],
+      "items": [
+        {
+          "amount": 3,
+          "item": "empty-chip"
+        }
+      ],
+      "quests": [
+        {
+          "name": "first-quest",
+          "status": "finished",
+          "steps": [
+            "find-item",
+            "return-item",
+            "finished"
+          ],
+          "step": "finished"
+        }
+      ],
+      "vars": {
+        "quest_first-quest_npc-talked": true,
+        "map_neon-pub_secret-lever": true,
+        "map_neon-pub_secret-item": true
+      }
+    }
+
     return this
   }
 
@@ -544,13 +638,25 @@ function VisuController(layerName) constructor {
 
     return this
   }
+ 
+  preview = {
+    x: function() { return 0 },
+    y: function() { return 0 },
+    width: GuiWidth,
+    height: GuiHeight,
+  }
 
   ///@return {VisuController}
   render = function() {
+    if (!this.renderEnabled) {
+      return this
+    }
+
     try {
       gpu_set_alphatestenable(true) ///@todo investigate
       var enable = this.renderUI
-      var preview = Beans.get(BeanVisuEditor).layout.nodes.preview
+      var _editor = Beans.get(BeanVisuEditor)
+      var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
       this.gridRenderer.render({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
         height: enable ? ceil(preview.height()) : GuiHeight(),
@@ -570,9 +676,14 @@ function VisuController(layerName) constructor {
 
   ///@return {VisuController}
   renderGUI = function() {
+    if (!this.renderGUIEnabled) {
+      return this
+    }
+
     try {
       var enable = this.renderUI
-      var preview = Beans.get(BeanVisuEditor).layout.nodes.preview
+      var _editor = Beans.get(BeanVisuEditor)
+      var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
       this.gridRenderer.renderGUI({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
         height: enable ? ceil(preview.height()) : GuiHeight(), 

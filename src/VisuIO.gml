@@ -60,6 +60,9 @@ function VisuIO() constructor {
     }
 
     var editor = Beans.get(BeanVisuEditor)
+    if (!Core.isType(editor, VisuEditor)) {
+      return this
+    }
 
     if (this.keyboard.keys.selectTool.pressed) {
       editor.store.get("tool").set("tool_select")
@@ -114,7 +117,23 @@ function VisuIO() constructor {
   ///@param {VisuController} controller
   ///@return {VisuIO}
   functionKeyboardEvent = function(controller) {
+    if (this.keyboard.keys.renderUI.pressed) {
+      controller.renderUI = !controller.renderUI
+    }
+
+    if (this.keyboard.keys.cameraKeyboardLook.pressed) {
+      controller.gridRenderer.camera.enableKeyboardLook = !controller.gridRenderer.camera.enableKeyboardLook
+    }
+
+    if (this.keyboard.keys.cameraMouseLook.pressed) {
+      controller.gridRenderer.camera.enableMouseLook = !controller.gridRenderer.camera.enableMouseLook
+    }
+
     var editor = Beans.get(BeanVisuEditor)
+    if (!Core.isType(editor, VisuEditor)) {
+      return this
+    }
+    
     if (this.keyboard.keys.renderTrackControl.pressed) {
       editor.store.get("render-trackControl")
         .set(!editor.store.getValue("render-trackControl"))
@@ -135,18 +154,6 @@ function VisuIO() constructor {
         .set(!editor.store.getValue("render-brush"))
     }
 
-    if (this.keyboard.keys.renderUI.pressed) {
-      controller.renderUI = !controller.renderUI
-    }
-
-    if (this.keyboard.keys.cameraKeyboardLook.pressed) {
-      controller.gridRenderer.camera.enableKeyboardLook = !controller.gridRenderer.camera.enableKeyboardLook
-    }
-
-    if (this.keyboard.keys.cameraMouseLook.pressed) {
-      controller.gridRenderer.camera.enableMouseLook = !controller.gridRenderer.camera.enableMouseLook
-    }
-
     return this
   }
 
@@ -155,6 +162,10 @@ function VisuIO() constructor {
   ///@return {VisuIO}
   modalKeyboardEvent = function(controller) {
     var editor = Beans.get(BeanVisuEditor)
+    if (!Core.isType(editor, VisuEditor)) {
+      return this
+    }
+
     if (!GMTFContext.isFocused() 
       && this.keyboard.keys.exitModal.pressed) {
 
@@ -217,7 +228,7 @@ function VisuIO() constructor {
         }
 
         controller.send(new Event("load", {
-          manifest: manifest,
+          manifest: FileUtil.get(manifest),
           autoplay: false
         }))
       } catch (exception) {
@@ -262,6 +273,10 @@ function VisuIO() constructor {
     }
     
     var editor = Beans.get(BeanVisuEditor)
+    if (!Core.isType(editor, VisuEditor)) {
+      return this
+    }
+
     if (this.keyboard.keys.saveTemplate.pressed 
       && editor.store.getValue("render-event")) {
       
@@ -287,6 +302,10 @@ function VisuIO() constructor {
     }
 
     var editor = Beans.get(BeanVisuEditor)
+    if (!Core.isType(editor, VisuEditor)) {
+      return this
+    }
+    
     if (this.keyboard.keys.saveBrush.pressed 
       && editor.store.getValue("render-brush")) {
       

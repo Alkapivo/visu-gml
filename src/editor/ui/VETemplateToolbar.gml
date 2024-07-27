@@ -860,7 +860,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   break
               }
 
-              var promise = controller.fileService.send(event)
+              var promise = Beans.get(BeanFileService).send(event)
             }
           },
           VEStyles.get("bar-button"),
@@ -937,16 +937,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 "data": struct,
               }, { pretty: true })
 
-              Beans.get(BeanVisuController).fileService
-                .send(new Event("save-file-sync")
-                  .setData(new File({
-                    path: FileUtil.getPathToSaveWithDialog({ 
-                      description: "JSON file",
-                      filename: filename, 
-                      extension: "json",
-                    }),
-                    data: data
-                  })))
+              Beans.get(BeanFileService).send(new Event("save-file-sync")
+                .setData(new File({
+                  path: FileUtil.getPathToSaveWithDialog({ 
+                    description: "JSON file",
+                    filename: filename, 
+                    extension: "json",
+                  }),
+                  data: data
+                })))
             }
           },
           VEStyles.get("bar-button"),

@@ -454,7 +454,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             callback: function(event) {
               var type = this.context.brushToolbar.store.getValue("type")
               var saveTemplate = Beans.get(BeanVisuEditor).brushService.saveTemplate
-              var promise = Beans.get(BeanVisuController).fileService.send(
+              var promise = Beans.get(BeanFileService).send(
                 new Event("fetch-file-dialog")
                   .setData({
                     description: "JSON file",
@@ -510,16 +510,15 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   .getContainer(), GMArray),
               }, { pretty: true })
 
-              Beans.get(BeanVisuController).fileService
-                .send(new Event("save-file-sync")
-                  .setData(new File({
-                    path: FileUtil.getPathToSaveWithDialog({ 
-                      description: "JSON file",
-                      filename: "brush", 
-                      extension: "json",
-                    }),
-                    data: data
-                  })))
+              Beans.get(BeanFileService).send(new Event("save-file-sync")
+                .setData(new File({
+                  path: FileUtil.getPathToSaveWithDialog({ 
+                    description: "JSON file",
+                    filename: "brush", 
+                    extension: "json",
+                  }),
+                  data: data
+                })))
             },
             onMouseHoverOver: function(event) {
               this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -632,12 +631,24 @@ global.__VisuBrushContainers = new Map(String, Callable, {
   
           if (Optional.is(component)) {
             var type = this.brushToolbar.store.getValue("type")
+            var newIndex = component.index
             var templates = Beans.get(BeanVisuEditor).brushService.fetchTemplates(type)
-            templates.move(dragItem.index, component.index) 
-
-            var tempIndex = dragItem.index
-            dragItem.index = component.index
-            component.index = tempIndex
+            var template = templates.get(dragItem.index)
+            templates.remove(dragItem.index)
+            templates.add(template, newIndex)
+            
+            this.collection.components.forEach(function(component, key, acc) {
+              if (component.index >= acc.newIndex) && (component.index <= acc.oldIndex) {
+                component.index++
+              }
+              component.items.forEach(function(item, key, index) {
+                item.layout.collection.setIndex(index)
+              }, component.index)
+            }, { newIndex: newIndex, oldIndex: dragItem.index })
+            dragItem.index = newIndex
+            dragItem.items.forEach(function(item, key, index) {
+              item.layout.collection.setIndex(index)
+            }, newIndex)
 
             component.items.forEach(function(item) {
               if (!Struct.contains(item, "colorHoverOut")) {
@@ -1198,7 +1209,20 @@ function VEBrushToolbar(_editor) constructor {
             var template = this.context.brushToolbar.store.get("template")
             if (!Core.isType(template.get(), VEBrushTemplate)
               || template.get().name != this.brushTemplate.name) {
-              template.set(this.brushTemplate)
+
+              var templates = Beans.get(BeanVisuEditor).brushService.fetchTemplates(this.brushTemplate.type)
+              if (!Core.isType(templates, Array)) {
+                return
+              }
+
+              var foundTemplate = templates.find(function(template, index, name) {
+                return template.name = name
+              }, this.brushTemplate.name)
+              if (!Core.isType(foundTemplate, VEBrushTemplate)) {
+                return
+              }
+
+              template.set(foundTemplate)
 
               var inspector = this.context.brushToolbar.containers
                 .get("ve-brush-toolbar_inspector-view")
