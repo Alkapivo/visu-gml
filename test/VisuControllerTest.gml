@@ -82,6 +82,7 @@ function TestEvent_VisuController_playback(json = {}) {
       duration: Struct.getDefault(json, "duration", 10.0),
       cooldown: new Timer(Struct.getDefault(json, "cooldown", 2.0)),
       stage: "cooldownBefore",
+      videoLimit: new Timer(Struct.getDefault(json, "videoLimit", 2.0)),
       stages: {
         cooldownBefore: function(task) {
           if (task.state.cooldown.update().finished) {
@@ -102,21 +103,28 @@ function TestEvent_VisuController_playback(json = {}) {
             task.state.stage = "pause" 
           }
 
-          var player = controller.playerService.player
-          if (!Core.isType(player, Player)) {
-            return
+          var track = controller.trackService.track
+          var video = controller.videoService.video
+          if (Optional.is(video) && track.getStatus() == TrackStatus.PLAYING) {
+            if (video.getStatus() != VideoStatus.PLAYING) {
+              task.state.videoLimit.update()
+            }
+            Assert.isFalse(task.state.videoLimit.finished, "Video must be played")
           }
 
-          if (!Struct.getDefault(player, "keyboardHook", false)) {
-            Struct.set(player, "keyboardHook", true)
-            player.keyboard.update = method(player.keyboard, function() {
-              Struct.forEach(this.keys, function(key) {
-                key.on = choose(true, false)
-                key.pressed = choose(true, false)
-                key.released = choose(true, false)
+          var player = controller.playerService.player
+          if (Core.isType(player, Player)) {
+            if (!Struct.getDefault(player, "keyboardHook", false)) {
+              Struct.set(player, "keyboardHook", true)
+              player.keyboard.update = method(player.keyboard, function() {
+                Struct.forEach(this.keys, function(key) {
+                  key.on = choose(true, false)
+                  key.pressed = choose(true, false)
+                  key.released = choose(true, false)
+                })
+                return this
               })
-              return this
-            })
+            }
           }
         },
         pause: function(task) {
