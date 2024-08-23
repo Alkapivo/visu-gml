@@ -339,6 +339,44 @@ function VisuController(layerName) constructor {
   ///@type {Boolean}
   renderGUIEnabled = true
 
+  ///@param {String} name
+  factoryTimer = function(name) {
+    return {
+      a: 0.0,
+      b: 0.0,
+      name: name,
+      value: 0.0,
+      size: 0,
+      start: function() {
+        this.a = get_timer()
+        if (this.size > 60) {
+          this.size = 0
+          this.value = 0
+        }
+        return this
+      },
+      finish: function() {
+        this.b = get_timer()
+        this.size = this.size + 1
+        this.value = this.value + ((this.b - this.a) / 1000)
+        return this
+      },
+      ///@return {Number} time in ms (there are 1000 miliseconds per second)
+      getValue: function() {
+        return this.value / this.size
+      },
+      getMessage: function() {
+        return $"{this.name} avg: {string_format(this.getValue(), 1, 4)} ms"
+      },
+    }
+  }
+
+  ///@type {Struct}
+  renderTimer = this.factoryTimer("Render")
+  
+  ///@type {Struct}
+  renderGUITimer = this.factoryTimer("RenderGUI")
+
   ///@param {Boolean} value
   ///@return {TopDownController}
   setRenderEnabled = function(value) {
@@ -453,7 +491,8 @@ function VisuController(layerName) constructor {
       )
       .setFullscreen(fullscreen)
       .setCursor(Cursor.DEFAULT)
-         
+    
+    ///@todo DEMO
     var tree = new Tree({
       name: "root-node",
       value: 0,
@@ -480,6 +519,7 @@ function VisuController(layerName) constructor {
     })
     tree.print()
 
+    ///@todo DEMO
     var _player = {
       "map": {
         "name": "neon-pub",
@@ -652,6 +692,7 @@ function VisuController(layerName) constructor {
       return this
     }
 
+    this.renderTimer.start()
     try {
       gpu_set_alphatestenable(true) ///@todo investigate
       var enable = this.renderUI
@@ -670,6 +711,7 @@ function VisuController(layerName) constructor {
       GPU.reset.surface()
       GPU.reset.blendMode()
     }
+    this.renderTimer.finish()
     
     return this
   }
@@ -680,6 +722,7 @@ function VisuController(layerName) constructor {
       return this
     }
 
+    this.renderGUITimer.start()
     try {
       var enable = this.renderUI
       var _editor = Beans.get(BeanVisuEditor)
@@ -745,7 +788,55 @@ function VisuController(layerName) constructor {
       GPU.reset.surface()
       GPU.reset.blendMode()
     }
+    this.renderGUITimer.finish()
 
+    if (is_debug_overlay_open()) {
+      var controller = this
+      var gridService = controller.gridService
+      var shrooms = controller.shroomService.shrooms.size()
+      var bullets = controller.bulletService.bullets.size()
+  
+      var timeSum = gridService.moveGridItemsTimer.getValue()
+        + gridService.signalGridItemsCollisionTimer.getValue()
+        + gridService.updatePlayerServiceTimer.getValue()
+        + gridService.updateShroomServiceTimer.getValue()
+        + gridService.updateBulletServiceTimer.getValue()
+        + controller.renderTimer.getValue()
+        + controller.renderGUITimer.getValue()
+  
+      var text = $"shrooms: {shrooms}" + "\n"
+        + $"bullets: {bullets}" + "\n"
+        + $"fps: {fps}, fps-real: {fps_real}" + "\n\n"
+        + gridService.moveGridItemsTimer.getMessage() + "\n"
+        + gridService.signalGridItemsCollisionTimer.getMessage() + "\n"
+        + gridService.updatePlayerServiceTimer.getMessage() + "\n"
+        + gridService.updateShroomServiceTimer.getMessage() + "\n"
+        + gridService.updateBulletServiceTimer.getMessage() + "\n"
+        + controller.renderTimer.getMessage() + "\n"
+        + controller.renderGUITimer.getMessage() + "\n"
+        + $"Sum: {timeSum}" + "\n"
+      GPU.render.text(32, 32, text, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
+    }
+
+    var gridCamera = this.gridRenderer.camera
+    var gridCameraMessage = ""
+    if (gridCamera.enableMouseLook) {
+      gridCameraMessage = gridCameraMessage 
+        + $"pitch: {gridCamera.pitch}\n"
+        + $"angle: {gridCamera.angle}\n"
+        + $"zoom: {gridCamera.zoom}\n"
+    }
+
+    if (gridCamera.enableKeyboardLook) {
+      gridCameraMessage = gridCameraMessage 
+        + $"x: {gridCamera.x}\n"
+        + $"y: {gridCamera.y}\n"
+        + $"z: {gridCamera.z}\n"
+    }
+    
+    if (gridCameraMessage != "") {
+      GPU.render.text(32, GuiHeight() - 32, gridCameraMessage, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD, HAlign.LEFT, VAlign.BOTTOM)  
+    }
     return this
   }
 
