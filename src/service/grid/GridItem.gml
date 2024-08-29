@@ -134,28 +134,30 @@ function GridItem(config = {}) constructor {
   ///@param {Number} angle
   ///@return {GridItem}
   setAngle = function(angle) {
-    this.angle = Assert.isType(angle, Number)
+    this.angle = angle
     return this
   }
 
   ///@param {Number} speed
   ///@return {GridItem}
   setSpeed = function(speed) {
-    this.speed = abs(Assert.isType(speed, Number))
+    if (speed > 0) {
+      this.speed = speed
+    }
     return this
   }
 
   ///@param {Sprite} sprite
   ///@return {GridItem}
   setSprite = function(sprite) {
-    this.sprite = Assert.isType(sprite, Sprite)
+    this.sprite = sprite
     return this
   }
 
   ///@param {Rectangle} mask
   ///@return {GridItem}
   setMask = function(mask) {
-    this.mask = Assert.isType(mask, Rectangle)
+    this.mask = mask
     return this
   }
 
