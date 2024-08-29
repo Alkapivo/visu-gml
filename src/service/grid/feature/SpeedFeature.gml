@@ -27,7 +27,7 @@ function SpeedFeature(json) {
       }
 
       if (this.add != null) {
-        item.setSpeed(item.speed + this.add.update().value)
+        item.setSpeed(item.speed + (this.add.update().value / 1000.0))
       }
     },
   }))
