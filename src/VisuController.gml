@@ -348,6 +348,9 @@ function VisuController(layerName) constructor {
 	///@type {BulletService}
   bulletService = new BulletService(this)
 
+  ///@type {CoinService}
+  coinService = new CoinService()
+
   ///@type {GridService}
   gridService = new GridService(this)
 
@@ -464,6 +467,7 @@ function VisuController(layerName) constructor {
     "gridService",
     //"gridSystem", ///@ecs
     "lyricsService",
+    "coinService",
     "gridRenderer",
     "videoService",
   ], function(name, index, controller) {
