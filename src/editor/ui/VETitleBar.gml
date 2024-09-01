@@ -37,6 +37,13 @@ function VETitleBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 48 },
           },
+          help: {
+            name: "title-bar.help",
+            x: function() { return this.context.nodes.view.right()
+              + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 48 },
+          },
           version: {
             name: "title-bar.version",
             x: function() { return (this.context.width() - this.width()) / 2.0 },
@@ -213,6 +220,20 @@ function VETitleBar(_editor) constructor {
                   { message: $"Project '{controller.trackService.track.name}' saved successfully at: '{path}'" }))
               } catch (exception) {
                 var message = $"Cannot save the project: {exception.message}"
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+                Logger.error("VETitleBar", message)
+              }
+            }
+          }),
+          "button_ve-title-bar_help": factoryTextButton({
+            text: "Help",
+            layout: layout.nodes.help,
+            options: new Array(),
+            callback: function() {
+              try {
+                url_open("https://github.com/Alkapivo/visu-project/wiki/1.-UI-overview")
+              } catch (exception) {
+                var message = $"Cannot open URL: {exception.message}"
                 Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
                 Logger.error("VETitleBar", message)
               }
