@@ -416,7 +416,8 @@ function VisuController(layerName) constructor {
       var fsmEvent = new Event("transition", { 
         name: "rewind", 
         data: {
-          resume: this.fsm.getStateName() == "play",
+          resume: Core.isType(Struct.get(event.data, "resume"), Boolean) 
+            ? event.data.resume : this.fsm.getStateName() == "play",
           timestamp: Assert.isType(event.data.timestamp, Number),
           videoServiceAttempts: Struct.getDefault(
             event.data, 
