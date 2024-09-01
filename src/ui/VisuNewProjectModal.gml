@@ -707,8 +707,7 @@ function VisuNewProjectForm(json = null) constructor {
             return
           }
           this.context.modal.send(new Event("close"))
-
-          Core.print("path2", path)
+          
           try {
             Assert.isTrue(FileUtil.fileExists(path))
             Beans.get(BeanVisuController).send(new Event("load", {
