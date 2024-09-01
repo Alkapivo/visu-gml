@@ -155,13 +155,20 @@ function PlayerBulletHellGameMode(json) {
     ///@return {GridItemGameMode}
     update: function(player, controller) {
       static calcSpeed = function(config, player, keyA, keyB) {
+        var speedMax = config.speedMax
+        if (keyboard_check(vk_shift)) {
+          var factor = abs(config.speedMax - config.speedMaxFocus) / GAME_FPS
+          speedMax = clamp(abs(config.speed) - DeltaTime.apply(factor), 
+            config.speedMaxFocus, config.speedMax)
+        }
+
         config.speed = keyA || keyB
           ? (config.speed + (keyA ? -1 : 1) 
             * DeltaTime.apply(config.acceleration))
           : (abs(config.speed) - config.friction >= 0
             ? config.speed - sign(config.speed) 
               * DeltaTime.apply(config.friction) : 0)
-        config.speed = sign(config.speed) * clamp(abs(config.speed), 0, config.speedMax)
+        config.speed = sign(config.speed) * clamp(abs(config.speed), 0, speedMax)
         return config.speed
       }
       
