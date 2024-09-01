@@ -332,6 +332,10 @@ global.__grid_track_event = {
       Struct.set(json, "mask", Struct.get(data, "grid-player_mask"))
     }
 
+    if (Struct.get(data, "grid-player_use-reset-position")) {
+      Struct.set(json, "reset-position", Struct.get(data, "grid-player_reset-position") == true)
+    }
+
     if (Struct.get(data, "grid-player_use-racing")) {
       Struct.set(json, "racing", Struct
         .get(data, "grid-player_racing"))

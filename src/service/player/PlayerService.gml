@@ -18,8 +18,9 @@ function PlayerService(_controller, config = {}): Service() constructor {
     "spawn-player": function(event) {
       var view = this.controller.gridService.view
       var _x = view.x + (view.width / 2.0)
-      var _y = view.y + (view.height / 2.0)
-      if (Core.isType(this.player, Player)) {
+      var _y = view.y + (view.height / 0.5)
+      if (Struct.get(event.data, "reset-position") != true
+        && Core.isType(this.player, Player)) {
         _x = this.player.x
         _y = this.player.y
       }
