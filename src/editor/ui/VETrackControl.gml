@@ -728,6 +728,7 @@ function VETrackControl(_editor) constructor {
     return this.dispatcher.send(event)
   }
 
+  ///@todo move to VisuController
   ///@return {VETrackControl}
   watchdog = function() {
     var controller = Beans.get(BeanVisuController)
@@ -737,13 +738,12 @@ function VETrackControl(_editor) constructor {
 
     try {
       var trackService = controller.trackService
-      var time = trackService.time
-      var duration = trackService.duration
-      if (trackService.duration != 0 
-        && trackService.isTrackLoaded()
-        && time >= duration - DeltaTime.apply(FRAME_MS * 2)) {
-        
-        controller.send(new Event("pause"))
+      if (trackService.isTrackLoaded()) {
+        var audio = trackService.track.audio
+        if (!audio.isLoaded()) {
+          audio.load(0.0)
+          controller.send(new Event("rewind", { timestamp: 0, resume: false }))
+        }
       }
     } catch (exception) {
       var message = $"watchdog throwed an exception: {exception.message}"
