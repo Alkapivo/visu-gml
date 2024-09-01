@@ -636,15 +636,15 @@ function VisuController(layerName) constructor {
   ///@param {Number} iterator
   ///@param {VisuController} controller
   updateService = function(service, iterator, controller) {
-    try {
+    //try {
       service.struct.update()
-    } catch (exception) {
-      var message = $"'update-service-{service.name}' fatal error: {exception.message}"
-      Logger.error("VisuController", message)
-      Core.printStackTrace()
-      controller.send(new Event("spawn-popup", { message: message }))
-      fsm.dispatcher.send(new Event("transition", { name: "idle" }))
-    }
+    //} catch (exception) {
+    //  var message = $"'update-service-{service.name}' fatal error: {exception.message}"
+    //  Logger.error("VisuController", message)
+    //  Core.printStackTrace()
+    //  controller.send(new Event("spawn-popup", { message: message }))
+    //  fsm.dispatcher.send(new Event("transition", { name: "idle" }))
+    //}
   }
   
   ///@return {VisuController}

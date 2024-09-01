@@ -565,6 +565,38 @@ function GridRenderer(_controller, config = {}) constructor {
     return this
   }
 
+    ///@private
+  ///@return {GridRenderer}
+  renderCoins = function() {
+    static renderCoin = function(coin, index, gridService) {
+      coin.sprite
+        .render(
+          (coin.x - ((coin.sprite.texture.width * coin.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((coin.sprite.texture.offsetX * coin.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+          (coin.y - ((coin.sprite.texture.height * coin.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((coin.sprite.texture.offsetY * coin.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        )
+
+      /*
+      GPU.render.rectangle(
+        (coin.x - ((coin.mask.getWidth() * coin.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (coin.y - ((coin.mask.getHeight() * coin.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        (coin.x + ((coin.mask.getWidth() * coin.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (coin.y + ((coin.mask.getHeight() * coin.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+        false, 
+        c_orange
+      )
+      */
+    }
+    
+    var gridService = this.controller.gridService
+    if (!gridService.properties.renderElements
+        || !gridService.properties.renderCoins) {
+      return this
+    }
+
+    this.controller.coinService.coins.forEach(renderCoin, gridService)
+    return this
+  }
+
   ///@private
   ///@return {GridRenderer}
   renderParticles = function() {
@@ -665,6 +697,13 @@ function GridRenderer(_controller, config = {}) constructor {
       1, 1, 1
     ))
     renderer.renderSeparators()
+
+    matrix_set(matrix_world, matrix_build(
+      baseX, baseY, depths.coinZ, 
+      0, 0, 0, 
+      1, 1, 1
+    ))
+    renderer.renderCoins()
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.bulletZ, 
