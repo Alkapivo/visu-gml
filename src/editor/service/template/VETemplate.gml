@@ -201,7 +201,7 @@ function VETemplate(json) constructor {
         stretch: this.store.getValue("particle-sprite-stretch"),
       })
     } else {
-      Struct.remove(template, "sprite")
+      Struct.set(template, "sprite", null)
     }
     
     return template
