@@ -28,7 +28,7 @@ function CoinService(config = {}): Service() constructor {
     "reset-templates": function(event) {
       this.templates.clear().set("coin-default", new CoinTemplate("coin-default", {
         "sprite": { "name": "texture_baron" },
-        "category": CoinCategory.SCORE,
+        "category": CoinCategory.POINT,
       }))
     },
   }))
@@ -46,7 +46,7 @@ function CoinService(config = {}): Service() constructor {
   updateCoin = function(coin, index, acc) {
     coin.move()
     if (acc.player != null && coin.collide(acc.player)) {
-      Core.print("@todo Consume coin", coin.category, "amount", coin.amount)
+      acc.player.stats.dispatchCoin(coin)
       acc.gc.push(index)
     } else {
       var view = acc.view
