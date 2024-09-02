@@ -1980,8 +1980,8 @@ function VETemplateToolbar(_editor) constructor {
           controller.coinService.templates
             .set(name, new CoinTemplate(name, {
               name: name,
-              category: CoinCategory.SCORE,
-              sprite: { name: "texture_coin" },
+              category: CoinCategory.POINT,
+              sprite: { name: "texture_coin_point" },
             }))
           break
         case VETemplateType.LYRICS:

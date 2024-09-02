@@ -8,7 +8,7 @@ function template_coin(json = null) {
     store: new Map(String, Struct, {
       "coin_category": {
         type: String,
-        value: Struct.getDefault(json, "category", CoinCategory.SCORE),
+        value: Struct.getDefault(json, "category", CoinCategory.POINT),
         validate: function(value) {
           Assert.isTrue(this.data.contains(value))
         },

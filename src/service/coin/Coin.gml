@@ -1,12 +1,13 @@
 ///@package io.alkapivo.visu.service.coin
 
-function _CoinType(): Enum() constructor {
-  SCORE = "score"
+function _CoinCategory(): Enum() constructor {
+  FORCE = "force"
+  POINT = "point"
   BOMB = "bomb"
   LIFE = "life"
 }
-global.__CoinType = new _CoinType()
-#macro CoinCategory global.__CoinType
+global.__CoinCategory = new _CoinCategory()
+#macro CoinCategory global.__CoinCategory
 
 ///@param {String} _name
 ///@param {Struct} json

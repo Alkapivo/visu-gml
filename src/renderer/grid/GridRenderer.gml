@@ -350,7 +350,11 @@ function GridRenderer(_controller, config = {}) constructor {
     } else {
       var _x = (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
       var _y = (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      player.sprite.render(_x, _y)
+      var alpha = player.sprite.alpha
+      player.sprite
+        .setAlpha(alpha * ((cos(player.stats.godModeCooldown * 15.0) + 2.0) / 3.0))
+        .render(_x, _y)
+        .setAlpha(alpha)
       this.player2DCoords = Math.project3DCoordsOn2D(_x + baseX, _y + baseY,this.controller.gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
       /*
       GPU.render.rectangle(
