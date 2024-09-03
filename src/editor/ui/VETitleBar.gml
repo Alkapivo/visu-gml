@@ -281,9 +281,6 @@ function VETitleBar(_editor) constructor {
               var displayService = Beans.get(BeanVisuController).displayService
               var fullscreen = displayService.getFullscreen()
               displayService.setFullscreen(!fullscreen)
-              if (fullscreen) {
-                window_maximize_set_enable()
-              }
             },
           }),
         },
