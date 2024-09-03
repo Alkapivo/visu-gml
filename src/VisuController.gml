@@ -631,6 +631,7 @@ function VisuController(layerName) constructor {
       )
       .setFullscreen(fullscreen)
       .setCursor(Cursor.DEFAULT)
+      .center()
     
     this.setHUDConfig()
     ///@todo DEMO
