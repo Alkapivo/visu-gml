@@ -128,6 +128,13 @@ function VisuController(layerName) constructor {
             }
 
             fsmState.state.set("promises", promises)
+
+            ///@hack
+            var trackService = fsm.context.trackService
+            if (trackService.isTrackLoaded()
+              && !trackService.track.audio.isLoaded()) {
+              trackService.time = 0.0
+            }
           },
         },
         update: function(fsm) {
@@ -338,6 +345,36 @@ function VisuController(layerName) constructor {
         && Core.isType(this.track, Track)
     },
   })
+  
+  watchdogPromise = null
+
+  ///@return {VisuController}
+  watchdog = function() {
+    try {
+      if (Optional.is(this.watchdogPromise)) {
+        this.watchdogPromise = this.watchdogPromise.status == PromiseStatus.PENDING
+          ? this.watchdogPromise
+          : null
+        return this
+      }
+
+      if (!Optional.is(this.watchdogPromise)
+        && this.trackService.isTrackLoaded()
+        && !this.trackService.track.audio.isLoaded() 
+        && 1 > abs(this.trackService.time - this.trackService.duration)
+        && this.fsm.getStateName() == "play") {
+        
+        Logger.info("VisuController", $"Track finished at {this.trackService.time}")
+        this.watchdogPromise = this.send(new Event("pause").setPromise(new Promise()))
+      }
+    } catch (exception) {
+      var message = $"Watchdog throwed an exception: {exception.message}"
+      this.send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)
+    }
+
+    return this
+  }
 
   ///@type {PlayerService}
   playerService = new PlayerService(this)
@@ -779,7 +816,7 @@ function VisuController(layerName) constructor {
 
     this.services.forEach(this.updateService, this)
     this.autosaveHandler()
-
+    this.watchdog()
     this.hudBKTGlitchService.update(GuiWidth(), GuiHeight())
 
     return this

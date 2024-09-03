@@ -728,31 +728,6 @@ function VETrackControl(_editor) constructor {
     return this.dispatcher.send(event)
   }
 
-  ///@todo move to VisuController
-  ///@return {VETrackControl}
-  watchdog = function() {
-    var controller = Beans.get(BeanVisuController)
-    if (!Core.isType(controller, VisuController)) {
-      return this
-    }
-
-    try {
-      var trackService = controller.trackService
-      if (trackService.isTrackLoaded()) {
-        var audio = trackService.track.audio
-        if (!audio.isLoaded()) {
-          audio.load(0.0)
-          controller.send(new Event("rewind", { timestamp: 0, resume: false }))
-        }
-      }
-    } catch (exception) {
-      var message = $"watchdog throwed an exception: {exception.message}"
-      controller.send(new Event("spawn-popup", { message: message }))
-      Logger.error("VETrackControl", message)
-    }
-    return this
-  }
-
   ///@return {VETrackControl}
   update = function() { 
     try {
@@ -762,8 +737,6 @@ function VETrackControl(_editor) constructor {
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
       Logger.error("UI", message)
     }
-    
-    this.watchdog()
     return this
   }
 }
