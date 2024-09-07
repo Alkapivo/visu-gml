@@ -188,6 +188,25 @@ function _Visu() constructor {
     },
   }
 
+  ///@private
+  ///@type {Struct}
+  bulletTemplates = {
+    "bullet-default": {
+      "gameModes":{
+        "bulletHell": { "features": [] },
+        "platformer": { "features": [] },
+        "racing": { "features": [] },
+      },
+      "sprite":{
+        "name":"texture_bullet"
+      },
+      "mask":{
+        "width":128.0,
+        "height":128.0
+      },
+    },
+  }
+
   _assets = null
 
   static assets = function() {
@@ -203,7 +222,11 @@ function _Visu() constructor {
             function(json, name) {
               return new ShroomTemplate(name, json)
             }),
-        
+        bulletTemplates: Struct
+          .toMap(this.bulletTemplates, String, BulletTemplate, 
+            function(json, name) {
+              return new BulletTemplate(name, json)
+            }),
       }
     }
 
