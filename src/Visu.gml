@@ -207,6 +207,8 @@ function _Visu() constructor {
     },
   }
 
+  ///@private
+  ///@type {Struct}
   coinTemplates = {
     "coin-default": {
       "sprite": { 
@@ -216,14 +218,81 @@ function _Visu() constructor {
     },
   }
 
+  ///@private
+  ///@type {Struct}
   lyricsTemplates = {
     "lyrics-default": {
       "lines": [ "Lorem ipsum" ]
     },
   }
 
+  ///@private
+  ///@type {Struct}
+  particleTemplates = {
+    "particle-default": {
+      "color":{
+        "start":"#ffffff",
+        "halfway":"#ffffff",
+        "finish":"#ffffff"
+      },
+      "alpha":{
+        "start":1.0,
+        "halfway":0.0,
+        "finish":0.0
+      },
+      "speed":{
+        "wiggle":0.0,
+        "increase":0.001,
+        "minValue":0.01,
+        "maxValue":5.0
+      },
+      "shape":"CIRCLE",
+      "gravity":{
+        "angle":0.0,
+        "amount":0.0
+      },
+      "orientation":{
+        "wiggle":0.0,
+        "relative":0.0,
+        "increase":0.001,
+        "minValue":0.0,
+        "maxValue":360.0
+      },
+      "angle":{
+        "wiggle":0.0,
+        "increase":0.01,
+        "minValue":0.0,
+        "maxValue":360.0
+      },
+      "life":{
+        "minValue":80.0,
+        "maxValue":120.0
+      },
+      "sprite":{
+        "name":"texture_particle",
+        "stretch":0.0,
+        "randomValue":0.0,
+        "animate":0.0
+      },
+      "scale":{
+        "x":1.0,
+        "y":1.0
+      },
+      "blend":0.0,
+      "size":{
+        "wiggle":0.0,
+        "increase":0.0,
+        "minValue":1.0,
+        "maxValue":32.0
+      }
+    },
+  }
+
+  ///@private
+  ///@type {?Struct}
   _assets = null
 
+  ///@return {Struct}
   static assets = function() {
     if (this._assets == null) {
       this._assets = {
@@ -251,6 +320,11 @@ function _Visu() constructor {
           .toMap(this.lyricsTemplates, String, LyricsTemplate, 
             function(json, name) {
               return new LyricsTemplate(name, json)
+            }),
+        particleTemplates: Struct
+          .toMap(this.particleTemplates, String, ParticleTemplate, 
+            function(json, name) {
+              return new ParticleTemplate(name, json)
             }),
       }
     }

@@ -327,7 +327,12 @@ function VisuController(layerName) constructor {
   shaderBackgroundPipeline = new ShaderPipeline(this.shaderPipeline)
 
   ///@type {ParticleService}
-  particleService = new ParticleService(this, { layerName: layerName })
+  particleService = new ParticleService(this, { 
+    layerName: layerName,
+    getStaticTemplates: function() {
+      return Visu.assets().particleTemplates
+    },
+  })
 
   ///@type {TrackService}
   trackService = new TrackService(this, {
