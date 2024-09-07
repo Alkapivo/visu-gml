@@ -22,8 +22,10 @@ function brush_view_lyrics(json = null) {
         type: String,
         value: Struct.getDefault(json, "view-lyrics_template", "lyrics-default"),
         passthrough: function(value) {
-          ///@todo weird bug
-          return Beans.get(BeanVisuController).lyricsService.templates.contains(value) ? value : (Core.isType(this.value, String) ? this.value : "lyrics-default")
+          var lyricsService = Beans.get(BeanVisuController).lyricsService
+          return lyricsService.templates.contains(value) || Visu.assets().lyricsTemplates.contains(value)
+            ? value
+            : (Core.isType(this.value, String) ? this.value : "lyrics-default")
         },
       },
       "view-lyrics_font": {

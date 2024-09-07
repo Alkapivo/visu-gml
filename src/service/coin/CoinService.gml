@@ -12,7 +12,7 @@ function CoinService(config = {}): Service() constructor {
   gc = new Stack(Number)
 
   ///@param {String} name
-  ///@return {?BulletTemplate}
+  ///@return {?CoinTemplate}
   getTemplate = function(name) {
     var template = this.templates.get(name)
     return template == null

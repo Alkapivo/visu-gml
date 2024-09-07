@@ -1477,8 +1477,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           colorHoverOver: VETheme.color.accentShadow,
                           colorHoverOut: VETheme.color.primaryShadow,
                           onMouseReleasedLeft: function() {
-                            var lyrics = Beans.get(BeanVisuController).lyricsService.templates
-                              .get(this.templateName)
+                            var lyrics = Beans.get(BeanVisuController).lyricsService
+                              .getTemplate(this.templateName)
                             if (!Core.isType(lyrics, LyricsTemplate)) {
                               return
                             }
@@ -1508,6 +1508,44 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     }
                   }, null, String, Struct)
 
+                Visu.assets().lyricsTemplates.forEach(function(template, name, components) {
+                  components.set($"z@{template.name}", {
+                    name: $"z@{template.name}",
+                    template: VEComponents.get("template-entry"),
+                    layout: VELayouts.get("template-entry"),
+                    config: {
+                      label: { 
+                        text: template.name,
+                        colorHoverOver: VETheme.color.accentShadow,
+                        colorHoverOut: VETheme.color.dark,
+                        onMouseReleasedLeft: function() {
+                          var lyrics = Beans.get(BeanVisuController).lyricsService
+                            .getTemplate(this.templateName)
+                          if (!Core.isType(lyrics, LyricsTemplate)) {
+                            return
+                          }
+
+                          Struct.set(lyrics, "type", VETemplateType.LYRICS)
+                          this.context.templateToolbar.store
+                            .get("template")
+                            .set(new VETemplate(lyrics))
+                        },
+                        templateName: template.name,
+                        backgroundColor: VETheme.color.dark,
+                      },
+                      button: { 
+                        backgroundColor: VETheme.color.dark,
+                        sprite: {
+                          name: "texture_ve_icon_lock",
+                          blend: VETheme.color.textShadow,
+                        },
+                        callback: function() { },
+                        templateName: template.name,
+                      },
+                    },
+                  })
+                }, components)
+                
                 var keys = GMArray.sort(components.keys().getContainer())
                 IntStream.forEach(0, components.size(), function(iterator, index, acc) {
                   var component = acc.components.get(acc.keys[iterator])

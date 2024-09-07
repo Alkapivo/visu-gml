@@ -216,6 +216,12 @@ function _Visu() constructor {
     },
   }
 
+  lyricsTemplates = {
+    "lyrics-default": {
+      "lines": [ "Lorem ipsum" ]
+    },
+  }
+
   _assets = null
 
   static assets = function() {
@@ -240,6 +246,11 @@ function _Visu() constructor {
           .toMap(this.coinTemplates, String, CoinTemplate, 
             function(json, name) {
               return new CoinTemplate(name, json)
+            }),
+        lyricsTemplates: Struct
+          .toMap(this.lyricsTemplates, String, LyricsTemplate, 
+            function(json, name) {
+              return new LyricsTemplate(name, json)
             }),
       }
     }
