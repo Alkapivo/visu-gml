@@ -178,11 +178,11 @@ function PlayerBulletHellGameMode(json) {
       
       var keys = player.keyboard.keys
       if (GMTFContext.isFocused()) {
-        keys.left.on = false
-        keys.right.on = false
-        keys.up.on = false
-        keys.down.on = false
-        keys.action.on = false
+        Struct.forEach(keys, function(key) {
+          key.on = false
+          key.pressed = false
+          key.released = false
+        })
       }
 
       if (keys.action.on) {
