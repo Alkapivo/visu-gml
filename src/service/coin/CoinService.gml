@@ -11,11 +11,20 @@ function CoinService(config = {}): Service() constructor {
   ///@type {Stack<Number>}
   gc = new Stack(Number)
 
+  ///@param {String} name
+  ///@return {?BulletTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? Visu.assets().coinTemplates.get(name)
+      : template
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-coin": function(event) {
-      var template = new CoinTemplate(event.data.template, this.templates
-        .get(event.data.template)
+      var template = new CoinTemplate(event.data.template, this
+        .getTemplate(event.data.template)
         .serialize())
       Struct.set(template, "x", Assert.isType(event.data.x, Number))
       Struct.set(template, "y", Assert.isType(event.data.y, Number))
@@ -26,10 +35,7 @@ function CoinService(config = {}): Service() constructor {
       this.coins.clear()
     },
     "reset-templates": function(event) {
-      this.templates.clear().set("coin-default", new CoinTemplate("coin-default", {
-        "sprite": { "name": "texture_baron" },
-        "category": CoinCategory.POINT,
-      }))
+      this.templates.clear()
     },
   }))
 

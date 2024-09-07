@@ -207,6 +207,15 @@ function _Visu() constructor {
     },
   }
 
+  coinTemplates = {
+    "coin-default": {
+      "sprite": { 
+        "name": "texture_baron"
+      },
+      "category": CoinCategory.POINT,
+    },
+  }
+
   _assets = null
 
   static assets = function() {
@@ -226,6 +235,11 @@ function _Visu() constructor {
           .toMap(this.bulletTemplates, String, BulletTemplate, 
             function(json, name) {
               return new BulletTemplate(name, json)
+            }),
+        coinTemplates: Struct
+          .toMap(this.coinTemplates, String, CoinTemplate, 
+            function(json, name) {
+              return new CoinTemplate(name, json)
             }),
       }
     }
