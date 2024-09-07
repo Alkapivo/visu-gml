@@ -167,6 +167,16 @@ function _Visu() constructor {
     return this
   }
 
+  ///@private
+  ///@type {Struct}
+  shaderTemplates = {
+    "shader-default": { 
+      "shader": "shader_revert",
+    },
+  }
+
+  ///@private
+  ///@type {Struct}
   shroomTemplates = {
     "shroom-default": {
       "sprite": { "name": "texture_baron" },
@@ -183,11 +193,17 @@ function _Visu() constructor {
   static assets = function() {
     if (this._assets == null) {
       this._assets = {
+        shaderTemplates: Struct
+          .toMap(this.shaderTemplates, String, ShaderTemplate, 
+            function(json, name) {
+              return new ShaderTemplate(name, json)
+            }),
         shroomTemplates: Struct
           .toMap(this.shroomTemplates, String, ShroomTemplate, 
             function(json, name) {
               return new ShroomTemplate(name, json)
             }),
+        
       }
     }
 
