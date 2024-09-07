@@ -136,12 +136,65 @@ function _Visu() constructor {
   ///@private
   ///@type {Struct}
   textures = {
-    "texture_baron":{
+    "texture_baron": {
       "asset": texture_baron,
-      "file": "",
-      "frames":1.0,
-      "originX":0.0,
-      "originY":0.0
+      "file": ""
+    },
+    "texture_baron_wallpaper_1": {
+      "asset": texture_baron_wallpaper_1,
+      "file": ""
+    },
+    "texture_baron_wallpaper_2": {
+      "asset": texture_baron_wallpaper_2,
+      "file": ""
+    },
+    "texture_bazyl": {
+      "asset": texture_bazyl,
+      "file": ""
+    },
+    "texture_bazyl_cursor": {
+      "asset": texture_bazyl_cursor,
+      "file": ""
+    },
+    "texture_bullet": {
+      "asset": texture_bullet,
+      "file": ""
+    },
+    "texture_coin_bomb": {
+      "asset": texture_coin_bomb,
+      "file": ""
+    },
+    "texture_coin_force": {
+      "asset": texture_coin_force,
+      "file": ""
+    },
+    "texture_coin_life": {
+      "asset": texture_coin_life,
+      "file": ""
+    },
+    "texture_coin_point": {
+      "asset": texture_coin_point,
+      "file": ""
+    },
+    "texture_empty": {
+      "asset": texture_empty,
+      "file": ""
+    },
+    "texture_missing": {
+      "asset": texture_missing,
+      "file": ""
+    },
+    "texture_particle": {
+      "asset": texture_particle,
+      "file": ""
+    },
+    "texture_player": {
+      "asset": texture_player,
+      "file": ""
+    },
+    "texture_white": {
+      "asset": texture_white,
+      "file": ""
     },
   }
 
