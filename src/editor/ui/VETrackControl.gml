@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuEditor} _editor
+///@param {VisuEditorController} _editor
 function VETrackControl(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
   
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
@@ -175,7 +175,7 @@ function VETrackControl(_editor) constructor {
                 return
               }
 
-              var ruler = Beans.get(BeanVisuEditor).timeline.containers.get("ve-timeline-ruler")
+              var ruler = Beans.get(BeanVisuEditorController).timeline.containers.get("ve-timeline-ruler")
               if (context == ruler) {
                 var trackService = Beans.get(BeanVisuController).trackService
                 var mouseXTime = context.state.get("mouseXTime")
@@ -392,7 +392,7 @@ function VETrackControl(_editor) constructor {
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
           "background-alpha": 0.8,
-          "store": Beans.get(BeanVisuEditor).store,
+          "store": Beans.get(BeanVisuEditorController).store,
           "tools": new Array(Struct, [
             factoryToolItem({ 
               name: "ve-track-control_tool_brush", 
@@ -562,7 +562,7 @@ function VETrackControl(_editor) constructor {
               layout: layout.nodes.zoomIn,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               callback: function() { 
-                var item = Beans.get(BeanVisuEditor).store
+                var item = Beans.get(BeanVisuEditorController).store
                   .get("timeline-zoom")
                 item.set(clamp(item.get() - 1, 5, 20))
               },
@@ -629,7 +629,7 @@ function VETrackControl(_editor) constructor {
               layout: layout.nodes.zoomOut,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               callback: function() { 
-                var item = Beans.get(BeanVisuEditor).store
+                var item = Beans.get(BeanVisuEditorController).store
                   .get("timeline-zoom")
                 item.set(clamp(item.get() + 1, 5, 20))
               },

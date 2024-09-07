@@ -1163,8 +1163,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           colorHoverOver: VETheme.color.accentShadow,
                           colorHoverOut: VETheme.color.primaryShadow,
                           onMouseReleasedLeft: function() {
-                            var shroom = Beans.get(BeanVisuController).shroomService.templates
-                              .get(this.templateName)
+                            var shroom = Beans.get(BeanVisuController).shroomService
+                              .getTemplate(this.templateName)
                             if (!Core.isType(shroom, ShroomTemplate)) {
                               return
                             }
@@ -1193,6 +1193,44 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       },
                     }
                   }, null, String, Struct)
+
+                Visu.assets().shroomTemplates.forEach(function(template, name, components) {
+                  components.set($"z@{template.name}", {
+                    name: $"z@{template.name}",
+                    template: VEComponents.get("template-entry"),
+                    layout: VELayouts.get("template-entry"),
+                    config: {
+                      label: { 
+                        text: template.name,
+                        colorHoverOver: VETheme.color.accentShadow,
+                        colorHoverOut: VETheme.color.dark,
+                        onMouseReleasedLeft: function() {
+                          var shroom = Beans.get(BeanVisuController).shroomService
+                            .getTemplate(this.templateName)
+                          if (!Core.isType(shroom, ShroomTemplate)) {
+                            return
+                          }
+
+                          Struct.set(shroom, "type", VETemplateType.SHROOM)
+                          this.context.templateToolbar.store
+                            .get("template")
+                            .set(new VETemplate(shroom))
+                        },
+                        templateName: template.name,
+                        backgroundColor: VETheme.color.dark,
+                      },
+                      button: { 
+                        backgroundColor: VETheme.color.dark,
+                        sprite: {
+                          name: "texture_ve_icon_lock",
+                          blend: VETheme.color.textShadow,
+                        },
+                        callback: function() { },
+                        templateName: template.name,
+                      },
+                    },
+                  })
+                }, components)
 
                 var keys = GMArray.sort(components.keys().getContainer())
                 IntStream.forEach(0, components.size(), function(iterator, index, acc) {
@@ -1556,7 +1594,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               var controlNode = Struct.get(this.context.layout.context.nodes, "control")
               var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
 
-              var editor = Beans.get(BeanVisuEditor)
+              var editor = Beans.get(BeanVisuEditorController)
               var nodes = editor.accordion.layout.nodes
               var barEventInspectorNode = Struct.get(nodes, "bar_event-inspector")
               var viewEventInspectorNode = Struct.get(nodes, "view_event-inspector")
@@ -1772,11 +1810,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 #macro VisuTemplateContainers global.__VisuTemplateContainers
 
 
-///@param {VisuEditor}
+///@param {VisuEditorController}
 function VETemplateToolbar(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
 
   ///@type {?UILayout}
   layout = null

@@ -223,9 +223,6 @@ function GridProperties(config = {}) constructor {
     this.separatorTimer.duration = ((gridService.view.height * 2) / this.separators)
     this.separatorTimer.update()
     this.separatorTimer.amount = (this.speed / 1000) - DeltaTime.apply(gridService.view.derivativeY)
-    
-    
-
 
     this.clearColor.alpha = this.clearFrameAlpha
     this.gridClearColor.alpha = this.gridClearFrameAlpha

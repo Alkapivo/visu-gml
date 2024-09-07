@@ -59,8 +59,8 @@ function VisuIO() constructor {
       }
     }
 
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
+    var editor = Beans.get(BeanVisuEditorController)
+    if (!Core.isType(editor, VisuEditorController)) {
       return this
     }
 
@@ -129,8 +129,8 @@ function VisuIO() constructor {
       controller.gridRenderer.camera.enableMouseLook = !controller.gridRenderer.camera.enableMouseLook
     }
 
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
+    var editor = Beans.get(BeanVisuEditorController)
+    if (!Core.isType(editor, VisuEditorController)) {
       return this
     }
     
@@ -161,8 +161,8 @@ function VisuIO() constructor {
   ///@param {VisuController} controller
   ///@return {VisuIO}
   modalKeyboardEvent = function(controller) {
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
+    var editor = Beans.get(BeanVisuEditorController)
+    if (!Core.isType(editor, VisuEditorController)) {
       return this
     }
 
@@ -272,8 +272,8 @@ function VisuIO() constructor {
       return this
     }
     
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
+    var editor = Beans.get(BeanVisuEditorController)
+    if (!Core.isType(editor, VisuEditorController)) {
       return this
     }
 
@@ -301,8 +301,8 @@ function VisuIO() constructor {
       return this
     }
 
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
+    var editor = Beans.get(BeanVisuEditorController)
+    if (!Core.isType(editor, VisuEditorController)) {
       return this
     }
     

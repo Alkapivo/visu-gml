@@ -7,7 +7,7 @@ function VisuTrack(_path, json) constructor {
   ///@type {String}
   path = Assert.isType(FileUtil.getDirectoryFromPath(_path), String)
 
-  var _editor = Beans.get(BeanVisuEditor)
+  var _editor = Beans.get(BeanVisuEditorController)
 
   ///@type {Number}
   bpm = Assert.isType(Struct.getDefault(json, "bpm", _editor == null ? 120 : _editor.store.getValue("bpm")), Number)
@@ -72,7 +72,7 @@ function VisuTrack(_path, json) constructor {
         "sound": this.sound,
         "texture": this.texture,
         "video": this.video,
-        "editor": Beans.get(BeanVisuEditor).brushService.templates
+        "editor": Beans.get(BeanVisuEditorController).brushService.templates
           .keys()
           .map(function(filename) {
             return $"brush/{filename}.json"
@@ -176,7 +176,7 @@ function VisuTrack(_path, json) constructor {
       }, textureAcc)
 
     var editor = {}
-    Beans.get(BeanVisuEditor).brushService.templates
+    Beans.get(BeanVisuEditorController).brushService.templates
       .forEach(function(templates, type, editor) {
         Struct.set(editor, type, {
           "model": "Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",

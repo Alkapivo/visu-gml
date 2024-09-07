@@ -151,12 +151,21 @@ function ShroomService(_controller, config = {}): Service() constructor {
     )
   }
 
+  ///@param {String} name
+  ///@return {?ShroomTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? Visu.assets().shroomTemplates.get(name)
+      : template
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-shroom": function(event) {
       var view = this.controller.gridService.view
-      var template = new ShroomTemplate(event.data.template, this.templates
-        .get(event.data.template)
+      var template = new ShroomTemplate(event.data.template, this
+        .getTemplate(event.data.template)
         .serialize())
       var spawnX = Assert.isType(Struct
         .getDefault(event.data, "spawnX", choose(1, -1) * random(3) * (random(100) / 100)), Number)
@@ -192,33 +201,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
       this.shrooms.clear()
     },
     "reset-templates": function(event) {
-      this.templates.clear().set("shroom-default", new ShroomTemplate("shroom-default", {
-        "gameModes":{
-          "racing":{ "features": [] },
-          "bulletHell":{
-            "features":[
-              {
-                "feature":"KillFeature",
-                "conditions":[
-                  {
-                    "type":"player-collision"
-                  }
-                ]
-              },
-              {
-                "feature":"KillFeature",
-                "conditions":[
-                  {
-                    "type":"bullet-collision"
-                  }
-                ]
-              }
-            ]
-          },
-          "platformer": { "features": [] }
-        },
-        "sprite": { "name": "texture_baron" },
-      }))
+      this.templates.clear()
     },
   }))
 

@@ -93,7 +93,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
               // reset timeline timer to avoid ghost effect,
               // because brushtoolbar height is affecting timeline height
-              Beans.get(BeanVisuEditor).timeline.containers.forEach(function(container) {
+              Beans.get(BeanVisuEditorController).timeline.containers.forEach(function(container) {
                 if (!Optional.is(container.updateTimer)) {
                   return
                 }
@@ -110,7 +110,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
           updateLayout: new BindIntent(function(position) {
             var controller = Beans.get(BeanVisuController)
-            var node = Struct.get(Beans.get(BeanVisuEditor).layout.nodes, "brush-toolbar")
+            var node = Struct.get(Beans.get(BeanVisuEditorController).layout.nodes, "brush-toolbar")
             node.percentageWidth = abs(GuiWidth() - position) / GuiWidth()
 
             var events = controller.uiService.find("ve-timeline-events")
@@ -458,7 +458,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
             callback: function(event) {
               var type = this.context.brushToolbar.store.getValue("type")
-              var saveTemplate = Beans.get(BeanVisuEditor).brushService.saveTemplate
+              var saveTemplate = Beans.get(BeanVisuEditorController).brushService.saveTemplate
               var promise = Beans.get(BeanFileService).send(
                 new Event("fetch-file-dialog")
                   .setData({
@@ -471,7 +471,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       callback: function(prototype, json, index, acc) {
                         var template = new prototype(json)
                         acc.saveTemplate(template)
-                        var type = Beans.get(BeanVisuEditor).brushToolbar.store.get("type")
+                        var type = Beans.get(BeanVisuEditorController).brushToolbar.store.get("type")
                         type.set(type.get())
                       },
                       acc: {
@@ -507,10 +507,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             colorHoverOut: VETheme.color.primary,
             callback: function(event) {
               var type = this.context.brushToolbar.store.getValue("type")
-              var templates = Beans.get(BeanVisuEditor).brushService.fetchTemplates(type)
+              var templates = Beans.get(BeanVisuEditorController).brushService.fetchTemplates(type)
               var data = JSON.stringify({
                 "model": "Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
-                "data": Assert.isType(Beans.get(BeanVisuEditor).brushService
+                "data": Assert.isType(Beans.get(BeanVisuEditorController).brushService
                   .fetchTemplates(type)
                   .getContainer(), GMArray),
               }, { pretty: true })
@@ -637,7 +637,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           if (Optional.is(component)) {
             var type = this.brushToolbar.store.getValue("type")
             var newIndex = component.index
-            var templates = Beans.get(BeanVisuEditor).brushService.fetchTemplates(type)
+            var templates = Beans.get(BeanVisuEditorController).brushService.fetchTemplates(type)
             var template = templates.get(dragItem.index)
             templates.remove(dragItem.index)
             templates.add(template, newIndex)
@@ -679,7 +679,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             data.collection.components.clear() ///@todo replace with remove lambda
             data.state.set("type", type)
 
-            var brushService = Beans.get(BeanVisuEditor).brushService
+            var brushService = Beans.get(BeanVisuEditorController).brushService
             var task = new Task("load-brushes")
               .setState({
                 collection: data.collection,
@@ -727,7 +727,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             "color":"#FFFFFF",
             "texture":"texture_baron",
           })
-          Beans.get(BeanVisuEditor).brushService.saveTemplate(template)
+          Beans.get(BeanVisuEditorController).brushService.saveTemplate(template)
           this.brushToolbar.store.get("type").set(type)
           this.brushToolbar.store.get("template").set(template)
         }
@@ -959,7 +959,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
 
                 var template = brush.toTemplate()
-                var brushService = Beans.get(BeanVisuEditor).brushService
+                var brushService = Beans.get(BeanVisuEditorController).brushService
                 var sizeBefore = brushService.fetchTemplates(template.type).size()
                 brushService.saveTemplate(template)
                 var sizeAfter = brushService.fetchTemplates(template.type).size()
@@ -1010,11 +1010,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 #macro VisuBrushContainers global.__VisuBrushContainers
 
 
-///@param {VisuEditor}
+///@param {VisuEditorController}
 function VEBrushToolbar(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
 
   ///@type {?UILayout}
   layout = null
@@ -1216,7 +1216,7 @@ function VEBrushToolbar(_editor) constructor {
             if (!Core.isType(template.get(), VEBrushTemplate)
               || template.get().name != this.brushTemplate.name) {
 
-              var templates = Beans.get(BeanVisuEditor).brushService.fetchTemplates(this.brushTemplate.type)
+              var templates = Beans.get(BeanVisuEditorController).brushService.fetchTemplates(this.brushTemplate.type)
               if (!Core.isType(templates, Array)) {
                 return
               }
@@ -1247,7 +1247,7 @@ function VEBrushToolbar(_editor) constructor {
             blend: VETheme.color.textShadow,
           },
           callback: function() {
-            Beans.get(BeanVisuEditor).brushService.removeTemplate(this.brushTemplate)
+            Beans.get(BeanVisuEditorController).brushService.removeTemplate(this.brushTemplate)
             this.context.collection.remove(this.component.index)
           },
           brushTemplate: template,

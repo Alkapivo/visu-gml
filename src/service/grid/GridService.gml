@@ -117,8 +117,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@type {TaskExecutor}
   executor = new TaskExecutor(this)
 
-
-
   moveGridItemsTimer = this.controller.factoryTimer("MoveGridItems")
   signalGridItemsCollisionTimer = this.controller.factoryTimer("GrdCollission")
   updatePlayerServiceTimer = this.controller.factoryTimer("PlayerService")

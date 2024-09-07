@@ -192,9 +192,9 @@ function PlayerBulletHellGameMode(json) {
             return
           }
 
-          var force = acc.player.stats.force.get()
-          if (force < gun.minForce 
-            || (gun.maxForce != null && force > gun.maxForce)) {
+          var forceLevel = acc.player.stats.forceLevel.get()
+          if (forceLevel < gun.minForce 
+            || (gun.maxForce != null && forceLevel > gun.maxForce)) {
             return
           }
 
@@ -207,6 +207,8 @@ function PlayerBulletHellGameMode(json) {
             speed: gun.speed,
             template: gun.bullet,
           }))
+
+          acc.controller.sfxService.play("player-shoot")
         }, {
           controller: controller,
           player: player,

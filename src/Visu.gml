@@ -8,8 +8,6 @@ function _Visu() constructor {
   ///@type {Settings}
   settings = new Settings($"{working_directory}visu-settings.json")
 
-
-
   ///@param {String} [layerName]
   ///@param {Number} [layerDefaultDepth]
   ///@return {Visu}
@@ -96,12 +94,12 @@ function _Visu() constructor {
       ))
     }
     
-    if (!Beans.exists(BeanVisuEditor)) {
-      Beans.add(BeanVisuEditor, new Bean(VisuEditor,
+    if (!Beans.exists(BeanVisuEditorController)) {
+      Beans.add(BeanVisuEditorController, new Bean(VisuEditorController,
         GMObjectUtil.factoryGMObject(
           GMServiceInstance, 
           layerId, 0, 0, 
-          new VisuEditor()
+          new VisuEditorController()
         )
       ))
     }
@@ -167,6 +165,33 @@ function _Visu() constructor {
     parser.parse()
     
     return this
+  }
+
+  shroomTemplates = {
+    "shroom-default": {
+      "sprite": { "name": "texture_baron" },
+      "gameModes":{
+        "bulletHell":{ "features": [] },
+        "platformer": { "features": [] },
+        "racing":{ "features": [] },
+      },
+    },
+  }
+
+  _assets = null
+
+  static assets = function() {
+    if (this._assets == null) {
+      this._assets = {
+        shroomTemplates: Struct
+          .toMap(this.shroomTemplates, String, ShroomTemplate, 
+            function(json, name) {
+              return new ShroomTemplate(name, json)
+            }),
+      }
+    }
+
+    return this._assets
   }
 }
 global.__Visu = new _Visu()

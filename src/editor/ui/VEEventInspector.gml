@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuEditor} _editor
+///@param {VisuEditorController} _editor
 function VEEventInspector(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
 
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
@@ -60,7 +60,7 @@ function VEEventInspector(_editor) constructor {
           }
 
           this.state.set("updateTrackEvent", false)
-          var selectedEvent = Beans.get(BeanVisuEditor).store
+          var selectedEvent = Beans.get(BeanVisuEditorController).store
             .getValue("selected-event")
           if (!Core.isType(selectedEvent, Struct)) {
             return
@@ -108,7 +108,7 @@ function VEEventInspector(_editor) constructor {
         onInit: function() {
           var container = this
           this.collection = new UICollection(this, { layout: container.layout })
-          Beans.get(BeanVisuEditor).store
+          Beans.get(BeanVisuEditorController).store
             .get("selected-event")
             .addSubscriber({ 
               name: container.name,
@@ -165,7 +165,7 @@ function VEEventInspector(_editor) constructor {
             })
         },
         onDestroy: function() {
-          if (Core.isType(this.eventInspector.editor, VisuEditor)) {
+          if (Core.isType(this.eventInspector.editor, VisuEditorController)) {
             this.eventInspector.editor.store
               .get("selected-event")
               .removeSubscriber(this.name)

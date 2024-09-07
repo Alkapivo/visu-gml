@@ -19,11 +19,13 @@ function LyricsRenderer(_controller, config = {}) constructor {
     var service = this.controller.lyricsService
     service.executor.tasks.forEach(function(task, iterator, renderer) {
       var lyrics = task.state.lyrics
-      GPU.set.font(lyrics.font.asset).align.h(lyrics.align).align.v(lyrics.align)
+      GPU.set.font(lyrics.font.asset)
+        .set.align.h(lyrics.align)
+        .set.align.v(lyrics.align)
 
       var enable = renderer.controller.renderUI
-      var editor = Beans.get(BeanVisuEditor)
-      var preview = Core.isType(editor, VisuEditor) ? editor.layout.nodes.preview : this.preview
+      var editor = Beans.get(BeanVisuEditorController)
+      var preview = Core.isType(editor, VisuEditorController) ? editor.layout.nodes.preview : this.preview
       var guiWidth = enable ? ceil(preview.width()) : GuiWidth()
       var guiHeight = enable ? ceil(preview.height()) : GuiHeight()
       var guiX = enable ? ceil(preview.x()) : 0 

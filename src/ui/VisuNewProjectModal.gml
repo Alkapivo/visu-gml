@@ -808,8 +808,8 @@ function VisuNewProjectForm(json = null) constructor {
       "model": "io.alkapivo.visu.controller.VisuTrack",
       "version": "1",
       "data": {  
-        "bpm": Beans.get(BeanVisuEditor).store.getValue("bpm"),
-        "bpm-sub": Beans.get(BeanVisuEditor).store.getValue("bpm-sub"),
+        "bpm": Beans.get(BeanVisuEditorController).store.getValue("bpm"),
+        "bpm-sub": Beans.get(BeanVisuEditorController).store.getValue("bpm-sub"),
         "bullet": "template/bullet.json",
         "coin": "template/coin.json",
         "editor": [],

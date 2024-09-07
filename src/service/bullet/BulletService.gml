@@ -64,6 +64,10 @@ function BulletService(_controller, config = {}): Service() constructor {
           Struct.set(bulletTemplate, "mask", template.mask)
         }
       }
+
+      if (event.data.producer == Shroom) {
+        Beans.get(BeanVisuController).sfxService.play("shroom-shoot")
+      }
       
       var bullet = new Bullet(bulletTemplate)
       bullet.updateGameMode(this.controller.gameMode)

@@ -1,7 +1,7 @@
-///@package io.alkapivo.visu.service.ui.track
+///@package io.alkapivo.visu.editor
 
-#macro BeanVisuEditor "VisuEditor"
-function VisuEditor() constructor {
+#macro BeanVisuEditorController "VisuEditorController"
+function VisuEditorController() constructor {
   
   ///@type {VETitleBar}
   titleBar = new VETitleBar(this)
@@ -181,7 +181,7 @@ function VisuEditor() constructor {
     "exitModal",
     "newProjectModal"
   ], function(name, index, editor) {
-    Logger.debug(BeanVisuEditor, $"Load service '{name}'")
+    Logger.debug(BeanVisuEditorController, $"Load service '{name}'")
     return {
       name: name,
       struct: Assert.isType(Struct.get(editor, name), Struct),
@@ -277,7 +277,7 @@ function VisuEditor() constructor {
   layout = this.factoryLayout()
 
   ///@private
-  ///@return {VisuEditor}
+  ///@return {VisuEditorController}
   init = function() {
     var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
     store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
@@ -293,7 +293,7 @@ function VisuEditor() constructor {
   }
 
   ///@private
-  ///@return {VisuEditor}
+  ///@return {VisuEditorController}
   updateLayout = function() {
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
@@ -333,7 +333,7 @@ function VisuEditor() constructor {
   }
 
   ///@private
-  ///@return {VisuEditor}
+  ///@return {VisuEditorController}
   render = function() {
     static renderLayout = function(layout, color) {
       var beginX = layout.x()
@@ -364,7 +364,7 @@ function VisuEditor() constructor {
       service.struct.update()
     } catch (exception) {
       var message = $"'update-service-{service.name}' fatal error: {exception.message}"
-      Logger.error(BeanVisuEditor, message)
+      Logger.error(BeanVisuEditorController, message)
       Core.printStackTrace()
       controller.send(new Event("spawn-popup", { message: message }))
     }
@@ -376,12 +376,12 @@ function VisuEditor() constructor {
     return this.dispatcher.send(event)
   }
 
-  ///@return {VisuEditor}
+  ///@return {VisuEditorController}
   update = function() {
     try {
       this.dispatcher.update()
     } catch (exception) {
-      var message = $"VisuEditor dispatcher fatal error: {exception.message}"
+      var message = $"VisuEditorController dispatcher fatal error: {exception.message}"
       Logger.error("UI", message)
       var controller = Beans.get(BeanVisuController)
       if (Core.isType(controller, VisuController)) {

@@ -36,8 +36,8 @@ function VisuTrackLoader(_controller): Service() constructor {
       "idle": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            var editor = Beans.get(BeanVisuEditor)
-            if (Core.isType(editor, VisuEditor)) {
+            var editor = Beans.get(BeanVisuEditorController)
+            if (Core.isType(editor, VisuEditorController)) {
               editor.send(new Event("open"))
             }
             
@@ -59,8 +59,8 @@ function VisuTrackLoader(_controller): Service() constructor {
 
             var controller = Beans.get(BeanVisuController)
             controller.gridRenderer.clear()
-            var editor = Beans.get(BeanVisuEditor)
-            if (Core.isType(editor, VisuEditor)) {
+            var editor = Beans.get(BeanVisuEditorController)
+            if (Core.isType(editor, VisuEditorController)) {
               editor.popupQueue.dispatcher.execute(new Event("clear"))
               editor.dispatcher.execute(new Event("close"))
               editor.brushService.clearTemplates()
@@ -94,8 +94,8 @@ function VisuTrackLoader(_controller): Service() constructor {
                       },
                     }).update()
                     
-                    var editor = Beans.get(BeanVisuEditor)
-                    if (Core.isType(editor, VisuEditor)) {
+                    var editor = Beans.get(BeanVisuEditorController)
+                    if (Core.isType(editor, VisuEditorController)) {
                       var item = editor.store.get("bpm")
                       item.set(this.response.bpm)
   
@@ -348,7 +348,7 @@ function VisuTrackLoader(_controller): Service() constructor {
               ))
             }
             
-            if (Core.isType(Beans.get(BeanVisuEditor), VisuEditor)) {
+            if (Core.isType(Beans.get(BeanVisuEditorController), VisuEditorController)) {
               data.manifest.editor.forEach(function(file, index, acc) { 
                 var promise = Beans.get(BeanFileService).send(
                   new Event("fetch-file")
@@ -360,7 +360,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                           acc.saveTemplate(new prototype(json))
                         },
                         acc: {
-                          saveTemplate: Beans.get(BeanVisuEditor).brushService.saveTemplate,
+                          saveTemplate: Beans.get(BeanVisuEditorController).brushService.saveTemplate,
                           file: file,
                         },
                         steps: MAGIC_NUMBER_TASK,
@@ -508,9 +508,9 @@ function VisuTrackLoader(_controller): Service() constructor {
             window_set_caption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {global.__VisuTrack.path}")
             audio_master_gain(1.0)
 
-            var editor = Beans.get(BeanVisuEditor)
-            if (Core.isType(editor, VisuEditor)) {
-              Beans.get(BeanVisuEditor).send(new Event("open"))
+            var editor = Beans.get(BeanVisuEditorController)
+            if (Core.isType(editor, VisuEditorController)) {
+              Beans.get(BeanVisuEditorController).send(new Event("open"))
             }
             
             Beans.get(BeanVisuController).send(new Event("spawn-popup", 

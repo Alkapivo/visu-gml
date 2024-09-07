@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuEditor} _editor
+///@param {VisuEditorController} _editor
 ///@param {?Struct} [config]
 function VEAccordion(_editor, config = null) constructor {
 
-  ///@type {VisuEditor}
+  ///@type {VisuEditorController}
   editor = _editor
 
   ///@type {?UILayout}
@@ -175,7 +175,7 @@ function VEAccordion(_editor, config = null) constructor {
               }
             },
             updateLayout: new BindIntent(function(position) {
-              var node = Struct.get(Beans.get(BeanVisuEditor).layout.nodes, "accordion")
+              var node = Struct.get(Beans.get(BeanVisuEditorController).layout.nodes, "accordion")
               node.percentageWidth = position / GuiWidth()
             }),
             onMousePressedLeft: function(event) {

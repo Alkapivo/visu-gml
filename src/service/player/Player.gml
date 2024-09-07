@@ -119,6 +119,57 @@ function PlayerStat(_stats, json) constructor {
   }
 }
 
+
+///@param {PlayerStats} _stats
+///@param {Struct} json
+function PlayerStatLevel(_stats, json) constructor {
+
+  ///@type {PlayerStats}
+  stats = Assert.isType(_stats, PlayerStats)
+
+  ///@type {Number}
+  level = Core.isType(Struct.get(json, "level"), Number) ? json.level : 0
+
+  ///@type {Array<Number>}
+  tresholds = new Array(Number, Core.isType(Struct.get(json, "tresholds"), Array) 
+    ? json.tresholds.getContainer() 
+    : [ 0 ])
+
+  ///@private
+  ///@return {Number}
+  getStat = method(this, Core.isType(Struct.get(json, "getStat"), Callable) 
+    ? json.getStat 
+    : function() { return 0 })
+
+  ///@private
+  ///@return {PlayerStatLevel}
+  onLevelUp = method(this, Core.isType(Struct
+    .get(json, "onLevelUp"), Callable) 
+      ? json.onLevelUp : function() { return this })
+
+  ///@return {Number}
+  get = function() {
+    return this.level
+  }
+
+  ///@return {PlayerStatLevel}
+  update = function() {
+    this.tresholds.forEach(function(required, level, statLevel) {
+      if (statLevel.getStat() < required) {
+        return
+      }
+    
+      if (level - 1 == statLevel.level) {
+        statLevel.level = level
+        statLevel.onLevelUp()
+      }
+    }, this)
+
+    return this
+  }
+}
+
+
 ///@param {Player} _player
 ///@param {Struct} json
 function PlayerStats(_player, json) constructor {
@@ -132,9 +183,11 @@ function PlayerStats(_player, json) constructor {
     minValue: 0,
     maxValue: 250,
     onValueUpdate: function(previous) { 
+      var controller = Beans.get(BeanVisuController)
       var value = this.get()
       if (previous < value) {
-        Core.print("Force incremented from", previous, "to", value)
+        controller.sfxService.play("player-collect-point-or-force")
+        //Core.print("Force incremented from", previous, "to", value)
       } else if (previous > value) {
         Core.print("Force decremented from", previous, "to", value)
       }
@@ -150,15 +203,30 @@ function PlayerStats(_player, json) constructor {
     },
   }))
 
+  ///@type {PlayerStatLevel}
+  forceLevel = new PlayerStatLevel(this, Struct.appendUnique(Struct.get(json, "forceLevel"), {
+    tresholds: Core.getProperty("visu.player.force.tresholds", new Array(Number, [ 0 ]))
+      .map(function(treshold) { return treshold }),
+    getStat: function() {
+      return this.stats.force.get()
+    },
+    onLevelUp: function() {
+      Beans.get(BeanVisuController).sfxService.play("player-force-level-up")
+      return this
+    }
+  }))
+
   ///@type {Number}
   point = new PlayerStat(this, Struct.appendUnique(Struct.get(json, "point"), {
     value: 0,
     minValue: 0,
     maxValue: 9999999,
     onValueUpdate: function(previous) { 
+      var controller = Beans.get(BeanVisuController)
       var value = this.get()
       if (previous < value) {
-        Core.print("Points incremented from", previous, "to", value)
+        controller.sfxService.play("player-collect-point-or-force")
+        //Core.print("Points incremented from", previous, "to", value)
       } else if (previous > value) {
         Core.print("Points decremented from", previous, "to", value)
       }
@@ -174,19 +242,34 @@ function PlayerStats(_player, json) constructor {
     },
   }))
 
+  ///@type {PlayerStatLevel}
+  pointLevel = new PlayerStatLevel(this, Struct.appendUnique(Struct.get(json, "pointLevel"), {
+    tresholds: Core.getProperty("visu.player.point.tresholds", new Array(Number, [ 0 ]))
+      .map(function(treshold) { return treshold }),
+    getStat: function() {
+      return this.stats.point.get()
+    },
+    onLevelUp: function() {
+      this.stats.life.apply(1)
+      return this
+    }
+  }))
+
   ///@type {Number}
   bomb = new PlayerStat(this, Struct.appendUnique(Struct.get(json, "bomb"), {
     value: 5,
     minValue: 0,
     maxValue: 10,
     onValueUpdate: function(previous) { 
+      var controller = Beans.get(BeanVisuController)
       var value = this.get()
       if (previous < value) {
-        Beans.get(BeanVisuController).shakeHUD()
+        controller.shakeHUD()
+        controller.sfxService.play("player-collect-bomb")
         //Core.print("Bomb added from", previous, "to", value)
       } else if (previous > value) {
         //Core.print("Bomb reduced from", previous, "to", value)
-        Beans.get(BeanVisuController).shakeHUD()
+        controller.shakeHUD()
         view_track_event.brush_view_glitch({
           "view-glitch_shader-rng-seed":0.46406799999999998,
           "view-glitch_use-factor":true,
@@ -209,10 +292,13 @@ function PlayerStats(_player, json) constructor {
         })
         this.stats.setBombCooldown(1.0)
         this.stats.setGodModeCooldown(2.0)
-        Beans.get(BeanVisuController).shroomService.shrooms
+
+        controller.shroomService.shrooms
           .forEach(function(shroom) {
             shroom.signal("kill")
           })
+
+        controller.sfxService.play("player-use-bomb")
       }
       return this
     },
@@ -232,14 +318,18 @@ function PlayerStats(_player, json) constructor {
     minValue: 0,
     maxValue: 10,
     onValueUpdate: function(previous) { 
+      var controller = Beans.get(BeanVisuController)
       var value = this.get()
       if (previous < value) {
-        Beans.get(BeanVisuController).shakeHUD()
+        controller.shakeHUD()
+        controller.sfxService.play("player-collect-life")
         //Core.print("Life added from", previous, "to", value)
       } else if (previous > value) {
-        Beans.get(BeanVisuController).shakeHUD()
+        controller.shakeHUD()
         //Core.print("Life reduced from", previous, "to", value)
         this.stats.setGodModeCooldown(3.0)
+
+        controller.sfxService.play("player-die")
       }
       return this
     },
@@ -328,6 +418,8 @@ function PlayerStats(_player, json) constructor {
     var step = DeltaTime.apply(FRAME_MS)
     this.setGodModeCooldown(this.godModeCooldown > step ? this.godModeCooldown - step : 0.0)
     this.setBombCooldown(this.bombCooldown > step ? this.bombCooldown - step : 0.0)
+    this.forceLevel.update()
+    this.pointLevel.update()
 
     return this
   }
@@ -343,16 +435,20 @@ function Player(template): GridItem(template) constructor {
   ///@type {PlayerStats}
   stats = new PlayerStats(this, Struct.get(template, "stats"))
 
-  ///@private
-  ///@param {VisuController} controller
-  ///@return {GridItem}
-  _update = method(this, this.update)
-  
   ///@override
   ///@return {GridItem}
-  update = function(controller) {
+  static update = function(controller) {
     this.keyboard.update()
-    this._update(controller)
+    
+    if (Optional.is(this.gameMode)) {
+      gameMode.update(this, controller)
+    }
+
+    if (this.fadeIn < 1.0) {
+      this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
+    }
+
+
     this.stats.update()
 
     var view = controller.gridService.view

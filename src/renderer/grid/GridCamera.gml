@@ -46,7 +46,7 @@ function GridCamera(config = {}) constructor {
 		this.executor.update()
 		if (this.enableMouseLook) {
 			var controller = Beans.get(BeanVisuController)
-			var editor = Beans.get(BeanVisuEditor)
+			var editor = Beans.get(BeanVisuEditorController)
 			var enable = controller.renderUI
       var preview = editor == null ? controller.preview : editor.layout.nodes.preview
       var width = enable ? ceil(preview.width()) : GuiWidth()

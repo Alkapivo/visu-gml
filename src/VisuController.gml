@@ -397,14 +397,17 @@ function VisuController(layerName) constructor {
   ///@type {VideoService}
   videoService = new VideoService()
 
+  ///@type {SFXService}
+  sfxService = new SFXService()
+
   ///@type {LyricsService}
   lyricsService = new LyricsService(this)
 
   ///@type {LyricsRenderer}
   lyricsRenderer = new LyricsRenderer(this)
 
-  ///@type {GridSystem}
-  //gridSystem = new GridSystem(this) ///@ecs
+  ///@type {GridECS}
+  //gridECS = new GridECS(this) ///@ecs
 
   ///@type {Boolean}
   renderEnabled = true
@@ -571,8 +574,8 @@ function VisuController(layerName) constructor {
       this.fsm.dispatcher.send(new Event("transition", { name: "quit" }))
     },
     "spawn-popup": function(event) {
-      var _editor = Beans.get(BeanVisuEditor)
-      if (Core.isType(_editor, VisuEditor)) {
+      var _editor = Beans.get(BeanVisuEditorController)
+      if (Core.isType(_editor, VisuEditorController)) {
         _editor.popupQueue.send(new Event("push", event.data))
       }
     }
@@ -600,11 +603,12 @@ function VisuController(layerName) constructor {
     "shaderBackgroundPipeline",
     "trackService",
     "gridService",
-    //"gridSystem", ///@ecs
+    //"gridECS", ///@ecs
     "lyricsService",
     "coinService",
     "gridRenderer",
     "videoService",
+    "sfxService",
   ], function(name, index, controller) {
     Logger.debug("VisuController", $"Load service '{name}'")
     return {
@@ -634,6 +638,17 @@ function VisuController(layerName) constructor {
       .center()
     
     this.setHUDConfig()
+    this.sfxService
+      .set("player-collect-bomb", new SFX("sound_sfx_player_collect_bomb"))
+      .set("player-collect-life", new SFX("sound_sfx_player_collect_life"))
+      .set("player-collect-point-or-force", new SFX("sound_sfx_player_collect_point_or_force"))
+      .set("player-die", new SFX("sound_sfx_player_die"))
+      .set("player-force-level-up", new SFX("sound_sfx_player_force_level_up"))
+      .set("player-shoot", new SFX("sound_sfx_player_shoot", 2))
+      .set("player-use-bomb", new SFX("sound_sfx_player_use_bomb"))
+      .set("shroom-die", new SFX("sound_sfx_shroom_die", 2))
+      .set("shroom-shoot", new SFX("sound_sfx_shroom_shoot", 2))
+
     ///@todo DEMO
     var tree = new Tree({
       name: "root-node",
@@ -830,6 +845,19 @@ function VisuController(layerName) constructor {
     height: GuiHeight,
   }
 
+
+
+  ///@type {Font}
+  guiFont = new Font(font_kodeo_mono_18_bold)
+
+  hudBKTCooldown = new Timer(0.33)
+
+  shakeHUD = function() {
+    var value = choose(0.3, 0.4, 0.5, 0.6, 0.7)
+    this.setHUDConfig(value / 100.0, false)
+    hudBKTCooldown.reset()
+  }
+
   ///@return {VisuController}
   render = function() {
     if (!this.renderEnabled) {
@@ -840,13 +868,13 @@ function VisuController(layerName) constructor {
     try {
       gpu_set_alphatestenable(true) ///@todo investigate
       var enable = this.renderUI
-      var _editor = Beans.get(BeanVisuEditor)
+      var _editor = Beans.get(BeanVisuEditorController)
       var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
       this.gridRenderer.render({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
         height: enable ? ceil(preview.height()) : GuiHeight(),
       })
-      //this.gridSystem.render()
+      //this.gridECS.render() ///@ecs
     } catch (exception) {
       var message = $"render throws exception: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
@@ -858,17 +886,6 @@ function VisuController(layerName) constructor {
     this.renderTimer.finish()
     
     return this
-  }
-
-  ///@type {Font}
-  guiFont = new Font(font_kodeo_mono_18_bold)
-
-  hudBKTCooldown = new Timer(0.33)
-
-  shakeHUD = function() {
-    var value = choose(0.3, 0.4, 0.5, 0.6, 0.7)
-    this.setHUDConfig(value / 100.0, false)
-    hudBKTCooldown.reset()
   }
 
   renderHUD = function() {
@@ -886,7 +903,7 @@ function VisuController(layerName) constructor {
     var player = this.playerService.player
     if (Core.isType(player, Player)) {
       var enable = this.renderUI
-      var _editor = Beans.get(BeanVisuEditor)
+      var _editor = Beans.get(BeanVisuEditorController)
       var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
       var _x = enable ? ceil(preview.x()) : 0
       var _y = enable ? ceil(preview.y()) : 0
@@ -908,21 +925,28 @@ function VisuController(layerName) constructor {
         point = $"0{point}"
       }
 
-      var force = string(player.stats.force.get())
-      repeat (4 - String.size(force)) {
-        force = $"0{force}"
-      }
+      //var force = string(player.stats.force.get())
+      //repeat (4 - String.size(force)) {
+      //  force = $"0{force}"
+      //}
+      var forceLevel = player.stats.forceLevel
+      var forceTreshold = forceLevel.level < forceLevel.tresholds.size() - 1
+        ? forceLevel.tresholds.get(forceLevel.level + 1)
+        : (forceLevel.tresholds.size() == 0 ? 0 : forceLevel.tresholds.getLast())
+      var force = forceLevel.level == forceLevel.tresholds.size() - 1
+        ? "MAX"
+        : $"{player.stats.force.get()} / {forceTreshold}"
 
       /*
       var text = ""
-        + $"SCORE: {point}" + "\n"  
+        + $"POINT: {point}" + "\n"  
         + $"FORCE: {force}" + "\n"
         + $" LIFE: {lifeString}" + "\n"
         + $" BOMB: {bombString}" + "\n"
       */
 
-      var textMask  = $"SCORE: {point}\nFORCE: {force}\n LIFE: {lifeString}\n BOMB: {bombString}"
-      var textLabel = $"SCORE:        \nFORCE:        \n LIFE:\n BOMB:"
+      var textMask  = $"POINT: {point}\nFORCE: {force}\n LIFE: {lifeString}\n BOMB: {bombString}"
+      var textLabel = $"POINT:        \nFORCE:        \n LIFE:\n BOMB:"
       var textPoint = $"       {point}\n              \n      \n      "
       var textForce = $"              \n       {force}\n      \n      "
       var textLife = $"\n\n       {lifeString}\n\n"
@@ -950,7 +974,7 @@ function VisuController(layerName) constructor {
     this.renderGUITimer.start()
     try {
       var enable = this.renderUI
-      var _editor = Beans.get(BeanVisuEditor)
+      var _editor = Beans.get(BeanVisuEditorController)
       var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
       var _x = enable ? ceil(preview.x()) : 0
       var _y = enable ? ceil(preview.y()) : 0
@@ -962,6 +986,7 @@ function VisuController(layerName) constructor {
         x: _x, 
         y: _y,
       })
+      //this.gridECS.renderGUI() ///@ecs
       this.lyricsRenderer.renderGUI()
       this.hudBKTGlitchService.renderOn(this.renderHUD)
       if (this.renderUI) {
@@ -1009,7 +1034,7 @@ function VisuController(layerName) constructor {
       }      
       
       //MouseUtil.renderSprite()
-      //Beans.get(BeanVisuEditor).render()
+      //Beans.get(BeanVisuEditorController).render()
     } catch (exception) {
       var message = $"renderGUI throws exception: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))

@@ -669,6 +669,15 @@ function GridRenderer(_controller, config = {}) constructor {
     var properties = renderer.controller.gridService.properties
     if (properties.gridClearFrame) {
       GPU.render.clear(properties.gridClearColor)
+    } else {
+      GPU.set.blendMode(BlendMode.ADD)
+        .render.fillColor(
+          renderer.gridSurface.width,
+          renderer.gridSurface.height,
+          properties.gridClearColor.toGMColor(),
+          properties.gridClearFrameAlpha
+        )
+        .reset.blendMode()
     }
 
     var depths = renderer.controller.gridService.properties.depths
@@ -753,6 +762,15 @@ function GridRenderer(_controller, config = {}) constructor {
 
     if (properties.shaderClearFrame) {
       GPU.render.clear(properties.shaderClearColor)
+    } else {
+      GPU.set.blendMode(BlendMode.ADD)
+        .render.fillColor(
+          renderer.shaderSurface.width,
+          renderer.shaderSurface.height,
+          properties.shaderClearColor.toGMColor(),
+          properties.shaderClearFrameAlpha
+        )
+        .reset.blendMode()
     }
 
     var size = renderer.controller.shaderPipeline
