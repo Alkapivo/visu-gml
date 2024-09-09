@@ -117,11 +117,25 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@type {TaskExecutor}
   executor = new TaskExecutor(this)
 
-  moveGridItemsTimer = this.controller.factoryTimer("MoveGridItems")
-  signalGridItemsCollisionTimer = this.controller.factoryTimer("GrdCollission")
-  updatePlayerServiceTimer = this.controller.factoryTimer("PlayerService")
-  updateShroomServiceTimer = this.controller.factoryTimer("ShroomService")
-  updateBulletServiceTimer = this.controller.factoryTimer("BulletService")
+  ///@private
+  ///@type {DebugOSTimer}
+  moveGridItemsTimer = new DebugOSTimer("MoveGridItems")
+
+  ///@private
+  ///@type {DebugOSTimer}
+  signalGridItemsCollisionTimer = new DebugOSTimer("GrdCollission")
+
+  ///@private
+  ///@type {DebugOSTimer}
+  updatePlayerServiceTimer = new DebugOSTimer("PlayerService")
+
+  ///@private
+  ///@type {DebugOSTimer}
+  updateShroomServiceTimer = new DebugOSTimer("ShroomService")
+
+  ///@private
+  ///@type {DebugOSTimer}
+  updateBulletServiceTimer = new DebugOSTimer("BulletService")
   
   ///@private
   ///@return {GridService}
