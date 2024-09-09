@@ -124,12 +124,19 @@ function VisuEditorController() constructor {
         return clamp(value, 5, 20)
       },
     },
+    "shader-quality": {
+      type: Number,
+      value: Assert.isType(Visu.settings.getValue("visu.shader.quality", 1.0), Number),
+      passthrough: function(value) {
+        return clamp(value, 0.25, 1.0)
+      }
+    },
   })
 
   ///@type {Struct}
   autosave = {
     value: Visu.settings.getValue("visu.editor.autosave", false),
-    timer: new Timer(Core.getProperty("visu.editor.autosave.interval", 1)  * 60, { loop: Infinity }),
+    timer: new Timer(Core.getProperty("visu.editor.autosave.interval", 1) * 60, { loop: Infinity }),
     update: function() {
       var controller = Beans.get(BeanVisuController)
       if (!this.value || controller.fsm.getStateName() != "pause") {
@@ -230,6 +237,29 @@ function VisuEditorController() constructor {
     }
   }, this))
 
+  ///@type {?UILayout}
+  layout = null
+
+  ///@type {Boolean}
+  renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", true), Boolean)
+
+  ///@private
+  ///@return {VisuEditorController}
+  init = function() {
+    var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
+    store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
+    store.get("bpm-sub").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-sub"))
+    store.get("snap").addSubscriber(generateSettingsSubscriber("visu.editor.snap"))
+    store.get("render-event").addSubscriber(generateSettingsSubscriber("visu.editor.render-event"))
+    store.get("render-timeline").addSubscriber(generateSettingsSubscriber("visu.editor.render-timeline"))
+    store.get("render-trackControl").addSubscriber(generateSettingsSubscriber("visu.editor.render-track-control"))
+    store.get("render-brush").addSubscriber(generateSettingsSubscriber("visu.editor.render-brush"))
+    store.get("timeline-zoom").addSubscriber(generateSettingsSubscriber("visu.editor.timeline-zoom"))
+
+    this.layout = this.factoryLayout()
+    return this
+  }
+
   ///@private
   ///@return {UILayout}
   factoryLayout = function() {
@@ -321,28 +351,6 @@ function VisuEditorController() constructor {
         },
       },
     })
-  }
-
-  ///@type {UILayout}
-  layout = this.factoryLayout()
-
-  ///@type {Boolean}
-  renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", true), Boolean)
-
-  ///@private
-  ///@return {VisuEditorController}
-  init = function() {
-    var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
-    store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
-    store.get("bpm-sub").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-sub"))
-    store.get("snap").addSubscriber(generateSettingsSubscriber("visu.editor.snap"))
-    store.get("render-event").addSubscriber(generateSettingsSubscriber("visu.editor.render-event"))
-    store.get("render-timeline").addSubscriber(generateSettingsSubscriber("visu.editor.render-timeline"))
-    store.get("render-trackControl").addSubscriber(generateSettingsSubscriber("visu.editor.render-track-control"))
-    store.get("render-brush").addSubscriber(generateSettingsSubscriber("visu.editor.render-brush"))
-    store.get("timeline-zoom").addSubscriber(generateSettingsSubscriber("visu.editor.timeline-zoom"))
-
-    return this
   }
 
   ///@private

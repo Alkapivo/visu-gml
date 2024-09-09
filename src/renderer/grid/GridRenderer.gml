@@ -22,7 +22,17 @@ function GridRenderer() constructor {
 
   ///@private
   ///@type {Surface}
-  shaderSurface = new Surface({ width: GuiWidth(), height: GuiHeight() })
+  shaderSurface = new Surface({ 
+    width: ceil(GuiWidth() / Visu.settings.getValue("visu.shader.quality", 1.0)), 
+    height: ceil(GuiHeight() / Visu.settings.getValue("visu.shader.quality", 1.0)),
+  })
+
+  ///@private
+  ///@type {Surface}
+  shaderBackgroundSurface = new Surface({ 
+    width: ceil(GuiWidth() / Visu.settings.getValue("visu.shader.quality", 1.0)), 
+    height: ceil(GuiHeight() / Visu.settings.getValue("visu.shader.quality", 1.0)),
+  })
   
   ///@private
   ///@type {?GMVertexBuffer}
@@ -735,11 +745,6 @@ function GridRenderer() constructor {
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   renderBackground = function(gridService, layout) {
-    static renderBackgroundShader = function(task, index, surface) {
-      var alpha = task.state.getDefault("alpha", 1.0)
-      surface.render(0, 0, alpha)
-    }
-
     var properties = gridService.properties
     if (!properties.renderBackground) {
       return this
@@ -749,13 +754,8 @@ function GridRenderer() constructor {
     var shaderPipeline = Beans.get(BeanVisuController).shaderBackgroundPipeline
     if (properties.renderBackgroundShaders 
       && shaderPipeline.executor.tasks.size() > 0) {
-      
-      shaderPipeline
-        .setWidth(layout.width())
-        .setHeight(layout.height())
-        .render(renderBackgroundShader, this.backgroundSurface)
+      this.shaderBackgroundSurface.renderStretched(layout.width(), layout.height())
     }
-
     return this
   }
 
@@ -921,8 +921,14 @@ function GridRenderer() constructor {
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   renderShaderSurface = function(layout) {
-    static renderGridShader = function(task, index, gridSurface) {
-      gridSurface.render(0, 0, task.state.getDefault("alpha", 1.0))
+    static renderGridShader = function(task, index, gridRenderer) {
+      gridRenderer.gridSurface.renderStretched(
+        gridRenderer.shaderSurface.width, 
+        gridRenderer.shaderSurface.height, 
+        0, 
+        0,
+        task.state.getDefault("alpha", 1.0)
+      )
     }
 
     var controller = Beans.get(BeanVisuController)
@@ -931,8 +937,9 @@ function GridRenderer() constructor {
       return
     }
 
-    var width = layout.width()
-    var height = layout.height()
+    var width = this.shaderSurface.width
+    var height = this.shaderSurface.height
+
     if (properties.shaderClearFrame) {
       GPU.render.clear(properties.shaderClearColor)
     } else {
@@ -949,7 +956,7 @@ function GridRenderer() constructor {
     var size = controller.shaderPipeline
       .setWidth(width)
       .setHeight(height)
-      .render(renderGridShader, this.gridSurface).executor.tasks
+      .render(renderGridShader, this).executor.tasks
       .size()
 
     ///@description Render support-grid
@@ -957,9 +964,41 @@ function GridRenderer() constructor {
       && size >= properties.renderSupportGridTreshold) {
 
       GPU.set.blendMode(BlendMode.ADD)
-      this.gridSurface.render(0, 0, properties.renderSupportGridAlpha)
+      this.gridSurface.renderStretched(width, height, 0, 0, properties.renderSupportGridAlpha)
       GPU.reset.blendMode()
     }
+
+    return this
+  }
+
+    ///@private
+  ///@param {UILayout} layout
+  ///@return {GridRenderer}
+  renderShaderBackgroundSurface = function(layout) {
+    static renderBackgroundShader = function(task, index, gridRenderer) {
+      gridRenderer.backgroundSurface.renderStretched(
+        gridRenderer.shaderSurface.width, 
+        gridRenderer.shaderSurface.height, 
+        0, 
+        0,
+        task.state.getDefault("alpha", 1.0)
+      )
+    }
+
+    var controller = Beans.get(BeanVisuController)
+    var properties = controller.gridService.properties
+    if (!properties.renderBackgroundShaders) {
+      return
+    }
+
+    var width = this.shaderSurface.width
+    var height = this.shaderSurface.height
+    draw_clear_alpha(c_white, 0.0)
+
+    controller.shaderBackgroundPipeline
+      .setWidth(width)
+      .setHeight(height)
+      .render(renderBackgroundShader, this)
 
     return this
   }
@@ -972,7 +1011,7 @@ function GridRenderer() constructor {
     GPU.render.clear(gridService.properties.clearColor)
     this.renderBackground(gridService, layout) 
     this.gridSurface.render()
-    this.shaderSurface.render()
+    this.shaderSurface.renderStretched(layout.width(), layout.height())
     this.renderForeground(gridService, layout)
 
     return this
@@ -1060,15 +1099,19 @@ function GridRenderer() constructor {
   render = function(layout) {
     var width = layout.width()
     var height = layout.height()
+    var shaderQuality = Visu.settings.getValue("visu.shader.quality", 1.0)
     this.backgroundSurface
       .update(width, height)
       .renderOn(this.renderBackgroundSurface, layout)
     this.gridSurface
       .update(width, height)
       .renderOn(this.renderGridSurface, layout)
+    this.shaderBackgroundSurface
+      .update(ceil(width * shaderQuality), ceil(height * shaderQuality))
+      .renderOn(this.renderShaderBackgroundSurface, layout)
     this.shaderSurface
-      .update(width, height)
-      .renderOn(renderShaderSurface, layout)
+      .update(ceil(width * shaderQuality), ceil(height * shaderQuality))
+      .renderOn(this.renderShaderSurface, layout)
     this.gameSurface
       .update(width, height)
       .renderOn(this.renderGameSurface, layout)
@@ -1091,6 +1134,7 @@ function GridRenderer() constructor {
     this.gridSurface.free()
     this.gameSurface.free()
     this.shaderSurface.free()
+    this.shaderBackgroundSurface.free()
     return this
   }
 
