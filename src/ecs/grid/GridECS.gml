@@ -176,7 +176,7 @@ function GridECS(_controller) constructor {
     var system = this
     this.gridSurface
       .update(width, height)
-      .renderOn(this.renderGridSurface, { renderer: system.controller.gridRenderer, system: system })
+      .renderOn(this.renderGridSurface, { renderer: system.controller.visuRenderer.gridRenderer, system: system })
   }
 
   static renderGUI = function() {

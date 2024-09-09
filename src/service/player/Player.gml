@@ -475,7 +475,7 @@ function Player(template): GridItem(template) constructor {
       )
       if (this.gameMode != null 
         && this.gameMode.type == PlayerPlatformerGameMode
-        && controller.gridRenderer.player2DCoords.y > controller.gridRenderer.gridSurface.height) {
+        && controller.visuRenderer.gridRenderer.player2DCoords.y > controller.visuRenderer.gridRenderer.gridSurface.height) {
 
         this.y = clamp(platformerY, 0.0, view.worldHeight + view.height)
         targetLocked.isLockedY = false

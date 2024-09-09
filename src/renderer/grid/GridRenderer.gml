@@ -1,48 +1,36 @@
-///@package com.alkapivo.visu.service.grid.GridRenderer
+///@package com.alkapivo.visu.renderer.grid
 
-///@param {Controller} _controller
-///@param {Struct} [config]
-function GridRenderer(_controller, config = {}) constructor {
-
-  ///@todo move from GridRenderer
-  application_surface_draw_enable(false)
-  gpu_set_ztestenable(false)
-	gpu_set_zwriteenable(false)
-	gpu_set_cullmode(cull_counterclockwise)
-
-  ///@type {Controller}
-  controller = Assert.isType(_controller, Struct)
+function GridRenderer() constructor {
 
   ///@type {GridOverlayRenderer}
   overlayRenderer = new GridOverlayRenderer(this)
 
+  ///@type {GridCamera}
+  camera = new GridCamera()
+
+  ///@private
   ///@type {Surface}
   gameSurface = new Surface({ width: GuiWidth(), height: GuiHeight() })
 
+  ///@private
   ///@type {Surface}
   backgroundSurface = new Surface({ width: GuiWidth(), height: GuiHeight() })
 
+  ///@private
   ///@type {Surface}
   gridSurface = new Surface({ width: GuiWidth(), height: GuiHeight() })
 
+  ///@private
   ///@type {Surface}
   shaderSurface = new Surface({ width: GuiWidth(), height: GuiHeight() })
-
-  ///@type {GridCamera}
-  camera = new GridCamera()
   
-  ///@type {GMVertexBuffer}
-  vertexBuffer = new DefaultVertexBuffer(new Array(DefaultVertex, [
-	  new DefaultVertex(0, 0, 0, 0, 0, 1, 0, 0, ColorUtil.WHITE, 1),
-    new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, 0, 0,  0, 0, 1, 1, 0, ColorUtil.WHITE, 1),
-    new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 1, 1, ColorUtil.WHITE, 1),
-    new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 1, 1, ColorUtil.WHITE, 1),
-    new DefaultVertex(0, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 0, 1, ColorUtil.WHITE, 1),
-    new DefaultVertex(0, 0, 0, 0, 0, 1, 0, 0, ColorUtil.WHITE, 1)
-  ])).build().buffer
+  ///@private
+  ///@type {?GMVertexBuffer}
+  vertexBuffer = null
 
-  ///@type {BKTGlitch}
-  bktGlitchService = new BKTGlitchService()
+  ///@private
+  ///@type {BKTGlitchService}
+  glitchService = new BKTGlitchService()
 
   ///@private
   ///@type {Timer}
@@ -67,9 +55,29 @@ function GridRenderer(_controller, config = {}) constructor {
 
   ///@private
   ///@return {GridRenderer}
-  renderSeparators = function() {
-    //return this;
-    var gridService = this.controller.gridService
+  init = function() {
+    application_surface_draw_enable(false)
+    gpu_set_ztestenable(false)
+    gpu_set_zwriteenable(false)
+    gpu_set_cullmode(cull_counterclockwise)
+
+    ///@todo is it even used?
+    this.vertexBuffer = new DefaultVertexBuffer(new Array(DefaultVertex, [
+      new DefaultVertex(0, 0, 0, 0, 0, 1, 0, 0, ColorUtil.WHITE, 1),
+      new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, 0, 0,  0, 0, 1, 1, 0, ColorUtil.WHITE, 1),
+      new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 1, 1, ColorUtil.WHITE, 1),
+      new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 1, 1, ColorUtil.WHITE, 1),
+      new DefaultVertex(0, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 0, 1, ColorUtil.WHITE, 1),
+      new DefaultVertex(0, 0, 0, 0, 0, 1, 0, 0, ColorUtil.WHITE, 1)
+    ])).build().buffer
+
+    return this
+  }
+
+  ///@private
+  ///@param {GridService} gridService
+  ///@return {GridRenderer}
+  renderSeparators = function(gridService) {
     var properties = gridService.properties
     var view = gridService.view
     if (!properties.renderGrid) || (properties.separators <= 0) {
@@ -164,10 +172,9 @@ function GridRenderer(_controller, config = {}) constructor {
   }
 
   ///@private
+  ///@param {GridService} gridService
   ///@return {GridRenderer}
-  renderChannels = function() {
-
-    var gridService = this.controller.gridService
+  renderChannels = function(gridService) {
     var properties = gridService.properties
     if (!gridService.properties.renderGrid || properties.channels <= 0) {
       return this
@@ -228,13 +235,14 @@ function GridRenderer(_controller, config = {}) constructor {
   }
 
   ///@private
-  renderBorders = function() {
-    static renderTop = function(controller) {
-      if (!controller.gridService.targetLocked.isLockedY) {
+  ///@param {GridService} gridService
+  ///@return {GridRenderer}
+  renderBorders = function(gridService) {
+    static renderTop = function(gridService) {
+      if (!gridService.targetLocked.isLockedY) {
         return
       }
 
-      var gridService = this.controller.gridService
       var view = gridService.view
       var height = gridService.properties.borderVerticalLength
       var beginX = -3.0 * GRID_SERVICE_PIXEL_WIDTH
@@ -251,13 +259,12 @@ function GridRenderer(_controller, config = {}) constructor {
       )
     }
 
-    static renderBottom = function(controller) {
-      var gridService = this.controller.gridService
+    static renderBottom = function(gridService) {
       var view = gridService.view
       var height = gridService.properties.borderVerticalLength
       var anchorY = view.y//view.height * floor(view.y / view.height)
       var beginX = GRID_SERVICE_PIXEL_WIDTH * -3.0
-      var beginY = GRID_SERVICE_PIXEL_HEIGHT * (controller.gridService.targetLocked.isLockedY
+      var beginY = GRID_SERVICE_PIXEL_HEIGHT * (gridService.targetLocked.isLockedY
         ? clamp(anchorY + height + (view.height / 2.0), 0.0, view.worldHeight) - view.y
         : clamp(view.worldHeight - view.y, 0.0, view.worldHeight))
       var endX = GRID_SERVICE_PIXEL_WIDTH * (view.width + 3.0)
@@ -271,8 +278,7 @@ function GridRenderer(_controller, config = {}) constructor {
       )
     }
 
-    static renderRight = function(controller) {
-      var gridService = this.controller.gridService
+    static renderRight = function(gridService) {
       var view = gridService.view
       var beginX = (0.5 + gridService.properties.borderHorizontalLength) * GRID_SERVICE_PIXEL_WIDTH
       var beginY = -3.0 * GRID_SERVICE_PIXEL_HEIGHT
@@ -288,8 +294,7 @@ function GridRenderer(_controller, config = {}) constructor {
       )
     }
 
-    static renderLeft = function(controller) {
-      var gridService = this.controller.gridService
+    static renderLeft = function(gridService) {
       var view = gridService.view
       var beginX = (0.5 - gridService.properties.borderHorizontalLength) * GRID_SERVICE_PIXEL_WIDTH
       var beginY = -3.0 * GRID_SERVICE_PIXEL_HEIGHT
@@ -305,26 +310,29 @@ function GridRenderer(_controller, config = {}) constructor {
       )
     }
 
-    renderTop(this.controller)
-    renderBottom(this.controller)
-    renderLeft(this.controller)
-    renderRight(this.controller)
+    renderTop(gridService)
+    renderBottom(gridService)
+    renderLeft(gridService)
+    renderRight(gridService)
+
+    return this
   }
 
   ///@private
+  ///@param {GridService} gridService
+  ///@param {PlayerService} playerService
   ///@param {Number} baseX
   ///@param {Number} baseY
   ///@return {GridRenderer}
-  renderPlayer = function(baseX, baseY) { 
-    var player = this.controller.playerService.player
-    if (!this.controller.gridService.properties.renderElements
+  renderPlayer = function(gridService, playerService, baseX, baseY) { 
+    var player = playerService.player
+    if (!gridService.properties.renderElements
       || !Core.isType(player, Player)) {
       this.player2DCoords.x = null
       this.player2DCoords.y = null
       return this
     }
 
-    var gridService = this.controller.gridService
     var useBlendAsZ = false
     if (useBlendAsZ) {
       shader_set(shader_gml_use_blend_as_z)
@@ -355,7 +363,7 @@ function GridRenderer(_controller, config = {}) constructor {
         .setAlpha(alpha * ((cos(player.stats.godModeCooldown * 15.0) + 2.0) / 3.0))
         .render(_x, _y)
         .setAlpha(alpha)
-      this.player2DCoords = Math.project3DCoordsOn2D(_x + baseX, _y + baseY,this.controller.gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
+      this.player2DCoords = Math.project3DCoordsOn2D(_x + baseX, _y + baseY, gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
       /*
       GPU.render.rectangle(
         (player.x - ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
@@ -372,8 +380,10 @@ function GridRenderer(_controller, config = {}) constructor {
   }
 
   ///@private
+  ///@param {GridService} gridService
+  ///@param {BulletService} bulletService
   ///@return {GridRenderer}
-  renderShrooms = function() {
+  renderShrooms = function(gridService, shroomService) {
     static renderShroom = function(shroom, index, gridService) {
       var alpha = shroom.sprite.getAlpha()
       shroom.sprite
@@ -396,43 +406,48 @@ function GridRenderer(_controller, config = {}) constructor {
       */
     }
 
-    var gridService = this.controller.gridService
     if (!gridService.properties.renderElements 
       || !gridService.properties.renderShrooms) {
       return this
     }
 
-    this.controller.shroomService.shrooms.forEach(renderShroom, gridService)
+    shroomService.shrooms.forEach(renderShroom, gridService)
+    return this
+  }
 
-    // Render spawner
-    var spawner = this.controller.shroomService.spawner
+  ///@private
+  ///@param {GridService} gridService
+  ///@param {ShroomService} shroomService
+  ///@return {GridRenderer}
+  renderSpawners = function(gridService, shroomService) {
+    var spawner = shroomService.spawner
     if (Core.isType(spawner, Struct)) {
       spawner.sprite.render(
         (spawner.x * GRID_SERVICE_PIXEL_WIDTH) - ((spawner.sprite.getWidth() * spawner.sprite.getScaleX()) / 2.0), 
         (spawner.y * GRID_SERVICE_PIXEL_HEIGHT) - ((spawner.sprite.getHeight() * spawner.sprite.getScaleY()) / 2.0)
       )
 
-      this.controller.shroomService.spawner.timeout--
-      if (this.controller.shroomService.spawner.timeout <= 0) {
-        this.controller.shroomService.spawner = null
+      shroomService.spawner.timeout--
+      if (shroomService.spawner.timeout <= 0) {
+        shroomService.spawner = null
       }
     }
 
-    var spawnerEvent = this.controller.shroomService.spawnerEvent
+    var spawnerEvent = shroomService.spawnerEvent
     if (Core.isType(spawnerEvent, Struct)) {
       spawnerEvent.sprite.render(
         (spawnerEvent.x * GRID_SERVICE_PIXEL_WIDTH) - ((spawnerEvent.sprite.getWidth() * spawnerEvent.sprite.getScaleX()) / 2.0), 
         (spawnerEvent.y * GRID_SERVICE_PIXEL_HEIGHT) - ((spawnerEvent.sprite.getHeight() * spawnerEvent.sprite.getScaleY()) / 2.0)
       )
 
-      this.controller.shroomService.spawnerEvent.timeout--
-      if (this.controller.shroomService.spawnerEvent.timeout <= 0) {
-        this.controller.shroomService.spawnerEvent = null
+      shroomService.spawnerEvent.timeout--
+      if (shroomService.spawnerEvent.timeout <= 0) {
+        shroomService.spawnerEvent = null
       }
     }
 
     // Render particleArea
-    var particleArea = this.controller.shroomService.particleArea
+    var particleArea = shroomService.particleArea
     if (Core.isType(particleArea, Struct)) {
       particleArea.topLeft.sprite.render(
         particleArea.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
@@ -451,13 +466,13 @@ function GridRenderer(_controller, config = {}) constructor {
         particleArea.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
       )
 
-      this.controller.shroomService.particleArea.timeout--
-      if (this.controller.shroomService.particleArea.timeout <= 0) {
-        this.controller.shroomService.particleArea = null
+      shroomService.particleArea.timeout--
+      if (shroomService.particleArea.timeout <= 0) {
+        shroomService.particleArea = null
       }
     }
 
-    var particleAreaEvent = this.controller.shroomService.particleAreaEvent
+    var particleAreaEvent = shroomService.particleAreaEvent
     if (Core.isType(particleAreaEvent, Struct)) {
       particleAreaEvent.topLeft.sprite.render(
         particleAreaEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
@@ -476,14 +491,14 @@ function GridRenderer(_controller, config = {}) constructor {
         particleAreaEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
       )
 
-      this.controller.shroomService.particleAreaEvent.timeout--
-      if (this.controller.shroomService.particleAreaEvent.timeout <= 0) {
-        this.controller.shroomService.particleAreaEvent = null
+      shroomService.particleAreaEvent.timeout--
+      if (shroomService.particleAreaEvent.timeout <= 0) {
+        shroomService.particleAreaEvent = null
       }
     }
 
     // Render playerBorder
-    var playerBorder = this.controller.shroomService.playerBorder
+    var playerBorder = shroomService.playerBorder
     if (Core.isType(playerBorder, Struct)) {
       playerBorder.topLeft.sprite.render(
         playerBorder.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
@@ -502,13 +517,13 @@ function GridRenderer(_controller, config = {}) constructor {
         playerBorder.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
       )
 
-      this.controller.shroomService.playerBorder.timeout--
-      if (this.controller.shroomService.playerBorder.timeout <= 0) {
-        this.controller.shroomService.playerBorder = null
+      shroomService.playerBorder.timeout--
+      if (shroomService.playerBorder.timeout <= 0) {
+        shroomService.playerBorder = null
       }
     }
 
-    var playerBorderEvent = this.controller.shroomService.playerBorderEvent
+    var playerBorderEvent = shroomService.playerBorderEvent
     if (Core.isType(playerBorderEvent, Struct)) {
       playerBorderEvent.topLeft.sprite.render(
         playerBorderEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
@@ -527,18 +542,18 @@ function GridRenderer(_controller, config = {}) constructor {
         playerBorderEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
       )
 
-      this.controller.shroomService.playerBorderEvent.timeout--
-      if (this.controller.shroomService.playerBorderEvent.timeout <= 0) {
-        this.controller.shroomService.playerBorderEvent = null
+      shroomService.playerBorderEvent.timeout--
+      if (shroomService.playerBorderEvent.timeout <= 0) {
+        shroomService.playerBorderEvent = null
       }
     }
-
-    return this
   }
 
   ///@private
+  ///@param {GridService} gridService
+  ///@param {BulletService} bulletService
   ///@return {GridRenderer}
-  renderBullets = function() {
+  renderBullets = function(gridService, bulletService) {
     static renderBullet = function(bullet, index, gridService) {
       bullet.sprite
         .setAngle(bullet.angle)
@@ -559,19 +574,20 @@ function GridRenderer(_controller, config = {}) constructor {
       */
     }
     
-    var gridService = this.controller.gridService
     if (!gridService.properties.renderElements
         || !gridService.properties.renderBullets) {
       return this
     }
 
-    this.controller.bulletService.bullets.forEach(renderBullet, gridService)
+    bulletService.bullets.forEach(renderBullet, gridService)
     return this
   }
 
-    ///@private
+  ///@private
+  ///@param {GridService} gridService
+  ///@param {CoinService} coinService
   ///@return {GridRenderer}
-  renderCoins = function() {
+  renderCoins = function(gridService, coinService) {
     static renderCoin = function(coin, index, gridService) {
       coin.sprite
         .render(
@@ -591,139 +607,173 @@ function GridRenderer(_controller, config = {}) constructor {
       */
     }
     
-    var gridService = this.controller.gridService
     if (!gridService.properties.renderElements
         || !gridService.properties.renderCoins) {
       return this
     }
 
-    this.controller.coinService.coins.forEach(renderCoin, gridService)
+    coinService.coins.forEach(renderCoin, gridService)
     return this
   }
 
   ///@private
+  ///@param {GridService} gridService
+  ///@param {ParticleService} particleService
   ///@return {GridRenderer}
-  renderParticles = function() {
-    if (!this.controller.gridService.properties.renderParticles) {
+  renderParticles = function(gridService, particleService) {
+    if (!gridService.properties.renderParticles) {
       return this
     }
 
-    this.controller.particleService.systems.get("main").render()
+    particleService.systems.get("main").render()
     return this
   }
 
   ///@private
+  ///@param {GridService} gridService
+  ///@param {UILayout} layout
   ///@return {GridRenderer}
-  renderBackground = function() {
-    if (!this.controller.gridService.properties.renderBackground) {
+  renderBackground = function(gridService, layout) {
+    static renderBackgroundShader = function(task, index, surface) {
+      var alpha = task.state.getDefault("alpha", 1.0)
+      surface.render(0, 0, alpha)
+    }
+
+    var properties = gridService.properties
+    if (!properties.renderBackground) {
       return this
     }
 
     this.backgroundSurface.render()
-    var shaderPipeline = this.controller.shaderBackgroundPipeline
-    if (this.controller.gridService.properties.renderBackgroundShaders 
+    var shaderPipeline = Beans.get(BeanVisuController).shaderBackgroundPipeline
+    if (properties.renderBackgroundShaders 
       && shaderPipeline.executor.tasks.size() > 0) {
+      
       shaderPipeline
-        .setWidth(this.backgroundSurface.width)
-        .setHeight(this.backgroundSurface.height)
-        .render(function(task, index, renderer) {
-        var properties = renderer.controller.gridService.properties
-        var alpha = task.state.getDefault("alpha", 1.0)
-        renderer.backgroundSurface.render(0, 0, alpha)
-      }, this)
+        .setWidth(layout.width())
+        .setHeight(layout.height())
+        .render(renderBackgroundShader, this.backgroundSurface)
     }
+
+    return this
   }
 
   ///@private
-  ///@param {GridRenderer} renderer
-  renderForeground = function() {
-    if (!this.controller.gridService.properties.renderForeground) {
+  ///@param {GridService} gridService
+  ///@param {UILayout} layout
+  ///@return {GridRenderer}
+  renderForeground = function(gridService, layout) {
+    var properties = gridService.properties
+    if (!properties.renderForeground) {
       return this
     }
 
-    var width = this.backgroundSurface.width
-    var height = this.backgroundSurface.height
-    this.overlayRenderer.renderForegrounds(width, height)
+    this.overlayRenderer.renderForegrounds(layout.width(), layout.height())
+
     return this
   }
   
   ///@private
-  ///@param {GridRenderer} renderer
-  renderBackgroundSurface = function(renderer) {
-    var properties = renderer.controller.gridService.properties
-    var width = this.backgroundSurface.width
-    var height = this.backgroundSurface.height
+  ///@param {UILayout} layout
+  ///@return {GridRenderer}
+  renderBackgroundSurface = function(layout) {
+    var properties = Beans.get(BeanVisuController).gridService.properties
+    var width = layout.width()
+    var height = layout.height()
     GPU.render.clear(properties.backgroundColor)
     if (properties.renderVideo) {
-      renderer.overlayRenderer.renderVideo(width, height) 
+      this.overlayRenderer.renderVideo(width, height) 
     }
 
     if (properties.renderBackground) {
-      renderer.overlayRenderer.renderBackgrounds(width, height)
+      this.overlayRenderer.renderBackgrounds(width, height)
     }
+
+    return this
   }
 
   ///@private
-  ///@param {GridRenderer} renderer
-  renderGridSurface = function(renderer) {
-    var properties = renderer.controller.gridService.properties
+  ///@param {UILayout} layout
+  ///@return {GridRenderer}
+  renderGridSurface = function(layout) {
+    var controller = Beans.get(BeanVisuController)
+    var gridService = controller.gridService
+    var properties = gridService.properties
+    var bulletService = controller.bulletService
+    var playerService = controller.playerService
+    var shroomService = controller.shroomService
+    var coinService = controller.coinService
+    var particleService = controller.particleService
+    var width = layout.width()
+    var height = layout.height()
+    
     if (properties.gridClearFrame) {
       GPU.render.clear(properties.gridClearColor)
     } else {
       GPU.set.blendMode(BlendMode.ADD)
         .render.fillColor(
-          renderer.gridSurface.width,
-          renderer.gridSurface.height,
+          width,
+          height,
           properties.gridClearColor.toGMColor(),
           properties.gridClearFrameAlpha
         )
         .reset.blendMode()
     }
 
-    var depths = renderer.controller.gridService.properties.depths
-      
-    var cameraDistance = 1 ///@todo extract parameter
-    var xto = renderer.camera.x
-    var yto = renderer.camera.y
-    var zto = renderer.camera.z + renderer.camera.zoom
-    var xfrom = xto + cameraDistance * dcos(renderer.camera.angle) * dcos(renderer.camera.pitch)
-    var yfrom = yto - cameraDistance * dsin(renderer.camera.angle) * dcos(renderer.camera.pitch)
-    var zfrom = zto - cameraDistance * dsin(renderer.camera.pitch)
+    var depths = properties.depths
+    var camera = this.camera
+    var cameraDistance = 1 ///@todo investigate
+    var xto = camera.x
+    var yto = camera.y
+    var zto = camera.z + camera.zoom
+    var xfrom = xto + cameraDistance * dcos(camera.angle) * dcos(camera.pitch)
+    var yfrom = yto - cameraDistance * dsin(camera.angle) * dcos(camera.pitch)
+    var zfrom = zto - cameraDistance * dsin(camera.pitch)
     var baseX = GRID_SERVICE_PIXEL_WIDTH + GRID_SERVICE_PIXEL_WIDTH * 0.5
     var baseY = GRID_SERVICE_PIXEL_HEIGHT + GRID_SERVICE_PIXEL_HEIGHT * 0.5
-    renderer.camera.viewMatrix = matrix_build_lookat(xfrom, yfrom, zfrom, xto, yto, zto, 0, 0, 1)
-    renderer.camera.projectionMatrix = matrix_build_projection_perspective_fov(-60, -1 * renderer.gridSurface.width / renderer.gridSurface.height, 1, 32000) ///@todo extract parameters
-    camera_set_view_mat(renderer.camera.gmCamera, renderer.camera.viewMatrix)
-    camera_set_proj_mat(renderer.camera.gmCamera, renderer.camera.projectionMatrix)
-    camera_apply(renderer.camera.gmCamera)
+    camera.viewMatrix = matrix_build_lookat(
+      xfrom, yfrom, zfrom, 
+      xto, yto, zto, 
+      0, 0, 1
+    )
+    ///@todo extract parameters
+    camera.projectionMatrix = matrix_build_projection_perspective_fov(
+      -60, 
+      -1 * (width / height), 
+      1, 
+      32000 
+    ) 
+    camera_set_view_mat(camera.gmCamera, camera.viewMatrix)
+    camera_set_proj_mat(camera.gmCamera, camera.projectionMatrix)
+    camera_apply(camera.gmCamera)
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.channelZ, 
       0, 0, 0, 
       1, 1, 1
     ))
-    renderer.renderChannels()
+    this.renderChannels(gridService)
     
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.separatorZ, 
       0, 0, 0, 
       1, 1, 1
     ))
-    renderer.renderSeparators()
+    this.renderSeparators(gridService)
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.coinZ, 
       0, 0, 0, 
       1, 1, 1
     ))
-    renderer.renderCoins()
+    this.renderCoins(gridService, coinService)
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.bulletZ, 
       0, 0, 0, 
       1, 1, 1
     ))
-    renderer.renderBullets()
+    this.renderBullets(gridService, bulletService)
 
     gpu_set_alphatestenable(true)
     matrix_set(matrix_world, matrix_build(
@@ -731,7 +781,8 @@ function GridRenderer(_controller, config = {}) constructor {
       0, 0, 0, 
       1, 1, 1
     ))
-    renderer.renderShrooms()
+    this.renderShrooms(gridService, shroomService)
+    this.renderSpawners(gridService, shroomService)
     gpu_set_alphatestenable(false)
 
     matrix_set(matrix_world, matrix_build(
@@ -739,94 +790,110 @@ function GridRenderer(_controller, config = {}) constructor {
       0, 0, 0, 
       1, 1, 1
     ))
-    renderer.renderParticles()
+    this.renderParticles(gridService, particleService)
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.playerZ, 
       0, 0, 0, 
       1, 1, 1
     ))
-    renderer.renderBorders()
-    renderer.renderPlayer(baseX, baseY)
+    this.renderBorders(gridService)
+    this.renderPlayer(gridService, playerService, baseX, baseY)
 
     matrix_set(matrix_world, matrix_build_identity())
+
+    return this
   }
 
   ///@private
-  ///@param {GridRenderer} renderer
-  renderShaderSurface = function(renderer) {
-    var properties = renderer.controller.gridService.properties
+  ///@param {UILayout} layout
+  ///@return {GridRenderer}
+  renderShaderSurface = function(layout) {
+    static renderGridShader = function(task, index, gridSurface) {
+      gridSurface.render(0, 0, task.state.getDefault("alpha", 1.0))
+    }
+
+    var controller = Beans.get(BeanVisuController)
+    var properties = controller.gridService.properties
     if (!properties.renderGridShaders) {
       return
     }
 
+    var width = layout.width()
+    var height = layout.height()
     if (properties.shaderClearFrame) {
       GPU.render.clear(properties.shaderClearColor)
     } else {
       GPU.set.blendMode(BlendMode.ADD)
         .render.fillColor(
-          renderer.shaderSurface.width,
-          renderer.shaderSurface.height,
+          width,
+          height,
           properties.shaderClearColor.toGMColor(),
           properties.shaderClearFrameAlpha
         )
         .reset.blendMode()
     }
 
-    var size = renderer.controller.shaderPipeline
-      .setWidth(renderer.gridSurface.width)
-      .setHeight(renderer.gridSurface.height)
-      .render(function(task, index, renderer) {
-        renderer.gridSurface.render(0, 0, task.state
-          .getDefault("alpha", 1.0))
-      }, renderer)
-      .executor.tasks.size()
+    var size = controller.shaderPipeline
+      .setWidth(width)
+      .setHeight(height)
+      .render(renderGridShader, this.gridSurface).executor.tasks
+      .size()
 
-    // Render support-grid
+    ///@description Render support-grid
     if (properties.renderSupportGrid 
       && size >= properties.renderSupportGridTreshold) {
 
       GPU.set.blendMode(BlendMode.ADD)
-      renderer.gridSurface.render(0, 0, properties.renderSupportGridAlpha)
+      this.gridSurface.render(0, 0, properties.renderSupportGridAlpha)
       GPU.reset.blendMode()
     }
-  }
 
-  ///@private
-  ///@param {GridRenderer} renderer
-  renderGameSurface = function(renderer) {
-    GPU.render.clear(renderer.controller.gridService.properties.clearColor)
-    renderer.renderBackground() 
-    renderer.gridSurface.render()
-    renderer.shaderSurface.render()
-    renderer.renderForeground()
-  }
-
-  ///@private
-  ///@return {GridRenderer}
-  renderBKTGlitch = function(config) {
-    var width = Struct.contains(config, "width") ? config.width : GuiWidth()
-    var height = Struct.contains(config, "height") ? config.height : GuiHeight()
-    var _x = Struct.contains(config, "x") ? config.x : 0
-    var _y = Struct.contains(config, "y") ? config.y : 0
-    this.gameSurface.update(width, height).render(_x, _y)
     return this
   }
 
   ///@private
+  ///@param {UILayout} layout
+  ///@return {GridRenderer}
+  renderGameSurface = function(layout) {
+    var gridService = Beans.get(BeanVisuController).gridService
+    GPU.render.clear(gridService.properties.clearColor)
+    this.renderBackground(gridService, layout) 
+    this.gridSurface.render()
+    this.shaderSurface.render()
+    this.renderForeground(gridService, layout)
+
+    return this
+  }
+
+  ///@private
+  ///@param {UILayout} layout
+  ///@return {GridRenderer}
+  renderGlitch = function(layout) {
+    this.gameSurface
+      .update(layout.width(), layout.height())
+      .render(layout.x(), layout.y())
+    return this
+  }
+
+  ///@private
+  ///@param {PlayerService} playerService
+  ///@param {UILayout} layout
   ///@return {GrindRenderer}
-  renderPlayerHint = function(config) {
+  renderPlayerHint = function(playerService, layout) {
+    var width = layout.width()
+    var height = layout.height()
     if ((this.player2DCoords.x != null && this.player2DCoords.y != null) 
       && (this.player2DCoords.x < 0 
-        || this.player2DCoords.x > this.gridSurface.width 
+        || this.player2DCoords.x > width 
         || this.player2DCoords.y < 0 
-        || this.player2DCoords.y > this.gridSurface.height)) {
+        || this.player2DCoords.y > height)) {
 
-      var configX = Core.isType(Struct.get(config, "x"), Number) ? config.x : 0.0
-      var configY = Core.isType(Struct.get(config, "y"), Number) ? config.y : 0.0
-      var player = this.controller.playerService.player
-      var _x = clamp(this.player2DCoords.x, player.sprite.getWidth() - player.sprite.texture.offsetX, this.gridSurface.width - player.sprite.getWidth() + player.sprite.texture.offsetX)
-      var _y = clamp(this.player2DCoords.y, player.sprite.getHeight() - player.sprite.texture.offsetY, this.gridSurface.height - player.sprite.getHeight() + player.sprite.texture.offsetY)
+      var configX = layout.x()
+      var configY = layout.y()
+      var player = playerService.player
+      var _x = clamp(this.player2DCoords.x, player.sprite.getWidth() - player.sprite.texture.offsetX, width - player.sprite.getWidth() + player.sprite.texture.offsetX)
+      var _y = clamp(this.player2DCoords.y, player.sprite.getHeight() - player.sprite.texture.offsetY, height - player.sprite.getHeight() + player.sprite.texture.offsetY)
       var alpha = player.sprite.getAlpha()
       player.sprite
         .setAlpha(alpha * 0.5)
@@ -866,38 +933,43 @@ function GridRenderer(_controller, config = {}) constructor {
     return this
   }
 
+  ///@param {UILayout} layout
   ///@return {GridRenderer}
-  update = function() {
-    this.camera.update()
+  update = function(layout) {
+    this.camera.update(layout)
     this.overlayRenderer.update()
-    this.bktGlitchService.update(GuiWidth(), GuiHeight())
+    this.glitchService.update(layout.width(), layout.height())
+    
+    return this
   }
 
+  ///@param {UILayout} layout
   ///@return {GridRenderer}
-  render = function(config) {
-    var width = Struct.contains(config, "width") ? config.width : GuiWidth()
-    var height = Struct.contains(config, "height") ? config.height : GuiHeight()
+  render = function(layout) {
+    var width = layout.width()
+    var height = layout.height()
     this.backgroundSurface
       .update(width, height)
-      .renderOn(this.renderBackgroundSurface, this)
+      .renderOn(this.renderBackgroundSurface, layout)
     this.gridSurface
       .update(width, height)
-      .renderOn(this.renderGridSurface, this)
+      .renderOn(this.renderGridSurface, layout)
     this.shaderSurface
       .update(width, height)
-      .renderOn(renderShaderSurface, this)
+      .renderOn(renderShaderSurface, layout)
     this.gameSurface
       .update(width, height)
-      .renderOn(this.renderGameSurface, this)
+      .renderOn(this.renderGameSurface, layout)
 
     return this
   }
 
-  ///@param {?Struct} [config]
+  ///@param {UILayout} layout
   ///@return {GridRenderer}
-  renderGUI = function(config = null) {
-    this.bktGlitchService.renderOn(this.renderBKTGlitch, config)
-    this.renderPlayerHint(config)
+  renderGUI = function(layout) {
+    var playerService = Beans.get(BeanVisuController).playerService
+    this.glitchService.renderOn(this.renderGlitch, layout)
+    this.renderPlayerHint(playerService, layout)
     return this
   }
 
@@ -909,5 +981,7 @@ function GridRenderer(_controller, config = {}) constructor {
     this.shaderSurface.free()
     return this
   }
+
+  this.init()
 }
 

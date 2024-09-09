@@ -122,11 +122,11 @@ function VisuIO() constructor {
     }
 
     if (this.keyboard.keys.cameraKeyboardLook.pressed) {
-      controller.gridRenderer.camera.enableKeyboardLook = !controller.gridRenderer.camera.enableKeyboardLook
+      controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = !controller.visuRenderer.gridRenderer.camera.enableKeyboardLook
     }
 
     if (this.keyboard.keys.cameraMouseLook.pressed) {
-      controller.gridRenderer.camera.enableMouseLook = !controller.gridRenderer.camera.enableMouseLook
+      controller.visuRenderer.gridRenderer.camera.enableMouseLook = !controller.visuRenderer.gridRenderer.camera.enableMouseLook
     }
 
     var editor = Beans.get(BeanVisuEditorController)
@@ -183,8 +183,8 @@ function VisuIO() constructor {
             height: function() { return GuiHeight() },
           }),
         }))
-        controller.gridRenderer.camera.enableMouseLook = false
-        controller.gridRenderer.camera.enableKeyboardLook = false
+        controller.visuRenderer.gridRenderer.camera.enableMouseLook = false
+        controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = false
       }
     }
 

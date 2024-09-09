@@ -58,7 +58,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             audio_master_gain(0.0)
 
             var controller = Beans.get(BeanVisuController)
-            controller.gridRenderer.clear()
+            controller.visuRenderer.gridRenderer.clear()
             var editor = Beans.get(BeanVisuEditorController)
             if (Core.isType(editor, VisuEditorController)) {
               editor.popupQueue.dispatcher.execute(new Event("clear"))

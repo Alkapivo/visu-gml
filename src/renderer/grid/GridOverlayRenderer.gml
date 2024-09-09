@@ -1,11 +1,7 @@
-///@package com.alkapivo.visu.component.grid.renderer.GridOverlayRenderer
+///@package com.alkapivo.visu.renderer.grid
 
 ///@todo rename to sth that reflects video, background and foreground renderer
-///@param {GridRenderer} _renderer
-function GridOverlayRenderer(_renderer) constructor {
-
-  ///@type {GridRenderer}
-  renderer = Assert.isType(_renderer, GridRenderer)
+function GridOverlayRenderer() constructor {
 
   ///@type {Array<Task>}
   backgrounds = new Array(Task).enableGC()
@@ -84,7 +80,8 @@ function GridOverlayRenderer(_renderer) constructor {
   ///@param {Number} height
   ///@return {GridOverlayRenderer}
   renderVideo = function(width, height) {
-    var video = this.renderer.controller.videoService.getVideo()
+    var videoService = Beans.get(BeanVisuController).videoService
+    var video = videoService.getVideo()
     if (!Core.isType(video, Video) || !video.isLoaded()) {
       return this
     }

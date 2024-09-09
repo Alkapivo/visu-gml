@@ -128,9 +128,9 @@ function VisuHUDRenderer() constructor {
   }
 
   ///@private
-  ///@type {UILayout} canvas
+  ///@type {UILayout} layout
   ///@return {VisuHUDRenderer}
-  renderHUD = function(canvas) {
+  renderHUD = function(layout) {
     if (!this.enabled) {
       return
     }
@@ -145,10 +145,10 @@ function VisuHUDRenderer() constructor {
     var controller = Beans.get(BeanVisuController)
     var player = controller.playerService.player
     if (Core.isType(player, Player)) {
-      var _x = canvas.x()
-      var _y = canvas.y()
-      var _width = canvas.width()
-      var _height = canvas.height()
+      var _x = layout.x()
+      var _y = layout.y()
+      var _width = layout.width()
+      var _height = layout.height()
 
       var lifeString = ""
       repeat (player.stats.life.get()) {
@@ -195,17 +195,19 @@ function VisuHUDRenderer() constructor {
     return this
   }
 
-  ///@type {UILayout} canvas
+  ///@type {UILayout} layout
   ///@return {VisuHUDRenderer}
-  update = function(canvas) {
-    this.glitchService.update(canvas.width(), canvas.height())
+  update = function(layout) {
+    this.glitchService.update(layout.width(), layout.height())
     return this
   }
 
-  ///@type {UILayout} canvas
+  ///@type {UILayout} layout
   ///@return {VisuHUDRenderer}
-  renderGUI = function(canvas) {
-    this.glitchService.renderOn(this.renderHUD, canvas)
+  renderGUI = function(layout) {
+    this.glitchService.renderOn(this.renderHUD, layout)
     return this
   }
+
+  this.init()
 }

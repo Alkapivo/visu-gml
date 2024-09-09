@@ -363,9 +363,6 @@ function VisuController(layerName) constructor {
   ///@type {GridService}
   gridService = new GridService(this)
 
-  ///@type {GridRenderer}
-  gridRenderer = new GridRenderer(this)
-
   ///@type {VideoService}
   videoService = new VideoService()
 
@@ -386,12 +383,6 @@ function VisuController(layerName) constructor {
 
   ///@type {Boolean}
   renderGUIEnabled = true
-
-  ///@type {Struct}
-  renderTimer = new DebugOSTimer("Render")
-  
-  ///@type {Struct}
-  renderGUITimer = new DebugOSTimer("RenderGUI")
 
   ///@param {Boolean} value
   ///@return {TopDownController}
@@ -481,7 +472,6 @@ function VisuController(layerName) constructor {
     //"gridECS", ///@ecs
     "lyricsService",
     "coinService",
-    "gridRenderer",
     "videoService",
     "sfxService",
   ], function(name, index, controller) {
@@ -643,20 +633,6 @@ function VisuController(layerName) constructor {
   }
 
   ///@private
-  ///@type {Sprite}
-  spinner = Assert.isType(SpriteUtil
-    .parse({ 
-      name: "texture_spinner", 
-      scaleX: 0.25, 
-      scaleY: 0.25,
-    }), Sprite)
-
-
-  ///@private
-  ///@type {Number}
-  spinnerFactor = 0
-
-  ///@private
   ///@param {Struct} service
   ///@param {Number} iterator
   ///@param {VisuController} controller
@@ -711,13 +687,6 @@ function VisuController(layerName) constructor {
 
     return this
   }
- 
-  preview = {
-    x: function() { return 0 },
-    y: function() { return 0 },
-    width: GuiWidth,
-    height: GuiHeight,
-  }
 
   ///@return {VisuController}
   render = function() {
@@ -725,16 +694,8 @@ function VisuController(layerName) constructor {
       return this
     }
 
-    this.renderTimer.start()
     try {
-      gpu_set_alphatestenable(true) ///@todo investigate
-      var enable = this.renderUI
-      var _editor = Beans.get(BeanVisuEditorController)
-      var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
-      this.gridRenderer.render({ 
-        width: enable ? ceil(preview.width()) : GuiWidth(), 
-        height: enable ? ceil(preview.height()) : GuiHeight(),
-      })
+      //gpu_set_alphatestenable(true) ///@todo investigate
       //this.gridECS.render() ///@ecs
       this.visuRenderer.render()
     } catch (exception) {
@@ -745,7 +706,6 @@ function VisuController(layerName) constructor {
       GPU.reset.surface()
       GPU.reset.blendMode()
     }
-    this.renderTimer.finish()
     
     return this
   }
@@ -756,69 +716,13 @@ function VisuController(layerName) constructor {
       return this
     }
 
-    this.renderGUITimer.start()
     try {
-      var enable = this.renderUI
-      var _editor = Beans.get(BeanVisuEditorController)
-      var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
-      var _x = enable ? ceil(preview.x()) : 0
-      var _y = enable ? ceil(preview.y()) : 0
-      var _width = enable ? ceil(preview.width()) : GuiWidth()
-      var _height = enable ? ceil(preview.height()) : GuiHeight()
-      this.gridRenderer.renderGUI({ 
-        width: _width, 
-        height: _height, 
-        x: _x, 
-        y: _y,
-      })
       //this.gridECS.renderGUI() ///@ecs
       this.visuRenderer.renderGUI()
       if (this.renderUI) {
         this.uiService.render()
-        var loaderState = this.loader.fsm.getStateName()
-        if (loaderState != "idle" && loaderState != "loaded") {
-          var color = c_black
-          this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
-  
-          GPU.render.rectangle(
-            0, 0, 
-            GuiWidth(), GuiHeight(), 
-            false, 
-            color, color, color, color, 
-            (this.spinnerFactor / 100) * 0.5
-          )
-  
-          this.spinner
-            .setAlpha(this.spinnerFactor / 100.0)
-            .render(
-              (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
-              (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
-                - (this.spinnerFactor / 2)
-          )
-        } else if (this.spinnerFactor > 0) {
-          var color = c_black
-          this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.1)
-  
-          GPU.render.rectangle(
-            0, 0, 
-            GuiWidth(), GuiHeight(), 
-            false, 
-            color, color, color, color, 
-            (this.spinnerFactor / 100) * 0.5
-          )
-  
-          this.spinner
-            .setAlpha(this.spinnerFactor / 100.0)
-            .render(
-            (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
-            (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
-              - (this.spinnerFactor / 2)
-          )
-        }
-      }      
-      
-      //MouseUtil.renderSprite()
-      //Beans.get(BeanVisuEditorController).render()
+        //Beans.get(BeanVisuEditorController).render()
+      }
     } catch (exception) {
       var message = $"renderGUI throws exception: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
@@ -827,55 +731,7 @@ function VisuController(layerName) constructor {
       GPU.reset.surface()
       GPU.reset.blendMode()
     }
-    this.renderGUITimer.finish()
-
-    if (is_debug_overlay_open()) {
-      var controller = this
-      var gridService = controller.gridService
-      var shrooms = controller.shroomService.shrooms.size()
-      var bullets = controller.bulletService.bullets.size()
-  
-      var timeSum = gridService.moveGridItemsTimer.getValue()
-        + gridService.signalGridItemsCollisionTimer.getValue()
-        + gridService.updatePlayerServiceTimer.getValue()
-        + gridService.updateShroomServiceTimer.getValue()
-        + gridService.updateBulletServiceTimer.getValue()
-        + controller.renderTimer.getValue()
-        + controller.renderGUITimer.getValue()
-  
-      var text = $"shrooms: {shrooms}" + "\n"
-        + $"bullets: {bullets}" + "\n"
-        + $"fps: {fps}, fps-real: {fps_real}" + "\n\n"
-        + gridService.moveGridItemsTimer.getMessage() + "\n"
-        + gridService.signalGridItemsCollisionTimer.getMessage() + "\n"
-        + gridService.updatePlayerServiceTimer.getMessage() + "\n"
-        + gridService.updateShroomServiceTimer.getMessage() + "\n"
-        + gridService.updateBulletServiceTimer.getMessage() + "\n"
-        + controller.renderTimer.getMessage() + "\n"
-        + controller.renderGUITimer.getMessage() + "\n"
-        + $"Sum: {timeSum}" + "\n"
-      GPU.render.text(32, 32, text, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
-    }
-
-    var gridCamera = this.gridRenderer.camera
-    var gridCameraMessage = ""
-    if (gridCamera.enableMouseLook) {
-      gridCameraMessage = gridCameraMessage 
-        + $"pitch: {gridCamera.pitch}\n"
-        + $"angle: {gridCamera.angle}\n"
-        + $"zoom: {gridCamera.zoom}\n"
-    }
-
-    if (gridCamera.enableKeyboardLook) {
-      gridCameraMessage = gridCameraMessage 
-        + $"x: {gridCamera.x}\n"
-        + $"y: {gridCamera.y}\n"
-        + $"z: {gridCamera.z}\n"
-    }
     
-    if (gridCameraMessage != "") {
-      GPU.render.text(32, GuiHeight() - 32, gridCameraMessage, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD, HAlign.LEFT, VAlign.BOTTOM)  
-    }
     return this
   }
 
