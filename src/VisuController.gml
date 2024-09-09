@@ -9,13 +9,7 @@ function VisuController(layerName) constructor {
 
   ///@type {Boolean}
   renderUI = true
-
-  ///@type {UIService}
-  uiService = new UIService(this)
-
-  ///@type {DisplayService}
-  displayService = new DisplayService(this, { minWidth: 800, minHeight: 480 })
-
+  
   ///@type {FSM}
   fsm = new FSM(this, {
     initialState: { name: "idle" },
@@ -283,6 +277,12 @@ function VisuController(layerName) constructor {
   ///@type {ShaderPipeline}
   shaderBackgroundPipeline = new ShaderPipeline(this.shaderPipeline)
 
+  ///@type {UIService}
+  uiService = new UIService(this)
+
+  ///@type {DisplayService}
+  displayService = new DisplayService(this, { minWidth: 800, minHeight: 480 })
+
   ///@type {ParticleService}
   particleService = new ParticleService(this, { 
     layerName: layerName,
@@ -307,36 +307,6 @@ function VisuController(layerName) constructor {
         && Core.isType(this.track, Track)
     },
   })
-  
-  watchdogPromise = null
-
-  ///@return {VisuController}
-  watchdog = function() {
-    try {
-      if (Optional.is(this.watchdogPromise)) {
-        this.watchdogPromise = this.watchdogPromise.status == PromiseStatus.PENDING
-          ? this.watchdogPromise
-          : null
-        return this
-      }
-
-      if (!Optional.is(this.watchdogPromise)
-        && this.trackService.isTrackLoaded()
-        && !this.trackService.track.audio.isLoaded() 
-        && 1 > abs(this.trackService.time - this.trackService.duration)
-        && this.fsm.getStateName() == "play") {
-        
-        Logger.info("VisuController", $"Track finished at {this.trackService.time}")
-        this.watchdogPromise = this.send(new Event("pause").setPromise(new Promise()))
-      }
-    } catch (exception) {
-      var message = $"Watchdog throwed an exception: {exception.message}"
-      this.send(new Event("spawn-popup", { message: message }))
-      Logger.error("VisuController", message)
-    }
-
-    return this
-  }
 
   ///@type {PlayerService}
   playerService = new PlayerService(this)
@@ -368,11 +338,46 @@ function VisuController(layerName) constructor {
   ///@type {GridECS}
   //gridECS = new GridECS(this) ///@ecs
 
+  ///@private
   ///@type {Boolean}
   renderEnabled = true
 
+  ///@private
   ///@type {Boolean}
   renderGUIEnabled = true
+
+  ///@private
+  ///@type {?Promise}
+  watchdogPromise = null
+
+  ///@private
+  ///@return {VisuController}
+  watchdog = function() {
+    try {
+      if (Optional.is(this.watchdogPromise)) {
+        this.watchdogPromise = this.watchdogPromise.status == PromiseStatus.PENDING
+          ? this.watchdogPromise
+          : null
+        return this
+      }
+
+      if (!Optional.is(this.watchdogPromise)
+        && this.trackService.isTrackLoaded()
+        && !this.trackService.track.audio.isLoaded() 
+        && 1 > abs(this.trackService.time - this.trackService.duration)
+        && this.fsm.getStateName() == "play") {
+        
+        Logger.info("VisuController", $"Track finished at {this.trackService.time}")
+        this.watchdogPromise = this.send(new Event("pause").setPromise(new Promise()))
+      }
+    } catch (exception) {
+      var message = $"Watchdog throwed an exception: {exception.message}"
+      this.send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)
+    }
+
+    return this
+  }
 
   ///@param {Boolean} value
   ///@return {TopDownController}
@@ -472,16 +477,10 @@ function VisuController(layerName) constructor {
     }
   }, this))
 
-  ///@param {Event}
-  ///@return {?Promise}
-  send = function(event) {
-    return this.dispatcher.send(event)
-  }
-
   ///@private
   ///@return {VisuController}
   init = function() {
-    Core.debugOverlay(Assert.isType(Core.getProperty("visu.debug-overlay", false), Boolean))
+    Core.debugOverlay(Assert.isType(Core.getProperty("visu.debug", false), Boolean))
     var fullscreen = Assert.isType(Visu.settings.getValue("visu.fullscreen", false), Boolean)
     this.displayService
       .resize(
@@ -584,45 +583,6 @@ function VisuController(layerName) constructor {
   }
 
   ///@private
-  ///@type {Timer}
-  autosaveTimer = new Timer(Core.getProperty("visu.autosave.interval", 1)  * 60, { loop: Infinity })
-
-  ///@private
-  ///@type {Boolean}
-  autosaveEnabled = Visu.settings.getValue("visu.autosave", false)
-
-  ///@private
-  ///@return {VisuController}
-  autosaveHandler = function() {
-    if (!this.autosaveEnabled || this.fsm.getStateName() != "pause") {
-      return this
-    }
-
-    return this.autosaveTimer.update().finished ? this.autosave() : this
-  }
-
-  ///@private
-  ///@return {VisuController}
-  autosave = function() {
-    try {
-      var path = $"{global.__VisuTrack.path}manifest.visu"
-      if (!FileUtil.fileExists(path)) {
-        return
-      }
-
-      global.__VisuTrack.saveProject(path)
-
-      this.send(new Event("spawn-popup", 
-        { message: $"Project '{this.trackService.track.name}' auto saved successfully at: '{path}'" }))
-    } catch (exception) {
-      this.send(new Event("spawn-popup", { message: $"Cannot save the project: {exception.message}" }))
-      Logger.error("VETitleBar", $"Cannot auto save the project: {exception.message}")
-    }
-
-    return this
-  }
-
-  ///@private
   ///@param {Struct} service
   ///@param {Number} iterator
   ///@param {VisuController} controller
@@ -637,42 +597,60 @@ function VisuController(layerName) constructor {
       fsm.dispatcher.send(new Event("transition", { name: "idle" }))
     }
   }
-  
+
+  ///@private
   ///@return {VisuController}
-  update = function() {
-    if (this.renderUI) {
-      try {
-        // reset UI timers after resize to avoid ghost effect
-        if (this.displayService.state == "resized") {
-          this.uiService.containers.forEach(function(container) {
-            if (!Optional.is(container.updateTimer)) {
-              return
-            }
-
-            container.surfaceTick.skip()
-            container.updateTimer.time = container.updateTimer.duration
-          })
-
-          Visu.settings.setValue("visu.fullscreen", this.displayService.getFullscreen()).save()
-          if (!this.displayService.getFullscreen()) {
-            Visu.settings
-              .setValue("visu.window.width", this.displayService.getWidth())
-              .setValue("visu.window.height", this.displayService.getHeight())
-              .save()
-          }
-        }
-        this.uiService.update()
-      } catch (exception) {
-        var message = $"'update' set fatal error: {exception.message}"
-        Logger.error("UIService", message)
-        Core.printStackTrace()
-        this.send(new Event("spawn-popup", { message: message }))
-      }
+  updateUIService = function() {
+    if (!this.renderUI) {
+      return
     }
 
+    try {
+      if (this.displayService.state == "resized") {
+        ///@description reset UI timers after resize to avoid ghost effect
+        this.uiService.containers.forEach(this.resetUIContainerTimer)
+
+        Visu.settings.setValue("visu.fullscreen", this.displayService.getFullscreen()).save()
+        if (!this.displayService.getFullscreen()) {
+          Visu.settings
+            .setValue("visu.window.width", this.displayService.getWidth())
+            .setValue("visu.window.height", this.displayService.getHeight())
+            .save()
+        }
+      }
+      this.uiService.update()
+    } catch (exception) {
+      var message = $"'update' set fatal error: {exception.message}"
+      Logger.error("UIService", message)
+      Core.printStackTrace()
+      this.send(new Event("spawn-popup", { message: message }))
+    }
+
+    return this
+  }
+
+  ///@private
+  ///@param {UIContainer}
+  resetUIContainerTimer = function(container) {
+    if (!Optional.is(container.updateTimer)) {
+      return
+    }
+
+    container.surfaceTick.skip()
+    container.updateTimer.time = container.updateTimer.duration
+  }
+
+  ///@param {Event}
+  ///@return {?Promise}
+  send = function(event) {
+    return this.dispatcher.send(event)
+  }
+
+  ///@return {VisuController}
+  update = function() {
+    this.updateUIService()
     this.services.forEach(this.updateService, this)
     this.visuRenderer.update()
-    this.autosaveHandler()
     this.watchdog()
 
     return this

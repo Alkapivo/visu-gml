@@ -285,6 +285,46 @@ function VisuEditorController() constructor {
   layout = this.factoryLayout()
 
   ///@private
+  ///@type {Boolean}
+  autosaveEnabled = Visu.settings.getValue("visu.editor.autosave", false)
+
+  ///@private
+  ///@type {Timer}
+  autosaveTimer = new Timer(Core.getProperty("visu.editor.autosave.interval", 1)  * 60, { loop: Infinity })
+
+  ///@private
+  ///@return {VisuController}
+  autosaveHandler = function() {
+    var controller = Beans.get(BeanVisuController)
+    if (!this.autosaveEnabled || controller.fsm.getStateName() != "pause") {
+      return this
+    }
+
+    return this.autosaveTimer.update().finished ? this.autosave() : this
+  }
+
+  ///@private
+  ///@return {VisuController}
+  autosave = function() {
+    try {
+      var path = $"{global.__VisuTrack.path}manifest.visu"
+      if (!FileUtil.fileExists(path)) {
+        return
+      }
+
+      global.__VisuTrack.saveProject(path)
+
+      this.send(new Event("spawn-popup", 
+        { message: $"Project '{this.trackService.track.name}' auto saved successfully at: '{path}'" }))
+    } catch (exception) {
+      this.send(new Event("spawn-popup", { message: $"Cannot save the project: {exception.message}" }))
+      Logger.error("VETitleBar", $"Cannot auto save the project: {exception.message}")
+    }
+
+    return this
+  }
+
+  ///@private
   ///@return {VisuEditorController}
   init = function() {
     var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
@@ -349,29 +389,6 @@ function VisuEditorController() constructor {
   }
 
   ///@private
-  ///@return {VisuEditorController}
-  render = function() {
-    static renderLayout = function(layout, color) {
-      var beginX = layout.x()
-      var beginY = layout.y()
-      var endX = beginX + layout.width()
-      var endY = beginY + layout.height()
-      GPU.render.rectangle(beginX, beginY, endX, endY, false, color, color, color, color, 0.5)
-    }
-
-    renderLayout(this.layout, c_red)
-    renderLayout(Struct.get(this.layout.nodes, "title-bar"), c_blue)
-    renderLayout(Struct.get(this.layout.nodes, "accordion"), c_yellow)
-    renderLayout(Struct.get(this.layout.nodes, "preview"), c_fuchsia)
-    renderLayout(Struct.get(this.layout.nodes, "track-control"), c_lime)
-    renderLayout(Struct.get(this.layout.nodes, "brush-toolbar"), c_orange)
-    renderLayout(Struct.get(this.layout.nodes, "timeline"), c_green)
-    renderLayout(Struct.get(this.layout.nodes, "status-bar"), c_grey)
-
-    return this
-  }
-
-  ///@private
   ///@param {Struct} service
   ///@param {Number} iterator
   ///@param {VisuController} controller
@@ -385,6 +402,31 @@ function VisuEditorController() constructor {
       controller.send(new Event("spawn-popup", { message: message }))
     }
   }
+
+  ///@private
+  ///@return {VisuEditorController}
+  renderLayout = function() {
+    static renderLayoutNode = function(layout, color) {
+      var beginX = layout.x()
+      var beginY = layout.y()
+      var endX = beginX + layout.width()
+      var endY = beginY + layout.height()
+      GPU.render.rectangle(beginX, beginY, endX, endY, false, color, color, color, color, 0.5)
+    }
+
+    renderLayoutNode(this.layout, c_red)
+    renderLayoutNode(Struct.get(this.layout.nodes, "title-bar"), c_blue)
+    renderLayoutNode(Struct.get(this.layout.nodes, "accordion"), c_yellow)
+    renderLayoutNode(Struct.get(this.layout.nodes, "preview"), c_fuchsia)
+    renderLayoutNode(Struct.get(this.layout.nodes, "track-control"), c_lime)
+    renderLayoutNode(Struct.get(this.layout.nodes, "brush-toolbar"), c_orange)
+    renderLayoutNode(Struct.get(this.layout.nodes, "timeline"), c_green)
+    renderLayoutNode(Struct.get(this.layout.nodes, "status-bar"), c_grey)
+
+    return this
+  }
+
+  
 
   ///@param {Event} event
   ///@return {?Promise}
@@ -408,6 +450,7 @@ function VisuEditorController() constructor {
     this.services.forEach(this.updateService, Beans.get(BeanVisuController))
 
     this.updateLayout()
+    this.autosaveHandler()
     return this
   }
   

@@ -2,9 +2,6 @@
 
 function VisuRenderer() constructor {
 
-  ///@type {Boolean}
-  renderVE = true
-
   ///@type {GridRenderer}
   gridRenderer = new GridRenderer()
 
@@ -156,10 +153,8 @@ function VisuRenderer() constructor {
 
   ///@return {VisuRenderer}
   update = function() {
-    var controller = Beans.get(BeanVisuController)
     var editor = Beans.get(BeanVisuEditorController)
     var _layout = editor == null ? this.layout : editor.layout.nodes.preview
-    this.renderVE = controller.renderUI ///@hack
 
     this.gridRenderer.update(_layout)
     this.hudRenderer.update(_layout)

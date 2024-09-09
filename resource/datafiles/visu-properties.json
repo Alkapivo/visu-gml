@@ -1,9 +1,12 @@
 {
-  "visu.debug-overlay": false,
-  "visu.autosave.interval": 5,
+  "visu.debug": false,
+  "visu.editor.enable": true,
+  "visu.editor.autosave.interval": 3,
+  "visu.editor.status-bar.render-average-fps": true,
   "visu.manifest.load-on-start": false,
   "visu.manifest.play-on-start": false,
   "visu.manifest.path": null,
-  "visu.editor.status-bar.render-average-fps": true,
+  "visu.player.force.tresholds": [ 0, 50, 125, 250 ],
+  "visu.player.point.tresholds": [ 0, 50, 125, 250 ],
   "end-property": null
 }

@@ -316,7 +316,7 @@ function VEStatusBar(_editor) constructor {
 
     var controller = this
     var layout = this.factoryLayout(parent)
-    var autosaveEnabled = Beans.get(BeanVisuController).autosaveEnabled
+    var autosaveEnabled = Beans.get(BeanVisuEditorController).autosaveEnabled
     return new Map(String, UI, {
       "ve-status-bar": new UI({
         name: "ve-status-bar",
@@ -438,11 +438,11 @@ function VEStatusBar(_editor) constructor {
             layout: layout.nodes.autosaveCheckbox,
             value: autosaveEnabled,
             callback: function() {
-              var controller = Beans.get(BeanVisuController)
-              controller.autosaveEnabled = this.value
-              Visu.settings.setValue("visu.autosave", this.value).save()
-              if (!controller.autosaveEnabled) {
-                controller.autosaveTimer.time = 0
+              var editor = Beans.get(BeanVisuEditorController)
+              editor.autosaveEnabled = this.value
+              Visu.settings.setValue("visu.editor.autosave", this.value).save()
+              if (!editor.autosaveEnabled) {
+                editor.autosaveTimer.time = 0
               }
             },
           }),

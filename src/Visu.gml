@@ -268,7 +268,7 @@ function _Visu() constructor {
     Assert.isType(layerName, String)
     Core.loadProperties(FileUtil.get($"{working_directory}core-properties.json"))
     Core.loadProperties(FileUtil.get($"{working_directory}visu-properties.json"))
-    this.settings.set(new SettingEntry({ name: "visu.autosave", type: SettingTypes.BOOLEAN, defaultValue: false }))
+    this.settings.set(new SettingEntry({ name: "visu.editor.autosave", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.language", type: SettingTypes.STRING, defaultValue: LanguageType.en_US }))
       .set(new SettingEntry({ name: "visu.fullscreen", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.window.width", type: SettingTypes.NUMBER, defaultValue: 1400 }))
@@ -345,25 +345,27 @@ function _Visu() constructor {
         )
       ))
     }
-    
-    if (!Beans.exists(BeanVisuEditorController)) {
-      Beans.add(BeanVisuEditorController, new Bean(VisuEditorController,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new VisuEditorController()
-        )
-      ))
-    }
 
-    if (!Beans.exists(BeanVisuEditorIO)) {
-      Beans.add(BeanVisuEditorIO, new Bean(VisuEditorIO,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new VisuEditorIO()
-        )
-      ))
+    if (Core.getProperty("visu.editor.enable", false)) {
+      if (!Beans.exists(BeanVisuEditorController)) {
+        Beans.add(BeanVisuEditorController, new Bean(VisuEditorController,
+          GMObjectUtil.factoryGMObject(
+            GMControllerInstance, 
+            layerId, 0, 0, 
+            new VisuEditorController()
+          )
+        ))
+      }
+  
+      if (!Beans.exists(BeanVisuEditorIO)) {
+        Beans.add(BeanVisuEditorIO, new Bean(VisuEditorIO,
+          GMObjectUtil.factoryGMObject(
+            GMServiceInstance, 
+            layerId, 0, 0, 
+            new VisuEditorIO()
+          )
+        ))
+      }
     }
 
     if (!Beans.exists(BeanVisuTestRunner)) {
