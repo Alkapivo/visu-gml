@@ -216,8 +216,8 @@ function VisuEditorController() constructor {
             - Struct.get(this.context.nodes, "title-bar").bottom() },
           y: function() { return Struct.get(this.context.nodes, "title-bar").bottom() },
         },
-        "preview": {
-          name: "visu-editor.preview",
+        "preview-editor": {
+          name: "visu-editor.preview-editor",
           width: function() { return this.context.width()
             - Struct.get(this.context.nodes, "accordion").width()
             - Struct.get(this.context.nodes, "brush-toolbar").width() },
@@ -228,6 +228,14 @@ function VisuEditorController() constructor {
           x: function() { return this.context.nodes.accordion.right() },
           y: function() { return Struct.get(this.context.nodes, "title-bar").bottom() },
         },
+        "preview-full": {
+          name: "visu-editor.preview-full",
+          width: function() { return GuiWidth() },
+          height: function() { return GuiHeight() },
+          x: function() { return 0 },
+          y: function() { return 0 }
+        },
+        "preview": { },
         "track-control": {
           name: "visu-editor.track-control",
           percentageHeight: 1.0,
@@ -328,6 +336,14 @@ function VisuEditorController() constructor {
     var renderTrackControl = this.store.getValue("render-trackControl")
     var trackControlNode = Struct.get(this.layout.nodes, "track-control")
     trackControlNode.percentageHeight = renderTrackControl ? 1.0 : 0.0
+    
+    Struct.set(
+      this.layout.nodes, 
+      "preview", 
+      Beans.get(BeanVisuController).renderUI 
+        ? Struct.get(this.layout.nodes, "preview-editor") 
+        : Struct.get(this.layout.nodes, "preview-full")
+    )
 
     return this
   }

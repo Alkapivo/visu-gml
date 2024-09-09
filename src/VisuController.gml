@@ -1,15 +1,5 @@
 ///@package io.alkapivo.visu
 
-///@enum
-function _GameMode(): Enum() constructor {
-  RACING = "racing"
-  BULLETHELL = "bulletHell"
-  PLATFORMER = "platformer"
-}
-global.__GameMode = new _GameMode()
-#macro GameMode global.__GameMode
-
-
 #macro BeanVisuController "visuController"
 ///@param {String} layerName
 function VisuController(layerName) constructor {

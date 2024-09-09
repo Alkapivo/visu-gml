@@ -1,8 +1,21 @@
 ///@package io.alkapivo.visu
 
+///@type {Number}
 global.__MAGIC_NUMBER_TASK = 10
 #macro MAGIC_NUMBER_TASK global.__MAGIC_NUMBER_TASK
 
+
+///@enum
+function _GameMode(): Enum() constructor {
+  RACING = "racing"
+  BULLETHELL = "bulletHell"
+  PLATFORMER = "platformer"
+}
+global.__GameMode = new _GameMode()
+#macro GameMode global.__GameMode
+
+
+///@static
 function _Visu() constructor {
 
   ///@type {Settings}
@@ -339,6 +352,16 @@ function _Visu() constructor {
           GMServiceInstance, 
           layerId, 0, 0, 
           new VisuEditorController()
+        )
+      ))
+    }
+
+    if (!Beans.exists(BeanVisuEditorIO)) {
+      Beans.add(BeanVisuEditorIO, new Bean(VisuEditorIO,
+        GMObjectUtil.factoryGMObject(
+          GMServiceInstance, 
+          layerId, 0, 0, 
+          new VisuEditorIO()
         )
       ))
     }
