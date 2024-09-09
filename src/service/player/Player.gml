@@ -264,12 +264,12 @@ function PlayerStats(_player, json) constructor {
       var controller = Beans.get(BeanVisuController)
       var value = this.get()
       if (previous < value) {
-        controller.shakeHUD()
+        controller.visuRenderer.hudRenderer.sendGlitchEvent()
         controller.sfxService.play("player-collect-bomb")
         //Core.print("Bomb added from", previous, "to", value)
       } else if (previous > value) {
         //Core.print("Bomb reduced from", previous, "to", value)
-        controller.shakeHUD()
+        controller.visuRenderer.hudRenderer.sendGlitchEvent()
         view_track_event.brush_view_glitch({
           "view-glitch_shader-rng-seed":0.46406799999999998,
           "view-glitch_use-factor":true,
@@ -321,11 +321,11 @@ function PlayerStats(_player, json) constructor {
       var controller = Beans.get(BeanVisuController)
       var value = this.get()
       if (previous < value) {
-        controller.shakeHUD()
+        controller.visuRenderer.hudRenderer.sendGlitchEvent()
         controller.sfxService.play("player-collect-life")
         //Core.print("Life added from", previous, "to", value)
       } else if (previous > value) {
-        controller.shakeHUD()
+        controller.visuRenderer.hudRenderer.sendGlitchEvent()
         //Core.print("Life reduced from", previous, "to", value)
         this.stats.setGodModeCooldown(3.0)
 

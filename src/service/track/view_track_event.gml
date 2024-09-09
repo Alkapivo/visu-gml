@@ -358,7 +358,7 @@ global.__view_track_event = {
     }
 
     if (Struct.get(data, "view-config_use-render-HUD")) {
-      controller.renderHUDEnabled = Struct
+      controller.visuRenderer.hudRenderer.enabled = Struct
         .get(data, "view-config_render-HUD")
     }
   },

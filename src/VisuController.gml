@@ -378,6 +378,9 @@ function VisuController(layerName) constructor {
   ///@type {LyricsRenderer}
   lyricsRenderer = new LyricsRenderer(this)
 
+  ///@type {VisuRenderer}
+  visuRenderer = new VisuRenderer(this)
+
   ///@type {GridECS}
   //gridECS = new GridECS(this) ///@ecs
 
@@ -387,108 +390,11 @@ function VisuController(layerName) constructor {
   ///@type {Boolean}
   renderGUIEnabled = true
 
-  ///@type {Boolean}
-  renderHUDEnabled = false
-
   ///@type {Struct}
   renderTimer = new DebugOSTimer("Render")
   
   ///@type {Struct}
   renderGUITimer = new DebugOSTimer("RenderGUI")
-
-  ///@type {BKTGlitch}
-  hudBKTGlitchService = new BKTGlitchService()
-
-  setHUDConfig = function(factor = 0.0, useConfig = true) {
-    var config = {
-      lineSpeed: {
-        defValue: 0.01,
-        minValue: 0.0,
-        maxValue: 0.5,
-      },
-      lineShift: {
-        defValue: 0.0,
-        minValue: 0.0,
-        maxValue: 0.05,
-      },
-      lineResolution: {
-        defValue: 0.0,
-        minValue: 0.0,
-        maxValue: 3.0,
-      },
-      lineVertShift: {
-        defValue: 0.0,
-        minValue: 0.0,
-        maxValue: 1.0,
-      },
-      lineDrift: {
-        defValue: 0.0,
-        minValue: 0.0,
-        maxValue: 1.0,
-      },
-      jumbleSpeed: {
-        defValue: 4.5,
-        minValue: 0.0,
-        maxValue: 25.0,
-      },
-      jumbleShift: {
-        defValue: 0.059999999999999998,
-        minValue: 0.0,
-        maxValue: 1.0,
-      },
-      jumbleResolution: {
-        defValue: 0.25,
-        minValue: 0.0,
-        maxValue: 1.0,
-      },
-      jumbleness: {
-        defValue: 0.10000000000000001,
-        minValue: 0.0,
-        maxValue: 1.0,
-      },
-      dispersion: {
-        defValue: 0.002,
-        minValue: 0.0,
-        maxValue: 0.5,
-      },
-      channelShift: {
-        defValue: 0.00050000000000000001,
-        minValue: 0.0,
-        maxValue: 0.05,
-      },
-      noiseLevel: {
-        defValue: 0.10000000000000001,
-        minValue: 0.0,
-        maxValue: 1.0,
-      },
-      shakiness: {
-        defValue: 0.5,
-        minValue: 0.0,
-        maxValue: 10.0,
-      },
-      rngSeed: {
-        defValue: 0.66600000000000004,
-        minValue: 0.0,
-        maxValue: 1.0,
-      },
-      intensity: {
-        defValue: 0.40000000000000002,
-        minValue: 0.0,
-        maxValue: 5.0,
-      },
-    }
-
-    if (useConfig) {
-      this.hudBKTGlitchService.dispatcher
-        .execute(new Event("load-config", config))
-    }
-
-    this.hudBKTGlitchService.dispatcher
-      .execute(new Event("spawn", { 
-        factor: factor, 
-        rng: !useConfig
-      }))
-  }
 
   ///@param {Boolean} value
   ///@return {TopDownController}
@@ -609,7 +515,6 @@ function VisuController(layerName) constructor {
       .setCursor(Cursor.DEFAULT)
       .center()
     
-    this.setHUDConfig()
     this.sfxService
       .set("player-collect-bomb", new SFX("sound_sfx_player_collect_bomb"))
       .set("player-collect-life", new SFX("sound_sfx_player_collect_life"))
@@ -803,9 +708,9 @@ function VisuController(layerName) constructor {
     }
 
     this.services.forEach(this.updateService, this)
+    this.visuRenderer.update()
     this.autosaveHandler()
     this.watchdog()
-    this.hudBKTGlitchService.update(GuiWidth(), GuiHeight())
 
     return this
   }
@@ -815,19 +720,6 @@ function VisuController(layerName) constructor {
     y: function() { return 0 },
     width: GuiWidth,
     height: GuiHeight,
-  }
-
-
-
-  ///@type {Font}
-  guiFont = new Font(font_kodeo_mono_18_bold)
-
-  hudBKTCooldown = new Timer(0.33)
-
-  shakeHUD = function() {
-    var value = choose(0.3, 0.4, 0.5, 0.6, 0.7)
-    this.setHUDConfig(value / 100.0, false)
-    hudBKTCooldown.reset()
   }
 
   ///@return {VisuController}
@@ -847,6 +739,7 @@ function VisuController(layerName) constructor {
         height: enable ? ceil(preview.height()) : GuiHeight(),
       })
       //this.gridECS.render() ///@ecs
+      this.visuRenderer.render()
     } catch (exception) {
       var message = $"render throws exception: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
@@ -858,83 +751,6 @@ function VisuController(layerName) constructor {
     this.renderTimer.finish()
     
     return this
-  }
-
-  renderHUD = function() {
-    if (!this.renderHUDEnabled) {
-      return
-    }
-
-    if (!this.hudBKTCooldown.finished) {
-      if (hudBKTCooldown.update().finished) {
-        hudBKTCooldown.time = hudBKTCooldown.duration
-        this.setHUDConfig(0.0, true)
-      }
-    }
-
-    var player = this.playerService.player
-    if (Core.isType(player, Player)) {
-      var enable = this.renderUI
-      var _editor = Beans.get(BeanVisuEditorController)
-      var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
-      var _x = enable ? ceil(preview.x()) : 0
-      var _y = enable ? ceil(preview.y()) : 0
-      var _width = enable ? ceil(preview.width()) : GuiWidth()
-      var _height = enable ? ceil(preview.height()) : GuiHeight()
-
-      var lifeString = ""
-      repeat (player.stats.life.get()) {
-        lifeString = $"{lifeString}L "
-      }
-
-      var bombString = ""
-      repeat (player.stats.bomb.get()) {
-        bombString = $"{bombString}B "
-      }
-
-      var point = string(player.stats.point.get())
-      repeat (4 - String.size(point)) {
-        point = $"0{point}"
-      }
-
-      //var force = string(player.stats.force.get())
-      //repeat (4 - String.size(force)) {
-      //  force = $"0{force}"
-      //}
-      var forceLevel = player.stats.forceLevel
-      var forceTreshold = forceLevel.level < forceLevel.tresholds.size() - 1
-        ? forceLevel.tresholds.get(forceLevel.level + 1)
-        : (forceLevel.tresholds.size() == 0 ? 0 : forceLevel.tresholds.getLast())
-      var force = forceLevel.level == forceLevel.tresholds.size() - 1
-        ? "MAX"
-        : $"{player.stats.force.get()} / {forceTreshold}"
-
-      /*
-      var text = ""
-        + $"POINT: {point}" + "\n"  
-        + $"FORCE: {force}" + "\n"
-        + $" LIFE: {lifeString}" + "\n"
-        + $" BOMB: {bombString}" + "\n"
-      */
-
-      var textMask  = $"POINT: {point}\nFORCE: {force}\n LIFE: {lifeString}\n BOMB: {bombString}"
-      var textLabel = $"POINT:        \nFORCE:        \n LIFE:\n BOMB:"
-      var textPoint = $"       {point}\n              \n      \n      "
-      var textForce = $"              \n       {force}\n      \n      "
-      var textLife = $"\n\n       {lifeString}\n\n"
-      var textBomb = $"\n\n\n       {bombString}"
-
-      var xStart = _width * 0.06
-      var yStart = _height * 0.08
-      var offset = (this.hudBKTCooldown.duration - this.hudBKTCooldown.time) * 64
-      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textLabel, c_fuchsia, null, 0.20, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textPoint, c_blue,    null, 0.66, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textForce, c_red,     null, 0.66, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textMask,  c_white,   null, 0.33, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textLife,  c_lime,    null, 0.33, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textBomb,  c_yellow,  null, 0.33, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)
-    }
-    
   }
 
   ///@return {VisuController}
@@ -960,7 +776,7 @@ function VisuController(layerName) constructor {
       })
       //this.gridECS.renderGUI() ///@ecs
       this.lyricsRenderer.renderGUI()
-      this.hudBKTGlitchService.renderOn(this.renderHUD)
+      this.visuRenderer.renderGUI()
       if (this.renderUI) {
         this.uiService.render()
         var loaderState = this.loader.fsm.getStateName()
