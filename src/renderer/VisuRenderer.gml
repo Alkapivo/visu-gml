@@ -8,6 +8,9 @@ function VisuRenderer() constructor {
   ///@type {VisuHUDRenderer}
   hudRenderer = new VisuHUDRenderer()
 
+  ///@type {LyricsRenderer}
+  lyricsRenderer = new LyricsRenderer()
+
   ///@private
   ///@type {UILayout}
   canvas = new UILayout({
@@ -45,6 +48,7 @@ function VisuRenderer() constructor {
   renderGUI = function() {
     var editor = Beans.get(BeanVisuEditorController)
     var _canvas = editor == null ? this.canvas : editor.layout.nodes.preview
+    this.lyricsRenderer.renderGUI(_canvas)
     this.hudRenderer.renderGUI(_canvas)
     return this
   }

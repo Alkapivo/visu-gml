@@ -375,9 +375,6 @@ function VisuController(layerName) constructor {
   ///@type {LyricsService}
   lyricsService = new LyricsService(this)
 
-  ///@type {LyricsRenderer}
-  lyricsRenderer = new LyricsRenderer(this)
-
   ///@type {VisuRenderer}
   visuRenderer = new VisuRenderer(this)
 
@@ -775,7 +772,6 @@ function VisuController(layerName) constructor {
         y: _y,
       })
       //this.gridECS.renderGUI() ///@ecs
-      this.lyricsRenderer.renderGUI()
       this.visuRenderer.renderGUI()
       if (this.renderUI) {
         this.uiService.render()
