@@ -111,8 +111,8 @@ function VisuRenderer() constructor {
         + gridService.updatePlayerServiceTimer.getValue()
         + gridService.updateShroomServiceTimer.getValue()
         + gridService.updateBulletServiceTimer.getValue()
-        + controller.renderTimer.getValue()
-        + controller.renderGUITimer.getValue()
+        + this.renderTimer.getValue()
+        + this.renderGUITimer.getValue()
   
       var text = $"shrooms: {shrooms}" + "\n"
         + $"bullets: {bullets}" + "\n"
@@ -122,8 +122,8 @@ function VisuRenderer() constructor {
         + gridService.updatePlayerServiceTimer.getMessage() + "\n"
         + gridService.updateShroomServiceTimer.getMessage() + "\n"
         + gridService.updateBulletServiceTimer.getMessage() + "\n"
-        + controller.renderTimer.getMessage() + "\n"
-        + controller.renderGUITimer.getMessage() + "\n"
+        + this.renderTimer.getMessage() + "\n"
+        + this.renderGUITimer.getMessage() + "\n"
         + $"Sum: {timeSum}" + "\n"
       GPU.render.text(32, 32, text, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
     }
