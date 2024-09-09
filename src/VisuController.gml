@@ -754,10 +754,10 @@ function VisuController(layerName) constructor {
       })
       .forEach(function(struct, key, context) {
         try {
-          Logger.debug("VisuController", $"Free '{key}'")
+          Logger.debug(BeanVisuController, $"Free '{key}'")
           Callable.run(Struct.get(struct, "free"))
         } catch (exception) {
-          Logger.error("VisuController", $"Unable to free '{key}'. {exception.message}")
+          Logger.error(BeanVisuController, $"Unable to free '{key}'. {exception.message}")
         }
       }, this)
     

@@ -453,6 +453,29 @@ function VisuEditorController() constructor {
     this.autosaveHandler()
     return this
   }
+
+  ///@return {VisuEditorController}
+  free = function() {
+    Struct.toMap(this)
+      .filter(function(value) {
+        if (!Core.isType(value, Struct)
+          || !Struct.contains(value, "free")
+          || !Core.isType(Struct.get(value, "free"), Callable)) {
+          return false
+        }
+        return true
+      })
+      .forEach(function(struct, key, context) {
+        try {
+          Logger.debug(BeanVisuEditorController, $"Free '{key}'")
+          Callable.run(Struct.get(struct, "free"))
+        } catch (exception) {
+          Logger.error(BeanVisuEditorController, $"Unable to free '{key}'. {exception.message}")
+        }
+      }, this)
+    
+    return this
+  }
   
   this.init()
 }
