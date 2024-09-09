@@ -297,7 +297,7 @@ function VETitleBar(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -306,7 +306,7 @@ function VETitleBar(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
     },
   }), { 
     enableLogger: false, 

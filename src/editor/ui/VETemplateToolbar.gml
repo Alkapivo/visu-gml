@@ -1804,7 +1804,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               }
             },
             updateLayout: new BindIntent(function(_position) {
-              var uiService = Beans.get(BeanVisuController).uiService
+              var uiService = Beans.get(BeanVisuEditorController).uiService
               var titleBar = uiService.find("ve-title-bar")
               var statusBar = uiService.find("ve-status-bar")
 
@@ -2192,7 +2192,7 @@ function VETemplateToolbar(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -2201,7 +2201,7 @@ function VETemplateToolbar(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
 
       this.store.get("template").set(null)
     },

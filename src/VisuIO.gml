@@ -4,17 +4,14 @@
 function VisuIO() constructor {
 
   ///@type {Keyboard}
-  keyboard = new Keyboard(
-    { 
-      controlTrack: KeyboardKeyType.SPACE,
-      renderUI: KeyboardKeyType.F5,
-      cameraKeyboardLook: KeyboardKeyType.F6,
-      cameraMouseLook: KeyboardKeyType.F7,
-      fullscreen: KeyboardKeyType.F11,
-      controlLeft: KeyboardKeyType.CONTROL_LEFT,
-      openProject: "O",
-    }
-  )
+  keyboard = new Keyboard({ 
+    controlTrack: KeyboardKeyType.SPACE,
+    cameraKeyboardLook: KeyboardKeyType.F6,
+    cameraMouseLook: KeyboardKeyType.F7,
+    fullscreen: KeyboardKeyType.F11,
+    controlLeft: KeyboardKeyType.CONTROL_LEFT,
+    openProject: "O",
+  })
 
   ///@type {Mouse}
   mouse = new Mouse({ 
@@ -80,10 +77,6 @@ function VisuIO() constructor {
   ///@param {VisuController} controller
   ///@return {VisuIO}
   functionKeyboardEvent = function(controller) {
-    if (this.keyboard.keys.renderUI.pressed) {
-      controller.renderUI = !controller.renderUI
-    }
-
     if (this.keyboard.keys.cameraKeyboardLook.pressed) {
       controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = !controller.visuRenderer.gridRenderer.camera.enableKeyboardLook
     }
@@ -104,10 +97,6 @@ function VisuIO() constructor {
         x: MouseUtil.getMouseX(), 
         y: MouseUtil.getMouseY(),
       })
-    }
-
-    if (!controller.renderUI) {
-      return this
     }
 
     if (this.mouse.buttons.left.pressed) {

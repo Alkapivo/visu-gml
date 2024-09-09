@@ -109,11 +109,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             }
           },
           updateLayout: new BindIntent(function(position) {
-            var controller = Beans.get(BeanVisuController)
-            var node = Struct.get(Beans.get(BeanVisuEditorController).layout.nodes, "brush-toolbar")
+            var editor = Beans.get(BeanVisuEditorController)
+            var node = Struct.get(editor.layout.nodes, "brush-toolbar")
             node.percentageWidth = abs(GuiWidth() - position) / GuiWidth()
 
-            var events = controller.uiService.find("ve-timeline-events")
+            var events = editor.uiService.find("ve-timeline-events")
             if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
               events.updateTimer.finish()
             }
@@ -780,7 +780,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               }
             },
             updateLayout: new BindIntent(function(_position) {
-              var uiService = Beans.get(BeanVisuController).uiService
+              var uiService = Beans.get(BeanVisuEditorController).uiService
               var titleBar = uiService.find("ve-title-bar")
               var statusBar = uiService.find("ve-status-bar")
               var brushNode = Struct.get(this.context.layout.context.nodes, "brush-view")
@@ -1269,7 +1269,7 @@ function VEBrushToolbar(_editor) constructor {
         }))
       }, {
         keys: keys,
-        uiService: Beans.get(BeanVisuController).uiService,
+        uiService: Beans.get(BeanVisuEditorController).uiService,
         containers: context.containers,
       })
     },
@@ -1280,7 +1280,7 @@ function VEBrushToolbar(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
 
       this.store.get("template").set(null)
       this.store.get("brush").set(null)

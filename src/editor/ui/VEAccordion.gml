@@ -351,7 +351,7 @@ function VEAccordion(_editor, config = null) constructor {
       }, {
         keys: GMArray.sort(this.containers.keys().getContainer()),
         containers: context.containers,
-        uiService: Beans.get(BeanVisuController).uiService,
+        uiService: Beans.get(BeanVisuEditorController).uiService,
       })
     },
     "close": function(event) {
@@ -361,7 +361,7 @@ function VEAccordion(_editor, config = null) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
 
       eventInspector.send(new Event("close"))
       templateToolbar.send(new Event("close"))

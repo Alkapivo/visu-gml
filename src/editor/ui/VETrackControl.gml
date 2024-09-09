@@ -215,12 +215,13 @@ function VETrackControl(_editor) constructor {
             this.value = clamp(mouseX / width, this.minValue, this.maxValue)
 
             var controller = Beans.get(BeanVisuController)
-            var rulerView = controller.uiService.find("ve-timeline-ruler")
+            var editor = Beans.get(BeanVisuController)
+            var rulerView = editor.uiService.find("ve-timeline-ruler")
             if (Core.isType(rulerView, UI)) {
               rulerView.state.set("time", this.value * controller.trackService.duration)
             }
 
-            var eventsView = controller.uiService.find("ve-timeline-events")
+            var eventsView = editor.uiService.find("ve-timeline-events")
             if (Core.isType(eventsView, UI)) {
               eventsView.state.set("time", this.value * controller.trackService.duration)
             }
@@ -706,7 +707,7 @@ function VETrackControl(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -715,7 +716,7 @@ function VETrackControl(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
     },
   }), { 
     enableLogger: false, 

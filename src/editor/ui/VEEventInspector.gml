@@ -76,7 +76,7 @@ function VEEventInspector(_editor) constructor {
           selectedEvent.data.data = template.event.data
           selectedEvent.channel = template.channel
 
-          var container = Beans.get(BeanVisuController).uiService
+          var container = Beans.get(BeanVisuEditorController).uiService
             .find("ve-timeline-events")
           if (!Core.isType(container, UI)) {
             return
@@ -184,7 +184,7 @@ function VEEventInspector(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -193,7 +193,7 @@ function VEEventInspector(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
 
       this.store.get("event").set(null)
     },

@@ -316,7 +316,7 @@ function VEStatusBar(_editor) constructor {
 
     var controller = this
     var layout = this.factoryLayout(parent)
-    var autosaveEnabled = Beans.get(BeanVisuEditorController).autosaveEnabled
+    var autosaveEnabled = Beans.get(BeanVisuEditorController).autosave.value
     return new Map(String, UI, {
       "ve-status-bar": new UI({
         name: "ve-status-bar",
@@ -439,10 +439,10 @@ function VEStatusBar(_editor) constructor {
             value: autosaveEnabled,
             callback: function() {
               var editor = Beans.get(BeanVisuEditorController)
-              editor.autosaveEnabled = this.value
+              editor.autosave.value = this.value
               Visu.settings.setValue("visu.editor.autosave", this.value).save()
-              if (!editor.autosaveEnabled) {
-                editor.autosaveTimer.time = 0
+              if (!editor.autosave.value) {
+                editor.autosave.timer.time = 0
               }
             },
           }),
@@ -493,7 +493,7 @@ function VEStatusBar(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -502,7 +502,7 @@ function VEStatusBar(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
     },
   }), { 
     enableLogger: false, 

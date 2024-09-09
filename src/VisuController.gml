@@ -6,9 +6,6 @@ function VisuController(layerName) constructor {
 
   ////@type {Gamemode}
   gameMode = GameMode.BULLETHELL
-
-  ///@type {Boolean}
-  renderUI = true
   
   ///@type {FSM}
   fsm = new FSM(this, {
@@ -601,10 +598,6 @@ function VisuController(layerName) constructor {
   ///@private
   ///@return {VisuController}
   updateUIService = function() {
-    if (!this.renderUI) {
-      return
-    }
-
     try {
       if (this.displayService.state == "resized") {
         ///@description reset UI timers after resize to avoid ghost effect
@@ -620,8 +613,8 @@ function VisuController(layerName) constructor {
       }
       this.uiService.update()
     } catch (exception) {
-      var message = $"'update' set fatal error: {exception.message}"
-      Logger.error("UIService", message)
+      var message = $"'updateUIService' set fatal error: {exception.message}"
+      Logger.error(BeanVisuController, message)
       Core.printStackTrace()
       this.send(new Event("spawn-popup", { message: message }))
     }
@@ -687,10 +680,6 @@ function VisuController(layerName) constructor {
     try {
       //this.gridECS.renderGUI() ///@ecs
       this.visuRenderer.renderGUI()
-      if (this.renderUI) {
-        this.uiService.render()
-        //Beans.get(BeanVisuEditorController).render()
-      }
     } catch (exception) {
       var message = $"renderGUI throws exception: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))

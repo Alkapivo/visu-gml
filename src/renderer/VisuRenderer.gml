@@ -151,6 +151,19 @@ function VisuRenderer() constructor {
     return this
   }
 
+  ///@private
+  ///@return {VisuRenderer}
+  renderUI = function() {
+    var editor = Beans.get(BeanVisuEditorController)
+    if (Core.isType(editor, VisuEditorController) && editor.renderUI) {
+      editor.uiService.render()
+    }
+
+    Beans.get(BeanVisuController).uiService.render()
+
+    return this
+  }
+
   ///@return {VisuRenderer}
   update = function() {
     var editor = Beans.get(BeanVisuEditorController)
@@ -182,6 +195,7 @@ function VisuRenderer() constructor {
     this.lyricsRenderer.renderGUI(_layout)
     this.hudRenderer.renderGUI(_layout)
     this.renderSpinner(_layout)
+    this.renderUI()
     this.renderGUITimer.finish()
     this.renderDebugGUI()
 

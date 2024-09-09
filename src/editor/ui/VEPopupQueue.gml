@@ -231,7 +231,7 @@ function VEPopupQueue(_editor) constructor {
         false
       ))
 
-      Beans.get(BeanVisuController).uiService.send(new Event("add", {
+      Beans.get(BeanVisuEditorController).uiService.send(new Event("add", {
         container: container,
         replace: true,
       }))
@@ -245,7 +245,7 @@ function VEPopupQueue(_editor) constructor {
             name: container.name, 
             quiet: true,
           }))
-        }, Beans.get(BeanVisuController).uiService)
+        }, Beans.get(BeanVisuEditorController).uiService)
         .clear()
     },
     "remove": function(event) {
@@ -257,7 +257,7 @@ function VEPopupQueue(_editor) constructor {
         return
       }
       
-      Beans.get(BeanVisuController).uiService.send(new Event("remove", { 
+      Beans.get(BeanVisuEditorController).uiService.send(new Event("remove", { 
         name: event.data, 
         quiet: true,
       }))

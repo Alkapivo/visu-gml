@@ -4,31 +4,38 @@
 function VisuEditorIO() constructor {
 
   ///@type {Keyboard}
-  keyboard = new Keyboard(
-    { 
-      renderLeftPane: KeyboardKeyType.F1,
-      renderBottomPane: KeyboardKeyType.F2,
-      renderRightPane: KeyboardKeyType.F3,
-      renderTrackControl: KeyboardKeyType.F4,
-      exitModal: KeyboardKeyType.ESC,
-      newProject: "N",
-      saveProject: "S",
-      saveTemplate: "T",
-      saveBrush: "U",
-      selectTool: "S",
-      eraseTool: "E",
-      brushTool: "B",
-      cloneTool: "C",
-      previewBrush: "P",
-      previewEvent: "I",
-      snapToGrid: "G",
-      zoomIn: KeyboardKeyType.PLUS,
-      zoomOut: KeyboardKeyType.MINUS,
-      numZoomIn: KeyboardKeyType.NUM_PLUS,
-      numZoomOut: KeyboardKeyType.NUM_MINUS,
-      controlLeft: KeyboardKeyType.CONTROL_LEFT,
-    }
-  )
+  keyboard = new Keyboard({ 
+    renderLeftPane: KeyboardKeyType.F1,
+    renderBottomPane: KeyboardKeyType.F2,
+    renderRightPane: KeyboardKeyType.F3,
+    renderTrackControl: KeyboardKeyType.F4,
+    renderUI: KeyboardKeyType.F5,
+    exitModal: KeyboardKeyType.ESC,
+    newProject: "N",
+    saveProject: "S",
+    saveTemplate: "T",
+    saveBrush: "U",
+    selectTool: "S",
+    eraseTool: "E",
+    brushTool: "B",
+    cloneTool: "C",
+    previewBrush: "P",
+    previewEvent: "I",
+    snapToGrid: "G",
+    zoomIn: KeyboardKeyType.PLUS,
+    zoomOut: KeyboardKeyType.MINUS,
+    numZoomIn: KeyboardKeyType.NUM_PLUS,
+    numZoomOut: KeyboardKeyType.NUM_MINUS,
+    controlLeft: KeyboardKeyType.CONTROL_LEFT,
+  })
+
+  ///@type {Mouse}
+  mouse = new Mouse({ 
+    left: MouseButtonType.LEFT,
+    right: MouseButtonType.RIGHT,
+    wheelUp: MouseButtonType.WHEEL_UP,
+    wheelDown: MouseButtonType.WHEEL_DOWN,
+  })
 
   ///@private
   ///@param {VisuController} controller
@@ -82,6 +89,10 @@ function VisuEditorIO() constructor {
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   functionKeyboardEvent = function(controller, editor) {
+    if (this.keyboard.keys.renderUI.pressed) {
+      editor.renderUI = !editor.renderUI
+    }
+
     if (this.keyboard.keys.renderTrackControl.pressed) {
       editor.store.get("render-trackControl")
         .set(!editor.store.getValue("render-trackControl"))
@@ -113,9 +124,9 @@ function VisuEditorIO() constructor {
     if (!GMTFContext.isFocused() 
       && this.keyboard.keys.exitModal.pressed) {
 
-      if (Core.isType(controller.uiService.find("visu-new-project-modal"), UI)) {
+      if (Core.isType(editor.uiService.find("visu-new-project-modal"), UI)) {
         editor.newProjectModal.send(new Event("close"))
-      } else if (Core.isType(controller.uiService.find("visu-modal"), UI)) {
+      } else if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
         editor.exitModal.send(new Event("close"))
       } else {
         editor.exitModal.send(new Event("open").setData({
@@ -238,10 +249,67 @@ function VisuEditorIO() constructor {
     return this
   }
 
+  ///@private
+  ///@param {VisuController} controller
+  ///@param {VisuEditorController} editor
+  ///@return {VisuEditorIO}
+  mouseEvent = function(controller, editor) {
+    static generateMouseEvent = function(name) {
+      return new Event(name, { 
+        x: MouseUtil.getMouseX(), 
+        y: MouseUtil.getMouseY(),
+      })
+    }
+
+    if (!editor.renderUI) {
+      return this
+    }
+
+    if (this.mouse.buttons.left.pressed) {
+      editor.uiService.send(generateMouseEvent("MousePressedLeft"))
+    }
+
+    if (this.mouse.buttons.left.released) {
+      editor.uiService.send(generateMouseEvent("MouseReleasedLeft"))
+      controller.displayService.setCursor(Cursor.DEFAULT)
+    }
+
+    if (this.mouse.buttons.left.drag) {
+      editor.uiService.send(generateMouseEvent("MouseDragLeft"))
+    }
+
+    if (this.mouse.buttons.left.drop) {
+      editor.uiService.send(generateMouseEvent("MouseDropLeft"))
+    }
+
+    if (this.mouse.buttons.right.pressed) {
+      editor.uiService.send(generateMouseEvent("MousePressedRight"))
+    }
+
+    if (this.mouse.buttons.right.released) {
+      editor.uiService.send(generateMouseEvent("MouseReleasedRight"))
+    }
+    
+    if (this.mouse.buttons.wheelUp.on) {  
+      editor.uiService.send(generateMouseEvent("MouseWheelUp"))
+    }
+    
+    if (this.mouse.buttons.wheelDown.on) {  
+      editor.uiService.send(generateMouseEvent("MouseWheelDown"))
+    }
+
+    if (MouseUtil.hasMoved()) {  
+      editor.uiService.send(generateMouseEvent("MouseHoverOver"))
+    }
+
+    return this
+  }
+
   ///@return {VisuEditorIO}
   update = function() {
     try {
       this.keyboard.update()
+      this.mouse.update()
 
       var editor = Beans.get(BeanVisuEditorController)
       if (!Core.isType(editor, VisuEditorController)) {
@@ -259,6 +327,7 @@ function VisuEditorIO() constructor {
       this.modalKeyboardEvent(controller, editor)
       this.templateToolbarKeyboardEvent(controller, editor)
       this.brushToolbarKeyboardEvent(controller, editor)
+      this.mouseEvent(controller, editor)
     } catch (exception) {
       var message = $"'VisuEditorIO.update' fatal error: {exception.message}"
       Logger.error(BeanVisuEditorIO, message)

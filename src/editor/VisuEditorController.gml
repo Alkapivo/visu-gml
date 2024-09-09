@@ -2,6 +2,9 @@
 
 #macro BeanVisuEditorController "VisuEditorController"
 function VisuEditorController() constructor {
+
+  ///@type {UIService}
+  uiService = new UIService(this)
   
   ///@type {VETitleBar}
   titleBar = new VETitleBar(this)
@@ -123,6 +126,41 @@ function VisuEditorController() constructor {
     },
   })
 
+  ///@type {Struct}
+  autosave = {
+    value: Visu.settings.getValue("visu.editor.autosave", false),
+    timer: new Timer(Core.getProperty("visu.editor.autosave.interval", 1)  * 60, { loop: Infinity }),
+    update: function() {
+      var controller = Beans.get(BeanVisuController)
+      if (!this.value || controller.fsm.getStateName() != "pause") {
+        return
+      }
+      
+      if (this.timer.update().finished) {
+        this.save()
+      }
+    },
+    save: function() {
+      try {
+        var controller = Beans.get(BeanVisuController)
+        var path = $"{global.__VisuTrack.path}manifest.visu"
+        if (!FileUtil.fileExists(path)) {
+          return
+        }
+  
+        global.__VisuTrack.saveProject(path)
+        controller.send(new Event("spawn-popup", { 
+          message: $"Project '{controller.trackService.track.name}' auto saved successfully at: '{path}'"
+        }))
+      } catch (exception) {
+        controller.send(new Event("spawn-popup", { 
+          message: $"Cannot save the project: {exception.message}"
+        }))
+        Logger.error(BeanVisuEditorController, $"Cannot auto save the project: {exception.message}")
+      }
+    }
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
@@ -163,6 +201,9 @@ function VisuEditorController() constructor {
         "timeline": this.timeline.send(new Event("close")),
       }
     },
+    "spawn-popup": function(event) {
+      this.popupQueue.send(new Event("push", event.data))
+    },
   }), {
     enableLogger: true,
     catchException: false,
@@ -179,7 +220,8 @@ function VisuEditorController() constructor {
     "statusBar",
     "popupQueue",
     "exitModal",
-    "newProjectModal"
+    "newProjectModal",
+    "autosave"
   ], function(name, index, editor) {
     Logger.debug(BeanVisuEditorController, $"Load service '{name}'")
     return {
@@ -284,45 +326,8 @@ function VisuEditorController() constructor {
   ///@type {UILayout}
   layout = this.factoryLayout()
 
-  ///@private
   ///@type {Boolean}
-  autosaveEnabled = Visu.settings.getValue("visu.editor.autosave", false)
-
-  ///@private
-  ///@type {Timer}
-  autosaveTimer = new Timer(Core.getProperty("visu.editor.autosave.interval", 1)  * 60, { loop: Infinity })
-
-  ///@private
-  ///@return {VisuController}
-  autosaveHandler = function() {
-    var controller = Beans.get(BeanVisuController)
-    if (!this.autosaveEnabled || controller.fsm.getStateName() != "pause") {
-      return this
-    }
-
-    return this.autosaveTimer.update().finished ? this.autosave() : this
-  }
-
-  ///@private
-  ///@return {VisuController}
-  autosave = function() {
-    try {
-      var path = $"{global.__VisuTrack.path}manifest.visu"
-      if (!FileUtil.fileExists(path)) {
-        return
-      }
-
-      global.__VisuTrack.saveProject(path)
-
-      this.send(new Event("spawn-popup", 
-        { message: $"Project '{this.trackService.track.name}' auto saved successfully at: '{path}'" }))
-    } catch (exception) {
-      this.send(new Event("spawn-popup", { message: $"Cannot save the project: {exception.message}" }))
-      Logger.error("VETitleBar", $"Cannot auto save the project: {exception.message}")
-    }
-
-    return this
-  }
+  renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", true), Boolean)
 
   ///@private
   ///@return {VisuEditorController}
@@ -380,7 +385,7 @@ function VisuEditorController() constructor {
     Struct.set(
       this.layout.nodes, 
       "preview", 
-      Beans.get(BeanVisuController).renderUI 
+      this.renderUI 
         ? Struct.get(this.layout.nodes, "preview-editor") 
         : Struct.get(this.layout.nodes, "preview-full")
     )
@@ -405,28 +410,51 @@ function VisuEditorController() constructor {
 
   ///@private
   ///@return {VisuEditorController}
-  renderLayout = function() {
-    static renderLayoutNode = function(layout, color) {
-      var beginX = layout.x()
-      var beginY = layout.y()
-      var endX = beginX + layout.width()
-      var endY = beginY + layout.height()
-      GPU.render.rectangle(beginX, beginY, endX, endY, false, color, color, color, color, 0.5)
+  updateDispatcher = function() {
+    try {
+      this.dispatcher.update()
+    } catch (exception) {
+      var message = $"dispatcher fatal error: {exception.message}"
+      Logger.error(BeanVisuEditorController, message)
+      this.send(new Event("spawn-popup", { message: message }))
     }
-
-    renderLayoutNode(this.layout, c_red)
-    renderLayoutNode(Struct.get(this.layout.nodes, "title-bar"), c_blue)
-    renderLayoutNode(Struct.get(this.layout.nodes, "accordion"), c_yellow)
-    renderLayoutNode(Struct.get(this.layout.nodes, "preview"), c_fuchsia)
-    renderLayoutNode(Struct.get(this.layout.nodes, "track-control"), c_lime)
-    renderLayoutNode(Struct.get(this.layout.nodes, "brush-toolbar"), c_orange)
-    renderLayoutNode(Struct.get(this.layout.nodes, "timeline"), c_green)
-    renderLayoutNode(Struct.get(this.layout.nodes, "status-bar"), c_grey)
 
     return this
   }
 
-  
+  ///@private
+  ///@return {VisuEditorController}
+  updateUIService = function() {
+    if (!this.renderUI) {
+      return this
+    }
+
+    try {
+      ///@description reset UI timers after resize to avoid ghost effect
+      if (Beans.get(BeanVisuController).displayService.state == "resized") {
+        this.uiService.containers.forEach(this.resetUIContainerTimer)
+      }
+      this.uiService.update()
+    } catch (exception) {
+      var message = $"'updateUIService' set fatal error: {exception.message}"
+      Logger.error(BeanVisuEditorController, message)
+      Core.printStackTrace()
+      this.send(new Event("spawn-popup", { message: message }))
+    }
+
+    return this
+  }
+
+  ///@private
+  ///@param {UIContainer}
+  resetUIContainerTimer = function(container) {
+    if (!Optional.is(container.updateTimer)) {
+      return
+    }
+
+    container.surfaceTick.skip()
+    container.updateTimer.time = container.updateTimer.duration
+  }
 
   ///@param {Event} event
   ///@return {?Promise}
@@ -436,21 +464,10 @@ function VisuEditorController() constructor {
 
   ///@return {VisuEditorController}
   update = function() {
-    try {
-      this.dispatcher.update()
-    } catch (exception) {
-      var message = $"VisuEditorController dispatcher fatal error: {exception.message}"
-      Logger.error("UI", message)
-      var controller = Beans.get(BeanVisuController)
-      if (Core.isType(controller, VisuController)) {
-        controller.send(new Event("spawn-popup", { message: message }))
-      }
-    }
-
+    this.updateDispatcher()
+    this.updateUIService()
     this.services.forEach(this.updateService, Beans.get(BeanVisuController))
-
     this.updateLayout()
-    this.autosaveHandler()
     return this
   }
 

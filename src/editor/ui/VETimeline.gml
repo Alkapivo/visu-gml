@@ -297,10 +297,11 @@ function VETimeline(_editor) constructor {
             },
             updateLayout: new BindIntent(function(position) {
               var controller = Beans.get(BeanVisuController)
+              var editor = Beans.get(BeanVisuEditorController)
               var node = Beans.get(BeanVisuEditorController).layout.nodes.timeline
               node.percentageHeight = abs((GuiHeight() - 24) - position) / (GuiHeight() - 24)
 
-              var events = controller.uiService.find("ve-timeline-events")
+              var events = editor.uiService.find("ve-timeline-events")
               if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
                 events.updateTimer.finish()
               }
@@ -899,7 +900,7 @@ function VETimeline(_editor) constructor {
               data: uiItem.state.get("event"),
             })
 
-          var inspector = Beans.get(BeanVisuController).uiService
+          var inspector = Beans.get(BeanVisuEditorController).uiService
             .find("ve-event-inspector-properties")
           if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
             inspector.updateTimer.finish()
@@ -942,7 +943,7 @@ function VETimeline(_editor) constructor {
                   data: uiItem.state.get("event"),
                 })
 
-                var inspector = Beans.get(BeanVisuController).uiService
+                var inspector = Beans.get(BeanVisuEditorController).uiService
                   .find("ve-event-inspector-properties")
                 if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
                   inspector.updateTimer.finish()
@@ -983,7 +984,7 @@ function VETimeline(_editor) constructor {
                       data: uiItem.state.get("event"),
                     })
 
-                    var inspector = Beans.get(BeanVisuController).uiService
+                    var inspector = Beans.get(BeanVisuEditorController).uiService
                       .find("ve-event-inspector-properties")
                     if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
                       inspector.updateTimer.finish()
@@ -1175,7 +1176,7 @@ function VETimeline(_editor) constructor {
                         data: trackEvent,
                       })
                     
-                    var inspector = Beans.get(BeanVisuController).uiService
+                    var inspector = Beans.get(BeanVisuEditorController).uiService
                       .find("ve-event-inspector-properties")
                     if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
                       inspector.updateTimer.finish()
@@ -1448,7 +1449,7 @@ function VETimeline(_editor) constructor {
       }, {
         keys: GMArray.sort(context.containers.keys().getContainer()),
         containers: context.containers,
-        uiService: Beans.get(BeanVisuController).uiService,
+        uiService: Beans.get(BeanVisuEditorController).uiService,
       })
     },
     "close": function(event) {
@@ -1458,7 +1459,7 @@ function VETimeline(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
     },
   }), { 
     enableLogger: false, 
