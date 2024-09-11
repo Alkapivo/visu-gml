@@ -33,7 +33,7 @@ global.__view_track_event = {
         Struct.set(sprite, "animate", animate)
         Struct.set(sprite, "speed", Struct.get(data, "view-wallpaper_texture-speed"))
       }
-      
+
       controller.gridService.send(new Event("fade-sprite", {
         sprite: SpriteUtil.parse(sprite),
         collection: Struct.get(data, "view-wallpaper_type") == "Background" 
@@ -42,6 +42,8 @@ global.__view_track_event = {
         type: Struct.get(data, "view-wallpaper_type"),
         fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
         fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
+        angle: Struct.get(data, "view-wallpaper_angle"),
+        speed: Struct.get(data, "view-wallpaper_speed"),
         executor: controller.gridService.executor,
       }))
     }

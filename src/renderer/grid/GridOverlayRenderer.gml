@@ -38,9 +38,9 @@ function GridOverlayRenderer() constructor {
     static renderBackground = function(task, index, acc) {
       var sprite = task.state.get("sprite")
       sprite.scaleToFill(acc.width, acc.height)
-      var _x = ceil(((sprite.texture.width * sprite.scaleX) - acc.width) / 2.0)
-      var _y = ceil(((sprite.texture.height * sprite.scaleY) - acc.height) / 2.0)
-      sprite.render(
+      var _x = ceil(((sprite.texture.width * sprite.scaleX) - acc.width) / 2.0) + task.state.get("x")
+      var _y = ceil(((sprite.texture.height * sprite.scaleY) - acc.height) / 2.0) + task.state.get("y")
+      sprite.renderTiled(
         ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
         ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
       )
@@ -65,9 +65,9 @@ function GridOverlayRenderer() constructor {
     static renderForeground = function(task, index, acc) {
       var sprite = task.state.get("sprite")
       sprite.scaleToFill(acc.width, acc.height)
-      var _x = ceil(((sprite.texture.width * sprite.scaleX) - acc.width) / 2.0)
-      var _y = ceil(((sprite.texture.height * sprite.scaleY) - acc.height) / 2.0)
-      sprite.render(
+      var _x = ceil(((sprite.texture.width * sprite.scaleX) - acc.width) / 2.0) + task.state.get("x")
+      var _y = ceil(((sprite.texture.height * sprite.scaleY) - acc.height) / 2.0) + task.state.get("y")
+      sprite.renderTiled(
         ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
         ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
       )
