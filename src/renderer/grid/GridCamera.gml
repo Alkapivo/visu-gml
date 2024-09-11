@@ -43,7 +43,7 @@ function GridCamera(config = {}) constructor {
 
 	///@param {UILayout} layout
 	///@return {Camera}
-	update = function() {
+	update = function(layout) {
 		this.executor.update()
 		if (this.enableMouseLook) {
       var width = layout.width()
