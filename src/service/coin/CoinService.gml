@@ -50,7 +50,7 @@ function CoinService(config = {}): Service() constructor {
   ///@param {Number} index
   ///@param {Struct} acc
   updateCoin = function(coin, index, acc) {
-    coin.move()
+    coin.move(acc.player)
     if (acc.player != null && coin.collide(acc.player)) {
       acc.player.stats.dispatchCoin(coin)
       acc.gc.push(index)
@@ -72,7 +72,6 @@ function CoinService(config = {}): Service() constructor {
   ///@return {CoinService}
   update = function() { 
     this.dispatcher.update()
-
     var controller = Beans.get(BeanVisuController)
     this.coins.forEach(this.updateCoin, {
       player: controller.playerService.player,
