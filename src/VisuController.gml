@@ -6,6 +6,9 @@ function VisuController(layerName) constructor {
 
   ////@type {Gamemode}
   gameMode = GameMode.BULLETHELL
+
+  ///@type {?VisuTrack}
+  track = null
   
   ///@type {FSM}
   fsm = new FSM(this, {
@@ -37,7 +40,6 @@ function VisuController(layerName) constructor {
             }))
             
             audio_stop_all()
-            VideoUtil.runGC()
             Beans.get(BeanSoundService).free()
             Beans.get(BeanTextureService).free()
           },
@@ -351,6 +353,19 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   watchdog = function() {
     try {
+      if (this.trackService.isTrackLoaded()) {
+        var ost = this.trackService.track.audio
+        var ostVolume = Visu.settings.getValue("visu.audio.ost.volume")
+        if (ost.isPlaying() && ost.getVolume() != ostVolume) {
+          ost.setVolume(ostVolume)
+        }
+      }
+
+      var sfxVolume = Visu.settings.getValue("visu.audio.sfx.volume")
+      if (this.sfxService.getVolume() != sfxVolume) {
+        this.sfxService.setVolume(sfxVolume)
+      }
+
       if (Optional.is(this.watchdogPromise)) {
         this.watchdogPromise = this.watchdogPromise.status == PromiseStatus.PENDING
           ? this.watchdogPromise

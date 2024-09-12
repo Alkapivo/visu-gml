@@ -213,9 +213,8 @@ function VETitleBar(_editor) constructor {
                   return
                 }
 
-                global.__VisuTrack.saveProject(path)
-
                 var controller = Beans.get(BeanVisuController)
+                controller.track.saveProject(path)
                 controller.send(new Event("spawn-popup", 
                   { message: $"Project '{controller.trackService.track.name}' saved successfully at: '{path}'" }))
               } catch (exception) {

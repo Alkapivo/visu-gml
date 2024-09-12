@@ -822,7 +822,7 @@ function GridRenderer() constructor {
     if (properties.gridClearFrame) {
       GPU.render.clear(properties.gridClearColor)
     } else {
-      GPU.set.blendMode(BlendMode.ADD)
+      GPU.set.blendMode(BlendMode.SUBTRACT)
         .render.fillColor(
           width,
           height,
@@ -943,7 +943,7 @@ function GridRenderer() constructor {
     if (properties.shaderClearFrame) {
       GPU.render.clear(properties.shaderClearColor)
     } else {
-      GPU.set.blendMode(BlendMode.ADD)
+      GPU.set.blendMode(BlendMode.SUBTRACT)
         .render.fillColor(
           width,
           height,

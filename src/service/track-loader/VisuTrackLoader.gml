@@ -1,6 +1,5 @@
 ///@package io.alkapivo.visu
 
-global.__VisuTrack = null
 ///@param {VisuController} _controller
 function VisuTrackLoader(_controller): Service() constructor {
 
@@ -55,8 +54,6 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, path) {
             window_set_caption($"{game_display_name}")
-            audio_master_gain(0.0)
-
             var controller = Beans.get(BeanVisuController)
             controller.visuRenderer.gridRenderer.clear()
             var editor = Beans.get(BeanVisuEditorController)
@@ -77,7 +74,6 @@ function VisuTrackLoader(_controller): Service() constructor {
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
             
             Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
-
             fsmState.state.set("promise", Beans.get(BeanFileService).send(
               new Event("fetch-file")
                 .setData({ path: path })
@@ -142,7 +138,7 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, data) {
             var controller = fsm.context.controller
-            global.__VisuTrack = data.manifest
+            controller.track = data.manifest
             var promises = new Map(String, Promise, {
               "texture": Beans.get(BeanFileService).send(
                 new Event("fetch-file")
@@ -168,7 +164,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                       acc: {
                         service: Beans.get(BeanTextureService),
                         promises: new Map(String, Promise),
-                        path: global.__VisuTrack.path,
+                        path: controller.track.path,
                       },
                       steps: 2,
                     })
@@ -193,14 +189,16 @@ function VisuTrackLoader(_controller): Service() constructor {
                         var path = FileUtil.get($"{acc.path}{soundIntent.file}")
                         Assert.fileExists(path)
                         Assert.isFalse(soundService.sounds.contains(key), "GMSound already loaded")
-                        soundService.sounds.add(audio_create_stream(path), key)
+
+                        var stream = audio_create_stream(path)
+                        soundService.sounds.add(stream, key)
                         soundService.intents.add(soundIntent, key)
                       },
                       acc: {
                         soundService: Beans.get(BeanSoundService),
-                        path: global.__VisuTrack.path,
+                        path: controller.track.path,
                       },
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: 1,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -505,8 +503,7 @@ function VisuTrackLoader(_controller): Service() constructor {
       "loaded": {
         actions: {
           onStart: function(fsm, fsmState, tasks) { 
-            window_set_caption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {global.__VisuTrack.path}")
-            audio_master_gain(1.0)
+            window_set_caption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {fsm.context.controller.track.path}")
 
             var editor = Beans.get(BeanVisuEditorController)
             if (Core.isType(editor, VisuEditorController)) {

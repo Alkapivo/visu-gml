@@ -249,7 +249,7 @@ function VEStatusBar(_editor) constructor {
             }
             item.set(parsedValue)
 
-            Struct.set(global.__VisuTrack, "bpm", parsedValue)
+            Struct.set(Beans.get(BeanVisuController).track, "bpm", parsedValue)
           },
         },
       }
@@ -294,7 +294,7 @@ function VEStatusBar(_editor) constructor {
             }
             item.set(parsedValue)
 
-            Struct.set(global.__VisuTrack, "bpmSub", parsedValue)
+            Struct.set(Beans.get(BeanVisuController).track, "bpmSub", parsedValue)
           },
         },
       }

@@ -800,7 +800,6 @@ function VisuNewProjectForm(json = null) constructor {
   ///@return {VisuNewProjectForm}
   save = function(manifestPath) {
     var json = this.serialize()
-    Core.print("JSON_", JSON.stringify(json, { pretty: true }))
     var controller = Beans.get(BeanVisuController)
 
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
@@ -1523,7 +1522,7 @@ function VisuNewProjectForm(json = null) constructor {
       FileUtil.copyFile(json.texture, $"{path}{manifest.data.texture}")
     }
 
-    var visuTrack = global.__VisuTrack
+    var visuTrack = controller.track
     if (json.includeBrushes && Core.isType(visuTrack, VisuTrack)) {
       visuTrack.editor.forEach(function(brush, index, acc) {
         acc.manifest.data.editor = GMArray.add(acc.manifest.data.editor, brush)

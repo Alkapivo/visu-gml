@@ -150,12 +150,12 @@ function VisuEditorController() constructor {
     save: function() {
       try {
         var controller = Beans.get(BeanVisuController)
-        var path = $"{global.__VisuTrack.path}manifest.visu"
+        var path = $"{controller.track.path}manifest.visu"
         if (!FileUtil.fileExists(path)) {
           return
         }
   
-        global.__VisuTrack.saveProject(path)
+        controller.track.saveProject(path)
         controller.send(new Event("spawn-popup", { 
           message: $"Project '{controller.trackService.track.name}' auto saved successfully at: '{path}'"
         }))

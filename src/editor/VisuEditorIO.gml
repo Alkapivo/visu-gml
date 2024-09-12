@@ -183,8 +183,7 @@ function VisuEditorIO() constructor {
           return
         }
 
-        global.__VisuTrack.saveProject(path)
-
+        controller.track.saveProject(path)
         controller.send(new Event("spawn-popup", 
           { message: $"Project '{controller.trackService.track.name}' saved successfully at: '{path}'" }))
       } catch (exception) {
