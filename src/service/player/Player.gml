@@ -23,6 +23,9 @@ function PlayerTemplate(json) constructor {
     PLAYER_GAME_MODES
   )
 
+  ///@type {?Struct}
+  stats = Core.isType(Struct.get(json, "stats"), Struct) ? json.stats : null
+
   ///@return {Struct}
   serialize = function() {
     var json = {
@@ -33,6 +36,10 @@ function PlayerTemplate(json) constructor {
 
     if (Core.isType(this.mask, Struct)) {
       Struct.set(json, "mask", this.mask)
+    }
+
+    if (Core.isType(this.stats, Struct)) {
+      Struct.set(json, "stats", this.stats)
     }
 
     return JSON.clone(json)
@@ -314,7 +321,7 @@ function PlayerStats(_player, json) constructor {
 
   ///@type {PlayerStat}
   life = new PlayerStat(this, Struct.appendUnique(Struct.get(json, "life"), {
-    value: 3,
+    value: 4,
     minValue: 0,
     maxValue: 10,
     onValueUpdate: function(previous) { 

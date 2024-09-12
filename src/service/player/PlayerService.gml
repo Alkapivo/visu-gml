@@ -23,6 +23,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
           animate: true,
         }),
         mask: Struct.get(event.data, "mask"),
+        stats: Struct.get(event.data, "stats"),
         keyboard: {
           up: KeyboardKeyType.ARROW_UP,
           down: KeyboardKeyType.ARROW_DOWN,
@@ -49,7 +50,9 @@ function PlayerService(_controller, config = {}): Service() constructor {
           _y = this.player.y
         }
 
-        Struct.set(template, "stats", this.player.stats)
+        if (!Optional.is(Struct.get(template, "stats"))) {
+          Struct.set(template, "stats", this.player.stats)
+        }
       }
 
       Struct.set(template, "x", _x)
