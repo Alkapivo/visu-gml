@@ -8,7 +8,7 @@ global.__VISU_FONT = [
   "font_consolas_10_regular",
   "font_consolas_10_bold",
   "font_consolas_12_bold",
-  "font_kodeo_mono_22_bold",
+  "font_kodeo_mono_18_bold"
 ]
 #macro VISU_FONT global.__VISU_FONT
 

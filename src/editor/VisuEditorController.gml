@@ -1,5 +1,7 @@
 ///@package io.alkapivo.visu.editor
 
+global.debugTimer = null
+
 #macro BeanVisuEditorController "VisuEditorController"
 function VisuEditorController() constructor {
 
@@ -175,20 +177,70 @@ function VisuEditorController() constructor {
       this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
       this.store.get("render-brush").set(this.store.getValue("_render-brush"))
       this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
-      return {
-        "titleBar": this.titleBar.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "title-bar") })),
-        "accordion": this.accordion.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "accordion") })),
-        "trackControl": this.trackControl.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "track-control") })),
-        "brushToolbar": this.brushToolbar.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "brush-toolbar") })),
-        "timeline": this.timeline.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "timeline") })),
-        "statusBar": this.statusBar.send(new Event("open")
-          .setData({ layout: Struct.get(this.layout.nodes, "status-bar") })),
-      }
+
+      var task = new Task("open-editor-ui")
+        .setTimeout(10.0)
+        .setPromise(event.promise) // pass promise to TaskExecutor
+        .setState(new Queue(Struct, [
+          {
+            handler: this.titleBar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "title-bar")
+            }),
+          },
+          {
+            handler: this.accordion,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "accordion")
+            }),
+          },
+          {
+            handler: this.trackControl,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "track-control")
+            }),
+          },
+          {
+            handler: this.brushToolbar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "brush-toolbar")
+            }),
+          },
+          {
+            handler: this.timeline,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "timeline")
+            }),
+          },
+          {
+            handler: this.statusBar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "status-bar")
+            }),
+          }
+        ]))
+        .whenUpdate(function() {
+          var entry = this.state.pop()
+          if (global.debugTimer == null) {
+            global.debugTimer = new DebugOSTimer("editor open")
+          } else {
+            global.debugTimer.finish()
+            Core.print(">>", global.debugTimer.getMessage())
+          }
+          global.debugTimer.start()
+          if (!Optional.is(entry)) {
+            this.fullfill()
+            global.debugTimer.finish()
+            Core.print(">>", global.debugTimer.getMessage())
+            global.debugTimer = null
+            return
+          }
+
+          entry.handler.send(entry.event)
+        })
+      this.executor.add(task)
+
+      event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "close": function(event) {
       this.store.get("_render-event").set(this.store.getValue("render-event"))
@@ -215,6 +267,10 @@ function VisuEditorController() constructor {
     enableLogger: true,
     catchException: false,
   })
+
+  ///@private
+  ///@type {TaskExecutor}
+  executor = new TaskExecutor(this)
 
   ///@private
   ///@type {Array<Struct>}
@@ -432,6 +488,20 @@ function VisuEditorController() constructor {
 
   ///@private
   ///@return {VisuEditorController}
+  updateExecutor = function() {
+    try {
+      this.executor.update()
+    } catch (exception) {
+      var message = $"executor fatal error: {exception.message}"
+      Logger.error(BeanVisuEditorController, message)
+      this.send(new Event("spawn-popup", { message: message }))
+    }
+
+    return this
+  }
+
+  ///@private
+  ///@return {VisuEditorController}
   updateUIService = function() {
     if (!this.renderUI) {
       return this
@@ -473,6 +543,7 @@ function VisuEditorController() constructor {
   ///@return {VisuEditorController}
   update = function() {
     this.updateDispatcher()
+    this.updateExecutor()
     this.updateUIService()
     this.services.forEach(this.updateService, Beans.get(BeanVisuController))
     this.updateLayout()

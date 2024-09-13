@@ -118,30 +118,30 @@ function Coin(config) constructor {
   ///@type {Boolean}
   magnet = false
 
+  ///@private
+  ///@type {Number}
+  magnetSpeed = 0.0
+
   ///@param {?Player} player
   ///@return {Coin}
   static move = function(player = null) {
-    var value = this.speed.update().value / 100.0
-    if (player != null) {
-      var length = Math.fetchLength(this.x, this.y, player.x, player.y)
-      if (length < 0.5) {
-        var to = Math.fetchAngle(this.x, this.y, player.x, player.y)
-        this.angle = Math.lerpAngle(this.angle, to, 0.1)
-        this.speed.value = abs(value) * 100.0
-        this.magnet = true
-      } else {
-        this.angle = this.magnet
-          ? Math.lerpAngle(this.angle, value < 0.0 ? 90 : 270, 0.1)
-          : (value < 0.0 ? 90 : 270)
-      }
+    var value = (this.speed.update().value / 100.0) + this.magnetSpeed
+    this.x += Math.fetchCircleX(abs(value), this.angle)
+    this.y += Math.fetchCircleY(abs(value), this.angle)
+
+    if (player != null && Math.fetchLength(this.x, this.y, player.x, player.y) < 0.4) {
+      var to = Math.fetchAngle(this.x, this.y, player.x, player.y)
+      this.magnet = true
+      this.magnetSpeed = clamp(this.magnetSpeed + DeltaTime.apply(0.000004), 0.0, 0.005)
+      this.speed.value = (abs(value) * 100.0)
+      this.angle = Math.lerpAngle(this.angle, to, 0.1)
     } else {
+      this.magnetSpeed = clamp(this.magnetSpeed - DeltaTime.apply(0.0005), 0.0, 0.005)
       this.angle = this.magnet
         ? Math.lerpAngle(this.angle, value < 0.0 ? 90 : 270, 0.1)
         : (value < 0.0 ? 90 : 270)
     }
-
-    this.x += Math.fetchCircleX(abs(value), this.angle)
-    this.y += Math.fetchCircleY(abs(value), this.angle)
+    
     return this
   }
 }

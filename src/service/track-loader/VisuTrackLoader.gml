@@ -55,6 +55,7 @@ function VisuTrackLoader(_controller): Service() constructor {
           onStart: function(fsm, fsmState, path) {
             window_set_caption($"{game_display_name}")
             var controller = Beans.get(BeanVisuController)
+
             controller.visuRenderer.gridRenderer.clear()
             var editor = Beans.get(BeanVisuEditorController)
             if (Core.isType(editor, VisuEditorController)) {
@@ -62,6 +63,7 @@ function VisuTrackLoader(_controller): Service() constructor {
               editor.dispatcher.execute(new Event("close"))
               editor.brushService.clearTemplates()
             }
+
             controller.trackService.dispatcher.execute(new Event("close-track"))
             controller.videoService.dispatcher.execute(new Event("close-video"))
             controller.gridService.dispatcher.execute(new Event("clear-grid"))
@@ -72,8 +74,9 @@ function VisuTrackLoader(_controller): Service() constructor {
             controller.coinService.dispatcher.execute(new Event("clear-coins")).execute(new Event("reset-templates"))
             controller.lyricsService.dispatcher.execute(new Event("clear-lyrics")).execute(new Event("reset-templates"))
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
-            
+
             Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
+
             fsmState.state.set("promise", Beans.get(BeanFileService).send(
               new Event("fetch-file")
                 .setData({ path: path })
@@ -509,7 +512,8 @@ function VisuTrackLoader(_controller): Service() constructor {
             if (Core.isType(editor, VisuEditorController)) {
               Beans.get(BeanVisuEditorController).send(new Event("open"))
             }
-            
+
+            VisuPreviewEvent()
             Beans.get(BeanVisuController).send(new Event("spawn-popup", 
               { message: $"Project '{Beans.get(BeanVisuController).trackService.track.name}' loaded successfully" }))
           }
@@ -547,4 +551,55 @@ function VisuTrackLoader(_controller): Service() constructor {
     }
     return this
   }
+}
+
+
+function VisuPreviewEvent() {
+  if (!Core.getProperty("visu.preview-mode", false)) {
+    return
+  }
+  
+  var handler = Struct.get(view_track_event, "brush_view_lyrics")
+  var data = {
+    "view-lyrics_use-finish-delay":true,
+    "view-lyrics_finish-delay":8.0,
+    "view-lyrics_use-transform-angle":false,
+    "view-lyrics_transform-angle":{
+      "value":320.0,
+      "factor":0.40000000000000002,
+      "target":280.0,
+      "increase":0.0
+    },
+    "view-lyrics_use-transform-speed":false,
+    "view-lyrics_transform-speed":{
+      "value":0.10000000000000001,
+      "factor":0.002,
+      "target":8.0,
+      "increase":0.0
+    },
+    "view-lyrics_fade-in":0.5,
+    "view-lyrics_fade-out":0.5,
+    "icon":{
+      "blend":"#009EB9",
+      "name":"texture_visu_editor_icon_event_view"
+    },
+    "view-lyrics_template":"lyrics-preview-mode",
+    "view-lyrics_font":"font_kodeo_mono_18_bold",
+    "view-lyrics_font-height":35.0,
+    "view-lyrics_use-timeout":false,
+    "view-lyrics_timeout":1.0,
+    "view-lyrics_color":"#1EFF75",
+    "view-lyrics_use-outline":true,
+    "view-lyrics_outline":"#000000",
+    "view-lyrics_align-v":"TOP",
+    "view-lyrics_align-h":"LEFT",
+    "view-lyrics_x":0.10000000000000001,
+    "view-lyrics_y":0.16000000000000001,
+    "view-lyrics_width":1.0,
+    "view-lyrics_height":1.0,
+    "view-lyrics_char-speed":1.5,
+    "view-lyrics_use-line-delay":false,
+    "view-lyrics_line-delay":0.5
+  }
+  Callable.run(handler, data)
 }

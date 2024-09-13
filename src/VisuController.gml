@@ -33,7 +33,7 @@ function VisuController(layerName) constructor {
       "load": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            fsmState.state.set("autoplay", data.autoplay)
+            fsmState.state.set("autoplay", Struct.getDefault(data, "autoplay", false))
             fsm.context.loader.fsm.dispatcher.send(new Event("transition", {
               name: "parse-manifest",
               data: data.manifest,
@@ -635,10 +635,23 @@ function VisuController(layerName) constructor {
     Logger.info("VisuController", "onSceneEnter")
     VideoUtil.runGC()
     if (Core.getProperty("visu.manifest.load-on-start", false)) {
-      this.send(new Event("load", {
-        manifest: FileUtil.get(Core.getProperty("visu.manifest.path")),
-        autoplay: Assert.isType(Core.getProperty("visu.manifest.play-on-start", false), Boolean),
-      }))
+      var task = new Task("load-manifest")
+        .setTimeout(3.0)
+        .setState({
+          cooldown: new Timer(1.0),
+          event: new Event("load", {
+            manifest: FileUtil.get(Core.getProperty("visu.manifest.path")),
+            autoplay: Assert.isType(Core.getProperty("visu.manifest.play-on-start", false), Boolean),
+          }),
+        })
+        .whenUpdate(function() {
+          if (this.state.cooldown.update().finished) {
+            Beans.get(BeanVisuController).send(this.state.event)
+            this.fullfill()
+          }
+        })
+      
+      this.executor.add(task)
     }
     
     return this

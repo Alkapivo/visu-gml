@@ -161,7 +161,7 @@ function PlayerBulletHellGameMode(json) {
       static calcSpeed = function(config, player, keyA, keyB, keyFocus) {
         var speedMax = config.speedMax
         if (keyFocus) {
-          var factor = abs(config.speedMax - config.speedMaxFocus) / GAME_FPS
+          var factor = abs(config.speedMax - config.speedMaxFocus) / 15.0
           speedMax = clamp(abs(config.speed) - DeltaTime.apply(factor), 
             config.speedMaxFocus, config.speedMax)
         }

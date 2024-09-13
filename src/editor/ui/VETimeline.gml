@@ -238,8 +238,9 @@ function VETimeline(_editor) constructor {
   factoryContainers = function(parent) {
     var controller = this
     var layout = this.factoryLayout(parent)
-    return new Map(String, UI, {
-      "_ve-timeline-background": new UI({
+    this.containers.clear()
+
+    this.containers.set("_ve-timeline-background", new UI({
         name: "_ve-timeline-background",
         state: new Map(String, any, {
           "background-alpha": 1.0,
@@ -321,8 +322,8 @@ function VETimeline(_editor) constructor {
             },
           }
         }
-      }),
-      "ve-timeline-form": new UI({
+      }))
+    this.containers.set("ve-timeline-form", new UI({
         name: "ve-timeline-form",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
@@ -363,8 +364,8 @@ function VETimeline(_editor) constructor {
             })
           )
         }
-      }),
-      "ve-timeline-channels": new UI({
+      }))
+    this.containers.set("ve-timeline-channels", new UI({
         name: "ve-timeline-channels",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
@@ -573,8 +574,8 @@ function VETimeline(_editor) constructor {
           this.controller.containers.get("ve-timeline-events").onInit()
           
         }),
-      }),
-      "ve-timeline-events": new UI({
+      }))
+    this.containers.set("ve-timeline-events", new UI({
         name: "ve-timeline-events",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
@@ -1257,8 +1258,8 @@ function VETimeline(_editor) constructor {
           }
           return uiItem
         }), 
-      }),
-      "ve-timeline-ruler": new UI({
+      }))
+    this.containers.set("ve-timeline-ruler", new UI({
         name: "ve-timeline-ruler",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
@@ -1432,8 +1433,9 @@ function VETimeline(_editor) constructor {
             timestamp: timestamp,
           }))
         }),
-      }),
-    })
+      }))
+
+    return this.containers
   }
 
   ///@type {EventPump}

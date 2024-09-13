@@ -18,9 +18,12 @@ function GridItemMovement(json = null, _useScale = true) constructor {
     / (this.useScale ? 100.0 : 1.0), Number)
 
   ///@type {Number}
-  speedMaxFocus = Assert.isType(Struct
-    .getDefault(json, "speedMaxFocus", Struct.getDefault(json, "speedMax", 2.1) / 2.0) 
-    / (this.useScale ? 100.0 : 1.0), Number)
+
+  
+  speedMaxFocus = (Core.isType(Struct.get(json, "speedMaxFocus"), Number) 
+    ? json.speedMaxFocus 
+    : 0.66) 
+    / (this.useScale ? 100.0 : 1.0)
   
   ///@type {Number}
   acceleration = Assert.isType(Struct

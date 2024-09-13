@@ -43,6 +43,10 @@ function VisuRenderer() constructor {
   spinnerFactor = 0
 
   ///@private
+  ///@type {Timer}
+  initTimer = new Timer(0.35)
+
+  ///@private
   ///@return {VisuRenderer}
   init = function() {
     return this
@@ -166,6 +170,10 @@ function VisuRenderer() constructor {
 
   ///@return {VisuRenderer}
   update = function() {
+    if (!this.initTimer.finished) {
+      this.initTimer.update()
+    }
+
     var editor = Beans.get(BeanVisuEditorController)
     var _layout = editor == null ? this.layout : editor.layout.nodes.preview
 
@@ -198,6 +206,11 @@ function VisuRenderer() constructor {
     this.renderUI()
     this.renderGUITimer.finish()
     this.renderDebugGUI()
+
+    var controller = Beans.get(BeanVisuController)
+    if (!this.initTimer.finished) {
+      GPU.render.clear(ColorUtil.BLACK)
+    }
 
     return this
   }

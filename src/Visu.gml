@@ -82,6 +82,20 @@ function _Visu() constructor {
     "lyrics-default": {
       "lines": [ "Lorem ipsum" ]
     },
+    "lyrics-preview-mode": {
+      "lines": [
+        "[SYSTEM] preview-mode detected",
+        "[SYSTEM] Showing preview-mode message",
+        "",
+        "         Z     - Shoot",
+        "         X     - Use bomb",
+        "         SHIFT - Focus mode",
+        "         SPACE - Play/pause",
+        "         F5    - Show/hide editor",
+        "",
+        "[SYSTEM] Clear preview-mode message after 8 sec"
+      ]
+    }
   }
 
   ///@private
@@ -310,7 +324,11 @@ function _Visu() constructor {
         GMObjectUtil.factoryGMObject(
           GMServiceInstance, 
           layerId, 0, 0, 
-          new FileService()
+          new FileService({ 
+            dispatcher: { 
+              limit: Core.getProperty("visu.files-service.dispatcher.limit", 1),
+            }
+          })
         )
       ))
     }
