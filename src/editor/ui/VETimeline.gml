@@ -11,6 +11,10 @@ global.__ToolType = new _ToolType()
 #macro ToolType global.__ToolType
 
 
+function _dummy(a) {
+  return a
+}
+
 ///@param {VisuEditorController} _editor
 function VETimeline(_editor) constructor {
 
@@ -235,12 +239,11 @@ function VETimeline(_editor) constructor {
   ///@private
   ///@param {UIlayout} parent
   ///@return {Map<String, UI>}
-  factoryContainers = function(parent) {
+  factoryOpenTask = function(parent) {
     var controller = this
     var layout = this.factoryLayout(parent)
-    this.containers.clear()
-
-    this.containers.set("_ve-timeline-background", new UI({
+    var containerIntents = new Map(String, Struct, {
+      "_ve-timeline-background": {
         name: "_ve-timeline-background",
         state: new Map(String, any, {
           "background-alpha": 1.0,
@@ -322,8 +325,8 @@ function VETimeline(_editor) constructor {
             },
           }
         }
-      }))
-    this.containers.set("ve-timeline-form", new UI({
+      },
+      "ve-timeline-form": {
         name: "ve-timeline-form",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
@@ -364,8 +367,8 @@ function VETimeline(_editor) constructor {
             })
           )
         }
-      }))
-    this.containers.set("ve-timeline-channels", new UI({
+      },
+      "ve-timeline-channels": {
         name: "ve-timeline-channels",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
@@ -574,8 +577,8 @@ function VETimeline(_editor) constructor {
           this.controller.containers.get("ve-timeline-events").onInit()
           
         }),
-      }))
-    this.containers.set("ve-timeline-events", new UI({
+      },
+      "ve-timeline-events": {
         name: "ve-timeline-events",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
@@ -1257,9 +1260,9 @@ function VETimeline(_editor) constructor {
             uiItem.updateArea()
           }
           return uiItem
-        }), 
-      }))
-    this.containers.set("ve-timeline-ruler", new UI({
+        }),
+      },
+      "ve-timeline-ruler": {
         name: "ve-timeline-ruler",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
@@ -1433,26 +1436,43 @@ function VETimeline(_editor) constructor {
             timestamp: timestamp,
           }))
         }),
-      }))
+      },
+    })
 
-    return this.containers
+    return new Task("init-container")
+      .setState({
+        context: controller,
+        containers: containerIntents,
+        queue: new Queue(String, GMArray.sort(containerIntents.keys().getContainer())),
+      })
+      .whenUpdate(function() {
+        var key = this.state.queue.pop()
+        if (key == null) {
+          this.fullfill()
+          return
+        }
+        this.state.context.containers.set(key, new UI(this.state.containers.get(key)))
+      })
+      .whenFinish(function() {
+        var containers = this.state.context.containers
+        IntStream.forEach(0, containers.size(), function(iterator, index, acc) {
+          Beans.get(BeanVisuEditorController).uiService.send(new Event("add", {
+            container: acc.containers.get(acc.keys[iterator]),
+            replace: true,
+          }))
+        }, {
+          keys: GMArray.sort(containers.keys().getContainer()),
+          containers: containers,
+        })
+      })
   }
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
-      var context = this
-      this.containers = this.factoryContainers(event.data.layout)
-      IntStream.forEach(0, this.containers.size(), function(iterator, index, acc) {
-        acc.uiService.send(new Event("add", {
-          container: acc.containers.get(acc.keys[iterator]),
-          replace: true,
-        }))
-      }, {
-        keys: GMArray.sort(context.containers.keys().getContainer()),
-        containers: context.containers,
-        uiService: Beans.get(BeanVisuEditorController).uiService,
-      })
+      this.dispatcher.execute(new Event("close"))
+      Beans.get(BeanVisuEditorController).executor
+        .add(this.factoryOpenTask(event.data.layout))
     },
     "close": function(event) {
       var context = this
