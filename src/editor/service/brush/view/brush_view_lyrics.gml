@@ -1,14 +1,39 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
 global.__VISU_FONT = [
+  "font_kodeo_mono_10_regular",
+  "font_kodeo_mono_12_regular",
+  "font_kodeo_mono_18_regular",
+  "font_kodeo_mono_28_regular",
+
+  "font_kodeo_mono_10_bold",
+  "font_kodeo_mono_12_bold",
+  "font_kodeo_mono_18_bold",
+  "font_kodeo_mono_28_bold",
+
   "font_inter_8_regular",
   "font_inter_10_regular",
   "font_inter_12_regular",
+  "font_inter_18_regular",
   "font_inter_24_regular",
+  "font_inter_28_regular",
+
+  "font_inter_8_bold",
+  "font_inter_10_bold",
+  "font_inter_12_bold",
+  "font_inter_18_bold",
+  "font_inter_24_bold",
+  "font_inter_28_bold",
+
   "font_consolas_10_regular",
+  "font_consolas_12_regular",
+  "font_consolas_18_regular",
+  "font_consolas_28_regular",
+
   "font_consolas_10_bold",
   "font_consolas_12_bold",
-  "font_kodeo_mono_18_bold"
+  "font_consolas_18_bold",
+  "font_consolas_28_bold"
 ]
 #macro VISU_FONT global.__VISU_FONT
 

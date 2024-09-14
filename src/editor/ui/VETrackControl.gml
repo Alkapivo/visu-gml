@@ -167,27 +167,18 @@ function VETrackControl(_editor) constructor {
           state: new Map(String, any),
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
+            var controller = Beans.get(BeanVisuController)
+            var trackService = controller.trackService
             var mousePromise = MouseUtil.getClipboard()
             var context = Struct.get(Struct.get(mousePromise, "state"), "context")
             if (context != null) {
-              if (context == this) {
-                this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
-                return
-              }
-
+              this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
               var ruler = Beans.get(BeanVisuEditorController).timeline.containers.get("ve-timeline-ruler")
-              if (context == ruler) {
-                var trackService = Beans.get(BeanVisuController).trackService
-                var mouseXTime = context.state.get("mouseXTime")
-                if (Core.isType(mouseXTime, Number)) {
-                  this.value = clamp(
-                    mouseXTime / trackService.duration, 
-                    this.minValue, 
-                    this.maxValue
-                  )
-                  return
-                }
+              if (ruler != null) {
+                ruler.state.set("time", this.value * trackService.duration)
+                ruler.state.set("mouseXTime", this.value * trackService.duration)
               }
+              return
             }
 
             if (this.state.contains("promise")) {
@@ -197,13 +188,11 @@ function VETrackControl(_editor) constructor {
               }
               this.state.remove("promise")
             }
-
-            var controller = Beans.get(BeanVisuController)
+            
             if (controller.fsm.getStateName() == "rewind") {
               return
             }
 
-            var trackService = controller.trackService
             this.value = clamp(
               trackService.time / trackService.duration, 
               this.minValue, 

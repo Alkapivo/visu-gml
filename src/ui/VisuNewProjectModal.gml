@@ -808,6 +808,7 @@ function VisuNewProjectForm(json = null) constructor {
       "version": "1",
       "data": {  
         "bpm": Beans.get(BeanVisuEditorController).store.getValue("bpm"),
+        "bpm-count": Beans.get(BeanVisuEditorController).store.getValue("bpm-count"),
         "bpm-sub": Beans.get(BeanVisuEditorController).store.getValue("bpm-sub"),
         "bullet": "template/bullet.json",
         "coin": "template/coin.json",

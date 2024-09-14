@@ -92,7 +92,7 @@ function Coin(config) constructor {
     : { value: -3.0, target: 1.0, factor: 0.1, increase: 0.0 })
 
   ///@type {Number}
-  angle = 90
+  angle = Core.isType(Struct.get(config, "angle"), Number) ? config.angle : 90.0
 
   ///@param {Player} target
   ///@return {Boolean}
@@ -125,10 +125,7 @@ function Coin(config) constructor {
   ///@param {?Player} player
   ///@return {Coin}
   static move = function(player = null) {
-    var value = (this.speed.update().value / 100.0) + this.magnetSpeed
-    this.x += Math.fetchCircleX(abs(value), this.angle)
-    this.y += Math.fetchCircleY(abs(value), this.angle)
-
+    var value = (this.speed.update().value / 100.0) 
     if (player != null && Math.fetchLength(this.x, this.y, player.x, player.y) < 0.4) {
       var to = Math.fetchAngle(this.x, this.y, player.x, player.y)
       this.magnet = true
@@ -137,11 +134,12 @@ function Coin(config) constructor {
       this.angle = Math.lerpAngle(this.angle, to, 0.1)
     } else {
       this.magnetSpeed = clamp(this.magnetSpeed - DeltaTime.apply(0.0005), 0.0, 0.005)
-      this.angle = this.magnet
-        ? Math.lerpAngle(this.angle, value < 0.0 ? 90 : 270, 0.1)
-        : (value < 0.0 ? 90 : 270)
+      this.angle = Math.lerpAngle(this.angle, value < 0.0 ? 90 : 270, 0.05)
     }
-    
+
+    value = abs(value) + this.magnetSpeed
+    this.x += Math.fetchCircleX(value, this.angle)
+    this.y += Math.fetchCircleY(value, this.angle)
     return this
   }
 }

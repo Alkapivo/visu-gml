@@ -17,6 +17,12 @@ function VisuHUDRenderer() constructor {
   ///@type {Font}
   font = new Font(font_kodeo_mono_18_bold)
 
+  ///@type {Number}
+  fadeIn = 0.0
+
+  ///@type {Number}
+  fadeInFactor = 0.03
+
   ///@private
   ///@return {VisuHUDRenderer}
   setGlitchServiceConfig = function(factor = 0.0, useConfig = true) {
@@ -131,7 +137,7 @@ function VisuHUDRenderer() constructor {
   ///@type {UILayout} layout
   ///@return {VisuHUDRenderer}
   renderHUD = function(layout) {
-    if (!this.enabled) {
+    if (!this.enabled && this.fadeIn == 0.0) {
       return
     }
 
@@ -184,12 +190,12 @@ function VisuHUDRenderer() constructor {
       var yStart = _height * 0.08
       var offset = (this.glitchCooldown.duration - this.glitchCooldown.time) * 64
 
-      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textLabel, c_fuchsia, null, 0.20, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textPoint, c_blue,    null, 0.66, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textForce, c_red,     null, 0.66, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textMask,  c_white,   null, 0.33, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textLife,  c_lime,    null, 0.33, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textBomb,  c_yellow,  null, 0.33, this.font, HAlign.LEFT, VAlign.BOTTOM)
+      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textLabel, c_fuchsia, null, 0.20 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textPoint, c_blue,    null, 0.66 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textForce, c_red,     null, 0.66 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textMask,  c_white,   null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textLife,  c_lime,    null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textBomb,  c_yellow,  null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)
     }
 
     return this
@@ -199,6 +205,17 @@ function VisuHUDRenderer() constructor {
   ///@return {VisuHUDRenderer}
   update = function(layout) {
     this.glitchService.update(layout.width(), layout.height())
+
+    if (this.enabled) {
+      if (this.fadeIn < 1.0) {
+        this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
+      }
+    } else {
+      if (this.fadeIn > 0.0) {
+        this.fadeIn = clamp(this.fadeIn - this.fadeInFactor, 0.0, 1.0)
+      }
+    }
+    
     return this
   }
 

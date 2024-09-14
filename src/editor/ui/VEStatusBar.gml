@@ -72,9 +72,23 @@ function VEStatusBar(_editor) constructor {
             margin: { left: 2 },
             width: function() { return 40 },
           },
+          bpmCountLabel: {
+            name: "status-bar.bpmCountLabel",
+            x: function() { return this.context.nodes.bpmValue.right()
+              + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 44 },
+          },
+          bpmCountValue: {
+            name: "status-bar.bpmCountValue",
+            x: function() { return this.context.nodes.bpmCountLabel.right() + this.margin.left },
+            y: function() { return 0 },
+            margin: { left: 2 },
+            width: function() { return 40 },
+          },
           bpmSubLabel: {
             name: "status-bar.bpmSubLabel",
-            x: function() { return this.context.nodes.bpmValue.right()
+            x: function() { return this.context.nodes.bpmCountValue.right()
               + this.margin.left },
             y: function() { return 0 },
             width: function() { return 30 },
@@ -250,6 +264,51 @@ function VEStatusBar(_editor) constructor {
             item.set(parsedValue)
 
             Struct.set(Beans.get(BeanVisuController).track, "bpm", parsedValue)
+          },
+        },
+      }
+
+      return Struct.appendRecursiveUnique(
+        struct,
+        VEStyles.get("text-field"),
+        false
+      )
+    }
+
+    static factoryCountField = function(json) {
+      var struct = {
+        type: UITextField,
+        layout: json.layout,
+        text: 0,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        config: { key: "bpm-count" },
+        store: {
+          key: "bpm-count",
+          callback: function(value, data) { 
+            var item = data.store.get("bpm-count")
+            if (item == null) {
+              return 
+            }
+
+            var bpmCount = item.get()
+            if (!Core.isType(bpmCount, Number)) {
+              return 
+            }
+            data.textField.setText(string(bpmCount))
+          },
+          set: function(value) {
+            var item = this.get()
+            if (item == null) {
+              return 
+            }
+
+            var parsedValue = NumberUtil.parse(value, null)
+            if (parsedValue == null) {
+              return
+            }
+            item.set(parsedValue)
+
+            Struct.set(Beans.get(BeanVisuController).track, "bpmCount", parsedValue)
           },
         },
       }
@@ -439,6 +498,13 @@ function VEStatusBar(_editor) constructor {
           }),
           "text_ve-status-bar_bpmValue": factoryBPMField({
             layout: layout.nodes.bpmValue,
+          }),
+          "text_ve-status-bar_bpmCountLabel": factoryLabel({
+            text: "Count:",
+            layout: layout.nodes.bpmCountLabel,
+          }),
+          "text_ve-status-bar_bpmCountValue": factoryCountField({
+            layout: layout.nodes.bpmCountValue,
           }),
           "text_ve-status-bar_bpmSubLabel": factoryLabel({
             text: "Sub:",

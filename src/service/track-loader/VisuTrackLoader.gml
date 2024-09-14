@@ -98,6 +98,9 @@ function VisuTrackLoader(_controller): Service() constructor {
                       var item = editor.store.get("bpm")
                       item.set(this.response.bpm)
   
+                      item = editor.store.get("bpm-count")
+                      item.set(this.response.bpmCount)
+
                       item = editor.store.get("bpm-sub")
                       item.set(this.response.bpmSub)
                     }

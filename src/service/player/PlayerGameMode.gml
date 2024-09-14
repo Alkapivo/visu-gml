@@ -227,6 +227,8 @@ function PlayerBulletHellGameMode(json) {
 
       if (Optional.is(player.signals.shroomCollision) 
         || Optional.is(player.signals.bulletCollision)) {
+        this.x.speed = 0.0
+        this.y.speed = 0.0
         player.stats.dispatchDeath()
       }
 

@@ -77,7 +77,7 @@ function GridItemSignals() constructor {
 
   ///@return {GridItemSignals}
   reset = function() {
-    this.kill = false
+    //this.kill = false
     this.bulletCollision = null
     this.shroomCollision = null
     this.playerCollision = null

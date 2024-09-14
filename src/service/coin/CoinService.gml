@@ -28,6 +28,10 @@ function CoinService(config = {}): Service() constructor {
         .serialize())
       Struct.set(template, "x", Assert.isType(event.data.x, Number))
       Struct.set(template, "y", Assert.isType(event.data.y, Number))
+      Struct.set(template, "angle", Struct.get(event.data, "angle"))
+      if (Optional.is(Struct.get(event.data, "speed"))) {
+        Struct.append(template.speed, event.data.speed)
+      }
       
       this.coins.add(new Coin(template))
     },

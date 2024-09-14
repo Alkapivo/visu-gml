@@ -59,6 +59,13 @@ function VisuEditorController() constructor {
         return clamp(value, 1, 999)
       }
     },
+    "bpm-count": {
+      type: Number,
+      value: Assert.isType(Visu.settings.getValue("visu.editor.bpm-count", 0), Number),
+      passthrough: function(value) {
+        return round(clamp(value, 0, 64))
+      }
+    },
     "bpm-sub": {
       type: Number,
       value: Assert.isType(Visu.settings.getValue("visu.editor.bpm-sub", 2), Number),
@@ -292,6 +299,7 @@ function VisuEditorController() constructor {
   init = function() {
     var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
     store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
+    store.get("bpm-count").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-count"))
     store.get("bpm-sub").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-sub"))
     store.get("snap").addSubscriber(generateSettingsSubscriber("visu.editor.snap"))
     store.get("render-event").addSubscriber(generateSettingsSubscriber("visu.editor.render-event"))
