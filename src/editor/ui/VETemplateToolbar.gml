@@ -2032,7 +2032,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
 
 ///@param {VisuEditorController}
-function VETemplateToolbar(_editor) constructor 
+function VETemplateToolbar(_editor) constructor {
 
   ///@type {VisuEditorController}
   editor = Assert.isType(_editor, VisuEditorController)
