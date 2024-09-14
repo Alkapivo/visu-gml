@@ -1,7 +1,5 @@
 ///@package io.alkapivo.visu.editor
 
-global.debugTimer = null
-
 #macro BeanVisuEditorController "VisuEditorController"
 function VisuEditorController() constructor {
 
@@ -221,18 +219,8 @@ function VisuEditorController() constructor {
         ]))
         .whenUpdate(function() {
           var entry = this.state.pop()
-          if (global.debugTimer == null) {
-            global.debugTimer = new DebugOSTimer("editor open")
-          } else {
-            global.debugTimer.finish()
-            Core.print(">>", global.debugTimer.getMessage())
-          }
-          global.debugTimer.start()
           if (!Optional.is(entry)) {
             this.fullfill()
-            global.debugTimer.finish()
-            Core.print(">>", global.debugTimer.getMessage())
-            global.debugTimer = null
             return
           }
 
@@ -412,6 +400,16 @@ function VisuEditorController() constructor {
   ///@private
   ///@return {VisuEditorController}
   updateLayout = function() {
+    static updateAccordion = function(container, key, enable) {
+      if (key == "_ve-accordion_accordion-items") {
+        container.enable = enable
+      } else {
+        if (!enable) {
+          container.enable = false
+        }
+      }
+    }
+
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
     brushNode.minWidth = renderBrush ? 270 : 0
@@ -432,15 +430,9 @@ function VisuEditorController() constructor {
     var accordionNode = Struct.get(this.layout.nodes, "accordion")
     accordionNode.minWidth = renderEvent ? 270 : 0
     accordionNode.maxWidth = renderEvent ? GuiWidth() * 0.37 : 0
-    this.accordion.containers.forEach(function(container, key, enable) {
-      if (key == "_ve-accordion_accordion-items") {
-        container.enable = enable
-      } else {
-        if (!enable) {
-          container.enable = false
-        }
-      }
-    }, renderEvent)
+    this.accordion.containers.forEach(updateAccordion, renderEvent)
+    this.accordion.eventInspector.containers.forEach(updateAccordion, renderEvent)
+    this.accordion.templateToolbar.containers.forEach(updateAccordion, renderEvent)
 
     var renderTrackControl = this.store.getValue("render-trackControl")
     var trackControlNode = Struct.get(this.layout.nodes, "track-control")

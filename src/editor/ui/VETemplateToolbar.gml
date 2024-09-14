@@ -2170,34 +2170,58 @@ function VETemplateToolbar(_editor) constructor {
 
   ///@private
   ///@param {UIlayout} parent
-  ///@return {Map<String, UI>}
-  factoryContainers = function(parent) {
-    this.layout = this.factoryLayout(parent)
+  ///@return {Task}
+  factoryOpenTask = function(parent) {
     var templateToolbar = this
-    var containers = new Map(String, UI)
+    var layout = this.factoryLayout(parent)
+    this.layout = layout
+    
+    var containerIntents = new Map(String, Struct)
     VisuTemplateContainers.forEach(function(template, name, acc) {
       var layout = Assert.isType(Struct.get(acc.templateToolbar.layout.nodes, name), UILayout)
-      var ui = new UI(template($"ve-template-toolbar_{name}", acc.templateToolbar, layout))
-      acc.containers.add(ui, $"ve-template-toolbar_{name}")
-    }, { containers: containers, templateToolbar: templateToolbar })
-    return containers
+      var ui = template($"ve-template-toolbar_{name}", acc.templateToolbar, layout)
+      acc.containers.set($"ve-template-toolbar_{name}", ui)
+    }, { containers: containerIntents, templateToolbar: templateToolbar })
+    
+    return new Task("init-container")
+      .setState({
+        context: templateToolbar,
+        containers: containerIntents,
+        queue: new Queue(String, GMArray.sort(containerIntents.keys().getContainer())),
+      })
+      .whenUpdate(function() {
+        var key = this.state.queue.pop()
+        if (key == null) {
+          this.fullfill()
+          return
+        }
+        this.state.context.containers.set(key, new UI(this.state.containers.get(key)))
+      })
+      .whenFinish(function() {
+        var containers = this.state.context.containers
+        IntStream.forEach(0, containers.size(), function(iterator, index, acc) {
+          Beans.get(BeanVisuEditorController).uiService.send(new Event("add", {
+            container: acc.containers.get(acc.keys[iterator]),
+            replace: true,
+          }))
+        }, {
+          keys: GMArray.sort(containers.keys().getContainer()),
+          containers: containers,
+        })
+      })
   }
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
-      this.containers = this.factoryContainers(event.data.layout)
-      containers.forEach(function(container, key, uiService) {
-        uiService.send(new Event("add", {
-          container: container,
-          replace: true,
-        }))
-      }, Beans.get(BeanVisuEditorController).uiService)
+      this.dispatcher.execute(new Event("close"))
+      Beans.get(BeanVisuEditorController).executor
+        .add(this.factoryOpenTask(event.data.layout))
     },
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        uiService.send(new Event("remove", { 
+        uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

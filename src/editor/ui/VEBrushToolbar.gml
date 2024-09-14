@@ -1180,17 +1180,43 @@ function VEBrushToolbar(_editor) constructor {
 
   ///@private
   ///@param {UIlayout} parent
-  ///@return {Map<String, UI>}
-  factoryContainers = function(parent) {
+  ///@return {Task}
+  factoryOpenTask = function(parent) {
     this.layout = this.factoryLayout(parent)
     var brushToolbar = this
-    var containers = new Map(String, UI)
+    var containerIntents = new Map(String, Struct)
     VisuBrushContainers.forEach(function(template, name, acc) {
       var layout = Assert.isType(Struct.get(acc.brushToolbar.layout.nodes, name), UILayout)
-      var ui = new UI(template($"ve-brush-toolbar_{name}", acc.brushToolbar, layout))
-      acc.containers.add(ui, $"ve-brush-toolbar_{name}")
-    }, { containers: containers, brushToolbar: brushToolbar })
-    return containers
+      var ui = template($"ve-brush-toolbar_{name}", acc.brushToolbar, layout)
+      acc.containers.set($"ve-brush-toolbar_{name}", ui)
+    }, { containers: containerIntents, brushToolbar: brushToolbar })
+    
+    return new Task("init-container")
+      .setState({
+        context: brushToolbar,
+        containers: containerIntents,
+        queue: new Queue(String, GMArray.sort(containerIntents.keys().getContainer())),
+      })
+      .whenUpdate(function() {
+        var key = this.state.queue.pop()
+        if (key == null) {
+          this.fullfill()
+          return
+        }
+        this.state.context.containers.set(key, new UI(this.state.containers.get(key)))
+      })
+      .whenFinish(function() {
+        var containers = this.state.context.containers
+        IntStream.forEach(0, containers.size(), function(iterator, index, acc) {
+          Beans.get(BeanVisuEditorController).uiService.send(new Event("add", {
+            container: acc.containers.get(acc.keys[iterator]),
+            replace: true,
+          }))
+        }, {
+          keys: GMArray.sort(containers.keys().getContainer()),
+          containers: containers,
+        })
+      })
   }
 
   ///@param {VEBrushTemplate}
@@ -1259,24 +1285,14 @@ function VEBrushToolbar(_editor) constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
-      this.containers = this.factoryContainers(event.data.layout)
-      var context = this
-      var keys = GMArray.sort(this.containers.keys().getContainer())
-      IntStream.forEach(0, VisuBrushContainers.size(), function(iterator, index, acc) {
-        acc.uiService.send(new Event("add", {
-          container: acc.containers.get(acc.keys[iterator]),
-          replace: true,
-        }))
-      }, {
-        keys: keys,
-        uiService: Beans.get(BeanVisuEditorController).uiService,
-        containers: context.containers,
-      })
+      this.dispatcher.execute(new Event("close"))
+      Beans.get(BeanVisuEditorController).executor
+        .add(this.factoryOpenTask(event.data.layout))
     },
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        uiService.send(new Event("remove", { 
+        uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,
         }))

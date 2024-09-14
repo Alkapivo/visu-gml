@@ -238,7 +238,7 @@ function VETimeline(_editor) constructor {
 
   ///@private
   ///@param {UIlayout} parent
-  ///@return {Map<String, UI>}
+  ///@return {Task}
   factoryOpenTask = function(parent) {
     var controller = this
     var layout = this.factoryLayout(parent)
@@ -271,6 +271,15 @@ function VETimeline(_editor) constructor {
             },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             updateCustom: function() {
+              static resetContainerTimer = function(container) {
+                if (!Optional.is(container.updateTimer)) {
+                  return
+                }
+
+                container.surfaceTick.skip()
+                container.updateTimer.time = container.updateTimer.duration
+              }
+
               if (MouseUtil.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
                 this.context.controller.containers.forEach(function(container) {
@@ -284,14 +293,10 @@ function VETimeline(_editor) constructor {
 
                 // reset accordion timer to avoid ghost effect,
                 // because timeline height is affecting accordion height
-                Beans.get(BeanVisuEditorController).accordion.containers.forEach(function(container) {
-                  if (!Optional.is(container.updateTimer)) {
-                    return
-                  }
-
-                  container.surfaceTick.skip()
-                  container.updateTimer.time = container.updateTimer.duration
-                })
+                var accordion = Beans.get(BeanVisuEditorController).accordion
+                accordion.containers.forEach(resetContainerTimer)
+                accordion.eventInspector.containers.forEach(resetContainerTimer)
+                accordion.templateToolbar.containers.forEach(resetContainerTimer)
 
                 if (!mouse_check_button(mb_left)) {
                   MouseUtil.clearClipboard()
@@ -352,6 +357,13 @@ function VETimeline(_editor) constructor {
                   button: { 
                     label: { text: "Add" },
                     callback: function() {
+                      var initialized = this.context.controller.containers
+                        .get("ve-timeline-events").state
+                        .get("initialized")
+                      if (!initialized) {
+                        return
+                      }
+
                       this.context.controller.containers
                         .get("ve-timeline-channels")
                         .addChannel(this.context.state
@@ -437,6 +449,13 @@ function VETimeline(_editor) constructor {
           }
         },
         onMouseDragLeft: function(event) {
+          var initialized = this.controller.containers
+            .get("ve-timeline-events").state
+            .get("initialized")
+          if (!initialized) {
+            return false
+          }
+
           var component = this.collection.components.find(function(component) {
             var text = component.items.find(function(item) {
               return item.type == UIText
@@ -446,13 +465,20 @@ function VETimeline(_editor) constructor {
               ? text.backgroundColor == ColorUtil.fromHex(text.colorHoverOver).toGMColor()
               : false
           })
-  
+
           if (Optional.is(component)) {
             this.state.set("dragItem", component)
             MouseUtil.setClipboard(component)
           }
         },
         onMouseDropLeft: function(event) {
+          var initialized = this.controller.containers
+            .get("ve-timeline-events").state
+            .get("initialized")
+          if (!initialized) {
+            return false
+          }
+
           var dragItem = this.state.get("dragItem")
           if (Optional.is(dragItem) && MouseUtil.getClipboard() == dragItem) {
             this.state.set("dragItem", null)
@@ -572,6 +598,13 @@ function VETimeline(_editor) constructor {
 
         ///@param {String} name
         removeChannel: new BindIntent(function(name) {
+          var initialized = this.controller.containers
+            .get("ve-timeline-events").state
+            .get("initialized")
+          if (!initialized) {
+            return
+          }
+
           Beans.get(BeanVisuController).trackService.track.removeChannel(name)
           this.onInit()
           this.controller.containers.get("ve-timeline-events").onInit()
@@ -592,7 +625,8 @@ function VETimeline(_editor) constructor {
           "lines-alpha": 1.0,
           "lines-thickness": 0.2,
           "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-          "initialized": false
+          "initialized": false,
+          "initializeChannels": false,
         }),
         updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity }),
         controller: controller,
@@ -644,16 +678,25 @@ function VETimeline(_editor) constructor {
 
           ///@todo refactor
           if (this.state.get("initialized") == false) {
-            this.state.set("initialized", true)
-            trackService.track.channels.forEach(function(channel, name, container) {
+            var initializeChannels = this.state.get("initializeChannels")
+            if (initializeChannels == null) {
+              initializeChannels = new Queue(String, trackService.track.channels.keys().getContainer())
+              this.state.set("initializeChannels", initializeChannels)
+            }
+
+            var container = this
+            var initializeChannel = initializeChannels.pop()
+            if (initializeChannel != null) {
+              var channel = trackService.track.channels.get(initializeChannel)
               channel.events.forEach(function(event, index, acc) {
                 ///@description do not use addEvent as TrackEvent already exists
                 var uiItem = acc.container.factoryEventUIItem(acc.channel.name, event)
                 acc.container.add(uiItem, uiItem.name)
               }, { channel: channel, container: container })
-            }, this)
-
-            var container = this
+              this.updateTimer.finish()
+              return
+            }
+            
             this.state.get("store").get("timeline-zoom")
               .addSubscriber({ 
                 name: this.name,
@@ -663,6 +706,8 @@ function VETimeline(_editor) constructor {
                 data: container,
                 overrideSubscriber: true,
               })
+
+            this.state.set("initialized", true)
           }
         }, 
         renderClipboard: new BindIntent(function() {
@@ -827,6 +872,7 @@ function VETimeline(_editor) constructor {
           this.lastIndex = 0
           this.state.set("amount", 0)
           this.state.set("initialized", false)
+          this.state.set("initializeChannels", null)
           this.state.set("chunkService", this.controller.factoryChunkService())
           this.updateCustom()
           this.updateArea()
@@ -915,6 +961,13 @@ function VETimeline(_editor) constructor {
           try {
             if (Optional.is(this.updateTimer)) {
               this.updateTimer.finish()
+            }
+
+            var initialized = this.controller.containers
+              .get("ve-timeline-events").state
+              .get("initialized")
+            if (!initialized) {
+              return false
             }
             
             var store = Beans.get(BeanVisuEditorController).store
@@ -1009,6 +1062,13 @@ function VETimeline(_editor) constructor {
             this.updateTimer.finish()
           }
           
+          var initialized = this.controller.containers
+            .get("ve-timeline-events").state
+            .get("initialized")
+          if (!initialized) {
+            return false
+          }
+
           var store = Beans.get(BeanVisuEditorController).store
           var tool = store.getValue("tool")
           switch (tool) {
@@ -1152,6 +1212,13 @@ function VETimeline(_editor) constructor {
                 if (!Core.isType(trackEvent, TrackEvent)
                   || !Core.isType(channel, String)) {
                   return
+                }
+
+                var initialized = this.controller.containers
+                  .get("ve-timeline-events").state
+                  .get("initialized")
+                if (!initialized) {
+                  return false
                 }
                 
                 var store = Beans.get(BeanVisuEditorController).store
@@ -1477,7 +1544,7 @@ function VETimeline(_editor) constructor {
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        uiService.send(new Event("remove", { 
+        uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,
         }))
