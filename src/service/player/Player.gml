@@ -408,7 +408,6 @@ function PlayerStats(_player, json) constructor {
         var forceCoinAmount = ceil((forceValue / 2.0) + irandom(forceValue / 2.0))
         this.stats.force.apply(-1 * forceValue)
         this.stats.forceLevel.set(0)
-        forceCoinAmount = 10
         repeat (forceCoinAmount) {
           var _x = this.stats.player.x + (choose(0.33, -0.33) * (random(view.width) / view.width))
           var _y = min(view.y + (view.height / 1.5), this.stats.player.y) - 0.5 - (0.2 * (random(view.height) / view.height))

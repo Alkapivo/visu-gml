@@ -94,6 +94,10 @@ function Coin(config) constructor {
   ///@type {Number}
   angle = Core.isType(Struct.get(config, "angle"), Number) ? config.angle : 90.0
 
+  ///@private
+  ///@type {Boolean}
+  simpleAngle = this.angle == 90.0
+
   ///@param {Player} target
   ///@return {Boolean}
   static collide = function(target) { 
@@ -133,8 +137,9 @@ function Coin(config) constructor {
       this.speed.value = (abs(value) * 100.0)
       this.angle = Math.lerpAngle(this.angle, to, 0.1)
     } else {
+      var dir = value < 0.0 ? 90.0 : 270.0
       this.magnetSpeed = clamp(this.magnetSpeed - DeltaTime.apply(0.0005), 0.0, 0.005)
-      this.angle = Math.lerpAngle(this.angle, value < 0.0 ? 90 : 270, 0.05)
+      this.angle = this.simpleAngle && !this.magnet ? dir : Math.lerpAngle(this.angle, dir, 0.05)
     }
 
     value = abs(value) + this.magnetSpeed

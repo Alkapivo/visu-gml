@@ -154,17 +154,10 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     }
 
     static moveShroom = function(shroom, key, acc) {
-      var view = acc.view
-      var size = acc.shroomGrid.size
-      var previousColumn = floor(shroom.x / size)
-      var previousRow = floor(shroom.y / size)
       shroom.move()
-      var afterColumn = floor(shroom.x / size)
-      var afterRow = floor(shroom.y / size)
-      if (previousColumn != afterColumn || previousRow != afterRow) {
-        acc.shroomGrid.move(previousColumn, previousRow, afterColumn, afterRow, shroom)
-      }
-
+      acc.shroomGrid.update(shroom)
+      
+      var view = acc.view
       var length = Math.fetchLength(
         shroom.x, shroom.y,
         view.x + (view.width / 2.0), 
@@ -215,7 +208,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
           var row = floor(bullet.y / shroomGrid.size)
           for (var rowIndex = row - 1; rowIndex <= row + 1; rowIndex++) {
             for (var columnIndex = column - 1; columnIndex <= column + 1; columnIndex++) {
-              shroomGrid.get(columnIndex, rowIndex).forEach(playerBullet, bullet)
+              var key = shroomGrid.toKey(column, row)
+              shroomGrid.get(key).forEach(playerBullet, bullet)
             } 
           }
 

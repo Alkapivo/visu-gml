@@ -47,6 +47,9 @@ function Shroom(template): GridItem(template) constructor {
   ///@type {Map<String, any>}
   state = Struct.getDefault(template, "state", new Map(String, any))
 
+  ///@type {?String}
+  shroomGridKey = null
+
   ///@param {VisuController} controller
   ///@return {Shroom}
   static update = function(controller) {
