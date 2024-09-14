@@ -507,6 +507,8 @@ function VisuEditorController() constructor {
       return this
     }
 
+    this.updateExecutor()
+
     try {
       ///@description reset UI timers after resize to avoid ghost effect
       if (Beans.get(BeanVisuController).displayService.state == "resized") {
@@ -543,7 +545,6 @@ function VisuEditorController() constructor {
   ///@return {VisuEditorController}
   update = function() {
     this.updateDispatcher()
-    this.updateExecutor()
     this.updateUIService()
     this.services.forEach(this.updateService, Beans.get(BeanVisuController))
     this.updateLayout()
