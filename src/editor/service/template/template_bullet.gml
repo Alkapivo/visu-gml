@@ -18,20 +18,61 @@ function template_bullet(json = null) {
         type: Rectangle,
         value: new Rectangle(Struct.getDefault(json, "mask", null)),
       },
-      "bullet_game-mode_bullet-hell_features": {
-        type: String,
-        value: JSON.stringify(Struct.getDefault(json.gameModes.bulletHell, "features", []), { pretty: true })
+      "bullet_damage": {
+        type: Number,
+        value: Core.isType(Struct.get(json, "damage"), Number) ? json.damage : 1.0,
+        passthrough: function(value) {
+          return round(clamp(NumberUtil.parse(value, this.value), 0, 9999.9))
+        },
       },
-      "bullet_game-mode_platformer_features": {
-        type: String,
-        value: JSON.stringify(Struct.getDefault(json.gameModes.platformer, "features", []), { pretty: true })
+      "bullet_use-transform-speed": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "speedTransformer"), Struct),
       },
-      "bullet_game-mode_racing_features": {
-        type: String,
-        value: JSON.stringify(Struct.getDefault(json.gameModes.racing, "features", []), { pretty: true })
+      "bullet_transform-speed": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "speedTransformer")),
+      },
+      "bullet_use-transform-angle": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "angleTransformer"), Struct),
+      },
+      "bullet_transform-angle": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "angleTransformer")),
+      },
+      "bullet_use-transform-swing-amount": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "swingAmount"), Struct),
+      },
+      "bullet_transform-swing-amount": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "swingAmount")),
+      },
+      "bullet_use-transform-swing-size": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "swingSize"), Struct),
+      },
+      "bullet_transform-swing-size": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "swingSize")),
       },
     }),
     components: new Array(Struct, [
+      {
+        name: "bullet_damage",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Damage",
+          },  
+          field: { 
+            store: { key: "bullet_damage" },
+          },
+        },
+      },
       {
         name: "bullet-texture",
         template: VEComponents.get("texture-field-ext"),
@@ -155,68 +196,198 @@ function template_bullet(json = null) {
         },
       },
       {
-        name: "bullet_game-mode_bullet-hell",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
+        name: "bullet_transform-speed",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "BulletHell" },
-        },
-      },
-      {
-        name: "bullet_game-mode_bullet-hell_features",
-        template: VEComponents.get("text-area"),
-        layout: VELayouts.get("text-area"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          field: { 
-            v_grow: true,
-            w_min: 570,
-            store: { key: "bullet_game-mode_bullet-hell_features" },
+          title: {
+            label: {
+              text: "Transform speed",
+              enable: { key: "bullet_use-transform-speed" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-transform-speed" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_use-transform-speed" },
+            },
+            field: {
+              store: { key: "bullet_transform-speed" },
+              enable: { key: "bullet_use-transform-speed" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_use-transform-speed" },
+            },
+            field: {
+              store: { key: "bullet_transform-speed" },
+              enable: { key: "bullet_use-transform-speed" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "bullet_use-transform-speed" },
+            },
+            field: {
+              store: { key: "bullet_transform-speed" },
+              enable: { key: "bullet_use-transform-speed" },
+            },
           },
         },
       },
       {
-        name: "bullet_game-mode_platformer",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
+        name: "bullet_transform-angle",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Platformer" },
-        },
-      },
-      {
-        name: "bullet_game-mode_platformer_features",
-        template: VEComponents.get("text-area"),
-        layout: VELayouts.get("text-area"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          field: { 
-            v_grow: true,
-            w_min: 570,
-            store: { key: "bullet_game-mode_platformer_features" },
+          title: {
+            label: {
+              text: "Transform angle",
+              enable: { key: "bullet_use-transform-angle" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-transform-angle" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_use-transform-angle" },
+            },
+            field: {
+              store: { key: "bullet_transform-angle" },
+              enable: { key: "bullet_use-transform-angle" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_use-transform-angle" },
+            },
+            field: {
+              store: { key: "bullet_transform-angle" },
+              enable: { key: "bullet_use-transform-angle" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "bullet_use-transform-angle" },
+            },
+            field: {
+              store: { key: "bullet_transform-angle" },
+              enable: { key: "bullet_use-transform-angle" },
+            },
           },
         },
       },
       {
-        name: "bullet_game-mode_racing",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
+        name: "bullet_transform-swing-amount",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Racing" },
+          title: {
+            label: {
+              text: "Transform swing amount",
+              enable: { key: "bullet_use-transform-swing-amount" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-transform-swing-amount" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_use-transform-swing-amount" },
+            },
+            field: {
+              store: { key: "bullet_transform-swing-amount" },
+              enable: { key: "bullet_use-transform-swing-amount" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_use-transform-swing-amount" },
+            },
+            field: {
+              store: { key: "bullet_transform-swing-amount" },
+              enable: { key: "bullet_use-transform-swing-amount" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "bullet_use-transform-swing-amount" },
+            },
+            field: {
+              store: { key: "bullet_transform-swing-amount" },
+              enable: { key: "bullet_use-transform-swing-amount" },
+            },
+          },
         },
       },
       {
-        name: "bullet_game-mode_racing_features",
-        template: VEComponents.get("text-area"),
-        layout: VELayouts.get("text-area"),
+        name: "bullet_transform-swing-size",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          field: { 
-            v_grow: true,
-            w_min: 570,
-            store: { key: "bullet_game-mode_racing_features" },
+          title: {
+            label: {
+              text: "Transform swing size",
+              enable: { key: "bullet_use-transform-swing-size" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-transform-swing-size" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_use-transform-swing-size" },
+            },
+            field: {
+              store: { key: "bullet_transform-swing-size" },
+              enable: { key: "bullet_use-transform-swing-size" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_use-transform-swing-size" },
+            },
+            field: {
+              store: { key: "bullet_transform-swing-size" },
+              enable: { key: "bullet_use-transform-swing-size" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "bullet_use-transform-swing-size" },
+            },
+            field: {
+              store: { key: "bullet_transform-swing-size" },
+              enable: { key: "bullet_use-transform-swing-size" },
+            },
           },
         },
       },

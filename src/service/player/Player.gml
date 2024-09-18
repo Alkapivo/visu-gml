@@ -571,7 +571,6 @@ function Player(template): GridItem(template) constructor {
       this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
     }
 
-
     this.stats.update()
 
     var view = controller.gridService.view

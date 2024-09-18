@@ -104,9 +104,7 @@ function VEPopupQueue(_editor) constructor {
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       updateCustom: function() {
         var index = this.controller.containers
-          .findIndex(function(key, index, target) { ///@todo move to Lambda util
-            return key == target
-          }, this.name)
+          .findIndex(Lambda.equal, this.name)
         
         if (Core.isType(index, Number)) {
           this.layout.index = index
@@ -249,9 +247,7 @@ function VEPopupQueue(_editor) constructor {
         .clear()
     },
     "remove": function(event) {
-      var index = this.containers.findIndex(function(container, index, target) { ///@todo move to Lambda util
-        return container.name == target
-      }, event.data)
+      var index = this.containers.findIndex(Lambda.equal, event.data)
 
       if (!Core.isType(index, Number)) {
         return

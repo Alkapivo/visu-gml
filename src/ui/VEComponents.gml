@@ -1706,7 +1706,7 @@ global.__VEComponents = new Map(String, Callable, {
                 return
               }
 
-              var index = data.findIndex(findEqual, item.get())
+              var index = data.findIndex(Lambda.equal, item.get())
               index = (index == null ? 0 : index) + increment
               if (index < 0) {
                 index = data.size() - 1
@@ -1823,11 +1823,6 @@ global.__VEComponents = new Map(String, Callable, {
 
       if (Struct.get(_config, "callback") == null) {
         Struct.set(_config, method(_config, function() {
-          ///@todo move to Lambda util
-          static findEqual = function(source, iterator, target) {
-            return source == target
-          }
-
           var increment = Struct.get(this, "increment")
           if (!Optional.is(this.store) || !Core.isType(increment, Number)) {
             return
@@ -1843,7 +1838,7 @@ global.__VEComponents = new Map(String, Callable, {
             return
           }
 
-          var index = data.findIndex(findEqual, item.get())
+          var index = data.findIndex(Lambda.equal, item.get())
           index = (index == null ? 0 : index) + increment
           if (index < 0) {
             index = data.size() - 1

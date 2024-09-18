@@ -1,11 +1,11 @@
 ///@package io.alkapivo.visu.service.player
 
-///@param {Controller} _controller
+///@param {VisuController} _controller
 ///@param {Struct} [config]
 function PlayerService(_controller, config = {}): Service() constructor {
 
-  ///@type {Controller}
-  controller = Assert.isType(_controller, Struct)
+  ///@type {VisuController}
+  controller = Assert.isType(_controller, VisuController)
 
   ///@type {?Player}
   player = null
@@ -59,6 +59,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
 
       Struct.set(template, "x", _x)
       Struct.set(template, "y", _y)
+      Struct.set(template, "uid", this.controller.gridService.generateUID())
 
       this.set(new Player(template))
       this.player.updateGameMode(this.controller.gameMode)

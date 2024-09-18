@@ -513,7 +513,7 @@ function VisuTrackLoader(_controller): Service() constructor {
 
             var editor = Beans.get(BeanVisuEditorController)
             if (Core.isType(editor, VisuEditorController)) {
-              Beans.get(BeanVisuEditorController).send(new Event("open"))
+              editor.send(new Event("open"))
             }
 
             VisuPreviewEvent()

@@ -219,11 +219,11 @@ function VisuEditorController() constructor {
   ///@type {Array<Struct>}
   services = new Array(Struct, GMArray.map([
     "titleBar",
+    "statusBar",
     "accordion",
     "trackControl",
     "brushToolbar",
     "timeline",
-    "statusBar",
     "popupQueue",
     "exitModal",
     "newProjectModal",
@@ -263,6 +263,12 @@ function VisuEditorController() constructor {
           }),
         },
         {
+          handler: this.statusBar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "status-bar")
+          }),
+        },
+        {
           handler: this.accordion,
           event: new Event("open").setData({ 
             layout: Struct.get(this.layout.nodes, "accordion")
@@ -284,12 +290,6 @@ function VisuEditorController() constructor {
           handler: this.timeline,
           event: new Event("open").setData({ 
             layout: Struct.get(this.layout.nodes, "timeline")
-          }),
-        },
-        {
-          handler: this.statusBar,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "status-bar")
           }),
         }
       ]))
@@ -497,6 +497,9 @@ function VisuEditorController() constructor {
     var renderTrackControl = this.store.getValue("render-trackControl")
     var trackControlNode = Struct.get(this.layout.nodes, "track-control")
     trackControlNode.percentageHeight = renderTrackControl ? 1.0 : 0.0
+    this.trackControl.containers.forEach(function(container, key, enable) {
+      container.enable = enable
+    }, renderTrackControl)
     
     Struct.set(
       this.layout.nodes, 

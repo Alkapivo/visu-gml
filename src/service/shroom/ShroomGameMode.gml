@@ -23,15 +23,13 @@ function ShroomBulletHellGameMode(json) {
     ///@param {Shroom} shroom
     ///@param {VisuController} controller
     update: function(shroom, controller) {
-      if (shroom.signals.bulletCollision != null) {
-        shroom.signal("kill")
-      }
-  
-      if (shroom.signals.playerCollision != null) {
+      
+      if (shroom.healthPoints == 0 
+        || shroom.signals.playerCollision != null) {
         shroom.signal("kill")
       }
 
-      if (shroom.signals.kill) {
+      if (shroom.signals.kill || shroom.signals.damage) {
         controller.sfxService.play("shroom-die")
       }
     },
