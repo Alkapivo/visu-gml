@@ -141,7 +141,7 @@ function VETemplate(json) constructor {
       }
     }
 
-    if (this.store.getValue("shroom_health-points")) {
+    if (this.store.getValue("shroom_use-health-points")) {
       Struct.set(json, "healthPoints", this.store.getValue("shroom_health-points"))
     }
 
@@ -158,7 +158,24 @@ function VETemplate(json) constructor {
     var json = {
       name: Assert.isType(this.store.getValue("template-name"), String),
       sprite: sprite.serialize(),
-      damage: this.store.getValue("bullet_damage"),
+      damage: this.store.getValue("bullet_use-damage")
+        ? this.store.getValue("bullet_damage")
+        : null,
+      lifespawnMax: this.store.getValue("bullet_use-lifespawn")
+        ? this.store.getValue("bullet_lifespawn")
+        : null,
+      bulletTemplateOnDeath: this.store.getValue("bullet_use-template-on-death")
+        ? this.store.getValue("bullet_template-on-death")
+        : null,
+      bulletAmountOnDeath: this.store.getValue("bullet_use-template-on-death")
+        ? this.store.getValue("bullet_template-amount-on-death")
+        : null,
+      bulletSpawnAngleOnDeath: this.store.getValue("bullet_use-template-on-death")
+        ? this.store.getValue("bullet_template-spawn-angle-on-death")
+        : null,
+      bulletAngleStepOnDeath: this.store.getValue("bullet_use-template-on-death")
+        ? this.store.getValue("bullet_template-angle-step-on-death")
+        : null,
       speedTransformer: this.store.getValue("bullet_use-transform-speed")
         ? this.store.getValue("bullet_transform-speed").serialize()
         : null,

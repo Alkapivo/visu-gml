@@ -206,7 +206,7 @@ function VEPopupQueue(_editor) constructor {
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
           },
           onMousePressedLeft: function(event) {
-            this.context.controller.dispatcher.send(new Event("remove", this.context.name))
+            this.context.dispatcher.send(new Event("remove", this.context.name))
           },
         },
       }
@@ -247,7 +247,9 @@ function VEPopupQueue(_editor) constructor {
         .clear()
     },
     "remove": function(event) {
-      var index = this.containers.findIndex(Lambda.equal, event.data)
+      var index = this.containers.findIndex(function(container, index, target) {
+        return container.name == target
+      }, event.data)
 
       if (!Core.isType(index, Number)) {
         return

@@ -20,6 +20,34 @@ function BulletTemplate(_name, json) constructor {
     ? json.damage 
     : null
 
+  ///@type {?Number}
+  lifespawnMax = Core.isType(Struct.get(json, "lifespawnMax"), Number)
+    ? json.lifespawnMax
+    : null 
+
+  ///@type {?String}
+  bulletTemplateOnDeath = Core.isType(Struct.get(json, "bulletTemplateOnDeath"), String)
+    ? json.bulletTemplateOnDeath
+    : null
+
+  ///@private
+  ///@type {?Number}
+  bulletAmountOnDeath = Core.isType(Struct.get(json, "bulletAmountOnDeath"), Number)
+    ? json.bulletAmountOnDeath
+    : null
+
+  ///@private
+  ///@type {?Number}
+  bulletSpawnAngleOnDeath = Core.isType(Struct.get(json, "bulletSpawnAngleOnDeath"), Number)
+    ? json.bulletSpawnAngleOnDeath
+    : null
+
+  ///@private
+  ///@type {?Number}
+  bulletAngleStepOnDeath = Core.isType(Struct.get(json, "bulletAngleStepOnDeath"), Number)
+    ? json.bulletAngleStepOnDeath
+    : null
+
   ///@type {?Struct}
   speedTransformer = Core.isType(Struct.get(json, "speedTransformer"), Struct) 
     ? json.speedTransformer
@@ -52,6 +80,26 @@ function BulletTemplate(_name, json) constructor {
 
     if (Optional.is(this.damage)) {
       Struct.set(json, "damage", this.damage)
+    }
+
+    if (Optional.is(this.lifespawnMax)) {
+      Struct.set(json, "lifespawnMax", this.lifespawnMax)
+    }
+
+    if (Optional.is(this.bulletTemplateOnDeath)) {
+      Struct.set(json, "bulletTemplateOnDeath", this.bulletTemplateOnDeath)
+    }
+
+    if (Optional.is(this.bulletAmountOnDeath)) {
+      Struct.set(json, "bulletAmountOnDeath", this.bulletAmountOnDeath)
+    }
+
+    if (Optional.is(this.bulletSpawnAngleOnDeath)) {
+      Struct.set(json, "bulletSpawnAngleOnDeath", this.bulletSpawnAngleOnDeath)
+    }
+
+    if (Optional.is(this.bulletAngleStepOnDeath)) {
+      Struct.set(json, "bulletAngleStepOnDeath", this.bulletAngleStepOnDeath)
     }
 
     if (Optional.is(this.speedTransformer)) {
@@ -87,33 +135,64 @@ function Bullet(template): GridItem(template) constructor {
     ? template.damage 
     : 1
 
+  ///@private
   ///@type {?Struct}
   speedTransformer = Core.isType(Struct.get(template, "speedTransformer"), Struct) 
     ? new NumberTransformer(template.speedTransformer)
     : null
-    
+  
+  ///@private  
   ///@type {?NumberTransformer}
   angleTransformer = Core.isType(Struct.get(template, "angleTransformer"), Struct) 
     ? new NumberTransformer(template.angleTransformer)
     : null
 
+  ///@private    
   ///@type {?NumberTransformer}
   swingAmount = Core.isType(Struct.get(template, "swingAmount"), Struct) 
     ? new NumberTransformer(template.swingAmount)
     : null
   
+  ///@private
   ///@type {?NumberTransformer}
   swingSize = Core.isType(Struct.get(template, "swingSize"), Struct) 
     ? new NumberTransformer(template.swingSize)
     : null
 
+  ///@private
   ///@type {Timer}
   swingTimer = new Timer(pi * 2, { loop: Infinity })
 
   ///@private
   ///@type {Number}
-  lifespawnMax = 30
+  lifespawnMax = Core.isType(Struct.get(template, "lifespawnMax"), Number)
+    ? template.lifespawnMax
+    : 30.0
+
+  ///@private
+  ///@type {?String}
+  bulletTemplateOnDeath = Core.isType(Struct.get(template, "bulletTemplateOnDeath"), String)
+    ? template.bulletTemplateOnDeath
+    : null
+
+  ///@private
+  ///@type {Number}
+  bulletAmountOnDeath = Core.isType(Struct.get(template, "bulletAmountOnDeath"), Number)
+    ? template.bulletAmountOnDeath
+    : 1.0
+
+  ///@private
+  ///@type {Number}
+  bulletSpawnAngleOnDeath = Core.isType(Struct.get(template, "bulletSpawnAngleOnDeath"), Number)
+    ? template.bulletSpawnAngleOnDeath
+    : 0.0
   
+  ///@private
+  ///@type {Number}
+  bulletAngleStepOnDeath = Core.isType(Struct.get(template, "bulletAngleStepOnDeath"), Number)
+    ? template.bulletAngleStepOnDeath
+    : 0.0
+
   ///@param {VisuController} controller
   ///@return {Bullet}
   static update = function(controller) {

@@ -509,10 +509,11 @@ function VisuController(layerName) constructor {
       .set("player-collect-point-or-force", new SFX("sound_sfx_player_collect_point_or_force"))
       .set("player-die", new SFX("sound_sfx_player_die"))
       .set("player-force-level-up", new SFX("sound_sfx_player_force_level_up"))
-      .set("player-shoot", new SFX("sound_sfx_player_shoot", 2))
+      .set("player-shoot", new SFX("sound_sfx_player_shoot", 3))
       .set("player-use-bomb", new SFX("sound_sfx_player_use_bomb"))
-      .set("shroom-die", new SFX("sound_sfx_shroom_die", 2))
-      .set("shroom-shoot", new SFX("sound_sfx_shroom_shoot", 2))
+      .set("shroom-die", new SFX("sound_sfx_shroom_die", 3))
+      .set("shroom-damage", new SFX("sound_sfx_shroom_damage", 3))
+      .set("shroom-shoot", new SFX("sound_sfx_shroom_shoot", 3))
 
     return this
   }
@@ -652,6 +653,8 @@ function VisuController(layerName) constructor {
         })
       
       this.executor.add(task)
+    } else {
+      Beans.get(BeanDialogueService).open("menu")
     }
     
     return this

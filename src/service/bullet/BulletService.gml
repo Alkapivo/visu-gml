@@ -114,6 +114,19 @@ function BulletService(_controller, config = {}): Service() constructor {
         if (bullet.producer == Player) {
           context.chunkService.remove(bullet)
         }
+
+        if (Optional.is(bullet.bulletTemplateOnDeath)) {
+          for (var idx = 0; idx < bullet.bulletAmountOnDeath; idx++) {
+            context.send(new Event("spawn-bullet", {
+              x: bullet.x,
+              y: bullet.y,
+              angle: bullet.angle + bullet.bulletSpawnAngleOnDeath + (idx * bullet.bulletAngleStepOnDeath),
+              speed: bullet.speed * 1000.0,
+              producer: bullet.producer,
+              template: bullet.bulletTemplateOnDeath,
+            }))
+          }
+        }
       }
     }
 

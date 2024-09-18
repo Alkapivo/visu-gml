@@ -58,19 +58,19 @@ function GridItemChunkService(_size) constructor {
     var height = (item.mask.getHeight() * item.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT
     var position = {
       start: {
-        x: int64(floor(((item.x) - (width / 2)) / this.size)),
-        y: int64(floor(((item.y) - (height / 2)) / this.size)),
+        x: int64((((item.x) - (width / 2)) / this.size)),
+        y: int64((((item.y) - (height / 2)) / this.size)),
       },
       finish: {
-        x: int64(floor(((item.x) + (width / 2)) / this.size)),
-        y: int64(floor(((item.y) + (height / 2)) / this.size)),
+        x: int64((((item.x) + (width / 2)) / this.size)),
+        y: int64((((item.y) + (height / 2)) / this.size)),
       },
       keys: new Array(String),
     }
 
-    for (var row = 0; row < position.finish.y - position.start.y + 1; row++) {
-      for (var column = 0; column < position.finish.x - position.start.x + 1; column++) {
-        var key = this.getKey(int64(position.start.x + row), int64(position.start.y + column))
+    for (var row = 0; row <= position.finish.y - position.start.y; row++) {
+      for (var column = 0; column <= position.finish.x - position.start.x; column++) {
+        var key = this.getKey(position.start.x + column, position.start.y + row)
         var chunk = this.get(key)
         if (Optional.is(chunk.findIndex(Lambda.equal, item))) {
           var message = $"GridItem with uid '{item.uid}' was already added to chunk '{key}'"
@@ -121,10 +121,10 @@ function GridItemChunkService(_size) constructor {
     var position = item.chunkPosition
     var width = (item.mask.getWidth() * item.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH
     var height = (item.mask.getHeight() * item.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT
-    var startX = int64(floor(((item.x) - (width / 2)) / this.size))
-    var startY = int64(floor(((item.y) - (height / 2)) / this.size))
-    var finishX = int64(floor(((item.x) + (width / 2)) / this.size))
-    var finishY = int64(floor(((item.y) + (height / 2)) / this.size))
+    var startX = int64((((item.x) - (width / 2)) / this.size))
+    var startY = int64((((item.y) - (height / 2)) / this.size))
+    var finishX = int64((((item.x) + (width / 2)) / this.size))
+    var finishY = int64((((item.y) + (height / 2)) / this.size))
     
     if (position.start.x != startX
       || position.start.y != startY
@@ -153,9 +153,9 @@ function GridItemChunkService(_size) constructor {
       position.finish.x = finishX
       position.finish.y = finishY
       position.keys.clear()
-      for (var row = 0; row < position.finish.y - position.start.y + 1; row++) {
-        for (var column = 0; column < position.finish.x - position.start.x + 1; column++) {
-          var key = this.getKey(int64(position.start.x + row), int64(position.start.y + column))
+      for (var row = 0; row <= position.finish.y - position.start.y; row++) {
+        for (var column = 0; column <= position.finish.x - position.start.x; column++) {
+          var key = this.getKey(position.start.x + column, position.start.y + row)
           var chunk = this.get(key)
           if (Optional.is(chunk.findIndex(Lambda.equal, item))) {
             var message = $"GridItem with uid '{item.uid}' was already added to chunk '{key}'"

@@ -11,6 +11,9 @@ function VisuRenderer() constructor {
   ///@type {VisuHUDRenderer}
   hudRenderer = new VisuHUDRenderer()
 
+  ///@type {DialogueRenderer}
+  dialogueRenderer = new DialogueRenderer()
+
   ///@private
   ///@type {UILayout}
   layout = new UILayout({
@@ -179,6 +182,7 @@ function VisuRenderer() constructor {
 
     this.gridRenderer.update(_layout)
     this.hudRenderer.update(_layout)
+    this.dialogueRenderer.update()
     return this
   }
 
@@ -202,6 +206,7 @@ function VisuRenderer() constructor {
     this.gridRenderer.renderGUI(_layout)
     this.lyricsRenderer.renderGUI(_layout)
     this.hudRenderer.renderGUI(_layout)
+    this.dialogueRenderer.render()
     this.renderSpinner(_layout)
     this.renderUI()
     this.renderGUITimer.finish()

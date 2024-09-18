@@ -101,7 +101,7 @@ function _Visu() constructor {
       "speed":{
         "value":-2.0,
         "factor":0.040000000000000001,
-        "target":0.69999999999999996,
+        "target":1.5,
         "increase":0.0
       },
       "sprite":{
@@ -123,7 +123,7 @@ function _Visu() constructor {
       "speed":{
         "value":-3.7999999999999998,
         "factor":0.050000000000000003,
-        "target":1.2,
+        "target":1.8,
         "increase":0.0
       },
       "sprite":{
@@ -144,7 +144,7 @@ function _Visu() constructor {
       "speed":{
         "value":-4.0,
         "factor":0.050000000000000003,
-        "target":1.5,
+        "target":1.8,
         "increase":0.0
       },
       "sprite":{
@@ -166,7 +166,7 @@ function _Visu() constructor {
       "speed":{
         "value":-2.5,
         "factor":0.050000000000000003,
-        "target":0.90000000000000002,
+        "target":1.5,
         "increase":0.0
       },
       "sprite":{
@@ -701,6 +701,16 @@ function _Visu() constructor {
           )
         ))
       }
+    }
+
+    if (!Beans.exists(BeanDialogueService)) {
+      Beans.add(BeanDialogueService, new Bean(DialogueService,
+        GMObjectUtil.factoryGMObject(
+          GMServiceInstance, 
+          layerId, 0, 0, 
+          new DialogueService()
+        )
+      ))
     }
 
     if (!Beans.exists(BeanVisuTestRunner)) {

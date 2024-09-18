@@ -18,11 +18,61 @@ function template_bullet(json = null) {
         type: Rectangle,
         value: new Rectangle(Struct.getDefault(json, "mask", null)),
       },
+      "bullet_use-damage": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "damage"), Number),
+      },
       "bullet_damage": {
         type: Number,
         value: Core.isType(Struct.get(json, "damage"), Number) ? json.damage : 1.0,
         passthrough: function(value) {
           return round(clamp(NumberUtil.parse(value, this.value), 0, 9999.9))
+        },
+      },
+      "bullet_use-lifespawn": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "lifespawnMax"), Number),
+      },
+      "bullet_lifespawn": {
+        type: Number,
+        value: Core.isType(Struct.get(json, "lifespawnMax"), Number) ? json.lifespawnMax : 30.0,
+        passthrough: function(value) {
+          return round(clamp(NumberUtil.parse(value, this.value), 0, 999.9))
+        },
+      },
+      "bullet_use-template-on-death": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "bulletTemplateOnDeath"), String),
+      },
+      "bullet_template-on-death": {
+        type: String,
+        value: Core.isType(Struct.get(json, "bulletTemplateOnDeath"), String) ? json.bulletTemplateOnDeath : "bullet-default",
+        passthrough: function(value) {
+          var bulletService = Beans.get(BeanVisuController).bulletService
+          return bulletService.templates.contains(value) || Visu.assets().bulletTemplates.contains(value)
+            ? value
+            : (Core.isType(this.value, String) ? this.value : "bullet-default")
+        },
+      },
+      "bullet_template-amount-on-death": {
+        type: Number,
+        value: Core.isType(Struct.get(json, "bulletAmountOnDeath"), Number) ? json.bulletAmountOnDeath : 1,
+        passthrough: function(value) {
+          return round(clamp(NumberUtil.parse(value, this.value), 1, 16))
+        },
+      },
+      "bullet_template-spawn-angle-on-death": {
+        type: Number,
+        value: Core.isType(Struct.get(json, "bulletSpawnAngleOnDeath"), Number) ? json.bulletSpawnAngleOnDeath : 0.0,
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), -360.0, 360.0)
+        },
+      },
+      "bullet_template-angle-step-on-death": {
+        type: Number,
+        value: Core.isType(Struct.get(json, "bulletAngleStepOnDeath"), Number) ? json.sth : 0.0,
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), -360.0, 360.0)
         },
       },
       "bullet_use-transform-speed": {
@@ -60,6 +110,23 @@ function template_bullet(json = null) {
     }),
     components: new Array(Struct, [
       {
+        name: "bullet_use-damage",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Set damage",
+            enable: { key: "bullet_use-damage" },
+          },  
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-damage" },
+          },
+        },
+      },
+      {
         name: "bullet_damage",
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
@@ -67,9 +134,125 @@ function template_bullet(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Damage",
+            enable: { key: "bullet_use-damage" },
           },  
           field: { 
             store: { key: "bullet_damage" },
+            enable: { key: "bullet_use-damage" },
+          },
+        },
+      },
+      {
+        name: "bullet_use-lifespawn",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Set max lifespawn",
+            enable: { key: "bullet_use-lifespawn" },
+          },  
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-lifespawn" },
+          },
+        },
+      },
+      {
+        name: "bullet_lifespawn",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Damage",
+            enable: { key: "bullet_use-lifespawn" },
+          },  
+          field: { 
+            store: { key: "bullet_lifespawn" },
+            enable: { key: "bullet_use-lifespawn" },
+          },
+        },
+      },
+      {
+        name: "bullet_use-template-on-death",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Spawn bullet on death",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-template-on-death" },
+          },
+        },
+      },
+      {
+        name: "bullet_template-on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Template",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_template-on-death" },
+            enable: { key: "bullet_use-template-on-death" },
+          },
+        },
+      },
+      {
+        name: "bullet_template-amount-on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Amount",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_template-amount-on-death" },
+            enable: { key: "bullet_use-template-on-death" },
+          },
+        },
+      },
+      {
+        name: "bullet_template-spawn-angle-on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Start angle",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_template-spawn-angle-on-death" },
+            enable: { key: "bullet_use-template-on-death" },
+          },
+        },
+      },
+      {
+        name: "bullet_template-angle-step-on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Angle step",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_template-angle-step-on-death" },
+            enable: { key: "bullet_use-template-on-death" },
           },
         },
       },

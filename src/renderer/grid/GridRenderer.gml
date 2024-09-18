@@ -907,11 +907,28 @@ function GridRenderer() constructor {
         ((GRID_SERVICE_PIXEL_WIDTH * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
         ((GRID_SERVICE_PIXEL_HEIGHT * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
         0.0,
-        c_white,
-        1.0
+        chunk.size() > 0 ? c_red : c_white,
+        0.4
+      )
+    }, gridService.view)
+    bulletService.chunkService.chunks.forEach(function(chunk, key, view) {
+      var arr = String.split(key, "_")
+      var xx = ((real(arr.get(0)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.x) * GRID_SERVICE_PIXEL_WIDTH
+      var yy = ((real(arr.get(1)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.y) * GRID_SERVICE_PIXEL_HEIGHT
+      draw_sprite_ext(
+        texture_white, 
+        0.0, 
+        xx + 128, 
+        yy + 128, 
+        ((GRID_SERVICE_PIXEL_WIDTH * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.75,
+        ((GRID_SERVICE_PIXEL_HEIGHT * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.75,
+        0.0,
+        chunk.size() > 0 ? c_lime : c_white,
+        0.4
       )
     }, gridService.view)
     */
+    
     this.renderSpawners(gridService, shroomService)
     gpu_set_alphatestenable(false)
 
