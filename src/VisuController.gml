@@ -26,7 +26,7 @@ function VisuController(layerName) constructor {
           },
         },
         update: function(fsm) {
-          if (keyboard_check_pressed(vk_escape)) {
+          if (keyboard_check_released(vk_escape)) {
             var menu = Beans.get(BeanVisuController).menu
             if (menu.containers.size() > 0) {
               menu.send(new Event("close"))
@@ -211,6 +211,7 @@ function VisuController(layerName) constructor {
             var menu = Beans.get(BeanVisuController).menu
             if (menu.containers.size() > 0) {
               menu.send(new Event("close"))
+              Beans.get(BeanVisuController).fsm.dispatcher.send(new Event("transition", { name: "play" }))
             } else {
               menu.send(menu.factoryOpenMainMenuEvent())
             }

@@ -7,7 +7,6 @@ global.__VisuStyles = new Map(String, Callable, {
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
       font: "font_kodeo_mono_28_bold",
       color: "#ffffff",
-      offset: { x: 12 },
       enableColorWrite: false,
     },
   },
@@ -19,7 +18,8 @@ global.__VisuStyles = new Map(String, Callable, {
       offset: { x: 12 },
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentShadow,
-      backgroundAlpha: 0.7,
+      colorHoverOut: VETheme.color.dark,
+      backgroundAlpha: 0.9,
     },
   },
   "menu-spin-select-entry": {
@@ -30,7 +30,8 @@ global.__VisuStyles = new Map(String, Callable, {
       offset: { x: 12 },
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentShadow,
-      backgroundAlpha: 0.7,
+      colorHoverOut: VETheme.color.dark,
+      backgroundAlpha: 0.9,
     },
     previous: {
       sprite: { name: "texture_button_previous", scaleX: 0.33, scaleY: 0.33 }
@@ -42,7 +43,8 @@ global.__VisuStyles = new Map(String, Callable, {
         color: "#ffffff",
         enableColorWrite: false,
         colorHoverOver: VETheme.color.accentShadow,
-        backgroundAlpha: 0.7,
+        colorHoverOut: VETheme.color.dark,
+        backgroundAlpha: 0.9,
       },
     },
     next: {
@@ -57,7 +59,8 @@ global.__VisuStyles = new Map(String, Callable, {
       offset: { x: 12 },
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentShadow,
-      backgroundAlpha: 0.7,
+      colorHoverOut: VETheme.color.dark,
+      backgroundAlpha: 0.9,
     },
     preview: {
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
@@ -65,7 +68,8 @@ global.__VisuStyles = new Map(String, Callable, {
       color: "#ffffff",
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentShadow,
-      backgroundAlpha: 0.7,
+      colorHoverOut: VETheme.color.dark,
+      backgroundAlpha: 0.9,
     }
   },
 })

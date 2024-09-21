@@ -620,7 +620,7 @@ function VisuMenu(_config = null) constructor {
         name: "visu-menu",
         x: function() { return this.context.x() + (this.context.width() - this.width()) / 2.0 },
         y: function() { return this.context.y() },
-        width: function() { return max(this.context.width() * 0.33, 400) },
+        width: function() { return max(this.context.width() * 0.33, 480) },
         height: function() { return this.context.height() },
         nodes: {
           "visu-menu.title": {
@@ -664,7 +664,7 @@ function VisuMenu(_config = null) constructor {
         controller: controller,
         layout: layout,
         state: new Map(String, any, {
-          "background-alpha": 0.5,
+          "background-alpha": 0.8,
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "title": title,
         }),
@@ -694,7 +694,7 @@ function VisuMenu(_config = null) constructor {
         controller: controller,
         layout: layout,
         state: new Map(String, any, {
-          "background-alpha": 0.1,
+          "background-alpha": 0.5,
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "content": content,
           "pointer": null,
