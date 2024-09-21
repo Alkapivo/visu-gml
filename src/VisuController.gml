@@ -658,7 +658,10 @@ function VisuController(layerName) constructor {
   update = function() {
     this.updateUIService()
     this.services.forEach(this.updateService, this)
-    if (this.fsm.getStateName() != "paused") {
+    var editor = Beans.get(BeanVisuEditorController)
+    if ((this.menu.containers.size() == 0) 
+      && (this.fsm.getStateName() != "paused"
+      || (Optional.is(editor) && editor.renderUI))) {
       this.gameplayServices.forEach(this.updateService, this)
     }
     this.visuRenderer.update()
