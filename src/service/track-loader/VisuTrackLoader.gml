@@ -189,7 +189,41 @@ function VisuTrackLoader(_controller): Service() constructor {
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
                         if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
-                          soundService.sounds.add(sound_visu_wasm, key)
+                          var sound = null
+                          Core.print("FFFFIIILELEE", soundIntent.file)
+                          switch (soundIntent.file) {
+                            case "1-Wake-Up-Before-You-Forget-How-To.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_1
+                              break
+                            case "2-You-Will-Live-and-You-Will-Be-Happy.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_2
+                              break
+                            case "3-What-Kills-You.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_3
+                              break
+                            case "4-Just-To-Create-Something.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_4
+                              break
+                            case "5-Lost_Media.mp3.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_5
+                              break
+                            case "6-One-Sky-feat-Rayiko.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_6
+                              break
+                            case "7-Interlude-Lore.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_7
+                              break
+                            case "8-Everything-Will-End.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_8
+                              break
+                            case "9-There-Is-No-Point-Only-Reasons.ogg": 
+                              sound = sound_ost_kedy_selma_jtcs_9
+                              break
+                            default:
+                              sound = sound_visu_wasm
+                              break
+                          }
+                          soundService.sounds.add(sound, key)
                           return
                         }
 
