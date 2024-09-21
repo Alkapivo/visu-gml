@@ -3,6 +3,7 @@
 
 ///@param {Struct} [json]
 function VisuNewProjectForm(json = null) constructor {
+  var track = Beans.get(BeanVisuController).track
 
   ///@type {Store}
   store = new Store({
@@ -28,7 +29,7 @@ function VisuNewProjectForm(json = null) constructor {
     },
     "shader": {
       type: Optional.of(String),
-      value: Struct.getDefault(json, "shader", ""),
+      value: Struct.getDefault(json, "shader", track != null ? $"{track.path}{track.shader}" : ""),
     },
     "use-shroom": {
       type: Boolean,
@@ -36,7 +37,7 @@ function VisuNewProjectForm(json = null) constructor {
     },
     "shroom": {
       type: Optional.of(String),
-      value: Struct.getDefault(json, "shroom", ""),
+      value: Struct.getDefault(json, "shroom", track != null ? $"{track.path}{track.shroom}" : ""),
     },
     "use-bullet": {
       type: Boolean,
@@ -44,7 +45,7 @@ function VisuNewProjectForm(json = null) constructor {
     },
     "bullet": {
       type: Optional.of(String),
-      value: Struct.getDefault(json, "bullet", ""),
+      value: Struct.getDefault(json, "bullet", track != null ? $"{track.path}{track.bullet}" : ""),
     },
     "use-coin": {
       type: Boolean,
@@ -52,7 +53,7 @@ function VisuNewProjectForm(json = null) constructor {
     },
     "coin": {
       type: Optional.of(String),
-      value: Struct.getDefault(json, "coin", ""),
+      value: Struct.getDefault(json, "coin", track != null ? $"{track.path}{track.coin}" : ""),
     },
     "use-lyrics": {
       type: Boolean,
@@ -60,7 +61,7 @@ function VisuNewProjectForm(json = null) constructor {
     },
     "lyrics": {
       type: Optional.of(String),
-      value: Struct.getDefault(json, "lyrics", ""),
+      value: Struct.getDefault(json, "lyrics", track != null ? $"{track.path}{track.lyrics}" : ""),
     },
     "use-particle": {
       type: Boolean,
@@ -68,7 +69,7 @@ function VisuNewProjectForm(json = null) constructor {
     },
     "particle": {
       type: Optional.of(String),
-      value: Struct.getDefault(json, "particle", ""),
+      value: Struct.getDefault(json, "particle", track != null ? $"{track.path}{track.particle}" : ""),
     },
     "use-texture": {
       type: Boolean,
@@ -76,7 +77,7 @@ function VisuNewProjectForm(json = null) constructor {
     },
     "texture": {
       type: Optional.of(String),
-      value: Struct.getDefault(json, "texture", ""),
+      value: Struct.getDefault(json, "texture", track != null ? $"{track.path}{track.texture}" : ""),
     },
     "include-brushes": {
       type: Boolean,
