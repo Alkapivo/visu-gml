@@ -35,13 +35,14 @@ function TestEvent_VisuController_load(json = {}) {
         verify: function(task) {
           Assert.isTrue(Beans.get(BeanVisuTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
           var controller = Beans.get(BeanVisuController)
-          if (controller.loader.fsm.getStateName() == "loaded" && controller.trackService.track.name == task.state.trackName) {
+          if (controller.loader.fsm.getStateName() == "loaded" 
+            && controller.trackService.track.name == task.state.trackName) {
             task.state.stage = "pause" 
           }
         },
         pause: function(task) {
           var controller = Beans.get(BeanVisuController)
-          if (controller.fsm.getStateName() == "pause") {
+          if (controller.fsm.getStateName() == "paused") {
             task.state.stage = "cooldownAfter"
           }
         },
@@ -129,7 +130,7 @@ function TestEvent_VisuController_playback(json = {}) {
         },
         pause: function(task) {
           var controller = Beans.get(BeanVisuController)
-          if (controller.fsm.getStateName() == "pause") {
+          if (controller.fsm.getStateName() == "paused") {
             task.state.stage = "cooldownAfter"
           }
         },

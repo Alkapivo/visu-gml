@@ -3,6 +3,19 @@
 #macro BeanVisuIO "VisuIO"
 function VisuIO() constructor {
 
+  ///@type {Map}
+  keyboards = new Map(String, Keyboard, {
+    "player": new Keyboard({
+      up: Visu.settings.getValue("visu.keyboard.player.up", KeyboardKeyType.ARROW_UP),
+      down: Visu.settings.getValue("visu.keyboard.player.down", KeyboardKeyType.ARROW_DOWN),
+      left: Visu.settings.getValue("visu.keyboard.player.left", KeyboardKeyType.ARROW_LEFT),
+      right: Visu.settings.getValue("visu.keyboard.player.right", KeyboardKeyType.ARROW_RIGHT),
+      action: Visu.settings.getValue("visu.keyboard.player.action", ord("Z")),
+      bomb: Visu.settings.getValue("visu.keyboard.player.bomb", ord("X")),
+      focus: Visu.settings.getValue("visu.keyboard.player.focus", KeyboardKeyType.SHIFT),
+    })
+  })
+
   ///@type {Keyboard}
   keyboard = new Keyboard({ 
     controlTrack: KeyboardKeyType.SPACE,
@@ -32,7 +45,7 @@ function VisuIO() constructor {
     if (this.keyboard.keys.controlTrack.pressed) {
       switch (controller.fsm.getStateName()) {
         case "play": controller.send(new Event("pause")) break
-        case "pause": controller.send(new Event("play")) break
+        case "paused": controller.send(new Event("play")) break
       }
     }
 

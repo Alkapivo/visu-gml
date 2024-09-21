@@ -31,6 +31,7 @@ function VisuTrackLoader(_controller): Service() constructor {
   ///@type {FSM}
   fsm = new FSM(this, {
     initialState: { name: "idle" },
+    displayName: "VisuTrackLoader",
     states: {
       "idle": {
         actions: {

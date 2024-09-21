@@ -1,5 +1,5 @@
 
-///@package io.alkapivo.visu.editor.ui
+///@package io.alkapivo.visu.editor.ui.controller
 
 ///@param {Struct} [json]
 function VisuNewProjectForm(json = null) constructor {
@@ -1570,7 +1570,7 @@ function VisuNewProjectForm(json = null) constructor {
 
 
 ///@param {?Struct} [_config]
-function VisuNewProjectModal(_config = null) constructor {
+function VENewProjectModal(_config = null) constructor {
 
   ///@type {?Struct}
   config = Optional.is(_config) ? Assert.isType(_config, Struct) : null

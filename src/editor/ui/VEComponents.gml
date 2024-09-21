@@ -1,4 +1,4 @@
-//@package io.alkapivo.visu.editor
+///@package io.alkapivo.visu.editor.ui
 
 ///@static
 ///@type {Map<String, Callable>}
@@ -1686,11 +1686,6 @@ global.__VEComponents = new Map(String, Callable, {
             layout: layout,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             callback: function() {
-              ///@todo move to Lambda util
-              static findEqual = function(source, iterator, target) {
-                return source == target
-              }
-
               var increment = Struct.get(this, "increment")
               if (!Optional.is(this.store) || !Core.isType(increment, Number)) {
                 return

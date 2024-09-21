@@ -1,4 +1,4 @@
-//@package io.alkapivo.visu.editor
+///@package io.alkapivo.visu.editor.ui
 
 ///@static
 ///@type {Map<String, Callable>}

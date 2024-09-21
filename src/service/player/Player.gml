@@ -13,7 +13,7 @@ function PlayerTemplate(json) constructor {
   mask = Core.isType(Struct.get(json, "mask"), Struct) ? json.mask : null
 
   ///@type {Keyboard}
-  keyboard = new Keyboard(json.keyboard)
+  keyboard = Assert.isType(json.keyboard, Keyboard)
 
   ///@type {Struct}
   gameModes = Struct.appendUnique(

@@ -121,8 +121,10 @@ function VisuEditorIO() constructor {
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   modalKeyboardEvent = function(controller, editor) {
+    var enableExitModal = false
     if (!GMTFContext.isFocused() 
-      && this.keyboard.keys.exitModal.pressed) {
+      && this.keyboard.keys.exitModal.pressed
+      && enableExitModal) {
 
       if (Core.isType(editor.uiService.find("visu-new-project-modal"), UI)) {
         editor.newProjectModal.send(new Event("close"))

@@ -30,8 +30,8 @@ function VisuEditorController() constructor {
   ///@type {VEBrushService}
   brushService = new VEBrushService(this)
 
-  ///@type {VisuNewProjectModal}
-  newProjectModal = new VisuNewProjectModal()
+  ///@type {VENewProjectModal}
+  newProjectModal = new VENewProjectModal()
 
   ///@type {VisuModal}
   exitModal = new VisuModal({
@@ -133,9 +133,9 @@ function VisuEditorController() constructor {
     },
     "shader-quality": {
       type: Number,
-      value: Assert.isType(Visu.settings.getValue("visu.shader.quality", 1.0), Number),
+      value: Assert.isType(Visu.settings.getValue("visu.shader.quality", 0.5), Number),
       passthrough: function(value) {
-        return clamp(value, 0.25, 1.0)
+        return clamp(value, 0.2, 1.0)
       }
     },
   })
@@ -146,7 +146,8 @@ function VisuEditorController() constructor {
     timer: new Timer(Core.getProperty("visu.editor.autosave.interval", 1) * 60, { loop: Infinity }),
     update: function() {
       var controller = Beans.get(BeanVisuController)
-      if (!this.value || controller.fsm.getStateName() != "pause") {
+      var stateName = controller.fsm.getStateName()
+      if (!this.value || stateName != "paused") {
         return
       }
       
