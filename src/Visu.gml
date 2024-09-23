@@ -199,8 +199,7 @@ function _Visu() constructor {
         "         Z     - Shoot",
         "         X     - Use bomb",
         "         SHIFT - Focus mode",
-        "         SPACE - Play/pause",
-        "         F5    - Show/hide editor",
+        "         ESC   - Menu",
         "",
         "[SYSTEM] Clear preview-mode message after 8 sec"
       ]

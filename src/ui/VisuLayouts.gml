@@ -1,5 +1,8 @@
 ///@package io.alkapivo.visu.ui
 
+///@type {Number}
+#macro VISU_MENU_ENTRY_HEIGHT 80
+
 ///@type {Map<String, Callable>}
 global.__VisuLayouts = new Map(String, Callable, {
 
@@ -28,7 +31,7 @@ global.__VisuLayouts = new Map(String, Callable, {
       x: function() { return 0 },
       y: function() { return this.collection.getIndex() * this.height() },
       width: function() { return this.context.width() },
-      height: function() { return 96 },
+      height: function() { return VISU_MENU_ENTRY_HEIGHT },
       nodes: {
         label: {
           name: "visu-menu.content.entry.label",
@@ -53,7 +56,7 @@ global.__VisuLayouts = new Map(String, Callable, {
       x: function() { return 0 },
       y: function() { return this.collection.getIndex() * this.height() },
       width: function() { return this.context.width() },
-      height: function() { return 96 },
+      height: function() { return VISU_MENU_ENTRY_HEIGHT },
       nodes: {
         label: {
           name: "menu-spin-select.label",
@@ -64,9 +67,8 @@ global.__VisuLayouts = new Map(String, Callable, {
         previous: {
           name: "menu-spin-select.previous",
           x: function() { return this.context.nodes.label.right() },
-          y: function() { return this.context.y() + 32 },
+          y: function() { return this.context.y() },
           width: function() { return 32 },
-          height: function() { return 32 },
         },
         preview: {
           name: "menu-spin-select.preview",
@@ -79,9 +81,8 @@ global.__VisuLayouts = new Map(String, Callable, {
         next: {
           name: "menu-spin-spin-select.next",
           x: function() { return this.context.x() + this.context.width() - this.width() },
-          y: function() { return this.context.y() + 32 },
+          y: function() { return this.context.y() },
           width: function() { return 32 },
-          height: function() { return 32 },
         },
       }
     }
@@ -99,7 +100,7 @@ global.__VisuLayouts = new Map(String, Callable, {
       x: function() { return 0 },
       y: function() { return this.collection.getIndex() * this.height() },
       width: function() { return this.context.width() },
-      height: function() { return 96 },
+      height: function() { return VISU_MENU_ENTRY_HEIGHT },
       nodes: {
         label: {
           name: "menu-keyboard-key-entry.label",

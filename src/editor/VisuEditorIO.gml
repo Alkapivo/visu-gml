@@ -11,7 +11,9 @@ function VisuEditorIO() constructor {
     renderTrackControl: KeyboardKeyType.F4,
     renderUI: KeyboardKeyType.F5,
     exitModal: KeyboardKeyType.ESC,
+    controlTrack: KeyboardKeyType.SPACE,
     newProject: "N",
+    openProject: "O",
     saveProject: "S",
     saveTemplate: "T",
     saveBrush: "U",
@@ -36,14 +38,54 @@ function VisuEditorIO() constructor {
     wheelUp: MouseButtonType.WHEEL_UP,
     wheelDown: MouseButtonType.WHEEL_DOWN,
   })
-
+  
   ///@private
   ///@param {VisuController} controller
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   controlTrackKeyboardEvent = function(controller, editor) {
     if (GMTFContext.isFocused()) {
-      return
+      return this
+    }
+
+    if (this.keyboard.keys.controlTrack.pressed) {
+      switch (controller.fsm.getStateName()) {
+        case "play": controller.send(new Event("pause")) break
+        case "paused": controller.send(new Event("play")) break
+      }
+    }
+
+    if (!editor.renderUI) {
+      return this
+    }
+
+    if (this.keyboard.keys.controlLeft.on 
+      && this.keyboard.keys.openProject.pressed) {
+      try {
+        if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+          controller.send(new Event("spawn-popup", 
+            { message: $"Feature 'visu.open' is not available on wasm-yyc target" }))
+          return this
+        }
+
+        var manifest = FileUtil.getPathToOpenWithDialog({ 
+          description: "Visu track file",
+          filename: "manifest", 
+          extension: "visu"
+        })
+
+        if (!FileUtil.fileExists(manifest)) {
+          return this
+        }
+
+        controller.send(new Event("load", {
+          manifest: FileUtil.get(manifest),
+          autoplay: false
+        }))
+      } catch (exception) {
+        controller.send(new Event("spawn-popup", 
+          { message: $"Cannot load the project: {exception.message}" }))
+      }
     }
 
     if (this.keyboard.keys.selectTool.pressed) {
@@ -121,10 +163,12 @@ function VisuEditorIO() constructor {
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   modalKeyboardEvent = function(controller, editor) {
-    var enableExitModal = false
+    if (!editor.renderUI) {
+      return this
+    }
+
     if (!GMTFContext.isFocused() 
-      && this.keyboard.keys.exitModal.pressed
-      && enableExitModal) {
+      && this.keyboard.keys.exitModal.pressed) {
 
       if (Core.isType(editor.uiService.find("visu-new-project-modal"), UI)) {
         editor.newProjectModal.send(new Event("close"))
@@ -168,8 +212,8 @@ function VisuEditorIO() constructor {
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   titleBarKeyboardEvent = function(controller, editor) {
-    if (GMTFContext.isFocused()) {
-      return
+    if (GMTFContext.isFocused() || !editor.renderUI) {
+      return this
     }
 
     if (this.keyboard.keys.controlLeft.on 
@@ -209,7 +253,7 @@ function VisuEditorIO() constructor {
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   templateToolbarKeyboardEvent = function(controller, editor) {
-    if (GMTFContext.isFocused()) {
+    if (GMTFContext.isFocused() || !editor.renderUI) {
       return this
     }
 
@@ -234,7 +278,7 @@ function VisuEditorIO() constructor {
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   brushToolbarKeyboardEvent = function(controller, editor) {
-    if (GMTFContext.isFocused()) {
+    if (GMTFContext.isFocused() || !editor.renderUI) {
       return this
     }
     
@@ -317,14 +361,15 @@ function VisuEditorIO() constructor {
     try {
       this.keyboard.update()
       this.mouse.update()
+      
+      var controller = Beans.get(BeanVisuController)
+      if (!Core.isType(controller, VisuController) 
+        || controller.menu.containers.size() > 0) {
+        return this
+      }
 
       var editor = Beans.get(BeanVisuEditorController)
       if (!Core.isType(editor, VisuEditorController)) {
-        return this
-      }
-      
-      var controller = Beans.get(BeanVisuController)
-      if (!Core.isType(controller, VisuController)) {
         return this
       }
 
@@ -336,7 +381,7 @@ function VisuEditorIO() constructor {
       this.brushToolbarKeyboardEvent(controller, editor)
       this.mouseEvent(controller, editor)
     } catch (exception) {
-      var message = $"'VisuEditorIO.update' fatal error: {exception.message}"
+      var message = $"'VisuEditorIO::update' fatal error: {exception.message}"
       Logger.error(BeanVisuEditorIO, message)
       
       var controller = Beans.get(BeanVisuController)

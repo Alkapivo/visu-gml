@@ -93,7 +93,7 @@ global.__VisuComponents = new Map(String, Callable, {
         )
       )
     }
-    
+
     return new Array(UIItem, [
       UIText(
         $"{name}_label", 

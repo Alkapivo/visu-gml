@@ -19,7 +19,8 @@ global.__VisuStyles = new Map(String, Callable, {
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentShadow,
       colorHoverOut: VETheme.color.dark,
-      backgroundAlpha: 0.9,
+      //backgroundColor: VETheme.color.dark,
+      backgroundAlpha: 0.75,
     },
   },
   "menu-spin-select-entry": {
@@ -31,10 +32,13 @@ global.__VisuStyles = new Map(String, Callable, {
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentShadow,
       colorHoverOut: VETheme.color.dark,
-      backgroundAlpha: 0.9,
+      backgroundAlpha: 0.75,
     },
     previous: {
-      sprite: { name: "texture_button_previous", scaleX: 0.33, scaleY: 0.33 }
+      sprite: { name: "texture_menu_button_previous" },
+      colorHoverOver: VETheme.color.accentShadow,
+      colorHoverOut: VETheme.color.dark,
+      backgroundAlpha: 0.75,
     },
     preview: {
       label: {
@@ -42,13 +46,16 @@ global.__VisuStyles = new Map(String, Callable, {
         font: "font_kodeo_mono_18_bold",
         color: "#ffffff",
         enableColorWrite: false,
-        colorHoverOver: VETheme.color.accentShadow,
-        colorHoverOut: VETheme.color.dark,
-        backgroundAlpha: 0.9,
       },
+      colorHoverOver: VETheme.color.accentShadow,
+      colorHoverOut: VETheme.color.dark,
+      backgroundAlpha: 0.75,
     },
     next: {
-      sprite: { name: "texture_button_next", scaleX: 0.33, scaleY: 0.33 }
+      sprite: { name: "texture_menu_button_next"  },
+      colorHoverOver: VETheme.color.accentShadow,
+      colorHoverOut: VETheme.color.dark,
+      backgroundAlpha: 0.75,
     },
   },
   "menu-keyboard-key-entry": {
@@ -60,7 +67,7 @@ global.__VisuStyles = new Map(String, Callable, {
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentShadow,
       colorHoverOut: VETheme.color.dark,
-      backgroundAlpha: 0.9,
+      backgroundAlpha: 0.75,
     },
     preview: {
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
@@ -69,7 +76,7 @@ global.__VisuStyles = new Map(String, Callable, {
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentShadow,
       colorHoverOut: VETheme.color.dark,
-      backgroundAlpha: 0.9,
+      backgroundAlpha: 0.75,
     }
   },
 })

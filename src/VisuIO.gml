@@ -18,12 +18,11 @@ function VisuIO() constructor {
 
   ///@type {Keyboard}
   keyboard = new Keyboard({ 
-    controlTrack: KeyboardKeyType.SPACE,
     cameraKeyboardLook: KeyboardKeyType.F6,
     cameraMouseLook: KeyboardKeyType.F7,
     fullscreen: KeyboardKeyType.F11,
     controlLeft: KeyboardKeyType.CONTROL_LEFT,
-    openProject: "O",
+    openMenu: KeyboardKeyType.ESC,
   })
 
   ///@type {Mouse}
@@ -33,53 +32,6 @@ function VisuIO() constructor {
     wheelUp: MouseButtonType.WHEEL_UP,
     wheelDown: MouseButtonType.WHEEL_DOWN,
   })
-
-  ///@private
-  ///@param {VisuController} controller
-  ///@return {VisuIO}
-  controlTrackKeyboardEvent = function(controller) {
-    if (GMTFContext.isFocused()) {
-      return
-    }
-
-    if (this.keyboard.keys.controlTrack.pressed) {
-      switch (controller.fsm.getStateName()) {
-        case "play": controller.send(new Event("pause")) break
-        case "paused": controller.send(new Event("play")) break
-      }
-    }
-
-    if (this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.openProject.pressed) {
-      try {
-        if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
-          controller.send(new Event("spawn-popup", 
-            { message: $"Feature 'visu.open' is not available on wasm-yyc target" }))
-          return
-        }
-
-        var manifest = FileUtil.getPathToOpenWithDialog({ 
-          description: "Visu track file",
-          filename: "manifest", 
-          extension: "visu"
-        })
-
-        if (!FileUtil.fileExists(manifest)) {
-          return
-        }
-
-        controller.send(new Event("load", {
-          manifest: FileUtil.get(manifest),
-          autoplay: false
-        }))
-      } catch (exception) {
-        controller.send(new Event("spawn-popup", 
-          { message: $"Cannot load the project: {exception.message}" }))
-      }
-    }
-
-    return this
-  }
 
   ///@private
   ///@param {VisuController} controller
@@ -102,6 +54,43 @@ function VisuIO() constructor {
 
     if (this.keyboard.keys.cameraMouseLook.pressed) {
       controller.visuRenderer.gridRenderer.camera.enableMouseLook = !controller.visuRenderer.gridRenderer.camera.enableMouseLook
+    }
+
+    var menu = controller.menu
+    if (this.keyboard.keys.openMenu.pressed && !Optional.is(menu.remapKey)) {
+      var state = controller.fsm.getStateName()
+      
+      switch (state) {
+        case "idle":
+          if (menu.containers.size() > 0) {
+            menu.send(new Event("back"))
+          } else {
+            menu.send(menu.factoryOpenMainMenuEvent())
+          }
+          break
+        case "play":
+          var fsmState = controller.fsm.currentState
+          if (fsmState.state.get("promises-resolved") != "success") {
+            break
+          }
+
+          var editor = Beans.get(BeanVisuEditorController)
+          if (Optional.is(editor) && editor.renderUI) {
+            break
+          }
+          controller.send(new Event("pause", { data: menu.factoryOpenMainMenuEvent() }))
+          break
+        case "paused":
+          if (menu.containers.size() > 0) {
+            menu.send(new Event("back") )
+            if (!Optional.is(menu.back)) {
+              controller.send(new Event("play"))
+            }
+          } else {
+            menu.send(menu.factoryOpenMainMenuEvent())
+          }
+          break
+      }
     }
 
     return this
@@ -170,12 +159,11 @@ function VisuIO() constructor {
         return this
       }
 
-      this.controlTrackKeyboardEvent(controller)
       this.fullscreenKeyboardEvent(controller)
       this.functionKeyboardEvent(controller)
       this.mouseEvent(controller)
     } catch (exception) {
-      var message = $"'VisuIO.update' fatal error: {exception.message}"
+      var message = $"'VisuIO::update' fatal error: {exception.message}"
       Logger.error(BeanVisuIO, message)
 
       var controller = Beans.get(BeanVisuController)

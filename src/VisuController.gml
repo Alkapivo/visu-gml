@@ -20,21 +20,10 @@ function VisuController(layerName) constructor {
           onStart: function(fsm, fsmState, data) {
             if (Core.isType(data, Event)) {
               fsm.context.send(data)
-            }
-
-            
+            }            
           },
         },
-        update: function(fsm) {
-          if (keyboard_check_released(vk_escape)) {
-            var menu = Beans.get(BeanVisuController).menu
-            if (menu.containers.size() > 0) {
-              menu.send(new Event("close"))
-            } else {
-              menu.send(menu.factoryOpenMainMenuEvent())
-            }
-          }
-        },
+        update: function(fsm) { },
         transitions: { 
           "idle": null, 
           "load": null, 
@@ -47,13 +36,13 @@ function VisuController(layerName) constructor {
       "load": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            fsm.context.menu.send(new Event("close"))
-
-            fsmState.state.set("autoplay", Struct.getDefault(data, "autoplay", false))
-            fsm.context.loader.fsm.dispatcher.send(new Event("transition", {
+            var controller = Beans.get(BeanVisuController)
+            controller.menu.send(new Event("close"))
+            controller.loader.fsm.dispatcher.send(new Event("transition", {
               name: "parse-manifest",
               data: data.manifest,
             }))
+            fsmState.state.set("autoplay", Struct.getDefault(data, "autoplay", false))
             
             audio_stop_all()
             Beans.get(BeanSoundService).free()
@@ -86,7 +75,7 @@ function VisuController(layerName) constructor {
       "play": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            fsm.context.menu.send(new Event("close"))
+            Beans.get(BeanVisuController).menu.send(new Event("close"))
 
             var promises = new Map(String, Promise, {})
 
@@ -123,10 +112,6 @@ function VisuController(layerName) constructor {
               return
             }
 
-            if (keyboard_check_pressed(vk_escape)) {
-              fsm.dispatcher.send(new Event("transition", { name: "pause" }))
-            }
-            
             //Assert.isType(fsm.context.playerService.player, Player)
             //Assert.areEqual(fsm.context.videoService.getVideo().getStatus(), VideoStatus.PLAYING)
             //Assert.areEqual(fsm.context.trackService.track.getStatus(), TrackStatus.PLAYING)
@@ -159,6 +144,7 @@ function VisuController(layerName) constructor {
             }
 
             fsmState.state.set("promises", promises)
+            fsmState.state.set("menuEvent", data)
           },
         },
         update: function(fsm) {
@@ -172,7 +158,10 @@ function VisuController(layerName) constructor {
               this.state.set("promises-resolved", "success")
             }
 
-            fsm.dispatcher.send(new Event("transition", { name: "paused" }))
+            fsm.dispatcher.send(new Event("transition", { 
+              name: "paused", 
+              data: this.state.get("menuEvent"),
+            }))
             //Assert.areEqual(fsm.context.videoService.video.getStatus(), VideoStatus.PAUSED)
             //Assert.areEqual(fsm.context.trackService.track.getStatus(), TrackStatus.PAUSED)
           } catch (exception) {
@@ -194,29 +183,15 @@ function VisuController(layerName) constructor {
       "paused": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            var editor = Beans.get(BeanVisuEditorController)
-            if (Optional.is(editor) && editor.renderUI) {
-              return
+            if (Core.isType(data, Event)) {
+              Beans.get(BeanVisuController).menu.send(data)
             }
-
-            var menu = Beans.get(BeanVisuController).menu
-            menu.send(menu.factoryOpenMainMenuEvent())
           },
           onFinish: function(fsm, fsmState, data) {
             Beans.get(BeanVisuController).menu.send(new Event("close"))
           },
         },
-        update: function(fsm) {
-          if (keyboard_check_pressed(vk_escape)) {
-            var menu = Beans.get(BeanVisuController).menu
-            if (menu.containers.size() > 0) {
-              menu.send(new Event("close"))
-              Beans.get(BeanVisuController).fsm.dispatcher.send(new Event("transition", { name: "play" }))
-            } else {
-              menu.send(menu.factoryOpenMainMenuEvent())
-            }
-          }
-        },
+        update: function(fsm) { },
         transitions: {
           "idle": null, 
           "load": null,
@@ -485,7 +460,8 @@ function VisuController(layerName) constructor {
       this.fsm.dispatcher.send(new Event("transition", { name: "play" }))
     },
     "pause": function(event) {
-      this.fsm.dispatcher.send(new Event("transition", { name: "pause" }))
+      this.fsm.dispatcher.send(new Event("transition", Struct
+        .appendUnique({ name: "pause" }, event.data)))
     },
     "rewind": function(event) {
       var fsmEvent = new Event("transition", { 

@@ -8,38 +8,49 @@ function factoryPlayerKeyboardKeyEntryConfig(name, text) {
   return {
     layout: { type: UILayoutType.VERTICAL },
     label: { 
+      key: name,
       text: text,
       updateCustom: function() {
         var lastKey = keyboard_lastkey
-        if (Optional.is(this.lastKey) && lastKey != this.lastKey) {
-          var keyboard = Beans.get(BeanVisuIO).keyboards.get("player")
-          keyboard.setKey(this.key, lastKey)
-          this.lastKey = null
-          this.context.state.set("remapKey", null)
-
-          Visu.settings.setValue("visu.keyboard.player.up", Struct.get(keyboard.keys, "up").gmKey)
-          Visu.settings.setValue("visu.keyboard.player.down", Struct.get(keyboard.keys, "down").gmKey)
-          Visu.settings.setValue("visu.keyboard.player.left", Struct.get(keyboard.keys, "left").gmKey)
-          Visu.settings.setValue("visu.keyboard.player.right", Struct.get(keyboard.keys, "right").gmKey)
-          Visu.settings.setValue("visu.keyboard.player.action", Struct.get(keyboard.keys, "action").gmKey)
-          Visu.settings.setValue("visu.keyboard.player.bomb", Struct.get(keyboard.keys, "bomb").gmKey)
-          Visu.settings.setValue("visu.keyboard.player.focus", Struct.get(keyboard.keys, "focus").gmKey)
-          Visu.settings.save()
+        if (lastKey == vk_nokey || this.context.state.get("remapKey") != this.key) {          
+          return
         }
+
+        this.context.state.set("remapKey", null)
+        keyboard_lastkey = vk_nokey
+        if (lastKey == KeyboardKeyType.ESC || lastKey == KeyboardKeyType.ENTER) {
+          return
+        }
+        Core.print("set key", this.key)
+
+        var keyboard = Beans.get(BeanVisuIO).keyboards.get("player")
+        keyboard.setKey(this.key, lastKey)
+
+        Visu.settings.setValue("visu.keyboard.player.up", Struct.get(keyboard.keys, "up").gmKey)
+        Visu.settings.setValue("visu.keyboard.player.down", Struct.get(keyboard.keys, "down").gmKey)
+        Visu.settings.setValue("visu.keyboard.player.left", Struct.get(keyboard.keys, "left").gmKey)
+        Visu.settings.setValue("visu.keyboard.player.right", Struct.get(keyboard.keys, "right").gmKey)
+        Visu.settings.setValue("visu.keyboard.player.action", Struct.get(keyboard.keys, "action").gmKey)
+        Visu.settings.setValue("visu.keyboard.player.bomb", Struct.get(keyboard.keys, "bomb").gmKey)
+        Visu.settings.setValue("visu.keyboard.player.focus", Struct.get(keyboard.keys, "focus").gmKey)
+        Visu.settings.save()
       },
       callback: new BindIntent(function() {
-        if (this.lastKey == null) {
-          this.lastKey = keyboard_lastkey
-          this.context.state.set("remapKey", this.key)
+        if (this.context.state.get("remapKey") == this.key) {
+          return
         }
+
+        Core.print("set remapKey", this.key)
+        this.context.state.set("remapKey", this.key)
+        keyboard_lastkey = vk_nokey
       }),
-      lastKey: null,
-      key: name,
       onMouseReleasedLeft: function() {
+        Core.print("serio?")
         this.callback()
       },
     },
     preview: {
+      key: name,
       text: "",
       updateCustom: function() {
         var keyCode = Struct.get(Beans.get(BeanVisuIO).keyboards.get("player").keys, this.key).gmKey
@@ -55,7 +66,19 @@ function factoryPlayerKeyboardKeyEntryConfig(name, text) {
           this.label.alpha = 1.0
         }
       },
-      key: name,
+      callback: new BindIntent(function() {
+        if (this.context.state.get("remapKey") == this.key) {
+          return
+        }
+
+        Core.print("set preview remapKey", this.key)
+        this.context.state.set("remapKey", this.key)
+        keyboard_lastkey = vk_nokey
+      }),
+      onMouseReleasedLeft: function() {
+        Core.print("serio?2")
+        this.callback()
+      },
     },
   }
 }
@@ -67,9 +90,14 @@ function VisuMenu(_config = null) constructor {
   ///@type {?Struct}
   config = Optional.is(_config) ? Assert.isType(_config, Struct) : null
 
-  ///@private
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
+
+  ///@type {?Callable}
+  back = null
+
+  ///@type {?String}
+  remapKey = null
 
   ///@param {?Struct} [_config]
   ///@return {Event}
@@ -82,6 +110,7 @@ function VisuMenu(_config = null) constructor {
     )
 
     var event = new Event("open").setData({
+      back: null,
       layout: Beans.get(BeanVisuController).visuRenderer.layout,
       title: {
         name: "main-menu_title",
@@ -131,24 +160,6 @@ function VisuMenu(_config = null) constructor {
               },
             },
           }
-        },
-        {
-          name: "main-menu_menu-button-entry_quit",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "Quit",
-              callback: new BindIntent(function() {
-                game_end()
-              }),
-              callbackData: config,
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            },
-          }
         }
       ])
     })
@@ -174,9 +185,29 @@ function VisuMenu(_config = null) constructor {
       }, 0)
     }
 
+    if (Core.getRuntimeType() != RuntimeType.GXGAMES) {
+      event.data.content.add({
+        name: "main-menu_menu-button-entry_quit",
+        template: VisuComponents.get("menu-button-entry"),
+        layout: VisuLayouts.get("menu-button-entry"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Quit",
+            callback: new BindIntent(function() {
+              game_end()
+            }),
+            callbackData: config,
+            onMouseReleasedLeft: function() {
+              this.callback()
+            },
+          },
+        }
+      })
+    }
+
     return event
   }
-
 
   ///@param {?Struct} [_config]
   ///@return {Event}
@@ -189,6 +220,7 @@ function VisuMenu(_config = null) constructor {
     )
 
     var event = new Event("open").setData({
+      back: config.back,
       layout: Beans.get(BeanVisuController).visuRenderer.layout,
       title: {
         name: "select-track_title",
@@ -200,207 +232,248 @@ function VisuMenu(_config = null) constructor {
           },
         },
       },
-      content: new Array(Struct, [
-        {
-          name: "select-track_menu-button-entry_kedy-selma_wake-up-before-you-forget-how-to",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "1. Wake Up Before You Forget How To",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/1-Wake-Up-Before-You-Forget-How-To/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+      content: new Array(Struct, Core.getRuntimeType() == RuntimeType.GXGAMES
+        ? [
+          {
+            name: "select-track_menu-button-entry_kedy-selma_just-to-create-something",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "4. Just To Create Something",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/4-Just-To-Create-Something/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
-          }
-        },
-        {
-          name: "select-track_menu-button-entry_kedy-selma_you-will-live-and-you-will-be-happy",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "2. You Will Live and You Will Be Happy",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/2-You-Will-Live-and-You-Will-Be-Happy/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_back",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "Back",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
+                }),
+                callbackData: config.back,
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
+            }
           }
-        },
-        {
-          name: "select-track_menu-button-entry_kedy-selma_what-kills-you",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "3. What Kills You",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/3-What-Kills-You/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+        ]
+        : [
+          {
+            name: "select-track_menu-button-entry_kedy-selma_wake-up-before-you-forget-how-to",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "1. Wake Up Before You Forget How To",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/1-Wake-Up-Before-You-Forget-How-To/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
-          }
-        },
-        {
-          name: "select-track_menu-button-entry_kedy-selma_just-to-create-something",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "4. Just To Create Something",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/4-Just-To-Create-Something/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_kedy-selma_you-will-live-and-you-will-be-happy",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "2. You Will Live and You Will Be Happy",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/2-You-Will-Live-and-You-Will-Be-Happy/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
-          }
-        },
-        {
-          name: "select-track_menu-button-entry_kedy-selma_lost_media.mp3",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "5. Lost_Media.mp3",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/5-Lost_Media.mp3/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_kedy-selma_what-kills-you",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "3. What Kills You",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/3-What-Kills-You/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
-          }
-        },
-
-        {
-          name: "select-track_menu-button-entry_kedy-selma_one-sky-feat-rayiko",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "6. One Sky (feat. Rayiko)",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/6-One-Sky-feat-Rayiko/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_kedy-selma_just-to-create-something",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "4. Just To Create Something",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/4-Just-To-Create-Something/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
-          }
-        },
-        {
-          name: "select-track_menu-button-entry_kedy-selma_interlude-lore",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "7. Interlude:Lore",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/7-Interlude-Lore/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_kedy-selma_lost_media.mp3",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "5. Lost_Media.mp3",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/5-Lost_Media.mp3/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
-          }
-        },
-        {
-          name: "select-track_menu-button-entry_kedy-selma_everything-will-end",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "8. Everything Will End",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/8-Everything-Will-End/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_kedy-selma_one-sky-feat-rayiko",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "6. One Sky (feat. Rayiko)",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/6-One-Sky-feat-Rayiko/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
-          }
-        },
-        {
-          name: "select-track_menu-button-entry_kedy-selma_there-is-no-point-only-reasons",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "9. There Is No Point, Only Reasons",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: "track/kedy_selma/2024-Just-To-Create-Something/9-There-Is-No-Point-Only-Reasons/manifest.visu",
-                  autoplay: true,
-                }))
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_kedy-selma_interlude-lore",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "7. Interlude:Lore",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/7-Interlude-Lore/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
-          }
-        },
-        {
-          name: "select-track_menu-button-entry_back",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "Back",
-              callback: new BindIntent(function() {
-                Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
-              }),
-              callbackData: config.back,
-              onMouseReleasedLeft: function() {
-                this.callback()
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_kedy-selma_everything-will-end",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "8. Everything Will End",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/8-Everything-Will-End/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
               },
-            },
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_kedy-selma_there-is-no-point-only-reasons",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "9. There Is No Point, Only Reasons",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).send(new Event("load", {
+                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/9-There-Is-No-Point-Only-Reasons/manifest.visu",
+                    autoplay: true,
+                  }))
+                }),
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
+              },
+            }
+          },
+          {
+            name: "select-track_menu-button-entry_back",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "Back",
+                callback: new BindIntent(function() {
+                  Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
+                }),
+                callbackData: config.back,
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
+              },
+            }
           }
-        }
-      ])
+        ]
+      )
     })
 
     return event
@@ -417,6 +490,7 @@ function VisuMenu(_config = null) constructor {
     )
 
     var event = new Event("open").setData({
+      back: config.back,
       layout: Beans.get(BeanVisuController).visuRenderer.layout,
       title: {
         name: "settings_title",
@@ -693,12 +767,14 @@ function VisuMenu(_config = null) constructor {
         name: name,
         controller: controller,
         layout: layout,
+        selectedIndex: 0,
         state: new Map(String, any, {
           "background-alpha": 0.5,
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "content": content,
-          "pointer": null,
-          "isKeyboardEvent": false
+          "isKeyboardEvent": true,
+          "remapKey": null,
+          "remapKeyRestored": 2,
         }),
         scrollbarY: { align: HAlign.RIGHT },
         updateArea: Callable
@@ -708,64 +784,84 @@ function VisuMenu(_config = null) constructor {
           .run(UIUtil.templates
           .get("updateVerticalSelectedIndex"))),
         updateCustom: function() {
-          if (Optional.is(this.state.get("remapKey"))) {
+          this.controller.remapKey = this.state.get("remapKey")
+          if (Optional.is(this.controller.remapKey)) {
+            this.state.set("remapKeyRestored", 2)
+            return
+          } 
+
+          var remapKeyRestored = this.state.get("remapKeyRestored")
+          if (remapKeyRestored > 0) {
+            this.state.set("remapKeyRestored", remapKeyRestored - 1)
             return
           }
 
           if (keyboard_check_released(vk_up)) {
-            var pointer = this.state.get("pointer")
+            var pointer = Struct.inject(this, "selectedIndex", 0)
             if (!Core.isType(pointer, Number)) {
               pointer = 0
             } else {
-              pointer = pointer == 0 ? this.collection.size() - 1 : clamp(pointer - 1, 0, this.collection.size() - 1)
+              pointer = clamp(
+                (pointer == 0 ? this.collection.size() - 1 : pointer - 1), 
+                0, 
+                (this.collection.size() -1 >= 0 ? this.collection.size() - 1 : 0)
+              )
             }
 
-            this.state.set("pointer", pointer).set("isKeyboardEvent", true)
+            this.state.set("isKeyboardEvent", true)
             Struct.set(this, "selectedIndex", pointer)
 
             this.collection.components.forEach(function(component, iterator, pointer) {
               if (component.index == pointer) {
                 component.items.forEach(function(item) {
-                  if (Struct.contains(item, "colorHoverOver")) {
-                    item.backgroundColor = ColorUtil.fromHex(item.colorHoverOver).toGMColor()
-                  }
+                  item.backgroundColor = Struct.contains(item, "colorHoverOver") 
+                    ? ColorUtil.fromHex(item.colorHoverOver).toGMColor()
+                    : item.backgroundColor
                 })
               } else {
                 component.items.forEach(function(item) {
-                  item.backgroundColor = null
+                  item.backgroundColor = Struct.contains(item, "colorHoverOut") 
+                    ? ColorUtil.fromHex(item.colorHoverOut).toGMColor()
+                    : item.backgroundColor
                 })
               }
             }, pointer)
           }
 
           if (keyboard_check_released(vk_down)) {
-            var pointer = this.state.get("pointer")
+            var pointer = Struct.inject(this, "selectedIndex", 0)
             if (!Core.isType(pointer, Number)) {
               pointer = 0
             } else {
-              pointer = pointer == this.collection.size() - 1 ? 0 : clamp(pointer + 1, 0, this.collection.size() - 1)
+              pointer = clamp(
+                (pointer == this.collection.size() - 1 ? 0 : pointer + 1), 
+                0, 
+                (this.collection.size() - 1 >= 0 ? this.collection.size() - 1 : 0)
+              )
             }
             
-            this.state.set("pointer", pointer).set("isKeyboardEvent", true)
+            this.state.set("isKeyboardEvent", true)
             Struct.set(this, "selectedIndex", pointer)
             
             this.collection.components.forEach(function(component, iterator, pointer) {
               if (component.index == pointer) {
                 component.items.forEach(function(item) {
-                  if (Struct.contains(item, "colorHoverOver")) {
-                    item.backgroundColor = ColorUtil.fromHex(item.colorHoverOver).toGMColor()
-                  }
+                  item.backgroundColor = Struct.contains(item, "colorHoverOver") 
+                    ? ColorUtil.fromHex(item.colorHoverOver).toGMColor()
+                    : item.backgroundColor
                 })
               } else {
                 component.items.forEach(function(item) {
-                  item.backgroundColor = null
+                  item.backgroundColor = Struct.contains(item, "colorHoverOut") 
+                    ? ColorUtil.fromHex(item.colorHoverOut).toGMColor()
+                    : item.backgroundColor
                 })
               }
             }, pointer)
           }
 
           if (keyboard_check_released(vk_left)) {
-            var component = this.collection.findByIndex(this.state.get("pointer"))
+            var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               Core.print("component name", component.name)
               var type = null
@@ -792,7 +888,7 @@ function VisuMenu(_config = null) constructor {
           }
 
           if (keyboard_check_released(vk_right)) {
-            var component = this.collection.findByIndex(this.state.get("pointer"))
+            var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               Core.print("component name", component.name)
               var type = null
@@ -819,7 +915,7 @@ function VisuMenu(_config = null) constructor {
           }
           
           if (keyboard_check_released(vk_enter)) {
-            var component = this.collection.findByIndex(this.state.get("pointer"))
+            var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               Core.print("component name", component.name)
               var type = null
@@ -875,9 +971,8 @@ function VisuMenu(_config = null) constructor {
               var itemHeight = item.area.getHeight()
               var offsetY = abs(context.offset.y)
               var areaHeight = context.area.getHeight()
-              if ((itemY < offsetY) 
-                || (itemY + itemHeight > offsetY + areaHeight)) {
-                  Core.print("jump", irandom(99))
+              if ((itemY < offsetY || itemY + itemHeight < offsetY) 
+							  || (itemY > offsetY + areaHeight || itemY + itemHeight > offsetY + areaHeight)) {
                   context.offset.y = -1 * itemY
               }
             }, this)
@@ -890,7 +985,7 @@ function VisuMenu(_config = null) constructor {
           .run(UIUtil.renderTemplates
           .get("renderDefaultScrollableBlend"))),
         render: function() {
-          this.updateVerticalSelectedIndex(96)
+          this.updateVerticalSelectedIndex(VISU_MENU_ENTRY_HEIGHT)
           this.renderDefaultScrollable()
         },
         onMousePressedLeft: Callable
@@ -911,20 +1006,21 @@ function VisuMenu(_config = null) constructor {
           if (this.state.get("content").size() > 0) {
             Struct.set(this, "selectedIndex", 0)
             this.state.set("isKeyboardEvent", true)
-            this.state.set("pointer", 0)
             this.collection.components.forEach(function(component, iterator, pointer) {
               if (component.index == pointer) {
                 component.items.forEach(function(item) {
-                  if (Struct.contains(item, "colorHoverOver")) {
-                    item.backgroundColor = ColorUtil.fromHex(item.colorHoverOver).toGMColor()
-                  }
+                  item.backgroundColor = Struct.contains(item, "colorHoverOver") 
+                    ? ColorUtil.fromHex(item.colorHoverOver).toGMColor()
+                    : item.backgroundColor
                 })
               } else {
                 component.items.forEach(function(item) {
-                  item.backgroundColor = null
+                  item.backgroundColor = Struct.contains(item, "colorHoverOut") 
+                    ? ColorUtil.fromHex(item.colorHoverOut).toGMColor()
+                    : item.backgroundColor
                 })
               }
-            }, 0)
+            }, Struct.inject(this, "selectedIndex", 0))
           }
 
           this.scrollbarY.render = method(this.scrollbarY, function() { })
@@ -963,7 +1059,7 @@ function VisuMenu(_config = null) constructor {
             layout: VisuLayouts.get("menu-title"),
             config: {
               label: { 
-                text: "Alkapivo 2024 (c)",
+                text: "Alkapivo 2024",
                 font: "font_kodeo_mono_12_bold",
               },
             },
@@ -977,12 +1073,20 @@ function VisuMenu(_config = null) constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
+      var editor = Beans.get(BeanVisuEditorController)
+      if (Optional.is(editor) && editor.renderUI) {
+        return
+      }
+      
       this.dispatcher.execute(new Event("close"))
       this.containers = this.factoryContainers(
         event.data.title, 
         event.data.content, 
         event.data.layout
       )
+      this.back = Core.isType(Struct.get(event.data, "back"), Callable) 
+        ? event.data.back 
+        : null
 
       this.containers.forEach(function(container, key, uiService) {
         uiService.send(new Event("add", {
@@ -992,12 +1096,20 @@ function VisuMenu(_config = null) constructor {
       }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
+      this.back = null
       this.containers.forEach(function (container, key, uiService) {
         uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,
         }))
       }, Beans.get(BeanVisuController).uiService).clear()
+    },
+    "back": function(event) {
+      if (Optional.is(this.back)) {
+        this.dispatcher.execute(this.back())
+        return
+      }
+      this.dispatcher.execute(new Event("close"))
     },
   }))
 
