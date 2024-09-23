@@ -137,15 +137,11 @@ function VisuRenderer() constructor {
 
     var gridCamera = this.gridRenderer.camera
     var gridCameraMessage = ""
-    if (gridCamera.enableMouseLook) {
+    if (gridCamera.enableKeyboardLook || gridCamera.enableMouseLook) {
       gridCameraMessage = gridCameraMessage 
         + $"pitch: {gridCamera.pitch}\n"
         + $"angle: {gridCamera.angle}\n"
         + $"zoom: {gridCamera.zoom}\n"
-    }
-
-    if (gridCamera.enableKeyboardLook) {
-      gridCameraMessage = gridCameraMessage 
         + $"x: {gridCamera.x}\n"
         + $"y: {gridCamera.y}\n"
         + $"z: {gridCamera.z}\n"

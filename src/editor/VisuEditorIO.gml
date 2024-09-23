@@ -10,6 +10,8 @@ function VisuEditorIO() constructor {
     renderRightPane: KeyboardKeyType.F3,
     renderTrackControl: KeyboardKeyType.F4,
     renderUI: KeyboardKeyType.F5,
+    cameraKeyboardLook: KeyboardKeyType.F6,
+    cameraMouseLook: KeyboardKeyType.F7,
     exitModal: KeyboardKeyType.ESC,
     controlTrack: KeyboardKeyType.SPACE,
     newProject: "N",
@@ -153,6 +155,16 @@ function VisuEditorIO() constructor {
     if (this.keyboard.keys.renderRightPane.pressed) {
       editor.store.get("render-brush")
         .set(!editor.store.getValue("render-brush"))
+    }
+
+    if (this.keyboard.keys.cameraKeyboardLook.pressed) {
+      var camera = controller.visuRenderer.gridRenderer.camera
+      camera.enableKeyboardLook = !camera.enableKeyboardLook
+    }
+
+    if (this.keyboard.keys.cameraMouseLook.pressed) {
+      var camera = controller.visuRenderer.gridRenderer.camera
+      camera.enableMouseLook = !camera.enableMouseLook
     }
 
     return this

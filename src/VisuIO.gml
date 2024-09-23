@@ -18,10 +18,7 @@ function VisuIO() constructor {
 
   ///@type {Keyboard}
   keyboard = new Keyboard({ 
-    cameraKeyboardLook: KeyboardKeyType.F6,
-    cameraMouseLook: KeyboardKeyType.F7,
     fullscreen: KeyboardKeyType.F11,
-    controlLeft: KeyboardKeyType.CONTROL_LEFT,
     openMenu: KeyboardKeyType.ESC,
   })
 
@@ -48,14 +45,6 @@ function VisuIO() constructor {
   ///@param {VisuController} controller
   ///@return {VisuIO}
   functionKeyboardEvent = function(controller) {
-    if (this.keyboard.keys.cameraKeyboardLook.pressed) {
-      controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = !controller.visuRenderer.gridRenderer.camera.enableKeyboardLook
-    }
-
-    if (this.keyboard.keys.cameraMouseLook.pressed) {
-      controller.visuRenderer.gridRenderer.camera.enableMouseLook = !controller.visuRenderer.gridRenderer.camera.enableMouseLook
-    }
-
     var menu = controller.menu
     if (this.keyboard.keys.openMenu.pressed && !Optional.is(menu.remapKey)) {
       var state = controller.fsm.getStateName()
