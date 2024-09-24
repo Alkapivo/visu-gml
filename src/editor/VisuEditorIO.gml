@@ -14,6 +14,8 @@ function VisuEditorIO() constructor {
     cameraMouseLook: KeyboardKeyType.F7,
     exitModal: KeyboardKeyType.ESC,
     controlTrack: KeyboardKeyType.SPACE,
+    controlTrackBackward: KeyboardKeyType.ARROW_LEFT,
+    controlTrackForward: KeyboardKeyType.ARROW_RIGHT,
     newProject: "N",
     openProject: "O",
     saveProject: "S",
@@ -59,6 +61,26 @@ function VisuEditorIO() constructor {
 
     if (!editor.renderUI) {
       return this
+    }
+
+    if (this.keyboard.keys.controlLeft.on) {
+      if (this.keyboard.keys.controlTrackBackward.pressed) {
+        controller.send(new Event("rewind").setData({
+          timestamp: clamp(
+            controller.trackService.time - 10.0, 
+            0, 
+            controller.trackService.duration),
+        }))
+      }
+
+      if (this.keyboard.keys.controlTrackForward.pressed) {
+        controller.send(new Event("rewind").setData({
+          timestamp: clamp(
+            controller.trackService.time + 10.0, 
+            0, 
+            controller.trackService.duration),
+        }))
+      }
     }
 
     if (this.keyboard.keys.controlLeft.on 

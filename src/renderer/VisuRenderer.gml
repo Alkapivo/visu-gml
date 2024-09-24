@@ -216,8 +216,8 @@ function VisuRenderer() constructor {
       this.hudRenderer.renderGUI(_layout)
       this.dialogueRenderer.render()
     } else {
-      if (shader_is_compiled(shader_blur)) {
-        var uniformSize = shader_get_uniform(shader_blur, "size")
+      if (shader_is_compiled(shader_gaussian_blur)) {
+        var uniformSize = shader_get_uniform(shader_gaussian_blur, "size")
         shader_set(shader_gaussian_blur)
         shader_set_uniform_f(uniformSize, _layout.width(), _layout.height(), this.blur.update().value)
         this.gridRenderer.renderGlitch(_layout)
