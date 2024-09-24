@@ -51,6 +51,11 @@ function VisuEditorIO() constructor {
     if (GMTFContext.isFocused()) {
       return this
     }
+    
+    if (!Core.getProperty("visu.editor.controlTrack.alwaysEnabled", false) 
+      && !editor.renderUI) {
+      return this
+    }
 
     if (this.keyboard.keys.controlTrack.pressed) {
       switch (controller.fsm.getStateName()) {
