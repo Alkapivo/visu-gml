@@ -50,6 +50,15 @@ function VisuRenderer() constructor {
   initTimer = new Timer(0.35)
 
   ///@private
+  ///@type {NumberTransformer}
+  blur = new NumberTransformer({
+    value: 0.0,
+    target: 32.0,
+    factor: 0.25,
+    increase: 0.005,
+  })
+
+  ///@private
   ///@return {VisuRenderer}
   init = function() {
     return this
@@ -195,20 +204,33 @@ function VisuRenderer() constructor {
 
   ///@return {VisuRenderer}
   renderGUI = function() {
+    var controller = Beans.get(BeanVisuController)
     var editor = Beans.get(BeanVisuEditorController)
     var _layout = editor == null ? this.layout : editor.layout.nodes.preview
 
     this.renderGUITimer.start()
-    this.gridRenderer.renderGUI(_layout)
-    this.lyricsRenderer.renderGUI(_layout)
-    this.hudRenderer.renderGUI(_layout)
-    this.dialogueRenderer.render()
-    this.renderSpinner(_layout)
+    if (controller.menu.containers.size() == 0) {
+      this.blur.reset()
+      this.gridRenderer.renderGUI(_layout)
+      this.lyricsRenderer.renderGUI(_layout)  
+      this.hudRenderer.renderGUI(_layout)
+      this.dialogueRenderer.render()
+    } else {
+      if (shader_is_compiled(shader_blur)) {
+        var uniformSize = shader_get_uniform(shader_blur, "size")
+        shader_set(shader_gaussian_blur)
+        shader_set_uniform_f(uniformSize, _layout.width(), _layout.height(), this.blur.update().value)
+        this.gridRenderer.renderGlitch(_layout)
+        shader_reset()
+      } else {
+        this.gridRenderer.renderGUI(_layout)
+      }
+    }
     this.renderUI()
+    this.renderSpinner(_layout)
     this.renderGUITimer.finish()
     this.renderDebugGUI()
 
-    var controller = Beans.get(BeanVisuController)
     if (!this.initTimer.finished) {
       GPU.render.clear(ColorUtil.BLACK)
     }
