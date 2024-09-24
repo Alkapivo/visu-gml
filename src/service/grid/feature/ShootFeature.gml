@@ -6,7 +6,8 @@ function ShootFeature(json) {
   var data = Struct.map(Assert.isType(Struct
     .getDefault(json, "data", {}), Struct), GMArray
     .resolveRandom)
-  
+
+  var amount = Core.isType(Struct.get(data, "amount"), Number) ? data.amount : 1.0,
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
@@ -30,7 +31,15 @@ function ShootFeature(json) {
 
     ///@private
     ///@type {Number}
+    amount: amount,
+
+    ///@private
+    ///@type {Number}
     angle: Core.isType(Struct.get(data, "angle"), Number) ? data.angle : 0.0,
+
+    ///@private
+    ///@type {Number}
+    angleStep: Core.isType(Struct.get(data, "angleStep"), Number) ? data.angleStep : (360.0 / amount),
 
     ///@type {Boolean}
     targetPlayer: Core.isType(Struct.get(data, "targetPlayer"), Boolean) ? data.targetPlayer : false,
@@ -57,14 +66,16 @@ function ShootFeature(json) {
         }
       }
 
-      controller.bulletService.send(new Event("spawn-bullet", {
-        x: item.x,
-        y: item.y,
-        angle: angle,
-        speed: this.speed,
-        producer: Shroom,
-        template: this.bullet,
-      }))
+      for (var index = 0; index < amount; index++) {
+        controller.bulletService.send(new Event("spawn-bullet", {
+          x: item.x,
+          y: item.y,
+          angle: Math.normalizeAngle(angle + (index * this.angleStep)),
+          speed: this.speed,
+          producer: Shroom,
+          template: this.bullet,
+        }))
+      }
     },
   }))
 }
