@@ -133,7 +133,7 @@ function VisuEditorController() constructor {
     },
     "shader-quality": {
       type: Number,
-      value: Assert.isType(Visu.settings.getValue("visu.shader.quality", 0.5), Number),
+      value: Assert.isType(Visu.settings.getValue("visu.graphics.shader-quality", 0.5), Number),
       passthrough: function(value) {
         return clamp(value, 0.2, 1.0)
       }

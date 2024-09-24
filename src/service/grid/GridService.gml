@@ -262,6 +262,28 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     return md5_string_utf8(string(this.uidPointer))
   }
 
+  init = function() {
+    var task = new Task("init-foreground")
+      .setTimeout(3.0)
+      .whenUpdate(function() {
+        var controller = Beans.get(BeanVisuController)
+        controller.gridService.dispatcher.execute(new Event("fade-sprite", {
+          sprite: SpriteUtil.parse({ name: "texture_hechan_3" }),
+          collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
+          type: "Foreground",
+          fadeInDuration: 0.5,
+          fadeOutDuration: 0.5,
+          angle: 3,
+          speed: 0.25,
+          executor: controller.executor,
+        }))
+        this.fullfill()
+      })
+    this.controller.executor.add(task)
+    
+    return this
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "transform-property": Callable.run(Struct.get(EVENT_DISPATCHERS, "transform-property")),
@@ -432,8 +454,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     return this
   }
 
-
-
   ///@private
   ///@return {GridService}
   updateGridItems = function() {
@@ -515,4 +535,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.updateGridItems()
     return this
   }
+
+  this.init()
 }

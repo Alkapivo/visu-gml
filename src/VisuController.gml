@@ -304,6 +304,12 @@ function VisuController(layerName) constructor {
   ///@type {VisuTrackLoader}
   loader = new VisuTrackLoader(this)
 
+  ///@type {TaskExecutor}
+  executor = new TaskExecutor(this, {
+    enableLogger: true,
+    catchException: false,
+  })
+
   ///@type {ShaderPipeline}
   shaderPipeline = new ShaderPipeline()
 
@@ -314,7 +320,11 @@ function VisuController(layerName) constructor {
   uiService = new UIService(this)
 
   ///@type {DisplayService}
-  displayService = new DisplayService(this, { minWidth: 800, minHeight: 480 })
+  displayService = new DisplayService(this, { 
+    minWidth: 800, 
+    minHeight: 480,
+    scale: Visu.settings.getValue("visu.interface.scale"),
+  })
 
   ///@type {ParticleService}
   particleService = new ParticleService(this, { 
@@ -394,13 +404,13 @@ function VisuController(layerName) constructor {
     try {
       if (this.trackService.isTrackLoaded()) {
         var ost = this.trackService.track.audio
-        var ostVolume = Visu.settings.getValue("visu.audio.ost.volume")
+        var ostVolume = Visu.settings.getValue("visu.audio.ost-volume")
         if (ost.isPlaying() && ost.getVolume() != ostVolume) {
           ost.setVolume(ostVolume)
         }
       }
 
-      var sfxVolume = Visu.settings.getValue("visu.audio.sfx.volume")
+      var sfxVolume = Visu.settings.getValue("visu.audio.sfx-volume")
       if (this.sfxService.getVolume() != sfxVolume) {
         this.sfxService.setVolume(sfxVolume)
       }
@@ -498,12 +508,6 @@ function VisuController(layerName) constructor {
     catchException: false,
   }))
 
-  ///@type {TaskExecutor}
-  executor = new TaskExecutor(this, {
-    enableLogger: true,
-    catchException: false,
-  })
-
   ///@private
   ///@type {Array<Struct>}
   services = new Array(Struct, GMArray.map([
@@ -567,6 +571,9 @@ function VisuController(layerName) constructor {
       .set("shroom-die", new SFX("sound_sfx_shroom_die", 3))
       .set("shroom-damage", new SFX("sound_sfx_shroom_damage", 3))
       .set("shroom-shoot", new SFX("sound_sfx_shroom_shoot", 3))
+      .set("menu-move-cursor", new SFX("sound_sfx_player_collect_point_or_force"), 1)
+      .set("menu-select-entry", new SFX("sound_sfx_player_shoot"), 1)
+      .set("menu-use-entry", new SFX("sound_sfx_shroom_damage"), 1)
 
     return this
   }

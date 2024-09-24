@@ -398,7 +398,7 @@ function VEStatusBar(_editor) constructor {
             }
             item.set(parsedValue)
 
-            Visu.settings.setValue("visu.shader.quality", parsedValue).save()
+            Visu.settings.setValue("visu.graphics.shader-quality", parsedValue).save()
           },
         },
       }

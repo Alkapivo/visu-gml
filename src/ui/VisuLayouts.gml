@@ -44,6 +44,36 @@ global.__VisuLayouts = new Map(String, Callable, {
     }
   },
 
+  "menu-button-input-entry": function(config = null) {
+    return {
+      name: "menu-button-input-entry",
+      type: Core.isEnum(Struct.get(config, "type"), UILayoutType)
+        ? config.type
+        : UILayoutType.VERTICAL,
+      collection: true,
+      x: function() { return 0 },
+      y: function() { return this.collection.getIndex() * this.height() },
+      width: function() { return this.context.width() },
+      height: function() { return VISU_MENU_ENTRY_HEIGHT },
+      nodes: {
+        label: {
+          name: "menu-button-input-entry.label",
+          width: function() { return this.context.width() / 2.0 },
+          height: function() { return this.context.height() },
+          x: function() { return this.context.x() },
+          y: function() { return this.context.y() },
+        },
+        input: {
+          name: "menu-button-input-entry.input",
+          width: function() { return this.context.width() / 2.0 },
+          height: function() { return this.context.height() },
+          x: function() { return this.context.nodes.label.right() },
+          y: function() { return this.context.y() },
+        }
+      }
+    }
+  },
+
   ///@param {?Struct} [config]
   ///@return {Struct}
   "menu-spin-select-entry": function(config = null) {

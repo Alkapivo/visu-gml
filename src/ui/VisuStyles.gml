@@ -23,6 +23,35 @@ global.__VisuStyles = new Map(String, Callable, {
       backgroundAlpha: 0.75,
     },
   },
+  "menu-button-input-entry": {
+    label: {
+      align: { v: VAlign.CENTER, h: HAlign.LEFT },
+      font: "font_kodeo_mono_18_bold",
+      color: "#ffffff",
+      offset: { x: 12 },
+      enableColorWrite: false,
+      colorHoverOver: VETheme.color.accentShadow,
+      colorHoverOut: VETheme.color.dark,
+      //backgroundColor: VETheme.color.dark,
+      backgroundAlpha: 0.75,
+    },
+    input: {
+      label: {
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+        font: "font_kodeo_mono_18_bold",
+        color: "#ffffff",
+        enableColorWrite: false,
+        colorHoverOver: VETheme.color.accentShadow,
+        colorHoverOut: VETheme.color.dark,
+        //backgroundColor: VETheme.color.dark,
+        backgroundAlpha: 0.75,
+      },
+      colorHoverOver: VETheme.color.accentShadow,
+      colorHoverOut: VETheme.color.dark,
+      //backgroundColor: VETheme.color.dark,
+      backgroundAlpha: 0.75,
+    },
+  },
   "menu-spin-select-entry": {
     label: {
       align: { v: VAlign.CENTER, h: HAlign.LEFT },

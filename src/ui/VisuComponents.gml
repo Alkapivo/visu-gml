@@ -59,6 +59,49 @@ global.__VisuComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
+  "menu-button-input-entry": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}_menu-button-input-entry",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable
+                .run(UIUtil.updateAreaTemplates
+                .get("applyCollectionLayout")),
+            }, 
+            VisuStyles.get("menu-button-input-entry").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UIButton(
+        $"checkbox_{name}_menu-button-input-entry",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.input,
+              updateArea: Callable
+                .run(UIUtil.updateAreaTemplates
+                .get("applyCollectionLayout")),
+            }, 
+            VisuStyles.get("menu-button-input-entry").input,
+            false
+          ),
+          Struct.get(config, "input"),
+          false
+        )
+      )
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "menu-spin-select-entry": function(name, layout, config = null) {
     static factoryButton = function(name, layout, config) {
       return UIButton(

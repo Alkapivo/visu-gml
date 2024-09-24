@@ -213,9 +213,15 @@ function VisuRenderer() constructor {
       this.blur.reset()
       this.gridRenderer.renderGUI(_layout)
       this.lyricsRenderer.renderGUI(_layout)  
-      this.hudRenderer.renderGUI(_layout)
+      if (Visu.settings.getValue("visu.interface.render-hud")) {
+        this.hudRenderer.renderGUI(_layout)
+      }
       this.dialogueRenderer.render()
     } else {
+      if (!Optional.is(controller.track)) {
+        controller.gridService.properties.update(controller.gridService)
+      }
+      
       if (shader_is_compiled(shader_gaussian_blur)) {
         var uniformSize = shader_get_uniform(shader_gaussian_blur, "size")
         shader_set(shader_gaussian_blur)

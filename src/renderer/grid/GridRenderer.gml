@@ -23,15 +23,15 @@ function GridRenderer() constructor {
   ///@private
   ///@type {Surface}
   shaderSurface = new Surface({ 
-    width: ceil(GuiWidth() / Visu.settings.getValue("visu.shader.quality", 1.0)), 
-    height: ceil(GuiHeight() / Visu.settings.getValue("visu.shader.quality", 1.0)),
+    width: ceil(GuiWidth() / Visu.settings.getValue("visu.graphics.shader-quality", 1.0)), 
+    height: ceil(GuiHeight() / Visu.settings.getValue("visu.graphics.shader-quality", 1.0)),
   })
 
   ///@private
   ///@type {Surface}
   shaderBackgroundSurface = new Surface({ 
-    width: ceil(GuiWidth() / Visu.settings.getValue("visu.shader.quality", 1.0)), 
-    height: ceil(GuiHeight() / Visu.settings.getValue("visu.shader.quality", 1.0)),
+    width: ceil(GuiWidth() / Visu.settings.getValue("visu.graphics.shader-quality", 1.0)), 
+    height: ceil(GuiHeight() / Visu.settings.getValue("visu.graphics.shader-quality", 1.0)),
   })
   
   ///@private
@@ -753,9 +753,13 @@ function GridRenderer() constructor {
     this.backgroundSurface.render()
     var shaderPipeline = Beans.get(BeanVisuController).shaderBackgroundPipeline
     if (properties.renderBackgroundShaders 
+      && Visu.settings.getValue("visu.graphics.bkg-shaders")
       && shaderPipeline.executor.tasks.size() > 0) {
-      this.shaderBackgroundSurface.renderStretched(layout.width(), layout.height())
+
+      this.shaderBackgroundSurface
+        .renderStretched(layout.width(), layout.height())
     }
+
     return this
   }
 
@@ -931,14 +935,15 @@ function GridRenderer() constructor {
     
     this.renderSpawners(gridService, shroomService)
     gpu_set_alphatestenable(false)
-
-    matrix_set(matrix_world, matrix_build(
-      baseX, baseY, depths.particleZ, 
-      0, 0, 0, 
-      1, 1, 1
-    ))
-    this.renderParticles(gridService, particleService)
-
+    if (Visu.settings.getValue("visu.graphics.particle")) {
+      matrix_set(matrix_world, matrix_build(
+        baseX, baseY, depths.particleZ, 
+        0, 0, 0, 
+        1, 1, 1
+      ))
+      this.renderParticles(gridService, particleService)
+    }
+    
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.playerZ, 
       0, 0, 0, 
@@ -968,8 +973,10 @@ function GridRenderer() constructor {
 
     var controller = Beans.get(BeanVisuController)
     var properties = controller.gridService.properties
-    if (!properties.renderGridShaders) {
-      return
+    if (!properties.renderGridShaders 
+      || !Visu.settings.getValue("visu.graphics.main-shaders")) {
+      
+      return this
     }
 
     var width = this.shaderSurface.width
@@ -1019,10 +1026,11 @@ function GridRenderer() constructor {
         task.state.getDefault("alpha", 1.0)
       )
     }
-
+    
     var controller = Beans.get(BeanVisuController)
     var properties = controller.gridService.properties
-    if (!properties.renderBackgroundShaders) {
+    if (!properties.renderBackgroundShaders 
+      || !Visu.settings.getValue("visu.graphics.bkg-shaders")) {
       return
     }
 
@@ -1134,7 +1142,7 @@ function GridRenderer() constructor {
   render = function(layout) {
     var width = layout.width()
     var height = layout.height()
-    var shaderQuality = Visu.settings.getValue("visu.shader.quality", 1.0)
+    var shaderQuality = Visu.settings.getValue("visu.graphics.shader-quality", 1.0)
     this.backgroundSurface
       .update(width, height)
       .renderOn(this.renderBackgroundSurface, layout)
@@ -1158,8 +1166,15 @@ function GridRenderer() constructor {
   ///@return {GridRenderer}
   renderGUI = function(layout) {
     var playerService = Beans.get(BeanVisuController).playerService
-    this.glitchService.renderOn(this.renderGlitch, layout)
-    this.renderPlayerHint(playerService, layout)
+    if (Visu.settings.getValue("visu.graphics.bkt-glitch")) {
+      this.glitchService.renderOn(this.renderGlitch, layout)
+    } else {
+      this.renderGlitch(layout)
+    }
+
+    if (Visu.settings.getValue("visu.interface.player-hint")) {
+      this.renderPlayerHint(playerService, layout)
+    }
     return this
   }
 
