@@ -118,7 +118,7 @@ function VisuMenu(_config = null) constructor {
         layout: VisuLayouts.get("menu-title"),
         config: {
           label: { 
-            text: "visu-project",
+            text: "VISU Project",
           },
         },
       },
@@ -738,8 +738,8 @@ function VisuMenu(_config = null) constructor {
         controller: controller,
         layout: layout,
         state: new Map(String, any, {
-          "background-alpha": 0.8,
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-alpha": 0.33,
+          "background-color": ColorUtil.fromHex(VETheme.color.header).toGMColor(),
           "title": title,
         }),
         updateArea: Callable
@@ -769,8 +769,8 @@ function VisuMenu(_config = null) constructor {
         layout: layout,
         selectedIndex: 0,
         state: new Map(String, any, {
-          "background-alpha": 0.5,
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-alpha": 0.33,
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
           "content": content,
           "isKeyboardEvent": true,
           "remapKey": null,

@@ -182,6 +182,9 @@ function VETemplate(json) constructor {
       angleTransformer: this.store.getValue("bullet_use-transform-angle")
         ? this.store.getValue("bullet_transform-angle").serialize()
         : null,
+      randomDirection: this.store.getValue("bullet_use-random-direction")
+        ? this.store.getValue("bullet_random-direction")
+        : null,
       swingAmount: this.store.getValue("bullet_use-transform-swing-amount")
         ? this.store.getValue("bullet_transform-swing-amount").serialize()
         : null,

@@ -45,7 +45,10 @@ function ShootFeature(json) {
     targetPlayer: Core.isType(Struct.get(data, "targetPlayer"), Boolean) ? data.targetPlayer : false,
 
     ///@type {Number}
-    randomRange: Core.isType(Struct.get(data, "randomRange"), Number) ? data.randomRange : 0,
+    randomAngle: Core.isType(Struct.get(data, "randomRange"), Number) ? data.randomRange : 0.0,
+
+    ///@type {Number}
+    randomSpeed: Core.isType(Struct.get(data, "randomSpeed"), Number) ? data.randomSpeed : 0.0,
 
     ///@override
     ///@param {GridItem} item
@@ -56,13 +59,12 @@ function ShootFeature(json) {
         return
       }
 
-      var randomAngle = random(this.randomRange) * choose(1, -1)
-      var angle = item.angle + this.angle + randomAngle
+      var angle = item.angle + this.angle
       if (this.targetPlayer) {
         var player = Beans.get(BeanVisuController).playerService.player
         if (Core.isType(player, Player)) {
           angle = Math.fetchAngle(item.x, item.y, player.x, player.y) 
-            + randomAngle
+            + this.angle
         }
       }
 
@@ -70,8 +72,11 @@ function ShootFeature(json) {
         controller.bulletService.send(new Event("spawn-bullet", {
           x: item.x,
           y: item.y,
-          angle: Math.normalizeAngle(angle + (index * this.angleStep)),
-          speed: this.speed,
+          angle: angle 
+            + (index * this.angleStep) 
+            + (random(this.randomAngle) * choose(1, -1)),
+          speed: this.speed
+            + (random(this.randomSpeed) * choose(1, -1)),
           producer: Shroom,
           template: this.bullet,
         }))

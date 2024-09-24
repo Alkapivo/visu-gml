@@ -91,6 +91,16 @@ function template_bullet(json = null) {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.get(json, "angleTransformer")),
       },
+      "bullet_use-random-direction": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "randomDirection"), Boolean),
+      },
+      "bullet_random-direction": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "randomDirection"), Boolean) 
+          ? json.randomDirection 
+          : false,
+      },
       "bullet_use-transform-swing-amount": {
         type: Boolean,
         value: Core.isType(Struct.get(json, "swingAmount"), Struct),
@@ -473,6 +483,29 @@ function template_bullet(json = null) {
               store: { key: "bullet_transform-angle" },
               enable: { key: "bullet_use-transform-angle" },
             },
+          },
+        },
+      },
+      {
+        name: "bullet_random-direction",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Randomize direction",
+            enable: { key: "bullet_use-random-direction" },
+          },  
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-random-direction" },
+          },
+          input: { 
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "bullet_random-direction" },
+            enable: { key: "bullet_use-random-direction" },
           },
         },
       },

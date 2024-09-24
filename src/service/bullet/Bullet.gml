@@ -58,6 +58,12 @@ function BulletTemplate(_name, json) constructor {
     ? json.angleTransformer
     : null
 
+  ///@private
+  ///@type {?Boolean}
+  randomDirection = Core.isType(Struct.get(json, "randomDirection"), Boolean)
+    ? json.randomDirection
+    : null
+
   ///@type {?Struct}
   swingAmount = Core.isType(Struct.get(json, "swingAmount"), Struct)
     ? json.swingAmount
@@ -110,6 +116,10 @@ function BulletTemplate(_name, json) constructor {
       Struct.set(json, "angleTransformer", this.angleTransformer)
     }
 
+    if (Optional.is(this.randomDirection)) {
+      Struct.set(json, "randomDirection", this.randomDirection)
+    }
+
     if (Optional.is(this.swingSize)) {
       Struct.set(json, "swingSize", this.swingSize)
     }
@@ -140,12 +150,30 @@ function Bullet(template): GridItem(template) constructor {
   speedTransformer = Core.isType(Struct.get(template, "speedTransformer"), Struct) 
     ? new NumberTransformer(template.speedTransformer)
     : null
+
+  ///@private
+  ///@type {Boolean}
+  isSpeedTransformerSet = false
   
   ///@private  
   ///@type {?NumberTransformer}
   angleTransformer = Core.isType(Struct.get(template, "angleTransformer"), Struct) 
     ? new NumberTransformer(template.angleTransformer)
     : null
+
+  ///@private
+  ///@type {Boolean}
+  isAngleTransformerSet = false
+
+  ///@private
+  ///@type {Number}
+  initAngle = this.angle
+
+  ///@private
+  ///@type {Boolean}
+  randomDirection = Core.isType(Struct.get(template, "randomDirection"), Boolean)
+    ? template.randomDirection
+    : false
 
   ///@private    
   ///@type {?NumberTransformer}
@@ -197,11 +225,22 @@ function Bullet(template): GridItem(template) constructor {
   ///@return {Bullet}
   static update = function(controller) {
     if (this.speedTransformer != null) {
-      this.speed = this.speed + (this.speedTransformer.update().value / 1000.0)
+      if (!this.isSpeedTransformerSet) {
+        this.speedTransformer.value = this.speed * 1000.0
+        this.speedTransformer.startValue = this.speedTransformer.value
+        this.isSpeedTransformerSet = true
+      }
+      this.speed = this.speedTransformer.update().value / 1000.0
     }
     
     if (this.angleTransformer != null) {
-      this.angle = Math.normalizeAngle(this.angle 
+      if (!this.isAngleTransformerSet) {
+        var _sign = this.randomDirection ? choose(1, -1) : 1
+        this.angleTransformer.target *= _sign
+        this.initAngle = this.angle
+        this.isAngleTransformerSet = true
+      }
+      this.angle = Math.normalizeAngle(this.initAngle 
         + this.angleTransformer.update().value)
     }
     
