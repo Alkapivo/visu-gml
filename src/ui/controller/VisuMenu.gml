@@ -1059,7 +1059,7 @@ function VisuMenu(_config = null) constructor {
             layout: VisuLayouts.get("menu-title"),
             config: {
               label: { 
-                text: "Alkapivo 2024",
+                text: $"github.com/Alkapivo\n\nv.{GM_build_date} {date_datetime_string(GM_build_date)}",
                 font: "font_kodeo_mono_12_bold",
               },
             },
