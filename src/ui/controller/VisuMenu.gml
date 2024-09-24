@@ -21,7 +21,6 @@ function factoryPlayerKeyboardKeyEntryConfig(name, text) {
         if (lastKey == KeyboardKeyType.ESC || lastKey == KeyboardKeyType.ENTER) {
           return
         }
-        Core.print("set key", this.key)
 
         var keyboard = Beans.get(BeanVisuIO).keyboards.get("player")
         keyboard.setKey(this.key, lastKey)
@@ -40,12 +39,10 @@ function factoryPlayerKeyboardKeyEntryConfig(name, text) {
           return
         }
 
-        Core.print("set remapKey", this.key)
         this.context.state.set("remapKey", this.key)
         keyboard_lastkey = vk_nokey
       }),
       onMouseReleasedLeft: function() {
-        Core.print("serio?")
         this.callback()
       },
     },
@@ -796,7 +793,8 @@ function VisuMenu(_config = null) constructor {
             return
           }
 
-          if (keyboard_check_released(vk_up)) {
+          var keyboard = Beans.get(BeanVisuIO).keyboards.get("player").update()
+          if (keyboard_check_released(vk_up) || keyboard.keys.up.released) {
             var pointer = Struct.inject(this, "selectedIndex", 0)
             if (!Core.isType(pointer, Number)) {
               pointer = 0
@@ -828,7 +826,7 @@ function VisuMenu(_config = null) constructor {
             }, pointer)
           }
 
-          if (keyboard_check_released(vk_down)) {
+          if (keyboard_check_released(vk_down) || keyboard.keys.down.released) {
             var pointer = Struct.inject(this, "selectedIndex", 0)
             if (!Core.isType(pointer, Number)) {
               pointer = 0
@@ -860,7 +858,7 @@ function VisuMenu(_config = null) constructor {
             }, pointer)
           }
 
-          if (keyboard_check_released(vk_left)) {
+          if (keyboard_check_released(vk_left) || keyboard.keys.left.released) {
             var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               Core.print("component name", component.name)
@@ -887,7 +885,7 @@ function VisuMenu(_config = null) constructor {
             }
           }
 
-          if (keyboard_check_released(vk_right)) {
+          if (keyboard_check_released(vk_right) || keyboard.keys.right.released) {
             var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               Core.print("component name", component.name)
@@ -914,7 +912,9 @@ function VisuMenu(_config = null) constructor {
             }
           }
           
-          if (keyboard_check_released(vk_enter)) {
+          if (keyboard_check_released(vk_enter) 
+            || keyboard_check_released(vk_space) 
+            || keyboard.keys.action.released) {
             var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               Core.print("component name", component.name)
