@@ -350,16 +350,24 @@ function VisuEditorController() constructor {
   ///@private
   ///@return {VisuEditorController}
   init = function() {
-    var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
-    store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
-    store.get("bpm-count").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-count"))
-    store.get("bpm-sub").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-sub"))
-    store.get("snap").addSubscriber(generateSettingsSubscriber("visu.editor.snap"))
-    store.get("render-event").addSubscriber(generateSettingsSubscriber("visu.editor.render-event"))
-    store.get("render-timeline").addSubscriber(generateSettingsSubscriber("visu.editor.render-timeline"))
-    store.get("render-trackControl").addSubscriber(generateSettingsSubscriber("visu.editor.render-track-control"))
-    store.get("render-brush").addSubscriber(generateSettingsSubscriber("visu.editor.render-brush"))
-    store.get("timeline-zoom").addSubscriber(generateSettingsSubscriber("visu.editor.timeline-zoom"))
+    this.store.get("bpm").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.bpm"))
+    this.store.get("bpm-count").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.bpm-count"))
+    this.store.get("bpm-sub").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.bpm-sub"))
+    this.store.get("snap").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.snap"))
+    this.store.get("render-event").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.render-event"))
+    this.store.get("render-timeline").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.render-timeline"))
+    this.store.get("render-trackControl").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.render-track-control"))
+    this.store.get("render-brush").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.render-brush"))
+    this.store.get("timeline-zoom").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.timeline-zoom"))
 
     this.layout = this.factoryLayout()
     return this

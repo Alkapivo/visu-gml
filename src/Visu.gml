@@ -535,7 +535,7 @@ function _Visu() constructor {
       "asset": texture_white,
       "file": ""
     },
-  }
+  } 
 
   ///@return {Struct}
   static assets = function() {
@@ -580,6 +580,20 @@ function _Visu() constructor {
     }
 
     return this._assets
+  }
+  
+  ///@param {String} name
+  ///@return {Struct}
+  static generateSettingsSubscriber = function(name) {
+    return { 
+      name: name,
+      callback: function(value) {
+        if (Visu.settings.getValue(this.name) == value) {
+          return
+        }
+        Visu.settings.setValue(this.name, value).save()
+      },
+    }
   }
 
   ///@param {String} [layerName]
@@ -720,22 +734,37 @@ function _Visu() constructor {
       }
     }
 
-    if (!Beans.exists(BeanDialogueService)) {
-      Beans.add(BeanDialogueService, new Bean(DialogueService,
+    if (!Beans.exists(BeanDialogueDesignerService)) {
+      Beans.add(BeanDialogueDesignerService , new Bean(DialogueDesignerService,
         GMObjectUtil.factoryGMObject(
           GMServiceInstance, 
           layerId, 0, 0, 
-          new DialogueService()
+          new DialogueDesignerService({
+            handlers: new Map(String, Callable, {
+              "QUIT": function(data) {
+                Beans.get(BeanDialogueDesignerService).close()
+              },
+              "LOAD_VISU_TRACK": function(data) {
+                Beans.get(BeanVisuController).send(new Event("load", {
+                  manifest: FileUtil.get(data.path),
+                  autoplay: true,
+                }))
+              },
+              "GAME_END": function(data) {
+                game_end()
+              },
+            }),
+          })
         )
       ))
     }
 
-    if (!Beans.exists(BeanVisuTestRunner)) {
-      Beans.add(BeanVisuTestRunner, new Bean(VisuTestRunner,
+    if (!Beans.exists(BeanTestRunner)) {
+      Beans.add(BeanTestRunner, new Bean(TestRunner,
         GMObjectUtil.factoryGMObject(
           GMServiceInstance, 
           layerId, 0, 0, 
-          new VisuTestRunner()
+          new TestRunner()
         )
       ))
     }
@@ -763,7 +792,7 @@ function _Visu() constructor {
           ],
           handler: function(args) {
             Logger.debug("CLIParamParser", $"Run --test {args.get(0)}")
-            Beans.get(BeanVisuTestRunner).start(args.get(0))
+            Beans.get(BeanTestRunner).push(args.get(0))
             Core.setProperty("visu.manifest.load-on-start", false)
           },
         }),

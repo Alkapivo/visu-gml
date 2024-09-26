@@ -458,7 +458,10 @@ function PlayerStats(_player, json) constructor {
     },
     onMinValueExceed: function() { 
       this.value = 3
-      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: "Player life < 0. Respawn player with life: 3" }))
+      Beans.get(BeanVisuController)
+        .send(new Event("spawn-popup", { 
+          message: "Player life < 0. Respawn player with life: 3"
+        }))
       //Core.print("Die!")
       //var controller = Beans.get(BeanVisuController)
       //controller.send(new Event("rewind", { timestamp: 0.0, resume: false }))

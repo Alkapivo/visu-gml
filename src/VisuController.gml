@@ -311,10 +311,28 @@ function VisuController(layerName) constructor {
   })
 
   ///@type {ShaderPipeline}
-  shaderPipeline = new ShaderPipeline()
+  shaderPipeline = new ShaderPipeline({
+    getLimit: function() {
+      return Visu.settings.getValue("visu.graphics.shaders-limit")
+    },
+    getTemplate: function(name) {
+      var template = this.templates.get(name)
+      return template == null
+        ? Visu.assets().shaderTemplates.get(name)
+        : template
+    },
+  })
 
   ///@type {ShaderPipeline}
-  shaderBackgroundPipeline = new ShaderPipeline(this.shaderPipeline)
+  shaderBackgroundPipeline = new ShaderPipeline({
+    templates: this.shaderPipeline.templates,
+    getLimit: function() {
+      return Beans.get(BeanVisuController).shaderPipeline.getLimit()
+    },
+    getTemplate: function(name) {
+      return Beans.get(BeanVisuController).shaderPipeline.getTemplate(name)
+    },
+  })
 
   ///@type {UIService}
   uiService = new UIService(this)
@@ -575,6 +593,7 @@ function VisuController(layerName) constructor {
       .set("menu-select-entry", new SFX("sound_sfx_player_shoot"), 1)
       .set("menu-use-entry", new SFX("sound_sfx_shroom_damage"), 1)
 
+    //Beans.get(BeanDialogueDesignerService).open("menu")
     return this
   }
 
