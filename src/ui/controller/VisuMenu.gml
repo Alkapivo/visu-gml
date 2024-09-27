@@ -167,7 +167,25 @@ function VisuMenu(_config = null) constructor {
               },
             },
           }
-        }
+        },
+        {
+          name: "main-menu_menu-button-entry_restart",
+          template: VisuComponents.get("menu-button-entry"),
+          layout: VisuLayouts.get("menu-button-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Restart",
+              callback: new BindIntent(function() {
+                SceneContext.open("scene_visu")
+              }),
+              callbackData: config,
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+          }
+        },
       ])
     })
 
