@@ -520,7 +520,8 @@ function VisuController(layerName) constructor {
       if (Core.isType(_editor, VisuEditorController)) {
         _editor.popupQueue.send(new Event("push", event.data))
       }
-    }
+    },
+    "fade-sprite": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-sprite")),
   }, {
     enableLogger: true,
     catchException: false,

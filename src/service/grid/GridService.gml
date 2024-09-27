@@ -265,9 +265,9 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   init = function() {
     var task = new Task("init-foreground")
       .setTimeout(3.0)
-      .whenUpdate(function() {
+      .whenUpdate(function(executor) {
         var controller = Beans.get(BeanVisuController)
-        controller.gridService.dispatcher.execute(new Event("fade-sprite", {
+        controller.send(new Event("fade-sprite", {
           sprite: SpriteUtil.parse({ name: "texture_hechan_3" }),
           collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
           type: "Foreground",
@@ -275,7 +275,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
           fadeOutDuration: 0.5,
           angle: 3,
           speed: 0.25,
-          executor: controller.executor,
+          executor: executor,
         }))
         this.fullfill()
       })
