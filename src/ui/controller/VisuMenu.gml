@@ -31,6 +31,7 @@ function factoryPlayerKeyboardKeyEntryConfig(name, text) {
 
         var keyboard = Beans.get(BeanVisuIO).keyboards.get("player")
         keyboard.setKey(this.key, lastKey)
+        Logger.debug("VisuMenu", $"Remap key {this.key} to {lastKey}")
 
         Visu.settings.setValue("visu.keyboard.player.up", Struct.get(keyboard.keys, "up").gmKey)
         Visu.settings.setValue("visu.keyboard.player.down", Struct.get(keyboard.keys, "down").gmKey)
@@ -60,12 +61,14 @@ function factoryPlayerKeyboardKeyEntryConfig(name, text) {
         var keyCode = Struct.get(Beans.get(BeanVisuIO).keyboards.get("player").keys, this.key).gmKey
         if (KeyboardKeyType.contains(keyCode)) {
           this.label.text = KeyboardKeyType.findKey(keyCode)
+        } else if (KeyboardSpecialKeys.contains(keyCode)) {
+          this.label.text = KeyboardSpecialKeys.get(keyCode)
         } else {
           this.label.text = chr(keyCode)
         }
         
         if (this.context.state.get("remapKey") == this.key) {
-          this.label.alpha = (random(100) / 100) * 0.7
+          this.label.alpha = (random(100) / 100) * 0.6
         } else {
           this.label.alpha = 1.0
         }
