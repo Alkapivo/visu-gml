@@ -898,6 +898,17 @@ function GridRenderer() constructor {
       1, 1, 1
     ))
     _renderShrooms(gridService, shroomService)
+
+    //var x2d = (baseX + MouseUtil.getMouseX()) 
+    //var y2d = (baseY + MouseUtil.getMouseY())
+    //var coords3d = Math.project2DCoordsOn3D(x2d, y2d, camera.viewMatrix, camera.projectionMatrix, width, height)
+    //Core.print("xy2d", x2d, y2d, "xyz3d", coords3d)
+    //matrix_set(matrix_world, matrix_build(
+    //  coords3d[0], coords3d[1], coords3d[2],
+    //  0, 0, 0, 
+    //  1, 1, 1
+    //))
+    //draw_sprite(texture_baron, 0, x2d, y2d)
     /*
     shroomService.chunkService.chunks.forEach(function(chunk, key, view) {
       var arr = String.split(key, "_")
