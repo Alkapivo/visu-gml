@@ -967,7 +967,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 if (sizeBefore != sizeAfter) {
                   this.context.brushToolbar.containers
                     .get("ve-brush-toolbar_brush-view").collection
-                    .add(this.context.brushToolbar.parseBrushTemplate(template))
+                    .add(this.context.brushToolbar.parseBrushTemplate(template), 0)
                 } else {
                   var component = this.context.brushToolbar.containers
                     .get("ve-brush-toolbar_brush-view").collection.components
