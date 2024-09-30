@@ -194,12 +194,10 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   config = JSON.clone(_config)
 
   ///@type {Number}
-  width = Assert.isType(Struct
-    .getDefault(this.config, "width", 100000.0), Number)
+  width = Assert.isType(Struct.getDefault(this.config, "width", 2048.0), Number)
 
   ///@type {Number}
-  height = Assert.isType(Struct
-    .getDefault(this.config, "height", 100000.0), Number)
+  height = Assert.isType(Struct.getDefault(this.config, "height", 2048.0), Number)
 
   ///@type {Number}
   pixelWidth = Assert.isType(Struct

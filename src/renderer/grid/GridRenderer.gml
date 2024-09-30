@@ -64,6 +64,10 @@ function GridRenderer() constructor {
   textureLine = new Texture(texture_grid_line_alpha)
 
   ///@private
+  ///@type {?Number}
+  channelXStart = null
+
+  ///@private
   ///@return {GridRenderer}
   init = function() {
     application_surface_draw_enable(false)
@@ -117,10 +121,13 @@ function GridRenderer() constructor {
       var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
       var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
       var endY = beginY
-      var _alpha = index == (-1 * primaryBegin) ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
-      if (index + 1 > primaryBegin) {
-        _alpha = secondaryAlpha * borderRatio
-      } else if (index < 0.0) {
+      var _alpha = secondaryAlpha;//index == (-1 * primaryBegin) ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
+      //if (index + 1 > primaryBegin) {
+      //  _alpha = secondaryAlpha * borderRatio
+      //} else if (index < 0.0) {
+      //  _alpha = ((primaryBegin - abs(index)) / primaryBegin) * _alpha
+      //}
+      if (index < 0.0) {
         _alpha = ((primaryBegin - abs(index)) / primaryBegin) * _alpha
       }
 
@@ -139,10 +146,10 @@ function GridRenderer() constructor {
       var beginY = ((-6 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
       var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
       var endY = beginY
-      var _alpha = index == primaryEnd ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
-      if (index + 1 > size) {
-        _alpha = secondaryAlpha * borderRatio
-      }
+      var _alpha = secondaryAlpha;//index == primaryEnd ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
+      //if (index + 1 > size) {
+      //  _alpha = secondaryAlpha * borderRatio
+      //}
 
       GPU.render.texturedLineSimple(
         beginX, beginY, 
@@ -190,56 +197,61 @@ function GridRenderer() constructor {
       return this
     }
 
-    var view = gridService.view
     var primaryColor = properties.channelsPrimaryColor.toGMColor()
     var primaryAlpha = properties.channelsPrimaryAlpha
     var primaryThickness = properties.channelsPrimaryThickness
     var secondaryColor = properties.channelsSecondaryColor.toGMColor()
     var secondaryAlpha = properties.channelsSecondaryAlpha
     var secondaryThickness = properties.channelsSecondaryThickness
+    
+    var view = gridService.view
+    var viewX = view.x
+    var viewWidth = view.width
+    var viewHeight = view.height
     var channels = properties.channels
-    var channelWidth = view.width / channels
-    var viewXOffset = channelWidth * (floor(view.x / view.width) - view.x)
-    var thickness = primaryThickness
-    var alpha = primaryAlpha
-    var color = primaryColor
-    var viewHeight = gridService.view.height
-    var borderSize = 5.0
-    var primaryBeginIdx = ceil(borderSize * channels)
-    var primaryEndIdx = primaryBeginIdx + floor(channels) 
-    var idx = 0
+    var channelPxWidth = round((viewWidth / channels) * GRID_SERVICE_PIXEL_WIDTH)
+    var viewBorder = 5
+    var viewCurrent = floor(viewX / viewWidth)
+    var viewXOffset = viewX - viewCurrent
+    var viewXStart = (viewCurrent - viewBorder) * GRID_SERVICE_PIXEL_WIDTH
+    var viewXFinish = (viewCurrent + 2.0 + viewBorder) * GRID_SERVICE_PIXEL_WIDTH
+    if (this.channelXStart == null) {
+      this.channelXStart = viewXStart
+    } else {
+      if (viewXStart < this.channelXStart) {
+        this.channelXStart = this.channelXStart - (channelPxWidth * ((this.channelXStart - viewXStart) div channelPxWidth))
+      } else if (viewXStart > this.channelXStart) {
+        this.channelXStart = this.channelXStart + (channelPxWidth * ((viewXStart - this.channelXStart) div channelPxWidth))
+      }
+      viewXStart = this.channelXStart
+    }
 
-    var _borderSize = borderSize * channels
-    for (var index = -1 * borderSize * channels; index <= channels + borderSize * channels; index++) {
-      var beginX = (viewXOffset + (index * channelWidth)) * GRID_SERVICE_PIXEL_WIDTH
+    var size = (viewXFinish - viewXStart) div channelPxWidth
+    var offset = floor(viewX * GRID_SERVICE_PIXEL_HEIGHT) - this.channelXStart
+    var indexLeft = (floor(viewX * GRID_SERVICE_PIXEL_WIDTH) - this.channelXStart) div channelPxWidth
+    var indexRight = indexLeft + floor(channels)
+    for (var index = 0; index <= size; index++) {
+      var beginX = this.channelXStart + (index * channelPxWidth) - (viewX * GRID_SERVICE_PIXEL_WIDTH)
       var beginY = -6.0 * GRID_SERVICE_PIXEL_HEIGHT
       var endX = beginX
       var endY = (viewHeight + 6.0) * GRID_SERVICE_PIXEL_HEIGHT
-      var _thickness = index >= 0 && index < channels ? primaryThickness : secondaryThickness
-      var _alpha = _thickness == primaryThickness ? primaryAlpha : secondaryAlpha
-      var _color = _thickness == primaryThickness ? primaryColor : secondaryColor
-      
-      if (idx == primaryBeginIdx) {
-        var factorA = (abs(viewXOffset) / channelWidth)
-        var factorB = 1.0 - (abs(viewXOffset) / channelWidth)
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * factorA, secondaryColor, this.textureLine) 
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factorB, primaryAlpha, primaryColor, this.textureLine)
-      } else if (idx == primaryEndIdx) {
-        var factorA = 1.0 - (abs(viewXOffset) / channelWidth)
-        var factorB = (abs(viewXOffset) / channelWidth)
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * factorA, secondaryColor, this.textureLine) 
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factorB, primaryAlpha, primaryColor, this.textureLine)
-      } else {
-        if (index < 0) {
-          _alpha = _alpha * ((index + _borderSize) / _borderSize)
-        } else if (index > channels) {
-          _alpha = _alpha * (_borderSize - (index - channels)) / _borderSize
+      if (index < indexLeft) {
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * clamp((index - (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), secondaryColor, this.textureLine)
+      } else if (index > indexRight) {
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * clamp((size - index + (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), secondaryColor, this.textureLine)
+      }else if (index == indexLeft) {
+        var factor = 1.0 - ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha, secondaryColor, this.textureLine)
+        if (indexLeft != indexRight) {
+          GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha * factor, primaryColor, this.textureLine)
         }
-        
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, _thickness, _alpha, _color, this.textureLine)
+      } else if (index == indexRight) {
+        var factor = ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha, secondaryColor, this.textureLine)
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha * factor, primaryColor, this.textureLine)
+      } else if (index > indexLeft && index < indexRight) {
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha, primaryColor, this.textureLine)
       }
-      
-      idx = idx + 1
     }
     return this
   }
