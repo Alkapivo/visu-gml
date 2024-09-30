@@ -161,7 +161,10 @@ function VisuEditorIO() constructor {
   ///@return {VisuEditorIO}
   functionKeyboardEvent = function(controller, editor) {
     if (this.keyboard.keys.renderUI.pressed) {
-      editor.renderUI = !editor.renderUI
+      var loaderState = controller.loader.fsm.getStateName()
+      if (loaderState == "idle" || loaderState == "loaded") {
+        editor.renderUI = !editor.renderUI
+      }
     }
 
     if (this.keyboard.keys.renderTrackControl.pressed) {
