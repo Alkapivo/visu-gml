@@ -57,6 +57,8 @@ function VisuIO() constructor {
             menu.send(menu.factoryOpenMainMenuEvent())
           }
           break
+        case "game-over":
+          break
         case "play":
           var fsmState = controller.fsm.currentState
           if (fsmState.state.get("promises-resolved") != "success") {

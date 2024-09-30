@@ -457,11 +457,17 @@ function PlayerStats(_player, json) constructor {
       return this
     },
     onMinValueExceed: function() { 
-      this.value = 3
-      Beans.get(BeanVisuController)
-        .send(new Event("spawn-popup", { 
-          message: "Player life < 0. Respawn player with life: 3"
-        }))
+      if (Visu.settings.getValue("visu.god-mode")) {
+        this.value = 3
+        Beans.get(BeanVisuController)
+          .send(new Event("spawn-popup", { 
+            message: "God-mode is active, respawning player"
+          }))
+      } else {
+        var controller = Beans.get(BeanVisuController)
+        controller.send(new Event("game-over"))
+      }
+      
       //Core.print("Die!")
       //var controller = Beans.get(BeanVisuController)
       //controller.send(new Event("rewind", { timestamp: 0.0, resume: false }))

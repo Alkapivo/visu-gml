@@ -111,6 +111,8 @@ function VisuMenu(_config = null) constructor {
       _config,
       {
         back: this.factoryOpenMainMenuEvent, 
+        quit: this.factoryConfirmationDialog,
+        titleLabel: "VISU Project",
       }
     )
 
@@ -123,7 +125,7 @@ function VisuMenu(_config = null) constructor {
         layout: VisuLayouts.get("menu-title"),
         config: {
           label: { 
-            text: "VISU Project",
+            text: config.titleLabel,
           },
         },
       },
@@ -189,7 +191,8 @@ function VisuMenu(_config = null) constructor {
       ])
     })
 
-    if (Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
+    if (Beans.get(BeanVisuController).trackService.isTrackLoaded()
+      && Beans.get(BeanVisuController).fsm.getStateName() != "game-over") {
       event.data.content.add({
         name: "main-menu_menu-button-entry_resume",
         template: VisuComponents.get("menu-button-entry"),
@@ -222,7 +225,8 @@ function VisuMenu(_config = null) constructor {
             text: "Quit",
             callback: new BindIntent(function() {
               Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-              game_end()
+              Beans.get(BeanVisuController).menu.send(Callable
+                .run(this.callbackData.quit, { back: this.callbackData.back }))
             }),
             callbackData: config,
             onMouseReleasedLeft: function() {
@@ -232,6 +236,79 @@ function VisuMenu(_config = null) constructor {
         }
       })
     }
+
+    return event
+  }
+
+  ///@param {?Struct} [_config]
+  ///@return {Event}
+  factoryConfirmationDialog = function(_config = null) {
+    var config = Struct.appendUnique(
+      _config,
+      {
+        accept: function() { return new Event("game-end") },
+        acceptLabel: "Yes",
+        decline: this.factoryOpenMainMenuEvent, 
+        declineLabel: "No",
+        message: "Are you sure?"
+      }
+    )
+
+    var event = new Event("open").setData({
+      accept: config.accept,
+      decline: config.decline,
+      layout: Beans.get(BeanVisuController).visuRenderer.layout,
+      title: {
+        name: "confirmation-dialog_title",
+        template: VisuComponents.get("menu-title"),
+        layout: VisuLayouts.get("menu-title"),
+        config: {
+          label: { 
+            text: config.message,
+          },
+        },
+      },
+      content: new Array(Struct, [
+        {
+          name: "confirmation-dialog_menu-button-entry_accept",
+          template: VisuComponents.get("menu-button-entry"),
+          layout: VisuLayouts.get("menu-button-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: config.acceptLabel,
+              callback: new BindIntent(function() {
+                Beans.get(BeanVisuController).sfxService.play("menu-select-entry")
+                Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
+              }),
+              callbackData: config.accept,
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+          }
+        },
+        {
+          name: "confirmation-dialog_menu-button-decline",
+          template: VisuComponents.get("menu-button-entry"),
+          layout: VisuLayouts.get("menu-button-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: config.declineLabel,
+              callback: new BindIntent(function() {
+                Beans.get(BeanVisuController).sfxService.play("menu-select-entry")
+                Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
+              }),
+              callbackData: config.decline,
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+          }
+        },
+      ])
+    })
 
     return event
   }
@@ -620,6 +697,39 @@ function VisuMenu(_config = null) constructor {
                 this.callback()
               },
             },
+          }
+        },
+        {
+          name: "settings_menu-button-input-entry_god-mode",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "God mode",
+              callback: new BindIntent(function() {
+                var value = Visu.settings.getValue("visu.god-mode")
+                Visu.settings.setValue("visu.god-mode", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                var value = Visu.settings.getValue("visu.god-mode")
+                Visu.settings.setValue("visu.god-mode", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = Visu.settings.getValue("visu.god-mode") ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
           }
         },
         {
@@ -1987,6 +2097,9 @@ function VisuMenu(_config = null) constructor {
         return
       }
       this.dispatcher.execute(new Event("close"))
+    },
+    "game-end": function(event) {
+      game_end()
     },
   }))
 

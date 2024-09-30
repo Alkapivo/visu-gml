@@ -26,6 +26,34 @@ function VisuController(layerName) constructor {
         update: function(fsm) { },
         transitions: { 
           "idle": null, 
+          "game-over": null,
+          "load": null, 
+          "play": null, 
+          "pause": null, 
+          "paused": null,
+          "quit": null,
+        },
+      },
+      "game-over": {
+        actions: {
+          onStart: function(fsm, fsmState, data) {
+            fsm.context.menu.send(fsm.context.menu
+              .factoryOpenMainMenuEvent({ 
+                titleLabel: "Game over"
+              }))
+          },
+        },
+        update: function(fsm) {
+          if (fsm.context.menu.containers.size() == 0) {
+            fsm.context.menu.send(fsm.context.menu
+              .factoryOpenMainMenuEvent({ 
+                titleLabel: "Game over"
+              }))
+          }
+        },
+        transitions: { 
+          "idle": null, 
+          "game-over": null,
           "load": null, 
           "play": null, 
           "pause": null, 
@@ -124,6 +152,7 @@ function VisuController(layerName) constructor {
         },
         transitions: { 
           "idle": null, 
+          "game-over": null,
           "load": null, 
           "pause": null, 
           "rewind": null, 
@@ -478,6 +507,9 @@ function VisuController(layerName) constructor {
     "change-gamemode": function(event) {
       this.gameMode = Assert.isEnum(event.data, GameMode)
     },
+    "game-over": function(event) {
+      this.fsm.dispatcher.send(new Event("transition", { name: "game-over" }))
+    },
     "load": function(event) {
       this.fsm.dispatcher.send(new Event("transition", { 
         name: "load", 
@@ -663,8 +695,10 @@ function VisuController(layerName) constructor {
     this.updateUIService()
     this.services.forEach(this.updateService, this)
     var editor = Beans.get(BeanVisuEditorController)
+    var state = this.fsm.getStateName()
     if ((this.menu.containers.size() == 0) 
-      && (this.fsm.getStateName() != "paused"
+      && (state != "game-over")
+      && (state != "paused" 
       || (Optional.is(editor) && editor.renderUI))) {
       this.gameplayServices.forEach(this.updateService, this)
     }

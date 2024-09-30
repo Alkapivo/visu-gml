@@ -641,19 +641,33 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             var template = templates.get(dragItem.index)
             templates.remove(dragItem.index)
             templates.add(template, newIndex)
-            
+
             this.collection.components.forEach(function(component, key, acc) {
-              if (component.index >= acc.newIndex) && (component.index <= acc.oldIndex) {
-                component.index++
+              if (component.index == acc.oldIndex) {
+                component.index = acc.newIndex
+                component.items.forEach(function(item, key, index) {
+                  item.layout.collection.setIndex(index)
+                }, component.index)
+                return
               }
-              component.items.forEach(function(item, key, index) {
-                item.layout.collection.setIndex(index)
-              }, component.index)
-            }, { newIndex: newIndex, oldIndex: dragItem.index })
-            dragItem.index = newIndex
-            dragItem.items.forEach(function(item, key, index) {
-              item.layout.collection.setIndex(index)
-            }, newIndex)
+
+              if (acc.oldIndex < acc.newIndex && component.index >= acc.oldIndex && component.index <= acc.newIndex) {
+                component.index--
+                component.items.forEach(function(item, key, index) {
+                  item.layout.collection.setIndex(index)
+                }, component.index)
+                return
+              }
+              
+              if (acc.oldIndex > acc.newIndex && component.index >= acc.newIndex && component.index <= acc.oldIndex) {
+                component.index++
+                component.items.forEach(function(item, key, index) {
+                  item.layout.collection.setIndex(index)
+                }, component.index)
+                return
+              }
+            }, { 
+              newIndex: newIndex, oldIndex: dragItem.index })
 
             component.items.forEach(function(item) {
               if (!Struct.contains(item, "colorHoverOut")) {
@@ -661,6 +675,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               }
               item.backgroundColor = ColorUtil.fromHex(item.colorHoverOut).toGMColor()
             })
+
+            this.updateTimer.time = this.updateTimer.duration
           }
         }
       },
