@@ -645,6 +645,28 @@ function VETimeline(_editor) constructor {
         },
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
+          var store = Beans.get(BeanVisuEditorController).store
+          if (mouse_check_button(mb_right) 
+            || (mouse_check_button(mb_left) 
+            && store.getValue("tool") == ToolType.ERASE)) {
+            var mouseX = device_mouse_x_to_gui(0)
+            var mouseY = device_mouse_y_to_gui(0)
+            var areaX = this.area.getX()
+            var areaY = this.area.getY()
+            var areaWidth = this.area.getWidth()
+            var areaHeight = this.area.getHeight()
+            if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+              this.updateTimer.time = this.updateTimer.duration
+              this.items.forEach(this.itemMouseEraseEvent, { 
+                data: {
+                  x: mouseX, 
+                  y: mouseY, 
+                  store: store,
+                },
+              })
+            }
+          }
+
           var trackService = Beans.get(BeanVisuController).trackService
           if (!trackService.isTrackLoaded()) {
             return
@@ -848,7 +870,7 @@ function VETimeline(_editor) constructor {
           var bpmX = 0
           var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
           var _thickness = thickness
-          var bpmCountIndex = ceil(abs(this.offset.x) / bpmWidth)
+          var bpmCountIndex = floor(abs(this.offset.x) / bpmWidth)
           if (bpmSub > 1) {
             var bpmSubLength = round(bpmWidth / bpmSub)
             for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
@@ -979,6 +1001,14 @@ function VETimeline(_editor) constructor {
             inspector.updateTimer.finish()
           }
         },
+
+        onMousePressedLeft: function(event) {
+          this.updateTimer.time = this.updateTimer.duration
+        },
+
+        onMousePressedRight: function(event) {
+          this.updateTimer.time = this.updateTimer.duration
+        },
         
         onMouseReleasedLeft: function(event) {
           try {
@@ -1107,6 +1137,25 @@ function VETimeline(_editor) constructor {
               break
           }
         },
+
+        ///@param {UIItem} item
+        ///@param {String} key
+        ///@param {Event} event
+        itemMouseEraseEvent: new BindIntent(function(item, key, event) {
+          if (!item.collide(event)) {
+            return
+          }
+
+          var channelName = this.getChannelNameFromMouseY(event.data.y)
+          if (Optional.is(channelName)) {
+            this.removeEvent(channelName, item.name)
+          }
+
+          var selected = event.data.store.getValue("selected-event")
+          if (Optional.is(selected) && selected.name == item.name) {
+            event.data.store.get("selected-event").set(null)
+          }
+        }),
     
         ///@param {Number} timestamp
         ///@return {Number}
@@ -1211,6 +1260,12 @@ function VETimeline(_editor) constructor {
                 this.area.setY(this.component.index * this.area.getHeight())
               },
               onMouseDragLeft: function(event) {
+                var store = Beans.get(BeanVisuEditorController).store
+                var tool = store.getValue("tool")
+                if (tool == ToolType.ERASE) {
+                  return
+                }
+
                 var channelName = this.state.get("channel")
                 if (!Optional.is(channelName)) {
                   return

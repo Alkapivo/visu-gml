@@ -850,13 +850,14 @@ function GridRenderer() constructor {
 
     var depths = properties.depths
     var camera = this.camera
-    var cameraDistance = 1 ///@todo investigate
+    var cameraAngle = camera.angle
+    var cameraPitch = camera.pitch
     var xto = camera.x
     var yto = camera.y
     var zto = camera.z + camera.zoom
-    var xfrom = xto + cameraDistance * dcos(camera.angle) * dcos(camera.pitch)
-    var yfrom = yto - cameraDistance * dsin(camera.angle) * dcos(camera.pitch)
-    var zfrom = zto - cameraDistance * dsin(camera.pitch)
+    var xfrom = xto + dcos(cameraAngle) * dcos(cameraPitch)
+    var yfrom = yto - dsin(cameraAngle) * dcos(cameraPitch)
+    var zfrom = zto - dsin(cameraPitch)
     var baseX = GRID_SERVICE_PIXEL_WIDTH + GRID_SERVICE_PIXEL_WIDTH * 0.5
     var baseY = GRID_SERVICE_PIXEL_HEIGHT + GRID_SERVICE_PIXEL_HEIGHT * 0.5
     camera.viewMatrix = matrix_build_lookat(
