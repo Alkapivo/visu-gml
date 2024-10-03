@@ -1601,6 +1601,7 @@ function VisuMenu(_config = null) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.header).toGMColor(),
           "title": title,
           "uiAlpha": 0.0,
+          "uiAlphaFactor": 0.1,
         }),
         updateArea: Callable
           .run(UIUtil.updateAreaTemplates
@@ -1609,7 +1610,7 @@ function VisuMenu(_config = null) constructor {
           .run(UIUtil.renderTemplates
           .get("renderDefault"))),
         render: function() {
-          var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(0.1), 0.0, 1.0)
+          var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(this.state.get("uiAlphaFactor")), 0.0, 1.0)
           this.state.set("uiAlpha", uiAlpha)
           if (this.surface == null) {
             this.surface = new Surface(this.area.getWidth(), this.area.getHeight())
@@ -1672,6 +1673,7 @@ function VisuMenu(_config = null) constructor {
           "remapKey": null,
           "remapKeyRestored": 2,
           "uiAlpha": 0.0,
+          "uiAlphaFactor": 0.1,
           "breath": new Timer(2 * pi, { loop: Infinity, amount: FRAME_MS * 8 }),
         }),
         scrollbarY: { align: HAlign.RIGHT },
@@ -1952,7 +1954,7 @@ function VisuMenu(_config = null) constructor {
           DeltaTime.deltaTime = delta
         },
         render: function() {
-          var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(0.1), 0.0, 1.0)
+          var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(this.state.get("uiAlphaFactor")), 0.0, 1.0)
           this.state.set("uiAlpha", uiAlpha)
 
           this.updateVerticalSelectedIndex(VISU_MENU_ENTRY_HEIGHT)
@@ -2083,6 +2085,23 @@ function VisuMenu(_config = null) constructor {
       }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
+      if (Struct.getDefault(event.data, "fade", false)) {
+        this.containers.forEach(function (container) {
+          Struct.set(container, "updateCustom", method(container, function() {
+            this.state.set("uiAlphaFactor", -0.05)
+            var blur = Beans.get(BeanVisuController).visuRenderer.blur
+            blur.value = Math.transformNumber(blur.value, 0.0, 0.5)
+            if (blur.value == 0.0) {
+              this.controller.send(new Event("close"))
+            }
+          }))
+          Struct.set(container, "onMousePressedLeft", method(container, function(event) { }))
+          Struct.set(container, "onMouseWheelUp", method(container, function(event) { }))
+          Struct.set(container, "onMouseWheelDown", method(container, function(event) { }))
+        })
+        return
+      }
+
       this.back = null
       this.containers.forEach(function (container, key, uiService) {
         uiService.send(new Event("remove", { 
@@ -2096,7 +2115,7 @@ function VisuMenu(_config = null) constructor {
         this.dispatcher.execute(this.back())
         return
       }
-      this.dispatcher.execute(new Event("close"))
+      this.dispatcher.execute(new Event("close", { fade: true }))
     },
     "game-end": function(event) {
       game_end()

@@ -819,7 +819,7 @@ function _Visu() constructor {
       ])
     })
     parser.parse()
-    
+
     return this
   }
 }

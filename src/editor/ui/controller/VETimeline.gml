@@ -11,10 +11,6 @@ global.__ToolType = new _ToolType()
 #macro ToolType global.__ToolType
 
 
-function _dummy(a) {
-  return a
-}
-
 ///@param {VisuEditorController} _editor
 function VETimeline(_editor) constructor {
 
@@ -23,6 +19,9 @@ function VETimeline(_editor) constructor {
   
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
+
+  ///@type {TransactionService}
+  transactionService = new TransactionService()
 
   ///@private
   ///@param {Struct} context
@@ -957,7 +956,10 @@ function VETimeline(_editor) constructor {
             return
           }
 
+          var transactionService = this.controller.transactionService
           this.removeEvent(channelName, trackEvent.eventName)
+          
+          var removeTransaction = transactionService.applied.pop()
 
           trackEvent = trackEvent.serialize()
           trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
@@ -984,7 +986,8 @@ function VETimeline(_editor) constructor {
 
           var uiItem = this.addEvent(channel, new TrackEvent(trackEvent, {
             handlers: Beans.get(BeanVisuController).trackService.handlers,
-          }))
+          }), removeTransaction.data.key)
+          var addTransaction = transactionService.applied.pop()
 
           ///@description select
           Beans.get(BeanVisuEditorController).store
@@ -1000,6 +1003,28 @@ function VETimeline(_editor) constructor {
           if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
             inspector.updateTimer.finish()
           }
+
+          var transaction = new Transaction({
+            name: "Move event",
+            data: {
+              add: addTransaction,
+              remove: removeTransaction,
+            },
+            apply: function() {
+              this.data.remove.apply()
+              this.data.add.data.key = this.data.remove.data.key
+              this.data.add.apply()
+              return this
+            },
+            rollback: function() {
+              this.data.add.rollback()
+              this.data.remove.data.key = this.data.add.data.key
+              this.data.remove.rollback()
+              return this
+            },
+          })
+
+          transactionService.add(transaction)
         },
 
         onMousePressedLeft: function(event) {
@@ -1236,11 +1261,12 @@ function VETimeline(_editor) constructor {
 
         ///@param {String} channelName
         ///@param {TrackEvent} event
+        ///@param {?String} [_name]
         ///@return {UIItem}
-        factoryEventUIItem: new BindIntent(function(channelName, event) { 
+        factoryEventUIItem: new BindIntent(function(channelName, event, _name = null) { 
           var _x = this.getXFromTimestamp(event.timestamp) 
           var key = this.items.generateKey(event.timestamp * (100 + random(1000000) + random(100000)))
-          var name = $"channel_{channelName}_event_{key}"
+          var name = Core.isType(_name, String) ? _name : $"channel_{channelName}_event_{key}"
           var component = this.controller.containers
             .get("ve-timeline-channels").collection
             .get(channelName)
@@ -1352,7 +1378,7 @@ function VETimeline(_editor) constructor {
         ///@param {String} channelName
         ///@param {TrackEvent} event
         ///@return {?UIItem}
-        addEvent: new BindIntent(function(channelName, event) {
+        addEvent: new BindIntent(function(channelName, event, _key = null) {
           if (!Core.isType(event, TrackEvent)) {
             return null
           }
@@ -1361,11 +1387,71 @@ function VETimeline(_editor) constructor {
             throw new Exception("Load track before adding event on timeline")
           }
 
-          var track = Beans.get(BeanVisuController).trackService.track
-          var uiItem = this.factoryEventUIItem(channelName, event)
-          track.addEvent(channelName, event)
-          this.add(uiItem, uiItem.name)
-          return uiItem
+          var context = this
+          var transaction = new Transaction({
+            name: "Add event",
+            data: {
+              context: context,
+              channelName: channelName,
+              name: name,
+              uiItem: null,
+              event: event,
+              key: _key,
+            },
+            apply: function() {
+              var trackEvent = new TrackEvent(this.data.event.serialize(), {
+                handlers: Beans.get(BeanVisuController).trackService.handlers,
+              })
+
+              var track = Beans.get(BeanVisuController).trackService.track
+              if (!Core.isType(track, Track)) {
+                Logger.warn("VETimeline", "Load track before adding event on timeline")
+                return this
+              }
+      
+              var uiItem = this.data.context.factoryEventUIItem(this.data.channelName, trackEvent, this.data.key)
+              track.addEvent(this.data.channelName, trackEvent)
+              this.data.context.add(uiItem, uiItem.name)
+
+              ///@description select
+              var editor = Beans.get(BeanVisuEditorController)
+              var selectedEvent = editor.store.getValue("selected-event")
+              var channelName = this.data.channelName
+              editor.store.get("selected-event").set({
+                name: uiItem.name,
+                channel: channelName,
+                data: uiItem.state.get("event"),
+              })
+
+              this.data.key = uiItem.name
+              this.data.name = uiItem.name
+              this.data.uiItem = uiItem
+              this.data.event = trackEvent
+              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+
+
+              return this
+            },
+            rollback: function() {
+              Beans.get(BeanVisuController).trackService.track
+                .removeEvent(this.data.channelName, this.data.event)
+              this.data.context.remove(this.data.uiItem.name)
+              this.data.key = this.data.uiItem.name
+
+              ///@description deselect
+              var editor = Beans.get(BeanVisuEditorController)
+              var selectedEvent = editor.store.getValue("selected-event")
+              if (Core.isType(selectedEvent, Struct)
+                && this.data.name == selectedEvent.name) {
+                editor.store.get("selected-event").set(null)
+              }
+
+              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+              return this
+            },
+          })
+
+          return this.controller.transactionService.add(transaction).peekApplied().data.uiItem
         }),
 
         ///@param {String} channel
@@ -1378,16 +1464,72 @@ function VETimeline(_editor) constructor {
             || !Core.isType(event, TrackEvent)) {
             return
           }
-          Beans.get(BeanVisuController).trackService.track
-            .removeEvent(channelName, event)
-          this.remove(uiItem.name)
-          
-          ///@description deselect
-          var selectedEvent = editor.store.getValue("selected-event")
-          if (Core.isType(selectedEvent, Struct)
-            && name == selectedEvent.name) {
-            editor.store.get("selected-event").set(null)
-          }
+
+          var context = this
+          var transaction = new Transaction({
+            name: "Remove event",
+            data: {
+              context: context,
+              channelName: channelName,
+              name: name,
+              uiItem: uiItem,
+              event: event,
+              key: null,
+            },
+            apply: function() {
+              Beans.get(BeanVisuController).trackService.track
+                .removeEvent(this.data.channelName, this.data.event)
+              this.data.context.remove(this.data.uiItem.name)
+              this.data.key = this.data.uiItem.name
+
+              ///@description deselect
+              var editor = Beans.get(BeanVisuEditorController)
+              var selectedEvent = editor.store.getValue("selected-event")
+              if (Core.isType(selectedEvent, Struct)
+                && this.data.name == selectedEvent.name) {
+                editor.store.get("selected-event").set(null)
+              }
+
+              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+
+              return this
+            },
+            rollback: function() {
+              var trackEvent = new TrackEvent(this.data.event.serialize(), {
+                handlers: Beans.get(BeanVisuController).trackService.handlers,
+              })
+
+              var track = Beans.get(BeanVisuController).trackService.track
+              if (!Core.isType(track, Track)) {
+                Logger.warn("VETimeline", "Load track before adding event on timeline")
+                return this
+              }
+      
+              var uiItem = this.data.context.factoryEventUIItem(this.data.channelName, trackEvent, this.data.key)
+              track.addEvent(this.data.channelName, trackEvent)
+              this.data.context.add(uiItem, uiItem.name)
+
+              ///@description select
+              var editor = Beans.get(BeanVisuEditorController)
+              var selectedEvent = editor.store.getValue("selected-event")
+              var channelName = this.data.channelName
+              editor.store.get("selected-event").set({
+                name: uiItem.name,
+                channel: channelName,
+                data: uiItem.state.get("event"),
+              })
+
+              this.data.key = uiItem.name
+              this.data.name = uiItem.name
+              this.data.uiItem = uiItem
+              this.data.event = trackEvent
+              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+
+              return this
+            },
+          })
+
+          this.controller.transactionService.add(transaction)
         }),
 
         ///@param {String} channel
@@ -1399,7 +1541,7 @@ function VETimeline(_editor) constructor {
           var uiItem = this.items.get(name)
           this.remove(name)
           
-          uiItem = this.factoryEventUIItem(channelName, event)
+          uiItem = this.factoryEventUIItem(channelName, event, name)
           this.add(uiItem, uiItem.name)
           if (Optional.is(uiItem.updateArea)) {
             uiItem.updateArea()
@@ -1624,6 +1766,7 @@ function VETimeline(_editor) constructor {
     },
     "close": function(event) {
       var context = this
+      this.transactionService.clear()
       this.containers.forEach(function (container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 

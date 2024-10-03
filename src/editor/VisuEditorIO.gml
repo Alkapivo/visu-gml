@@ -33,6 +33,8 @@ function VisuEditorIO() constructor {
     numZoomIn: KeyboardKeyType.NUM_PLUS,
     numZoomOut: KeyboardKeyType.NUM_MINUS,
     controlLeft: KeyboardKeyType.CONTROL_LEFT,
+    shiftLeft: KeyboardKeyType.SHIFT_LEFT,
+    undo: "Z",
   })
 
   ///@type {Mouse}
@@ -346,6 +348,31 @@ function VisuEditorIO() constructor {
   ///@param {VisuController} controller
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
+  timelineKeyboardEvent = function(controller, editor) {
+    if (GMTFContext.isFocused() 
+      || !editor.renderUI 
+      || !controller.trackService.isTrackLoaded()) {
+      return this
+    }
+
+    if (this.keyboard.keys.controlLeft.on 
+        && this.keyboard.keys.undo.pressed) {
+      
+      var transactionService = editor.timeline.transactionService
+      if (this.keyboard.keys.shiftLeft.on) {
+        transactionService.redo()
+      } else {
+        transactionService.undo()
+      }
+    }
+
+    return this
+  }
+
+  ///@private
+  ///@param {VisuController} controller
+  ///@param {VisuEditorController} editor
+  ///@return {VisuEditorIO}
   mouseEvent = function(controller, editor) {
     static generateMouseEvent = function(name) {
       return new Event(name, { 
@@ -421,6 +448,7 @@ function VisuEditorIO() constructor {
       this.modalKeyboardEvent(controller, editor)
       this.templateToolbarKeyboardEvent(controller, editor)
       this.brushToolbarKeyboardEvent(controller, editor)
+      this.timelineKeyboardEvent(controller, editor)
       this.mouseEvent(controller, editor)
     } catch (exception) {
       var message = $"'VisuEditorIO::update' fatal error: {exception.message}"
