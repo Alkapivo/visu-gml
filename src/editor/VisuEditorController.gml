@@ -200,6 +200,7 @@ function VisuEditorController() constructor {
       this.store.get("_render-trackControl").set(this.store.getValue("render-trackControl"))
       this.store.get("render-trackControl").set(false)
       this.store.get("selected-event").set(null)
+      this.store.getValue("selected-events").clear()
 
       return {
         "accordion": this.accordion.send(new Event("close")),
