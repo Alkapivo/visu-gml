@@ -124,6 +124,10 @@ function VisuEditorController() constructor {
       type: Optional.of(Struct),
       value: null,
     },
+    "selected-events": {
+      type: Map,
+      value: new Map(String, Struct),
+    },
     "timeline-zoom": {
       type: Number,
       value: 10,
