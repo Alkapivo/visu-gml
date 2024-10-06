@@ -33,7 +33,9 @@ function GridOverlayRenderer() constructor {
       var alpha = color.alpha
       color = color.toGMColor()
       GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
+      GPU.set.blendEquation(task.state.get("blendEquation"))
       GPU.render.rectangle(0, 0, acc.width, acc.height, false, color, color, color, color, alpha)
+      GPU.reset.blendEquation()
       GPU.reset.blendMode()
     }
 
@@ -45,10 +47,12 @@ function GridOverlayRenderer() constructor {
       var _x = ceil(((sprite.texture.width * sprite.getScaleX()) - acc.width) / 2.0) + task.state.get("x")
       var _y = ceil(((sprite.texture.height * sprite.getScaleY()) - acc.height) / 2.0) + task.state.get("y")
       GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
+      GPU.set.blendEquation(task.state.get("blendEquation"))
       sprite.renderTiled(
         ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
         ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
       )
+      GPU.reset.blendEquation()
       GPU.reset.blendMode()
     }
 
@@ -66,7 +70,9 @@ function GridOverlayRenderer() constructor {
       var alpha = color.alpha
       color = color.toGMColor()
       GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
+      GPU.set.blendEquation(task.state.get("blendEquation"))
       GPU.render.rectangle(0, 0, acc.width, acc.height, false, color, color, color, color, alpha)
+      GPU.reset.blendEquation()
       GPU.reset.blendMode()
     }
 
@@ -78,10 +84,12 @@ function GridOverlayRenderer() constructor {
       var _x = ceil(((sprite.texture.width * sprite.getScaleX()) - acc.width) / 2.0) + task.state.get("x")
       var _y = ceil(((sprite.texture.height * sprite.getScaleY()) - acc.height) / 2.0) + task.state.get("y")
       GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
+      GPU.set.blendEquation(task.state.get("blendEquation"))
       sprite.renderTiled(
         ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
         ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
       )
+      GPU.reset.blendEquation()
       GPU.reset.blendMode()
     }
 

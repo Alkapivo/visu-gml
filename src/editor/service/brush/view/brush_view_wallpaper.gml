@@ -27,6 +27,18 @@ global.__BLEND_MODES_EXT = [
 #macro BLEND_MODES_EXT global.__BLEND_MODES_EXT
 
 
+///@static
+///@type {GMArray<String>}
+global.__BLEND_EQUATIONS = [
+  "ADD",
+  "SUBTRACT",
+  "REVERSE_SUBTRACT",
+  "MIN",
+  "MAX"
+]
+#macro BLEND_EQUATIONS global.__BLEND_EQUATIONS
+
+
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_view_wallpaper(json = null) {
@@ -56,6 +68,14 @@ function brush_view_wallpaper(json = null) {
           Assert.areEqual(true, this.data.contains(value))
         },
         data: new Array(String, BLEND_MODES_EXT),
+      },
+      "view-wallpaper_blend-equation": {
+        type: String,
+        value: Struct.getDefault(json, "view-wallpaper_blend-equation", "ADD"),
+        validate: function(value) {
+          Assert.areEqual(true, this.data.contains(value))
+        },
+        data: new Array(String, BLEND_EQUATIONS),
       },
       "view-wallpaper_fade-in-duration": {
         type: Number,
@@ -218,6 +238,20 @@ function brush_view_wallpaper(json = null) {
             store: { key: "view-wallpaper_blend-mode-target" },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { store: { key: "view-wallpaper_blend-mode-target" } },
+        },
+      },
+      {
+        name: "view-wallpaper_blend-equation",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Blend eq" },
+          previous: { store: { key: "view-wallpaper_blend-equation" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "view-wallpaper_blend-equation" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "view-wallpaper_blend-equation" } },
         },
       },
       {

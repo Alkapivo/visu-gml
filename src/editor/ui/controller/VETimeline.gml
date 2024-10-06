@@ -958,9 +958,8 @@ function VETimeline(_editor) constructor {
 
           var transactionService = this.controller.transactionService
           this.removeEvent(channelName, trackEvent.eventName)
-          
-          var removeTransaction = transactionService.applied.pop()
 
+          var eventName = trackEvent.eventName
           trackEvent = trackEvent.serialize()
           trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
           var store = Beans.get(BeanVisuEditorController).store
@@ -986,8 +985,7 @@ function VETimeline(_editor) constructor {
 
           var uiItem = this.addEvent(channel, new TrackEvent(trackEvent, {
             handlers: Beans.get(BeanVisuController).trackService.handlers,
-          }), removeTransaction.data.key)
-          var addTransaction = transactionService.applied.pop()
+          }), eventName)
 
           ///@description select
           Beans.get(BeanVisuEditorController).store
@@ -1003,28 +1001,6 @@ function VETimeline(_editor) constructor {
           if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
             inspector.updateTimer.finish()
           }
-
-          var transaction = new Transaction({
-            name: "Move event",
-            data: {
-              add: addTransaction,
-              remove: removeTransaction,
-            },
-            apply: function() {
-              this.data.remove.apply()
-              this.data.add.data.key = this.data.remove.data.key
-              this.data.add.apply()
-              return this
-            },
-            rollback: function() {
-              this.data.add.rollback()
-              this.data.remove.data.key = this.data.add.data.key
-              this.data.remove.rollback()
-              return this
-            },
-          })
-
-          transactionService.add(transaction)
         },
 
         onMousePressedLeft: function(event) {
@@ -1399,9 +1375,7 @@ function VETimeline(_editor) constructor {
               key: _key,
             },
             apply: function() {
-              var trackEvent = new TrackEvent(this.data.event.serialize(), {
-                handlers: Beans.get(BeanVisuController).trackService.handlers,
-              })
+              var trackEvent = this.data.event
 
               var track = Beans.get(BeanVisuController).trackService.track
               if (!Core.isType(track, Track)) {
@@ -1495,9 +1469,7 @@ function VETimeline(_editor) constructor {
               return this
             },
             rollback: function() {
-              var trackEvent = new TrackEvent(this.data.event.serialize(), {
-                handlers: Beans.get(BeanVisuController).trackService.handlers,
-              })
+              var trackEvent = this.data.event
 
               var track = Beans.get(BeanVisuController).trackService.track
               if (!Core.isType(track, Track)) {

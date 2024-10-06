@@ -16,7 +16,8 @@ global.__view_track_event = {
         fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
         executor: controller.gridService.executor,
         blendModeSource: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-source", "SRC_ALPHA")),
-        blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == "Background" ? "SRC_ALPHA" : "ONE")),
+        blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE")),
+        blendEquation: BlendEquation.get(Struct.getDefault(data, "view-wallpaper_blend-equation", "ADD")),
       }))
     }
 
@@ -43,7 +44,8 @@ global.__view_track_event = {
           : controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
         type: Struct.get(data, "view-wallpaper_type"),
         blendModeSource: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-source", "SRC_ALPHA")),
-        blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == "Background" ? "SRC_ALPHA" : "ONE")),
+        blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE")),
+        blendEquation: BlendEquation.get(Struct.getDefault(data, "view-wallpaper_blend-equation", "ADD")),
         fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
         fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
         angle: Struct.get(data, "view-wallpaper_angle"),

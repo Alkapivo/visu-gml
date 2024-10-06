@@ -273,6 +273,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
           fadeOutDuration: 0.5,
           angle: 3,
           speed: 0.25,
+          blendModeSource: BlendModeExt.SRC_ALPHA,
+          blendModeTarget: BlendModeExt.ONE,
           executor: executor,
         }))
         this.fullfill()
