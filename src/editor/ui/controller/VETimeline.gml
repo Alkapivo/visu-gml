@@ -955,9 +955,12 @@ function VETimeline(_editor) constructor {
               .contains(channelName)) {
             return
           }
-
           var transactionService = this.controller.transactionService
+          var sizeBefore = transactionService.applied.size()
           this.removeEvent(channelName, trackEvent.eventName)
+          Assert.isTrue(sizeBefore == transactionService.limit || sizeBefore == transactionService.applied.size() - 1, "different removeEvent applied size was expected")
+          var removeTransaction = transactionService.peekApplied()
+          Assert.isTrue(Core.isType(removeTransaction, Transaction) && removeTransaction.name == "Remove event", "Transaction name must be 'Remove event'")
 
           var eventName = trackEvent.eventName
           trackEvent = trackEvent.serialize()
@@ -983,9 +986,40 @@ function VETimeline(_editor) constructor {
             }
           }
 
+          sizeBefore = transactionService.applied.size()
           var uiItem = this.addEvent(channel, new TrackEvent(trackEvent, {
             handlers: Beans.get(BeanVisuController).trackService.handlers,
           }), eventName)
+          Assert.isTrue(sizeBefore == transactionService.limit || sizeBefore == transactionService.applied.size() - 1, "different addEvent applied size was expected")
+          var addTransaction = transactionService.peekApplied()
+          Assert.isTrue(Core.isType(addTransaction, Transaction) && addTransaction.name == "Add event", "Transaction name must be 'Add event'")
+
+          Assert.isTrue(addTransaction == transactionService.applied.pop(), "addTransaction was expected")
+          Assert.isTrue(removeTransaction == transactionService.applied.pop(), "removeTransaction was expected")
+
+          var transaction = new Transaction({
+            name: "Move event",
+            data: {
+              add: addTransaction,
+              remove: removeTransaction,
+            },
+            apply: function() {
+              this.data.remove.apply()
+              this.data.add.apply()
+              return this
+            },
+            rollback: function() {
+              this.data.add.rollback()
+              this.data.remove.rollback()
+              return this
+            }
+          })
+
+          transactionService.applied.push(transaction)
+          if (transactionService.applied.size() >= transactionService.limit) {
+            Core.print("remove! add")
+            transactionService.applied.container.remove(0)
+          }
 
           ///@description select
           Beans.get(BeanVisuEditorController).store
@@ -1001,6 +1035,8 @@ function VETimeline(_editor) constructor {
           if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
             inspector.updateTimer.finish()
           }
+
+          
         },
 
         onMousePressedLeft: function(event) {
