@@ -109,9 +109,9 @@ function GridOverlayRenderer() constructor {
     }
 
     video.surface.update()
-    var scale = max(video.surface.width / width, video.surface.height / height)
-    var _width = ceil(width * scale)
-    var _height = ceil(height * scale)
+    var scale = max(width / video.surface.width, height / video.surface.height)
+    var _width = ceil(video.surface.width * scale)
+    var _height = ceil(video.surface.height * scale)
     var _x = -1 * ceil((_width - width) / 2.0)
     var _y = -1 * ceil((_height - height) / 2.0)
     video.surface.render(_x, _y, _width, _height)    
