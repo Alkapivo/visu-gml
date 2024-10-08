@@ -56,7 +56,7 @@ function VisuProjectForm(json = null) constructor {
       layout: VELayouts.get("property-bar"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: "Create new project" },
+        label: { text: "Project settings" },
       },
     },
     {
