@@ -33,6 +33,9 @@ function VisuEditorController() constructor {
   ///@type {VENewProjectModal}
   newProjectModal = new VENewProjectModal()
 
+  ///@type {VEProjectModal}
+  projectModal = new VEProjectModal()
+
   ///@type {VisuModal}
   exitModal = new VisuModal({
     message: { text: "Changes you made may not be saved." },
@@ -233,6 +236,7 @@ function VisuEditorController() constructor {
     "popupQueue",
     "exitModal",
     "newProjectModal",
+    "projectModal",
     "autosave"
   ], function(name, index, editor) {
     Logger.debug(BeanVisuEditorController, $"Load service '{name}'")

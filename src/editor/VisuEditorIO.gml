@@ -17,6 +17,7 @@ function VisuEditorIO() constructor {
     controlTrackBackward: KeyboardKeyType.ARROW_LEFT,
     controlTrackForward: KeyboardKeyType.ARROW_RIGHT,
     newProject: "N",
+    editProject: 188,
     openProject: "O",
     saveProject: "S",
     saveTemplate: "T",
@@ -214,11 +215,20 @@ function VisuEditorIO() constructor {
     if (!GMTFContext.isFocused() 
       && this.keyboard.keys.exitModal.pressed) {
 
+      var exitModalKeyDispatched = false
+      if (Core.isType(editor.uiService.find("visu-project-modal"), UI)) {
+        editor.projectModal.send(new Event("close"))
+        exitModalKeyDispatched = true
+      }
+
       if (Core.isType(editor.uiService.find("visu-new-project-modal"), UI)) {
         editor.newProjectModal.send(new Event("close"))
-      } else if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
+        exitModalKeyDispatched = true
+      }
+      
+      if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
         editor.exitModal.send(new Event("close"))
-      } else {
+      } else if (!exitModalKeyDispatched) {
         editor.exitModal.send(new Event("open").setData({
           layout: new UILayout({
             name: "display",
@@ -236,8 +246,39 @@ function VisuEditorIO() constructor {
     if (!GMTFContext.isFocused() 
       && this.keyboard.keys.controlLeft.on 
       && this.keyboard.keys.newProject.pressed) {
+
+      if (Core.isType(editor.uiService.find("visu-project-modal"), UI)) {
+        editor.projectModal.send(new Event("close"))
+      }
+
+      if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
+        editor.exitModal.send(new Event("close"))
+      }
       
       editor.newProjectModal.send(new Event("open").setData({
+        layout: new UILayout({
+          name: "display",
+          x: function() { return 0 },
+          y: function() { return 0 },
+          width: function() { return GuiWidth() },
+          height: function() { return GuiHeight() },
+        }),
+      }))
+    }
+
+    if (!GMTFContext.isFocused() 
+      && this.keyboard.keys.controlLeft.on 
+      && this.keyboard.keys.editProject.pressed) {
+
+      if (Core.isType(editor.uiService.find("visu-new-project-modal"), UI)) {
+        editor.newProjectModal.send(new Event("close"))
+      }
+
+      if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
+        editor.exitModal.send(new Event("close"))
+      }
+      
+      editor.projectModal.send(new Event("open").setData({
         layout: new UILayout({
           name: "display",
           x: function() { return 0 },
@@ -276,6 +317,10 @@ function VisuEditorIO() constructor {
         })
 
         if (!Core.isType(path, String) || String.isEmpty(path)) {
+          return this
+        }
+
+        if (!Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
           return this
         }
 
@@ -357,6 +402,9 @@ function VisuEditorIO() constructor {
 
     if (this.keyboard.keys.controlLeft.on 
         && this.keyboard.keys.undo.pressed) {
+      
+      editor.store.get("selected-event").set(null)
+      editor.store.getValue("selected-events").clear()
       
       var transactionService = editor.timeline.transactionService
       if (this.keyboard.keys.shiftLeft.on) {
