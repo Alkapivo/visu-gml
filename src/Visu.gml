@@ -609,7 +609,7 @@ function _Visu() constructor {
     Core.loadProperties(FileUtil.get($"{working_directory}core-properties.json"))
     Core.loadProperties(FileUtil.get($"{working_directory}visu-properties.json"))
     this.settings.set(new SettingEntry({ name: "visu.editor.autosave", type: SettingTypes.BOOLEAN, defaultValue: false }))
-      .set(new SettingEntry({ name: "visu.language", type: SettingTypes.STRING, defaultValue: LanguageType.en_US }))
+      .set(new SettingEntry({ name: "visu.language", type: SettingTypes.STRING, defaultValue: LanguageType.en_EN }))
       .set(new SettingEntry({ name: "visu.fullscreen", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.god-mode", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.window.width", type: SettingTypes.NUMBER, defaultValue: 1400 }))
@@ -648,7 +648,7 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.keyboard.player.focus", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.SHIFT }))
       .load()
     
-    initLanguage(this.settings.getValue("visu.language", LanguageType.en_US))
+    initLanguage(this.settings.getValue("visu.language", LanguageType.en_EN))
 
     var layerId = layer_get_id(layerName)
     if (layerId == -1) {
