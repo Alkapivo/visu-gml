@@ -479,6 +479,10 @@ function _Visu() constructor {
       "asset": texture_baron,
       "file": ""
     },
+    "texture_baron_cursor": {
+      "asset": texture_baron_cursor,
+      "file": ""
+    },
     "texture_baron_wallpaper_1": {
       "asset": texture_baron_wallpaper_1,
       "file": ""
