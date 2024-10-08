@@ -385,6 +385,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         
         store.get("category").addSubscriber({ 
           name: this.name,
+          overrideSubscriber: true,
           callback: function(category, context) { 
             if (category == context.state.get("category")) {
               return
@@ -402,6 +403,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
         store.get("type").addSubscriber({ 
           name: this.name,
+          overrideSubscriber: true,
           callback: function(type, context) {
             //if (type == context.state.get("type")) {
             //  return
@@ -690,6 +692,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: this.layout })
         this.brushToolbar.store.get("type").addSubscriber({ 
           name: container.name,
+          overrideSubscriber: true,
           callback: function(type, data) {
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
             data.collection.components.clear() ///@todo replace with remove lambda
@@ -865,6 +868,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: container.layout })
         this.brushToolbar.store.get("template").addSubscriber({ 
           name: this.name,
+          overrideSubscriber: true,
           callback: function(template, data) {
             if (!Optional.is(template)) {
               data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda

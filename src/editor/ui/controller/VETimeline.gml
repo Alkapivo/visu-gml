@@ -901,20 +901,28 @@ function VETimeline(_editor) constructor {
           this.renderClipboard()
 
           var context = this
-          var selectedEvents = Beans.get(BeanVisuEditorController).store.getValue("selected-events")
-          if (Optional.is(selectedEvents)) {
+          var controller = Beans.get(BeanVisuEditorController)
+          var selectedEvent = controller.store.getValue("selected-event")
+          var selectedEvents = controller.store.getValue("selected-events")
+          if (Optional.is(selectedEvent) && Optional.is(selectedEvents)) {
             selectedEvents.forEach(function(selectedEvent, key, acc) {
               var context = acc.context
               var index = acc.index
               var xx = context.getXFromTimestamp(selectedEvent.data.timestamp) + context.offset.x
               var yy = context.getYFromChannelName(selectedEvent.channel) + context.offset.y
-              if (index == 0) {
-                context.selectedSprite.setAnimate(true).render(xx, yy)
-              } else {
-                context.selectedSprite.setAnimate(false).render(xx, yy).setAnimate(true)
-              }
+              context.selectedSprite
+                .setBlend(key == acc.name ? acc.color : c_white)
+                .setAnimate(index == 0)
+                .render(xx, yy)
+                .setBlend(c_white)
+                .setAnimate(true)
               acc.index = index + 1
-            }, { context: context, index: 0 })
+            }, { 
+              context: context, 
+              index: 0, 
+              name: selectedEvent.name, 
+              color: selectedEvents.size() > 1 ? c_lime : c_white,
+            })
           }
 
           DeltaTime.deltaTime = delta
@@ -1034,6 +1042,13 @@ function VETimeline(_editor) constructor {
               handlers: Beans.get(BeanVisuController).trackService.handlers,
             }), selectedEvent.name)
 
+            var contextEvent = acc.contextEvent
+            if (contextEvent.name == selectedEvent.name) {
+              contextEvent.name = uiItem.name
+              contextEvent.channel = channel
+              contextEvent.data = uiItem.state.get("event")
+            }
+
             Assert.isTrue(sizeBefore == transactionService.limit 
               || sizeBefore == transactionService.applied.size() - 1,
               "different addEvent applied size was expected")
@@ -1053,6 +1068,7 @@ function VETimeline(_editor) constructor {
           }, {
             context: context,
             offset: trackEventConfig.timestamp - timestamp,
+            contextEvent: contextEvent,
             sourceChannel: sourceChannel,
             targetChannel: targetChannel,
             newEvents: newEvents,
@@ -1063,12 +1079,29 @@ function VETimeline(_editor) constructor {
             data: {
               add: addTransactions,
               remove: removeTransactions,
+              name: contextEvent.name,
+              restoreName: function(name) {
+                var store = Beans.get(BeanVisuEditorController).store
+                var selectedEvent = store.getValue("selected-event")
+                if (Optional.is(selectedEvent) 
+                  && selectedEvent.name != name) {
+                  var foundEvent = store.getValue("selected-events")
+                    .find(function(event, key, name) {
+                      return event.name == name
+                    }, name)
+                  if (Optional.is(foundEvent)) {
+                    store.get("selected-event").set(foundEvent)
+                  }
+                }
+              },
             },
             apply: function() {
               for (var index = 0; index < this.data.add.size(); index++) {
                 this.data.remove.get(this.data.remove.keys().get(index)).apply()
                 this.data.add.get(this.data.add.keys().get(index)).apply()
               }
+
+              this.data.restoreName(this.data.name)
               return this
             },
             rollback: function() {
@@ -1076,6 +1109,8 @@ function VETimeline(_editor) constructor {
                 this.data.add.get(this.data.add.keys().get(index)).rollback()
                 this.data.remove.get(this.data.remove.keys().get(index)).rollback()
               }
+
+              this.data.restoreName(this.data.name)
               return this
             }
           })
@@ -1222,6 +1257,13 @@ function VETimeline(_editor) constructor {
                     handlers: Beans.get(BeanVisuController).trackService.handlers,
                   }))
 
+                  var contextEvent = acc.contextEvent
+                  if (contextEvent.name == selectedEvent.name) {
+                    contextEvent.name = uiItem.name
+                    contextEvent.channel = channel
+                    contextEvent.data = uiItem.state.get("event")
+                  }
+
                   Assert.isTrue(sizeBefore == transactionService.limit 
                     || sizeBefore == transactionService.applied.size() - 1,
                     "different addEvent applied size was expected")
@@ -1244,19 +1286,37 @@ function VETimeline(_editor) constructor {
                   sourceChannel: sourceChannel,
                   targetChannel: targetChannel,
                   newEvents: newEvents,
+                  contextEvent: contextEvent,
                 })
 
                 var transaction = new Transaction({
-                  name: "Move event",
+                  name: "Clone event",
                   data: {
                     add: addTransactions,
+                    name: contextEvent.name,
+                    restoreName: function(name) {
+                      var store = Beans.get(BeanVisuEditorController).store
+                      var selectedEvent = store.getValue("selected-event")
+                      if (Optional.is(selectedEvent) 
+                        && selectedEvent.name != name) {
+                        var foundEvent = store.getValue("selected-events")
+                          .find(function(event, key, name) {
+                            return event.name == name
+                          }, name)
+                        if (Optional.is(foundEvent)) {
+                          store.get("selected-event").set(foundEvent)
+                        }
+                      }
+                    },
                   },
                   apply: function() {
                     this.data.add.forEach(function(transaction) { transaction.apply() })
+                    this.data.restoreName(this.data.name)
                     return this
                   },
                   rollback: function() {
                     this.data.add.forEach(function(transaction) { transaction.rollback() })
+                    this.data.restoreName(this.data.name)
                     return this
                   }
                 })
@@ -1459,6 +1519,12 @@ function VETimeline(_editor) constructor {
                 Struct.set(trackEvent, "eventName", this.name)
                 Struct.set(trackEvent, "channelName", channelName)
                 MouseUtil.setClipboard(trackEvent)
+
+                this.context.select({
+                  name: this.name,
+                  channel: channelName,
+                  data: trackEvent,
+                })
 
                 var events = Beans
                   .get(BeanVisuEditorController).timeline.containers
@@ -1724,18 +1790,19 @@ function VETimeline(_editor) constructor {
             if (!selectedEvents.contains(contextEvent.name)) {
               selectedEvents.add(contextEvent, contextEvent.name)
               if (!Optional.is(selectedEvent) 
-                || contextEvent.name != selectedEvent.name) {
+                || selectedEvent.name != contextEvent.name) {
                 store.get("selected-event").set(contextEvent)
               }
-            } else {
-              selectedEvents.remove(contextEvent.name)
-              if (selectedEvents.size() == 0) {
-                store.get("selected-event").set(null)
+            } else if (Optional.is(selectedEvent)) {
+              if (selectedEvent.name != contextEvent.name) {
+                store.get("selected-event").set(contextEvent)
               } else {
-                var first = selectedEvents.getFirst()
-                store.get("selected-event").set(first)
+                selectedEvents.remove(contextEvent.name)
+                store.get("selected-event").set(selectedEvents.getFirst())
               }
-            } 
+            } else {
+              //store.get("selected-event").set(contextEvent)
+            }
           }
 
           return this
