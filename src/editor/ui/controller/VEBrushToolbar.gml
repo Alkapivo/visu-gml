@@ -316,12 +316,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "grid": new Array(Struct, [
           {
             name: "button_category-grid_type-channel",
-            text: "Channel",
+            text: "Cols",
             brushType: VEBrushType.GRID_CHANNEL,
           },
           {
             name: "button_category-grid_type-separator",
-            text: "Separator",
+            text: "Rows",
             brushType: VEBrushType.GRID_SEPARATOR,
           },
           {
@@ -385,7 +385,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         
         store.get("category").addSubscriber({ 
           name: this.name,
-          overrideSubscriber: true,
+          overrideSubscriber: false,
           callback: function(category, context) { 
             if (category == context.state.get("category")) {
               return
@@ -403,7 +403,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
         store.get("type").addSubscriber({ 
           name: this.name,
-          overrideSubscriber: true,
+          overrideSubscriber: false,
           callback: function(type, context) {
             //if (type == context.state.get("type")) {
             //  return
@@ -692,7 +692,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: this.layout })
         this.brushToolbar.store.get("type").addSubscriber({ 
           name: container.name,
-          overrideSubscriber: true,
+          overrideSubscriber: false,
           callback: function(type, data) {
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
             data.collection.components.clear() ///@todo replace with remove lambda
@@ -809,7 +809,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               var top = titleBar.layout.height() + typeNode.height() + typeNode.margin.top + typeNode.margin.bottom
               var bottom = GuiHeight() - statusBar.layout.height() - (controlNode.height() + controlNode.margin.top + controlNode.margin.bottom)
               var length = bottom - top
-              var position = clamp(_position - top, 0, length)
+              var position = clamp(_position - top - 20, 0, length)
               inspectorNode.percentageHeight = clamp((length - position) / length, 0.07, 0.93)
               brushNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
             }),
@@ -868,7 +868,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: container.layout })
         this.brushToolbar.store.get("template").addSubscriber({ 
           name: this.name,
-          overrideSubscriber: true,
+          overrideSubscriber: false,
           callback: function(template, data) {
             if (!Optional.is(template)) {
               data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
@@ -1059,7 +1059,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 var template = brush.toTemplate()
                 var brushService = Beans.get(BeanVisuEditorController).brushService
                 var sizeBefore = brushService.fetchTemplates(template.type).size()
-                brushService.saveTemplate(template)
+                brushService.saveTemplate(template, 0)
                 var sizeAfter = brushService.fetchTemplates(template.type).size()
 
                 if (sizeBefore != sizeAfter) {

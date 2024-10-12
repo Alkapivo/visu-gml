@@ -84,7 +84,7 @@ global.__view_track_event = {
         .get(data, "view-config_movement-enable")
 
       var movementAngle = Struct.get(data, "view-config_movement-angle")
-      var angleDifference = angle_difference(movementAngle.target, controller.gridService.movement.angle.get())
+      var angleDifference = Math.fetchPointsAngleDiff(movementAngle.target, controller.gridService.movement.angle.get())
       controller.gridService.movement.angle = new NumberTransformer({
         value: controller.gridService.movement.angle.get(),
         target: controller.gridService.movement.angle.get() + angleDifference,
@@ -179,7 +179,7 @@ global.__view_track_event = {
     
     if (Struct.get(data, "view-config_use-transform-angle")) {
       var transformer = Struct.get(data, "view-config_transform-angle")
-      var angleDifference = angle_difference(transformer.target, controller.visuRenderer.gridRenderer.camera.angle)
+      var angleDifference = Math.fetchPointsAngleDiff(transformer.target, controller.visuRenderer.gridRenderer.camera.angle)
       controller.gridService.send(new Event("transform-property", {
         key: "angle",
         container: controller.visuRenderer.gridRenderer.camera,
@@ -361,6 +361,7 @@ global.__view_track_event = {
     
     if (Struct.get(data, "view-config_use-transform-particles-z")) {
       var transformer = Struct.get(data, "view-config_transform-particles-z")
+      Core.print("wtf", gridService.properties.depths.particleZ, transformer.target)
       gridService.send(new Event("transform-property", {
         key: "particleZ",
         container: gridService.properties.depths,

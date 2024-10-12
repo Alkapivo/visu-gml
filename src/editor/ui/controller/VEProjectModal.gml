@@ -43,7 +43,7 @@ function VisuProjectForm(json = null) constructor {
     "file-video": {
       type: Optional.of(String),
       value: Struct.getDefault(json, "file-video", Core.isType(visuTrack.video, String) 
-        ? visuTrack.video 
+        ? FileUtil.get($"{visuTrack.path}{visuTrack.video}")
         : null),
     },
   })
@@ -293,6 +293,7 @@ function VisuProjectForm(json = null) constructor {
     
     var useVideo = this.store.getValue("use-file-video")
     var videoPath = useVideo ? this.store.getValue("file-video") : null
+    Core.print("videoPath", videoPath)
     if (Core.isType(videoPath, String) &&
       FileUtil.fileExists(videoPath)) {
       var videoFile = FileUtil.getFilenameFromPath(videoPath)

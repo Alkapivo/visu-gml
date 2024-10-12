@@ -473,6 +473,20 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
+        name: "view-wallpaper_clear-texture",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Remove texture" },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-wallpaper_clear-texture" },
+          },
+        },
+      },
+      {
         name: "view-wallpaper_use-texture-speed",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -874,20 +888,6 @@ function brush_view_wallpaper(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "yScale" },
           field: { store: { key: "view-wallpaper_yScale" } },
-        },
-      },
-      {
-        name: "view-wallpaper_clear-texture",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Remove texture" },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-wallpaper_clear-texture" },
-          },
         },
       },
     ]),

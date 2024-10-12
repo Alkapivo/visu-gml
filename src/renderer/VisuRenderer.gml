@@ -25,12 +25,12 @@ function VisuRenderer() constructor {
   })
 
   ///@private
-  ///@type {DebugOSTimer}
-  renderTimer = new DebugOSTimer("Render")
+  ///@type {DebugTimer}
+  renderTimer = new DebugTimer("Render")
   
   ///@private
-  ///@type {DebugOSTimer}
-  renderGUITimer = new DebugOSTimer("RenderGUI")
+  ///@type {DebugTimer}
+  renderGUITimer = new DebugTimer("RenderGUI")
 
   ///@private
   ///@type {Sprite}

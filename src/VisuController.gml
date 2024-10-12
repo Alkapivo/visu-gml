@@ -1,6 +1,6 @@
 ///@package io.alkapivo.visu
 
-#macro BeanVisuController "visuController"
+#macro BeanVisuController "VisuController"
 ///@param {String} layerName
 function VisuController(layerName) constructor {
 
@@ -489,14 +489,14 @@ function VisuController(layerName) constructor {
   }
 
   ///@param {Boolean} value
-  ///@return {TopDownController}
+  ///@return {VisuController}
   setRenderEnabled = function(value) {
     this.renderEnabled = value
     return this
   }
 
   ///@param {Boolean} value
-  ///@return {TopDownController}
+  ///@return {VisuController}
   setRenderGUIEnabled = function(value) {
     this.renderEnabled = value
     return this
@@ -600,6 +600,7 @@ function VisuController(layerName) constructor {
   ///@private
   ///@return {VisuController}
   init = function() {
+    this.displayService.setCaption(game_display_name)
     Core.debugOverlay(Assert.isType(Core.getProperty("visu.debug", false), Boolean))
     var fullscreen = Assert.isType(Visu.settings.getValue("visu.fullscreen", false), Boolean)
     this.displayService
@@ -625,8 +626,7 @@ function VisuController(layerName) constructor {
       .set("menu-move-cursor", new SFX("sound_sfx_player_collect_point_or_force"), 1)
       .set("menu-select-entry", new SFX("sound_sfx_player_shoot"), 1)
       .set("menu-use-entry", new SFX("sound_sfx_shroom_damage"), 1)
-
-    //Beans.get(BeanDialogueDesignerService).open("menu")
+    
     return this
   }
 

@@ -40,12 +40,12 @@ global.__VEBrushTypeNames = {
   "brush_view_lyrics": "View config",
   "brush_view_glitch": "View glitch",
   "brush_view_config": "View lyrics",
-  "brush_grid_channel": "Grid channel",
+  "brush_grid_channel": "Grid columns",
   "brush_grid_coin": "Spawn coin",
   "brush_grid_config": "Grid config",
   "brush_grid_particle": "Spawn particle",
   "brush_grid_player": "Spawn player",
-  "brush_grid_separator": "Grid separator",
+  "brush_grid_separator": "Grid rows",
 }
 #macro VEBrushTypeNames global.__VEBrushTypeNames
 
