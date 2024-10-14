@@ -1171,8 +1171,8 @@ function VETimeline(_editor) constructor {
                 var brush = Beans.get(BeanVisuEditorController).brushToolbar.store
                   .getValue("brush")
                 if (!Optional.is(brush)) {
-                  Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-                    { message: "No brush has been selected!" }))
+                  //Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                  //  { message: "No brush has been selected!" }))
                   break
                 }
 

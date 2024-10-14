@@ -501,7 +501,7 @@ function VisuEditorIO() constructor {
   }
 
   ///@return {VisuEditorIO}
-  update = function() {
+  updateBegin = function() {
     try {
       this.keyboard.update()
       this.mouse.update()
