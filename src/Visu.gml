@@ -507,6 +507,10 @@ function _Visu() constructor {
       "asset": texture_bullet,
       "file": ""
     },
+    "texture_bullet_circle": {
+      "asset": texture_bullet_circle,
+      "file": ""
+    },
     "texture_coin_bomb": {
       "asset": texture_coin_bomb,
       "file": ""

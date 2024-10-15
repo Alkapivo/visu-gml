@@ -56,13 +56,12 @@ function VisuTrackLoader(_controller): Service() constructor {
           onStart: function(fsm, fsmState, path) {
             var controller = Beans.get(BeanVisuController)
             controller.displayService.setCaption(game_display_name)
-
+            controller.brushService.clearTemplates()
             controller.visuRenderer.gridRenderer.clear()
             var editor = Beans.get(BeanVisuEditorController)
             if (Core.isType(editor, VisuEditorController)) {
               editor.popupQueue.dispatcher.execute(new Event("clear"))
               editor.dispatcher.execute(new Event("close"))
-              editor.brushService.clearTemplates()
             }
 
             controller.trackService.dispatcher.execute(new Event("close-track"))
@@ -338,30 +337,28 @@ function VisuTrackLoader(_controller): Service() constructor {
               }))
             }
             
-            if (Core.isType(Beans.get(BeanVisuEditorController), VisuEditorController)) {
-              data.manifest.editor.forEach(function(file, index, acc) { 
-                var promise = Beans.get(BeanFileService).send(
-                  new Event("fetch-file")
-                    .setData({ path: $"{acc.data.path}{file}" })
-                    .setPromise(new Promise()
-                      .setState({ 
-                        callback: function(prototype, json, index, acc) {
-                          //Logger.debug("VisuTrackLoader", $"Load brush '{json.name}'")
-                          acc.saveTemplate(new prototype(json))
-                        },
-                        acc: {
-                          saveTemplate: Beans.get(BeanVisuEditorController).brushService.saveTemplate,
-                          file: file,
-                        },
-                        steps: MAGIC_NUMBER_TASK,
-                      })
-                      .whenSuccess(function(result) {
-                        return Assert.isType(JSON.parserTask(result.data, this.state), Task)
-                      }))
-                )
-                acc.promises.add(promise, file)
-              }, { controller: controller, data: data, promises: promises })
-            }
+            data.manifest.editor.forEach(function(file, index, acc) { 
+              var promise = Beans.get(BeanFileService).send(
+                new Event("fetch-file")
+                  .setData({ path: $"{acc.data.path}{file}" })
+                  .setPromise(new Promise()
+                    .setState({ 
+                      callback: function(prototype, json, index, acc) {
+                        //Logger.debug("VisuTrackLoader", $"Load brush '{json.name}'")
+                        acc.saveTemplate(new prototype(json))
+                      },
+                      acc: {
+                        saveTemplate: Beans.get(BeanVisuController).brushService.saveTemplate,
+                        file: file,
+                      },
+                      steps: MAGIC_NUMBER_TASK,
+                    })
+                    .whenSuccess(function(result) {
+                      return Assert.isType(JSON.parserTask(result.data, this.state), Task)
+                    }))
+              )
+              acc.promises.add(promise, file)
+            }, { data: data, promises: promises })
           
             fsmState.state.set("promises", promises)
           },

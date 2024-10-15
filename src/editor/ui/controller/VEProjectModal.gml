@@ -293,7 +293,6 @@ function VisuProjectForm(json = null) constructor {
     
     var useVideo = this.store.getValue("use-file-video")
     var videoPath = useVideo ? this.store.getValue("file-video") : null
-    Core.print("videoPath", videoPath)
     if (Core.isType(videoPath, String) &&
       FileUtil.fileExists(videoPath)) {
       var videoFile = FileUtil.getFilenameFromPath(videoPath)

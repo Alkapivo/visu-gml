@@ -684,7 +684,7 @@ function brush_view_wallpaper(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-wallpaper_use-angle-transform" },
             },
             field: { 
@@ -752,7 +752,7 @@ function brush_view_wallpaper(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-wallpaper_use-speed-transform" },
             },
             field: { 
@@ -811,7 +811,7 @@ function brush_view_wallpaper(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-wallpaper_use-xScale-transform" },
             },
             field: { 
@@ -870,7 +870,7 @@ function brush_view_wallpaper(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-wallpaper_use-yScale-transform" },
             },
             field: { 

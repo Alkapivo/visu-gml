@@ -352,24 +352,6 @@ function VisuMenu(_config = null) constructor {
             },
           }
         },
-        {
-          name: "main-menu_menu-button-entry_restart",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "Restart",
-              callback: new BindIntent(function() {
-                Scene.open("scene_visu")
-              }),
-              callbackData: config,
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            },
-          }
-        },
       ])
     })
 
@@ -630,6 +612,88 @@ function VisuMenu(_config = null) constructor {
                 this.callback()
               },
             }
+          }
+        },
+        {
+          name: "settings_menu-button-input-entry_editor",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Editor",
+              callback: function() {
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+                
+                if (Optional.is(Beans.get(BeanVisuEditorIO))) {
+                  Beans.kill(BeanVisuEditorIO)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
+                }
+
+                if (Optional.is(Beans.get(BeanVisuEditorController))) {
+                  Beans.kill(BeanVisuEditorController)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorController()))
+
+                  var editor = Beans.get(BeanVisuEditorController)
+                  if (Optional.is(editor)) {
+                    editor.send(new Event("open"))
+                  }
+                }
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "" },
+              updateCustom: function() {
+                this.label.text = Optional.is(Beans.get(BeanVisuEditorController)) ? "Enabled" : "Disabled"
+              },
+              callback: function() {
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+                
+                if (Optional.is(Beans.get(BeanVisuEditorIO))) {
+                  Beans.kill(BeanVisuEditorIO)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
+                }
+
+                if (Optional.is(Beans.get(BeanVisuEditorController))) {
+                  Beans.kill(BeanVisuEditorController)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorController()))
+
+                  var editor = Beans.get(BeanVisuEditorController)
+                  if (Optional.is(editor)) {
+                    editor.send(new Event("open"))
+                  }
+                }
+              },
+            }
+          }
+        },
+        {
+          name: "settings_menu-button-entry_restart",
+          template: VisuComponents.get("menu-button-entry"),
+          layout: VisuLayouts.get("menu-button-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Restart",
+              callback: new BindIntent(function() {
+                Scene.open("scene_visu")
+              }),
+              callbackData: config,
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
           }
         },
         {

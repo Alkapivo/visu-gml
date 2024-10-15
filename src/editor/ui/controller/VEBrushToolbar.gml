@@ -14,17 +14,9 @@ function factoryVEBrushToolbarTypeItem(config) {
       backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
       callback: function() {
-        this.context.brushToolbar.store
-          .get("type")
-          .set(this.brushType)
-        
-        this.context.brushToolbar.store
-          .get("template")
-          .set(null)
-        
-        this.context.brushToolbar.store
-          .get("brush")
-          .set(null)
+        this.context.brushToolbar.store.get("type").set(this.brushType)
+        this.context.brushToolbar.store.get("template").set(null)
+        this.context.brushToolbar.store.get("brush").set(null)
 
         var view = this.context.brushToolbar.containers.get("ve-brush-toolbar_inspector-view")
         view.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
@@ -390,7 +382,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             if (category == context.state.get("category")) {
               return
             }
-            
+
             context.state.set("category", category)
             context.brushToolbar.store
               .get("type")
@@ -460,7 +452,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
             callback: function(event) {
               var type = this.context.brushToolbar.store.getValue("type")
-              var saveTemplate = Beans.get(BeanVisuEditorController).brushService.saveTemplate
+              var saveTemplate = Beans.get(BeanVisuController).brushService.saveTemplate
               var promise = Beans.get(BeanFileService).send(
                 new Event("fetch-file-dialog")
                   .setData({
@@ -482,6 +474,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
+                      if (result == null) {
+                        return new Task("dummy-task").whenUpdate(function(executor) {
+                          this.fullfill()
+                        })
+                      }
+
                       var task = JSON.parserTask(result.data, this.state)
                       Beans.get(BeanVisuController).executor.add(task)
                       return task
@@ -508,22 +506,28 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             colorHoverOver: VETheme.color.accentShadow,
             colorHoverOut: VETheme.color.primary,
             callback: function(event) {
+              var path = FileUtil.getPathToSaveWithDialog({ 
+                description: "JSON file",
+                filename: "brush", 
+                extension: "json",
+              })
+
+              if (!Core.isType(path, String)) {
+                return
+              }
+
               var type = this.context.brushToolbar.store.getValue("type")
-              var templates = Beans.get(BeanVisuEditorController).brushService.fetchTemplates(type)
+              var templates = Beans.get(BeanVisuController).brushService.fetchTemplates(type)
               var data = JSON.stringify({
                 "model": "Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
-                "data": Assert.isType(Beans.get(BeanVisuEditorController).brushService
+                "data": Assert.isType(Beans.get(BeanVisuController).brushService
                   .fetchTemplates(type)
                   .getContainer(), GMArray),
               }, { pretty: true })
 
               Beans.get(BeanFileService).send(new Event("save-file-sync")
                 .setData(new File({
-                  path: FileUtil.getPathToSaveWithDialog({ 
-                    description: "JSON file",
-                    filename: "brush", 
-                    extension: "json",
-                  }),
+                  path: path,
                   data: data
                 })))
             },
@@ -639,7 +643,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           if (Optional.is(component)) {
             var type = this.brushToolbar.store.getValue("type")
             var newIndex = component.index
-            var templates = Beans.get(BeanVisuEditorController).brushService.fetchTemplates(type)
+            var templates = Beans.get(BeanVisuController).brushService.fetchTemplates(type)
             var template = templates.get(dragItem.index)
             templates.remove(dragItem.index)
             templates.add(template, newIndex)
@@ -698,7 +702,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             data.collection.components.clear() ///@todo replace with remove lambda
             data.state.set("type", type)
 
-            var brushService = Beans.get(BeanVisuEditorController).brushService
+            var brushService = Beans.get(BeanVisuController).brushService
             var task = new Task("load-brushes")
               .setState({
                 collection: data.collection,
@@ -746,7 +750,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             "color":"#FFFFFF",
             "texture":"texture_baron",
           })
-          Beans.get(BeanVisuEditorController).brushService.saveTemplate(template)
+          Beans.get(BeanVisuController).brushService.saveTemplate(template)
           this.brushToolbar.store.get("type").set(type)
           this.brushToolbar.store.get("template").set(template)
         }
@@ -899,6 +903,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               .setTimeout(60)
               .setState({
                 context: data,
+                template: template,
                 stage: "load-components",
                 components: brush.components,
                 componentsQueue: new Queue(String, GMArray
@@ -1057,7 +1062,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
 
                 var template = brush.toTemplate()
-                var brushService = Beans.get(BeanVisuEditorController).brushService
+                var brushService = Beans.get(BeanVisuController).brushService
                 var sizeBefore = brushService.fetchTemplates(template.type).size()
                 brushService.saveTemplate(template, 0)
                 var sizeAfter = brushService.fetchTemplates(template.type).size()
@@ -1139,6 +1144,9 @@ function VEBrushToolbar(_editor) constructor {
       value: null,
     }
   })
+
+  ///@type {Map<String, Struct>}
+  templatesCache = new Map(String, Struct)
 
   ///@type {Map<String, Array>}
   categories = new Map(String, Array, {
@@ -1340,7 +1348,7 @@ function VEBrushToolbar(_editor) constructor {
             if (!Core.isType(template.get(), VEBrushTemplate)
               || template.get().name != this.brushTemplate.name) {
 
-              var templates = Beans.get(BeanVisuEditorController).brushService.fetchTemplates(this.brushTemplate.type)
+              var templates = Beans.get(BeanVisuController).brushService.fetchTemplates(this.brushTemplate.type)
               if (!Core.isType(templates, Array)) {
                 return
               }
@@ -1371,7 +1379,7 @@ function VEBrushToolbar(_editor) constructor {
             blend: VETheme.color.textShadow,
           },
           callback: function() {
-            Beans.get(BeanVisuEditorController).brushService.removeTemplate(this.brushTemplate)
+            Beans.get(BeanVisuController).brushService.removeTemplate(this.brushTemplate)
             this.context.collection.remove(this.component.index)
           },
           brushTemplate: template,
@@ -1389,6 +1397,7 @@ function VEBrushToolbar(_editor) constructor {
     },
     "close": function(event) {
       var context = this
+      this.templatesCache.clear()
       this.containers.forEach(function (container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 

@@ -4,6 +4,9 @@
 ///@param {String} layerName
 function VisuController(layerName) constructor {
 
+  ///@type {GMLayer}
+  layerId = Assert.isType(Scene.getLayer(layerName), GMLayer)
+
   ////@type {Gamemode}
   gameMode = GameMode.BULLETHELL
 
@@ -423,6 +426,9 @@ function VisuController(layerName) constructor {
 
   ///@type {LyricsService}
   lyricsService = new LyricsService(this)
+
+  ///@type {VEBrushService}
+  brushService = new VEBrushService()
 
   ///@type {VisuRenderer}
   visuRenderer = new VisuRenderer(this)

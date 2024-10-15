@@ -361,7 +361,6 @@ global.__view_track_event = {
     
     if (Struct.get(data, "view-config_use-transform-particles-z")) {
       var transformer = Struct.get(data, "view-config_transform-particles-z")
-      Core.print("wtf", gridService.properties.depths.particleZ, transformer.target)
       gridService.send(new Event("transform-property", {
         key: "particleZ",
         container: gridService.properties.depths,
