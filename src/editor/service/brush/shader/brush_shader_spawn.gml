@@ -54,7 +54,7 @@ function brush_shader_spawn(json = null) {
       },
       "shader-spawn_use-merge-properties": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-config_use-merge-properties", false),
+        value: Struct.getDefault(json, "shader-spawn_use-merge-properties", false),
       },
       "shader-spawn_merge-properties": {
         type: String,
