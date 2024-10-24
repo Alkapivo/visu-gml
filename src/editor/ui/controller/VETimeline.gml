@@ -1862,12 +1862,13 @@ function VETimeline(_editor) constructor {
               : clamp(time - _time, 0, duration)
             this.state.set("mouseXTime", time)
           }
-          
+
           var position = time == null ? spd * trackService.time : spd * time
           var camera = this.state.get("camera")
           var cameraPrevious = this.state.get("cameraPrevious")
           var maxWidth = spd * duration
-          if (position > camera + width) || (position < camera) {
+          if (controller.fsm.getStateName() == "play" || time != null) 
+            && ((position > camera + width) || (position < camera)) {
             camera = clamp(position - width / 2, 0, maxWidth - width)
           }
           this.state.set("camera", camera)
