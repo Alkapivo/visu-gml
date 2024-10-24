@@ -5,11 +5,13 @@ global.__VISU_FONT = [
   "font_kodeo_mono_12_regular",
   "font_kodeo_mono_18_regular",
   "font_kodeo_mono_28_regular",
+  "font_kodeo_mono_48_regular",
 
   "font_kodeo_mono_10_bold",
   "font_kodeo_mono_12_bold",
   "font_kodeo_mono_18_bold",
   "font_kodeo_mono_28_bold",
+  "font_kodeo_mono_48_bold",
 
   "font_inter_8_regular",
   "font_inter_10_regular",
