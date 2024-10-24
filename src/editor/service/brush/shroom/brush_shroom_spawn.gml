@@ -67,7 +67,7 @@ function brush_shroom_spawn(json = null) {
         type: Number,
         value: Struct.getDefault(json, "shroom-spawn_spawn-y", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -2.5, 1.5) 
+          return clamp(NumberUtil.parse(value, this.value), -4.5, 3.5) 
         },
       },
       "shroom-spawn_channels-spawn-y": {
@@ -390,8 +390,8 @@ function brush_shroom_spawn(json = null) {
             enable: { key: "shroom-spawn_use-spawn-x", negate: true },
           },
           slider: {
-            minValue: -3.5,
-            maxValue: 4.5,
+            minValue: -4.5,
+            maxValue: 3.5,
             store: { key: "shroom-spawn_spawn-x-random-from" },
             enable: { key: "shroom-spawn_use-spawn-x", negate: true },
           },
@@ -486,8 +486,8 @@ function brush_shroom_spawn(json = null) {
             },
           },
           slider: { 
-            minValue: -2.5,
-            maxValue: 1.5,
+            minValue: -4.5,
+            maxValue: 3.5,
             store: { key: "shroom-spawn_spawn-y" },
             enable: { key: "shroom-spawn_use-spawn-y" },
             customKey: "shroom-spawn_channels-spawn-y",
@@ -569,8 +569,8 @@ function brush_shroom_spawn(json = null) {
             enable: { key: "shroom-spawn_use-spawn-y", negate: true },
           },
           slider: {
-            minValue: -3.5,
-            maxValue: 4.5,
+            minValue: -4.5,
+            maxValue: 3.5,
             store: { key: "shroom-spawn_spawn-y-random-from" },
             enable: { key: "shroom-spawn_use-spawn-y", negate: true },
           },
