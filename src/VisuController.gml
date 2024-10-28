@@ -716,7 +716,7 @@ function VisuController(layerName) constructor {
 
   ///@return {VisuController}
   render = function() {
-    gpu_set_colorwriteenable(true, true, true, true)
+    GPU.set.colorWrite(true, true, true, true)
     if (!this.renderEnabled) {
       return this
     }

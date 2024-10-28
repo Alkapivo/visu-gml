@@ -857,6 +857,7 @@ function GridRenderer() constructor {
       _renderCoins = this.debugRenderCoins
     }
     
+    GPU.set.colorWrite(true, true, true, true)
     if (properties.gridClearFrame) {
       GPU.render.clear(properties.gridClearColor)
     } else {
@@ -898,19 +899,21 @@ function GridRenderer() constructor {
     camera_set_proj_mat(camera.gmCamera, camera.projectionMatrix)
     camera_apply(camera.gmCamera)
 
+    GPU.set.colorWrite(true, true, true, false)
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.channelZ, 
       0, 0, 0, 
       1, 1, 1
     ))
     this.renderChannels(gridService)
-    
+
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.separatorZ, 
       0, 0, 0, 
       1, 1, 1
     ))
     this.renderSeparators(gridService)
+    GPU.set.colorWrite(true, true, true, true)
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.coinZ, 
