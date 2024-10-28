@@ -857,7 +857,6 @@ function GridRenderer() constructor {
       _renderCoins = this.debugRenderCoins
     }
     
-    GPU.set.colorWrite(true, true, true, true)
     if (properties.gridClearFrame) {
       GPU.render.clear(properties.gridClearColor)
     } else {
@@ -899,7 +898,6 @@ function GridRenderer() constructor {
     camera_set_proj_mat(camera.gmCamera, camera.projectionMatrix)
     camera_apply(camera.gmCamera)
 
-    GPU.set.colorWrite(true, true, true, false)
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.channelZ, 
       0, 0, 0, 
@@ -913,7 +911,6 @@ function GridRenderer() constructor {
       1, 1, 1
     ))
     this.renderSeparators(gridService)
-    GPU.set.colorWrite(true, true, true, true)
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.coinZ, 
@@ -955,7 +952,7 @@ function GridRenderer() constructor {
       draw_sprite_ext(
         texture_white, 
         0.0, 
-        xx, 
+        xx,
         yy, 
         ((GRID_SERVICE_PIXEL_WIDTH * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
         ((GRID_SERVICE_PIXEL_HEIGHT * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,

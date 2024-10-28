@@ -72,7 +72,8 @@ function LyricsRenderer() constructor {
         
         _x = guiX + (_x * guiWidth)
         _y = guiY + (_y * guiHeight)
-        GPU.render.text(_x, _y, text, color, outline, alpha, lyrics.font, lyrics.align.h, lyrics.align.v)
+
+        GPU.render.text(_x, _y, text, color, outline, alpha, lyrics.font, lyrics.align.h, lyrics.align.v, (1.0 - alpha) * 8.0)
       }
     }, canvas)
 
