@@ -69,20 +69,6 @@ function brush_shader_spawn(json = null) {
     }),
     components: new Array(Struct, [
       {
-        name: "shader-spawn_pipeline",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Pipeline" },
-          previous: { store: { key: "shader-spawn_pipeline" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "shader-spawn_pipeline" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "shader-spawn_pipeline" } },
-        },
-      },
-      {
         name: "shader-spawn_template",  
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
@@ -124,12 +110,35 @@ function brush_shader_spawn(json = null) {
       },
       {
         name: "shader-spawn_alpha-max",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Max alpha" },
-          field: { store: { key: "shader-spawn_alpha-max" } },
+          label: { 
+            text: "Alpha",
+          },
+          field: { 
+            store: { key: "shader-spawn_alpha-max" },
+          },
+          slider:{
+            minValue: 0.0,
+            maxValue: 1.0,
+            store: { key: "shader-spawn_alpha-max" },
+          },
+        },
+      },
+      {
+        name: "shader-spawn_pipeline",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Pipeline" },
+          previous: { store: { key: "shader-spawn_pipeline" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "shader-spawn_pipeline" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "shader-spawn_pipeline" } },
         },
       },
       {

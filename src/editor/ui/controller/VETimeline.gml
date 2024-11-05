@@ -757,6 +757,11 @@ function VETimeline(_editor) constructor {
             return
           }
 
+          if (!mouse_check_button(mb_left) && !mouse_check_button_released(mb_left)) {
+            MouseUtil.clearClipboard()
+            return
+          }
+
           var timestamp = this.getTimestampFromMouseX(MouseUtil.getMouseX())
           var store = Beans.get(BeanVisuEditorController).store
           if (store.getValue("snap")) {

@@ -175,9 +175,7 @@ function GridItemChunkService(_size) constructor {
 
   ///@return {GridItemChunkService}
   clear = function() {
-    this.chunks.forEach(function(chunk, key) {
-      chunk.clear()
-    })
+    this.chunks.clear()
     return this
   }
 }
