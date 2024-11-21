@@ -486,17 +486,6 @@ global.__VEComponents = new Map(String, Callable, {
   ///@return {Array<UIItem>}
   "text-field-checkbox": function(name, layout, config = null) {
     return new Array(UIItem, [
-      UICheckbox(
-        $"{name}_checkbox", 
-        Struct.appendRecursive(
-          { 
-            layout: layout.nodes.checkbox,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          }, 
-          Struct.get(config, "checkbox"),
-          false
-        )
-      ),
       UIText(
         $"label_{name}", 
         Struct.appendRecursive(
@@ -526,7 +515,33 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.get(config, "field"),
           false
         )
-      )
+      ),
+      UICheckbox(
+        $"{name}_checkbox", 
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.checkbox,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          Struct.get(config, "checkbox"),
+          false
+        )
+      ),
+      UIText(
+        $"{name}_title", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.title,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field-checkbox").title,
+            false
+          ),
+          Struct.get(config, "title"),
+          false
+        )
+      ),
     ])
   },
 
@@ -643,7 +658,7 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {String} name
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
+    ///@return {UIComponent}
     static factoryTitle = function(name, layout, config) {
       return new UIComponent({
         name: name,
@@ -656,7 +671,7 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {String} name
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
+    ///@return {UIComponent}
     static factoryTextField = function(name, layout, config) {
       return new UIComponent({
         name: name,
@@ -669,7 +684,20 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {String} name
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
+    ///@return {UIComponent}
+    static factoryTextFieldCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
     static factoryNumericSliderField = function(name, layout, config) {
       return new UIComponent({
         name: name,
@@ -682,7 +710,7 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {String} name
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
+    ///@return {UIItem}
     static factoryImage = function(name, layout, config) {
       return UIImage(
         name, 
@@ -695,6 +723,19 @@ global.__VEComponents = new Map(String, Callable, {
           false
         )
       )
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryProperty = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
     }
 
     var items = new Array(UIItem)
@@ -736,40 +777,27 @@ global.__VEComponents = new Map(String, Callable, {
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_frame",
-      layout.nodes.frame, 
-      Struct.appendRecursive(
-        { 
-          field: { 
+    items.add(
+      factoryImage(
+        $"{name}_preview", 
+        layout.nodes.preview, 
+        Struct.appendRecursive(
+          { 
             store: { 
               callback: function(value, data) {
                 if (!Core.isType(value, Sprite)) {
                   return
                 }
-                data.textField.setText(value.getFrame())
+                data.image = value
               },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                
-                sprite.setFrame(NumberUtil.parse(value))
-                item.set(sprite)
-              },
+              set: function(value) { },
             }
-          }
-        },
-        Struct.get(config, "frame"),
-        false
+          },
+          Struct.get(config, "preview"),
+          false
+        )
       )
-    ).forEach(addItem, items)
+    )
 
     factoryNumericSliderField(
       $"{name}_alpha",
@@ -830,27 +858,113 @@ global.__VEComponents = new Map(String, Callable, {
       )
     ).forEach(addItem, items)
 
-    items.add(
-      factoryImage(
-        $"{name}_preview", 
-        layout.nodes.preview, 
-        Struct.appendRecursive(
-          { 
+    factoryTextFieldCheckbox(
+      $"{name}_speed",
+      layout.nodes.speed, 
+      Struct.appendRecursive(
+        { 
+          field: { 
             store: { 
               callback: function(value, data) {
                 if (!Core.isType(value, Sprite)) {
                   return
                 }
-                data.image = value
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getSpeed())
               },
-              set: function(value) { },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setSpeed(abs(NumberUtil.parse(value, sprite.getSpeed())))
+                item.set(sprite)
+              },
             }
           },
-          Struct.get(config, "preview"),
-          false
-        )
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.updateValue(value.getAnimate())
+              },
+              set: function(value) { 
+                var item = this.get()
+                item.get().setAnimate(value)
+              },
+            }
+          },
+        },
+        Struct.get(config, "speed"),
+        false
       )
-    )
+    ).forEach(addItem, items)
+
+    factoryTextFieldCheckbox(
+      $"{name}_frame",
+      layout.nodes.frame, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getFrame())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setFrame(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.updateValue(value.getRandomFrame())
+              },
+              set: function(value) { 
+                var item = this.get()
+                item.get().setRandomFrame(value)
+              },
+            }
+          },
+        },
+        Struct.get(config, "frame"),
+        false
+      )
+    ).forEach(addItem, items)
 
     return items
   },
@@ -1026,6 +1140,19 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
     ///@return {UIComponent}
+    static factoryTextFieldCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
     static factoryNumericSliderField = function(name, layout, config) {
       return new UIComponent({
         name: name,
@@ -1103,6 +1230,11 @@ global.__VEComponents = new Map(String, Callable, {
                 if (!Core.isType(value, Sprite)) {
                   return
                 }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+                
                 data.textField.setText(value.texture.name)
               },
               set: function(value) {
@@ -1119,255 +1251,6 @@ global.__VEComponents = new Map(String, Callable, {
           }
         }, 
         Struct.get(config, "texture"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryProperty(
-      "${name}_animate",
-      layout.nodes.animate,
-      Struct.appendRecursive(
-        { 
-          checkbox: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.updateValue(value.getAnimate())
-              },
-              set: function(value) { 
-                var item = this.get()
-                item.get().setAnimate(value)
-              },
-            }
-          }
-        }, 
-        Struct.get(config, "animate"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryProperty(
-      "${name}_randomFrame",
-      layout.nodes.randomFrame,
-      Struct.appendRecursive(
-        { 
-          checkbox: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.updateValue(value.getRandomFrame())
-              },
-              set: function(value) { 
-                var item = this.get()
-                item.get().setRandomFrame(value)
-              },
-            }
-          }
-        }, 
-        Struct.get(config, "randomFrame"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_frame",
-      layout.nodes.frame, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.textField.setText(value.getFrame())
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                
-                sprite.setFrame(NumberUtil.parse(value))
-                item.set(sprite)
-              },
-            }
-          }
-        },
-        Struct.get(config, "frame"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_speed",
-      layout.nodes.speed, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.textField.setText(value.getSpeed())
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                
-                sprite.setSpeed(abs(NumberUtil.parse(value, sprite.getSpeed())))
-                item.set(sprite)
-              },
-            }
-          }
-        },
-        Struct.get(config, "speed"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_scale_x",
-      layout.nodes.scaleX, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.textField.setText(value.getScaleX())
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                
-                sprite.setScaleX(NumberUtil.parse(value))
-                item.set(sprite)
-              },
-            }
-          }
-        },
-        Struct.get(config, "scaleX"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_scale_y",
-      layout.nodes.scaleY, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.textField.setText(value.getScaleY())
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                
-                sprite.setScaleY(NumberUtil.parse(value))
-                item.set(sprite)
-              },
-            }
-          }
-        },
-        Struct.get(config, "scaleY"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryNumericSliderField(
-      $"{name}_alpha",
-      layout.nodes.alpha, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.textField.setText(value.getAlpha())
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                sprite.setAlpha(NumberUtil.parse(value))
-                item.set(sprite)
-              },
-            }
-          },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 1.0,
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.value = value.getAlpha()
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                sprite.setAlpha(NumberUtil.parse(value))
-                item.set(sprite)
-              },
-            },
-          },
-        },
-        Struct.get(config, "alpha"),
         false
       )
     ).forEach(addItem, items)
@@ -1416,6 +1299,375 @@ global.__VEComponents = new Map(String, Callable, {
             false
           ),
           Struct.get(config, "resolution"),
+          false
+        )
+      )
+    )
+    
+    factoryNumericSliderField(
+      $"{name}_alpha",
+      layout.nodes.alpha, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getAlpha())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                sprite.setAlpha(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 1.0,
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.value = value.getAlpha()
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                sprite.setAlpha(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            },
+          },
+        },
+        Struct.get(config, "alpha"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldCheckbox(
+      $"{name}_speed",
+      layout.nodes.speed, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getSpeed())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setSpeed(abs(NumberUtil.parse(value, sprite.getSpeed())))
+                item.set(sprite)
+              },
+            }
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.updateValue(value.getAnimate())
+              },
+              set: function(value) { 
+                var item = this.get()
+                item.get().setAnimate(value)
+              },
+            }
+          },
+        },
+        Struct.get(config, "speed"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldCheckbox(
+      $"{name}_frame",
+      layout.nodes.frame, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getFrame())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setFrame(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.updateValue(value.getRandomFrame())
+              },
+              set: function(value) { 
+                var item = this.get()
+                item.get().setRandomFrame(value)
+              },
+            }
+          },
+        },
+        Struct.get(config, "frame"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_scale_x",
+      layout.nodes.scaleX, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getScaleX())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setScaleX(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          }
+        },
+        Struct.get(config, "scaleX"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_scale_y",
+      layout.nodes.scaleY, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getScaleY())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setScaleY(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          }
+        },
+        Struct.get(config, "scaleY"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "preview-image-mask": function(name, layout, config = null) {
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIItem}
+    static factoryImage = function(name, layout, config) {
+      var uiImage = UIImage(
+        name, 
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+
+      Struct.set(uiImage, "_render", uiImage.render)
+      uiImage.render = method(uiImage, function() {
+        this._render()
+
+        if (!Optional.is(this.mask)) {
+          return
+        }
+
+        var mask = this.store.getStore().getValue(this.mask)
+        if (!Optional.is(mask)) {
+          return
+        }
+
+        //mask.setX(clamp(mask.getX(), 0, this.image.getWidth()))
+        //mask.setY(clamp(mask.getY(), 0, this.image.getHeight()))
+        //mask.setWidth(clamp(mask.getWidth(), 0, this.image.getWidth() - mask.getX()))
+        //mask.setHeight(clamp(mask.getHeight(), 0, this.image.getHeight() - mask.getY()))
+
+        var alpha = Struct.get(this.enable, "value") == false ? 0.25 : 0.75
+        var scaleX = this.image.getScaleX()
+        var scaleY = this.image.getScaleY()
+        this.image.scaleToFit(this.area.getWidth(), this.area.getHeight())
+        var _x = this.context.area.getX() 
+          + this.area.getX()
+          + (this.area.getWidth() / 2.0)
+          - ((image.getWidth() * image.getScaleX()) / 2.0)
+          + (mask.getX() * image.getScaleX())
+        var _y = this.context.area.getY() 
+          + this.area.getY()
+          + (this.area.getHeight() / 2.0)
+          - ((image.getHeight() * image.getScaleY()) / 2.0)
+          + (mask.getY() * image.getScaleY())
+        var width = mask.getWidth() * image.getScaleX()
+        var height = mask.getHeight() * image.getScaleY()
+        this.image.setScaleX(scaleX).setScaleY(scaleY)
+
+        if (width < 1 || height < 1) {
+          return
+        }
+        GPU.render.rectangle(
+          _x,
+          _y,
+          _x + width,
+          _y + height,
+          false,
+          c_black,
+          c_black,
+          c_black,
+          c_black,
+          alpha
+        )
+        GPU.render.rectangle(
+          _x,
+          _y,
+          _x + width,
+          _y + height,
+          true,
+          c_red,
+          c_red,
+          c_red,
+          c_red,
+          alpha
+        )
+      })
+
+      return uiImage
+    }
+
+    var items = new Array(UIItem)
+
+    items.add(
+      factoryImage(
+        $"{name}_preview", 
+        layout.nodes.preview, 
+        Struct.appendRecursive(
+          { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.image = value
+              },
+              set: function(value) { },
+            }
+          },
+          Struct.get(config, "preview"),
           false
         )
       )
@@ -3279,7 +3531,113 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
-    ///@param {String} name
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "vec4": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) 
+                    || !Struct.contains(vec4, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(vec4, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(vec4, key, parsedValue))
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTextField(
+      $"{name}_x",
+      layout.nodes.x,
+      Struct.appendRecursive(
+        Struct.get(config, "x"),
+        { field: { vec4Property: "x" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_y",
+      layout.nodes.y,
+      Struct.appendRecursive(
+        Struct.get(config, "y"),
+        { field: { vec4Property: "y" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_z",
+      layout.nodes.z,
+      Struct.appendRecursive(
+        Struct.get(config, "z"),
+        { field: { vec4Property: "z" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_a",
+      layout.nodes.a,
+      Struct.appendRecursive(
+        Struct.get(config, "a"),
+        { field: { vec4Property: "a" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    return items
+  },
+
+  ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}

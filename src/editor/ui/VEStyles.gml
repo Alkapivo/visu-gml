@@ -94,15 +94,15 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "bar-title": {
     align: { v: VAlign.CENTER, h: HAlign.LEFT },
-    font: "font_inter_10_regular",
+    font: "font_inter_8_regular",
     color: VETheme.color.textShadow,
-    margin: { left: 4 },
+    offset: { x: 4 },
   },
   "bar-button": {
     backgroundColor: "#000000",
     label: {
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
-      font: "font_inter_10_regular",
+      font: "font_inter_8_regular",
       color: VETheme.color.textShadow,
     }
   },
@@ -176,7 +176,7 @@ global.__VEStyles = new Map(String, Struct, {
     },
     label: {
       backgroundColor: VETheme.color.primaryShadow,
-      font: "font_inter_10_regular",
+      font: "font_inter_10_bold",
       color: VETheme.color.textFocus,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
     },
@@ -190,7 +190,7 @@ global.__VEStyles = new Map(String, Struct, {
     },
     label: {
       backgroundColor: VETheme.color.accentShadow,
-      font: "font_inter_10_regular",
+      font: "font_inter_10_bold",
       color: VETheme.color.textFocus,
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
     },
@@ -265,7 +265,12 @@ global.__VEStyles = new Map(String, Struct, {
       lh: 20,
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
     },
-    checkbox: { }
+    checkbox: { },
+    title: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.textFocus,
+      align: { v: VAlign.CENTER, h: HAlign.LEFT },
+    },
   },
   "text-field-button-checkbox": { 
     font: "font_inter_10_regular",
@@ -393,6 +398,13 @@ global.__VEStyles = new Map(String, Struct, {
     }
   },
   "texture-field-ext": {
+    resolution: {
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    }
+  },
+  "preview-image-mask": {
     resolution: {
       font: "font_inter_10_regular",
       color: VETheme.color.textShadow,
