@@ -47,7 +47,7 @@ function template_texture(json = null) {
         },
       },
       {
-        name: "textture-origin-y",
+        name: "texture-origin-y",
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
         config: {
@@ -89,6 +89,8 @@ function template_texture(json = null) {
             name: json.name,
             disableTextureService: json.file == "",
           },
+          origin: "texture-template",
+          store: { key: "texture-template" },
           resolution: { 
             store: { 
               key: "texture-template",
