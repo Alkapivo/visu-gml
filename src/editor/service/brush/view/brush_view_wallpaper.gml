@@ -42,6 +42,16 @@ global.__BLEND_EQUATIONS = [
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_view_wallpaper(json = null) {
+
+  ///@migration
+  if (Struct.getIfType(json, "view-wallpaper_use-texture-speed", Boolean, false)) {
+    Struct.set(
+      Struct.get(json, "view-wallpaper_texture"), 
+      "speed", 
+      Struct.get(json, "view-wallpaper_texture-speed")
+    )
+  }
+
   return {
     name: "brush_view_wallpaper",
     store: new Map(String, Struct, {
@@ -112,17 +122,6 @@ function brush_view_wallpaper(json = null) {
         value: SpriteUtil.parse(Struct
           .get(json, "view-wallpaper_texture"), 
           { name: "texture_missing" }),
-      },
-      "view-wallpaper_use-texture-speed": {
-        type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-texture-speed", true),
-      },
-      "view-wallpaper_texture-speed": {
-        type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_texture-speed", 1),
-        passthrough: function(value) {
-          return NumberUtil.parse(value, this.value)
-        },
       },
       "view-wallpaper_use-texture-blend": {
         type: Boolean,
@@ -390,14 +389,33 @@ function brush_view_wallpaper(json = null) {
               enable: { key: "view-wallpaper_use-texture" },
             },
           },
-          frame: {
-            label: {
-              text: "Frame",
-              enable: { key: "view-wallpaper_use-texture" },
-            },
-            field: {
-              store: { key: "view-wallpaper_texture" },
-              enable: { key: "view-wallpaper_use-texture" },
+          preview: {
+            image: { name: "texture_empty" },
+            store: { key: "view-wallpaper_texture" },
+            enable: { key: "view-wallpaper_use-texture" },
+            imageBlendStoreKey: "view-wallpaper_texture-blend",
+            useImageBlendStoreKey: "view-wallpaper_use-texture-blend",
+            updateCustom: function() {
+              var key = Struct.get(this, "imageBlendStoreKey")
+              var use = Struct.get(this, "useImageBlendStoreKey")
+              if (!Core.isType(this.store, UIStore) ||
+                  !Core.isType(key, String) ||
+                  !Core.isType(use, String) ||
+                  !Core.isType(this.image, Sprite)) {
+                return
+              }
+
+              var store = this.store.getStore()
+              if (!Core.isType(store, Store)) {
+                return
+              }
+
+              var color = store.getValue(key)
+              if (!Core.isType(color, Color)) {
+                return
+              }
+
+              this.image.setBlend(store.getValue(use) ? color.toGMColor() : c_white)
             },
           },
           alpha: {
@@ -415,79 +433,45 @@ function brush_view_wallpaper(json = null) {
               store: { key: "view-wallpaper_texture" },
             },
           },
-          preview: {
-            image: { name: "texture_baron" },
-            store: { key: "view-wallpaper_texture" },
-            enable: { key: "view-wallpaper_use-texture" },
-            imageBlendStoreKey: "view-wallpaper_texture-blend",
-            useTextureSpeedStoreKey: "view-wallpaper_use-texture-speed",
-            textureSpeedStoreKey: "view-wallpaper_texture-speed",
-            updateCustom: function() {
-              var key = Struct.get(this, "imageBlendStoreKey")
-              if (!Optional.is(this.store)
-                || !Core.isType(key, String) 
-                || !Core.isType(this.image, Sprite)) {
-                return
-              }
-
-              var store = this.store.getStore()
-              if (!Optional.is(store)) {
-                return
-              }
-
-              var item = store.get(key)
-              if (!Optional.is(item)) {
-                return
-              }
-
-              var gmColor = store.getValue("view-wallpaper_use-texture-blend")
-                ? store.getValue("view-wallpaper_texture-blend").toGMColor()
-                : c_white
-              this.image.setBlend(gmColor)
-
-              if (store.getValue(this.useTextureSpeedStoreKey)) {
-                this.image.setAnimate(true)
-                var animationSpeed = store.getValue(this.textureSpeedStoreKey)
-                if (Core.isType(animationSpeed, Number)) {
-                  this.image.setSpeed(animationSpeed)
-                }
-              } else {
-                this.image.setAnimate(false)
-              }
+          speed: {
+            label: {
+              text: "Speed",
+              enable: { key: "view-wallpaper_use-texture" },
+            },
+            field: { 
+              enable: { key: "view-wallpaper_use-texture" },
+              store: { key: "view-wallpaper_texture" },
+            },
+            checkbox: { 
+              store: { key: "view-wallpaper_texture" },
+              enable: { key: "view-wallpaper_use-texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: {
+              text: "Animate",
+              enable: { key: "view-wallpaper_use-texture" },
             },
           },
-        },
-      },
-      {
-        name: "view-wallpaper_use-texture-speed",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Animation speed",
-            enable: { key: "view-wallpaper_use-texture-speed" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-wallpaper_use-texture-speed" },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_texture-speed",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: {
-            text: "FPS",
-            enable: { key: "view-wallpaper_use-texture-speed" },
-          },
-          field: {
-            store: { key: "view-wallpaper_texture-speed" },
-            enable: { key: "view-wallpaper_use-texture-speed" },
+          frame: {
+            label: { 
+              text: "Frame",
+              enable: { key: "view-wallpaper_use-texture" },
+            },
+            field: { 
+              store: { key: "view-wallpaper_texture" },
+              enable: { key: "view-wallpaper_use-texture" },
+            },
+            checkbox: { 
+              store: { key: "view-wallpaper_texture" },
+              enable: { key: "view-wallpaper_use-texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { 
+              text: "Rng",
+              enable: { key: "view-wallpaper_use-texture" },
+            },
           },
         },
       },
@@ -505,6 +489,7 @@ function brush_view_wallpaper(json = null) {
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "view-wallpaper_use-texture" },
               store: { key: "view-wallpaper_use-texture-blend" },
             },
             input: { 
