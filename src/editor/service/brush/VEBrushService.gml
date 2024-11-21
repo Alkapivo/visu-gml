@@ -36,6 +36,11 @@ function VEBrushService() constructor {
       return template.name == name
     }, template.name)
 
+    ///@description migration
+    if (template.type == VEBrushType.SHROOM_SPAWN) {
+      template.properties = migrateShroomSpawnEvent(template.properties)
+    }
+
     if (Optional.is(index)) {
       //Logger.info("VEBrushService", $"Template of type '{template.type}' updated: '{template.name}'")
       templates.set(index, template)
