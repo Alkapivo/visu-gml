@@ -722,7 +722,6 @@ function VisuNewProjectForm(json = null) constructor {
                       "scaleY":0.23225806451612904
                     },
                     "view-wallpaper_texture-blend":"#BC2EFC",
-                    "view-wallpaper_texture-speed":1.0,
                     "view-wallpaper_type":"Background",
                     "view-wallpaper_use-angle-transform":false,
                     "view-wallpaper_use-color":true,
@@ -733,7 +732,6 @@ function VisuNewProjectForm(json = null) constructor {
                       "blend":"#FF0000",
                       "name":"texture_visu_editor_icon_event_view_background"
                     },
-                    "view-wallpaper_use-texture-speed":0.0,
                     "view-wallpaper_use-xScale-transform":false,
                     "view-wallpaper_use-yScale-transform":false,
                     "view-wallpaper_xScale":1.0,
@@ -796,14 +794,12 @@ function VisuNewProjectForm(json = null) constructor {
                       "scaleY":0.23225806451612904
                     },
                     "view-wallpaper_texture-blend":"#BC2EFC",
-                    "view-wallpaper_texture-speed":1.0,
                     "view-wallpaper_type":"Foreground",
                     "view-wallpaper_use-angle-transform":false,
                     "view-wallpaper_use-color":0.0,
                     "view-wallpaper_use-speed-transform":false,
                     "view-wallpaper_use-texture":0.0,
                     "view-wallpaper_use-texture-blend":0.0,
-                    "view-wallpaper_use-texture-speed":0.0,
                     "icon":{
                       "blend":"#FF0000",
                       "name":"texture_visu_editor_icon_event_view_foreground"
