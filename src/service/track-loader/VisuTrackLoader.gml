@@ -25,7 +25,13 @@ function VisuTrackLoader(_controller): Service() constructor {
     },
     mapPromiseToTask: function(promise) {
       return Assert.isType(promise.response, Task)
-    }
+    },
+    wasmSounds: new Map(String, String, {
+      "Just-To-Create-Something.ogg": "sound_kedy_selma_just_to_create_something",
+      "Passion.ogg": "sound_kedy_selma_passion",
+      "digitalshadowfinalunmixed.ogg": "sound_zoogies_digitalshadow",
+      "Schnoopy-Destination-Unknown.ogg": "sound_schnoopy_destination_unknown",
+    }),
   }
 
   ///@type {FSM}
@@ -206,22 +212,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
                         if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
-                          var sound = null
-                          switch (soundIntent.file) {
-                            case "4-Just-To-Create-Something.ogg": 
-                              sound = sound_kedy_selma_just_to_create_something
-                              break
-                            case "Passion.ogg":
-                              sound = sound_kedy_selma_passion
-                              break
-                            case "digitalshadowfinalunmixed.ogg": 
-                              sound = sound_zoogies_digitalshadow
-                              break
-                            default:
-                              throw new Exception($"Couldn't find sound for wasm target, {soundIntent.file}")
-                              break
-                          }
-                          
+                          Assert.isTrue(audio_group_is_loaded(audiogroup_visu_wasm), 
+                            "'audiogroup_visu_wasm' must be loaded")
+                          var sound = Assert.isType(SoundUtil
+                            .fetchGMSound(acc.wasmSounds.get(soundIntent.file)), GMSound, 
+                            $"Couldn't find sound for wasm target, {soundIntent.file}")
                           soundService.sounds.add(sound, key)
                           return
                         }
@@ -237,6 +232,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                       acc: {
                         soundService: Beans.get(BeanSoundService),
                         path: controller.track.path,
+                        wasmSounds: fsm.context.utils.wasmSounds,
                       },
                       steps: 1,
                     })
@@ -369,6 +365,25 @@ function VisuTrackLoader(_controller): Service() constructor {
                 }
               }))
             }
+
+            if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+              var audioGroupTask = new Task("load-audio-group")
+                .setPromise(new Promise())
+                .setTimeout(10.0)
+                .setState({
+                  isLoading: false
+                })
+                .whenUpdate(function() {
+                  if (!this.state.isLoading) {
+                    this.state.isLoading = Beans.get(BeanSoundService)
+                      .loadAudioGroup(audiogroup_visu_wasm)
+                  } else if (audio_group_is_loaded(audiogroup_visu_wasm)) {
+                    this.fullfill()
+                  }
+                })
+              controller.executor.add(audioGroupTask)
+              fsmState.state.set("audio-group", audioGroupTask.promise)
+            }
             
             data.manifest.editor.forEach(function(file, index, acc) { 
               var promise = Beans.get(BeanFileService).send(
@@ -402,6 +417,15 @@ function VisuTrackLoader(_controller): Service() constructor {
             var filtered = promises.filter(fsm.context.utils.filterPromise)
             if (filtered.size() != promises.size()) {
               return
+            }
+
+            if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+              var audioGroupPromise = this.state.get("audio-group")
+              if (audioGroupPromise.status == PromiseStatus.PENDING) {
+                return
+              }
+
+              Assert.isTrue(audioGroupPromise.status == PromiseStatus.FULLFILLED)
             }
 
             fsm.dispatcher.send(new Event("transition", {
@@ -558,7 +582,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             }
 
             audio.pause()
-            fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
+            fsm.dispatcher.send(new Event("transition", { name: "cooldown" }))
           } catch (exception) {
             var message = $"'parse-secondary-assets' fatal error: {exception.message}"
             Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
@@ -568,6 +592,30 @@ function VisuTrackLoader(_controller): Service() constructor {
         },
         transitions: {
           "idle": null, 
+          "cooldown": null,
+        },
+      },
+      "cooldown": {
+        actions: {
+          onStart: function(fsm, fsmState) {
+            fsmState.state.set("cooldown-timer", new Timer(1.0))
+          },
+        },
+        update: function(fsm) {
+          try {
+            var timer = this.state.get("cooldown-timer")
+            if (timer.update().finished) {
+              fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
+            }
+          } catch (exception) {
+            var message = $"'cooldown' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuTrackLoader", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
+          }
+        },
+        transitions: {
+          "idle": null,
           "loaded": null,
         },
       },

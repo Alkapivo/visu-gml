@@ -78,7 +78,7 @@ function VisuRenderer() constructor {
   renderSpinner = function(layout) {
     var controller = Beans.get(BeanVisuController)
     var loaderState = controller.loader.fsm.getStateName()
-    if (loaderState != "idle" && loaderState != "loaded") {
+    if (loaderState != "idle" && loaderState != "cooldown" && loaderState != "loaded") {
       var color = c_black
       this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
 
@@ -124,6 +124,15 @@ function VisuRenderer() constructor {
   ///@private
   ///@return {VisuRenderer}
   renderDebugGUI = function() {
+    /*
+    var editor = Beans.get(BeanVisuEditorController)
+    if (Optional.is(editor)) {
+      editor.uiService.containers.forEach(function(container, index) {
+        GPU.render.text(60, 60 + (24 * index), $"#{index}: {container.name}", c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
+      })
+    }
+    */
+    
     if (is_debug_overlay_open()) {
       var controller = Beans.get(BeanVisuController)
       var gridService = controller.gridService
