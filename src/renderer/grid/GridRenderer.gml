@@ -67,6 +67,9 @@ function GridRenderer() constructor {
   ///@type {?Number}
   channelXStart = null
 
+  ///@type {Boolean}
+  renderDebugSurfaces = Core.getProperty("visu.debug.renderDebugSurfaces", false)
+
   ///@private
   ///@return {GridRenderer}
   init = function() {
@@ -330,6 +333,10 @@ function GridRenderer() constructor {
         this.textureLine
       )
     }
+    
+    if (!gridService.properties.renderGrid) {
+      return this
+    }
 
     renderTop(gridService)
     renderBottom(gridService)
@@ -592,8 +599,7 @@ function GridRenderer() constructor {
     coinService.coins.forEach(renderCoin, gridService)
     return this
   }
-
-    
+  
   ///@private
   ///@param {GridService} gridService
   ///@param {PlayerService} playerService
@@ -1211,6 +1217,15 @@ function GridRenderer() constructor {
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   renderGUI = function(layout) {
+    if (this.renderDebugSurfaces) {
+      draw_clear_alpha(c_fuchsia, 1.0)
+      this.backgroundSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, 0.0, 0.0)
+      this.gridSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, GuiWidth() / 2.0, 0.0)
+      this.shaderBackgroundSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, 0.0, GuiHeight() / 2.0)
+      this.shaderSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, GuiWidth() / 2.0, GuiHeight() / 2.0)
+      return this;
+    }
+
     var playerService = Beans.get(BeanVisuController).playerService
     if (Visu.settings.getValue("visu.graphics.bkt-glitch")) {
       this.glitchService.renderOn(this.renderGlitch, layout)
