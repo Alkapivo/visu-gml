@@ -696,6 +696,30 @@ function VisuController(layerName) constructor {
     return this
   }
 
+  ///@return {VisuController}
+  updateCursor = function() {
+    var cursor = this.displayService.getCursor()
+    var size = this.menu.containers.size()
+    var editor = Beans.get(BeanVisuEditorController)
+    if (Optional.is(editor)) {
+      if (editor.renderUI && cursor == Cursor.NONE) {
+        displayService.setCursor(Cursor.DEFAULT)
+      } else if (!editor.renderUI && size == 0 && cursor != Cursor.NONE) {
+        displayService.setCursor(Cursor.NONE)
+      } else if (!editor.renderUI && size > 0 && cursor == Cursor.NONE) {
+        displayService.setCursor(Cursor.DEFAULT)
+      }
+    } else {
+      if (size == 0 && cursor != Cursor.NONE) {
+        displayService.setCursor(Cursor.NONE)
+      } else if (size > 0 && cursor == Cursor.NONE) {
+        displayService.setCursor(Cursor.DEFAULT)
+      }
+    }
+
+    return this
+  }
+
   ///@private
   ///@param {UIContainer}
   resetUIContainerTimer = function(container) {
@@ -704,7 +728,7 @@ function VisuController(layerName) constructor {
     }
 
     container.surfaceTick.skip()
-    container.updateTimer.time = container.updateTimer.duration
+    container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
   }
 
   ///@param {Event}
@@ -717,12 +741,13 @@ function VisuController(layerName) constructor {
   update = function() {
     this.updateUIService()
     this.services.forEach(this.updateService, this)
+    this.updateCursor()
     var editor = Beans.get(BeanVisuEditorController)
     var state = this.fsm.getStateName()
     if ((this.menu.containers.size() == 0) 
       && (state != "game-over")
       && (state != "paused" 
-      || (Optional.is(editor) && editor.renderUI))) {
+      || (Optional.is(editor) && editor.updateServices))) {
       this.gameplayServices.forEach(this.updateService, this)
     }
     this.visuRenderer.update()
