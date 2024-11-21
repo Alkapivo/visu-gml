@@ -15,23 +15,23 @@ function brush_grid_player(json = null) {
       },
       "grid-player_use-mask": {
         type: Boolean,
-        value: Struct.get(json, "grid-player_use-mask") == true,
+        value: Struct.getIfType(json, "grid-player_use-mask", Boolean, false),
       },
       "grid-player_mask": {
         type: Rectangle,
-        value: new Rectangle(Struct.getDefault(json, "grid-player_mask", null)),
+        value: new Rectangle(Struct.getIfType(json, "grid-player_mask", Struct, null)),
       },
       "grid-player_use-reset-position": {
         type: Boolean,
-        value: Struct.get(json, "grid-player_use-reset-position") == true,
+        value: Struct.getIfType(json, "grid-player_use-reset-position", Boolean, false),
       },
       "grid-player_reset-position": {
         type: Boolean,
-        value: Struct.get(json, "grid-player_reset-position") == true,
+        value: Struct.getIfType(json, "grid-player_reset-position", Boolean, false),
       },
       "grid-player_use-stats": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-player_use-stats", false),
+        value: Struct.getIfType(json, "grid-player_use-stats", Boolean, false),
       },
       "grid-player_stats": {
         type: String,
@@ -58,7 +58,7 @@ function brush_grid_player(json = null) {
       },
       "grid-player_use-bullet-hell": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-player_use-bullet-hell", true),
+        value: Struct.getIfType(json, "grid-player_use-bullet-hell", Boolean, true),
       },
       "grid-player_bullet-hell": {
         type: String,
@@ -93,7 +93,7 @@ function brush_grid_player(json = null) {
       },
       "grid-player_use-platformer": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-player_use-platformer", true),
+        value: Struct.getIfType(json, "grid-player_use-platformer", Boolean, true),
       },
       "grid-player_platformer": {
         type: String,
@@ -121,7 +121,7 @@ function brush_grid_player(json = null) {
       },
       "grid-player_use-racing": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-player_use-racing", true),
+        value: Struct.getIfType(json, "grid-player_use-racing", Boolean, true),
       },
       "grid-player_racing": {
         type: String,
@@ -135,14 +135,16 @@ function brush_grid_player(json = null) {
       },
       "grid-player_use-transform-player-z": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-player_use-transform-player-z", true),
+        value: Struct.getIfType(json, "grid-player_use-transform-player-z", Boolean, true),
       },
       "grid-player_transform-player-z": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, 
-          "grid-player_transform-player-z", 
-          { value: 0, target: 2100, factor: 50.0, increase: 0 }
-        )),
+        value: new NumberTransformer(Struct.getIfType(json, "grid-player_transform-player-z", Struct, { 
+          value: 0, 
+          target: 2100, 
+          factor: 50.0, 
+          increase: 0,
+        })),
       },
       "grid-player_use-margin": {
         type: Boolean,
@@ -388,37 +390,12 @@ function brush_grid_player(json = null) {
             label: { text: "Texture" }, 
             field: { store: { key: "grid-player_texture" } },
           },
-          animate: {
-            label: { text: "Animate" }, 
-            checkbox: { 
-              store: { key: "grid-player_texture" },
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-            },
+          preview: {
+            image: { name: "texture_empty" },
+            store: { key: "grid-player_texture" },
           },
-          randomFrame: {
-            label: { text: "Random frame" }, 
-            checkbox: { 
-              store: { key: "grid-player_texture" },
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-            },
-          },
-          frame: {
-            label: { text: "Frame" },
-            field: { store: { key: "grid-player_texture" } },
-          },
-          speed: {
-            label: { text: "Speed" },
-            field: { store: { key: "grid-player_texture" } },
-          },
-          scaleX: {
-            label: { text: "Scale X" },
-            field: { store: { key: "grid-player_texture" } },
-          },
-          scaleY: {
-            label: { text: "Scale Y" },
-            field: { store: { key: "grid-player_texture" } },
+          resolution: {
+            store: { key: "grid-player_texture" },
           },
           alpha: {
             label: { text: "Alpha" },
@@ -429,32 +406,73 @@ function brush_grid_player(json = null) {
               store: { key: "grid-player_texture" },
             },
           },
+          frame: {
+            label: { text: "Frame" },
+            field: { store: { key: "grid-player_texture" } },
+            checkbox: { 
+              store: { key: "grid-player_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { text: "Rng" }, 
+          },
+          speed: {
+            label: { text: "Speed" },
+            field: { store: { key: "grid-player_texture" } },
+            checkbox: { 
+              store: { key: "grid-player_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { text: "Animate" }, 
+          },
+          scaleX: {
+            label: { text: "Scale X" },
+            field: { store: { key: "grid-player_texture" } },
+          },
+          scaleY: {
+            label: { text: "Scale Y" },
+            field: { store: { key: "grid-player_texture" } },
+          },
+        },
+      },
+      {
+        name: "grid-player_mask-property",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Collision mask",
+            enable: { key: "grid-player_use-mask" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-player_use-mask" },
+          },
+        },
+      },
+      {
+        name: "grid-player_preview_mask",
+        template: VEComponents.get("preview-image-mask"),
+        layout: VELayouts.get("preview-image-mask"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
           preview: {
+            enable: { key: "grid-player_use-mask" },
             image: { name: "texture_empty" },
             store: { key: "grid-player_texture" },
-          },
-          resolution: {
-            store: { key: "grid-player_texture" },
+            mask: "grid-player_mask",
           },
         },
       },
       {
         name: "grid-player_mask",
-        template: VEComponents.get("vec4-field"),
-        layout: VELayouts.get("vec4-field"),
+        template: VEComponents.get("vec4"),
+        layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Custom collision mask",
-              enable: { key: "grid-player_use-mask" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-player_use-mask" },
-            },
-          },
           x: {
             label: {
               text: "X",

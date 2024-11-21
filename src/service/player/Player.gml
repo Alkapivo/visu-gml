@@ -386,16 +386,19 @@ function PlayerStats(_player, json) constructor {
       if (previous < value) {
         controller.visuRenderer.hudRenderer.sendGlitchEvent()
         controller.sfxService.play("player-collect-life")
-        //Core.print("Life added from", previous, "to", value)
+        //Core.print("Life added from", previous, "to", value) 
       } else if (previous > value) {
         var view = controller.gridService.view
         this.stats.setGodModeCooldown(5.0)
 
         controller.visuRenderer.hudRenderer.sendGlitchEvent()
-        controller.sfxService.play("player-die")
 
-        if (this.stats.bomb.get() < 5) {
-          this.stats.bomb.set(5)
+        if (!Visu.settings.getValue("visu.god-mode")) {
+          controller.sfxService.play("player-die")
+        }
+
+        if (this.stats.bomb.get() < 3) {
+          this.stats.bomb.set(3)
         }
 
         controller.particleService.send(controller.particleService
