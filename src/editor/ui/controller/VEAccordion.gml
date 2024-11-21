@@ -48,114 +48,65 @@ function VEAccordion(_editor, config = null) constructor {
         store: {
           "render-event-inspector": false,
           "render-template-toolbar": false,
+          "templates-percentage": 0.7,
         },
         nodes: {
-          "bar_event-inspector": {
-            name: "bar_event-inspector",
-            y: function() { return 0 },
-            width: function() { return this.context.width() 
-              - this.context.nodes.resize.width()
-              - this.margin.left
-              - this.margin.right },
-            height: function() { return 32 },
-            nodes: {
-              preview: {
-                name: "bar_event-inspector.preview",
-                width: function() { return 32 },
-              },
-              label: {
-                name: "bar_event-inspector.label",
-                x: function() { return this.context.nodes.preview.right() },
-                width: function() { return this.context.width()
-                  - this.context.nodes.preview.width()
-                  - this.context.nodes.checkbox.width() },
-              },
-              checkbox: {
-                name: "bar_event-inspector.checkbox",
-                x: function() { return this.context.nodes.label.right() },
-                width: function() { return 56 },
-              },
-            },
-          },
           "view_event-inspector": {
-            name: "view_event-inspector",
-            margin: { top: 2, bottom: 2, right: 0, left: 1 },
-            y: function() { return this.context.y() + this.margin.top
-              + Struct.get(this.context.nodes, "bar_event-inspector").bottom() },
+            name: "ve-accordion.view_event-inspector",
+            margin: { top: 0, bottom: 0, right: 0, left: 1 },
+            y: function() { return this.context.y() + this.margin.top },
             width: function() { return this.context.width() 
               - this.context.nodes.resize.width()
               - this.margin.left
               - this.margin.right },
             height: function() { 
               if (!Struct.get(this.context.store, "render-event-inspector")) {
-                return this.margin.top + this.margin.bottom
+                return 0
               }
-              var height = this.context.height()
-                - this.margin.top - this.margin.bottom
-                - Struct.get(this.context.nodes, "bar_event-inspector").height()
-                - Struct.get(this.context.nodes, "bar_template-toolbar").height()
+              var height = this.context.height() - this.margin.top - this.margin.bottom
               if (Struct.get(this.context.store, "render-template-toolbar")) {
-                height = height * 0.3
+                height = height * (1.0 - Struct.get(this.context.store, "templates-percentage"))
               }
+
               return height
-            },
-            
-          },
-          "bar_template-toolbar": {
-            name: "bar_template-toolbar",
-            y: function() { return Struct.get(this.context.nodes, "view_event-inspector").bottom() 
-              - this.context.y() },
-            width: function() { return this.context.width() 
-              - this.context.nodes.resize.width()
-              - this.margin.left
-              - this.margin.right },
-            height: function() { return 32 },
-            nodes: {
-              label: {
-                name: "bar_template-toolbar.label",
-                width: function() { return this.context.width() - 56 },
-              },
-              checkbox: {
-                name: "bar_template-toolbar.checkbox",
-                x: function() { return this.context.nodes.label.right() },
-                width: function() { return 56 },
-              },
             },
           },
           "view_template-toolbar": {
-            name: "view_template-toolbar",
-            margin: { top: 2, bottom: 8, right: 0, left: 1 },
-            y: function() { return this.context.y() + this.margin.top
-              + Struct.get(this.context.nodes, "bar_template-toolbar").bottom() },
+            name: "ve-accordion.view_template-toolbar",
+            margin: { top: 0, bottom: 0, right: 0, left: 1 },
+            y: function() { return Struct.get(this.context.nodes, "view_event-inspector").bottom() + this.margin.top },
             width: function() { return this.context.width() 
               - this.context.nodes.resize.width()
               - this.margin.left
               - this.margin.right },
             height: function() { 
               if (!Struct.get(this.context.store, "render-template-toolbar")) {
-                return this.margin.top + this.margin.bottom
+                return 0
               }
 
-              var height = this.context.height()
-                - this.margin.top - this.margin.bottom
-                - Struct.get(this.context.nodes, "bar_event-inspector").height()
-                - Struct.get(this.context.nodes, "bar_template-toolbar").height()
+              var height = this.context.height() - this.margin.top - this.margin.bottom
               if (Struct.get(this.context.store, "render-event-inspector")) {
-                height = height * 0.7
+                height = height * Struct.get(this.context.store, "templates-percentage")
               }
 
               return height
             },
           },
           "resize": {
-            name: "accordion.resize",
+            name: "ve-accordion.resize",
             x: function() { return this.context.x()
               + this.context.width()
               - this.width() },
             y: function() { return 0 },
             width: function() { return 7 },
             height: function() { return this.context.height() },
-          }
+          },
+          "options": {
+            name: "ve-accordion.options",
+            x: function() { return this.context.x() + this.context.width() },
+            width: function() { return 24 },
+            height: function() { return 420 },
+          },
         }
       },
       parent
@@ -170,13 +121,13 @@ function VEAccordion(_editor, config = null) constructor {
     var layout = this.factoryLayout(parent)
     this.layout = layout
 
-    eventInspector.send(new Event("open").setData({ 
+    var eventInspectorEvent = new Event("open").setData({ 
       layout: Struct.get(layout.nodes, "view_event-inspector")
-    }))
+    })
     
-    templateToolbar.send(new Event("open").setData({ 
+    var templateToolbarEvent = new Event("open").setData({ 
       layout: Struct.get(layout.nodes, "view_template-toolbar")
-    }))
+    })
 
     var containerIntents = new Map(String, Struct, {
       "_ve-accordion_accordion-items": {
@@ -205,77 +156,6 @@ function VEAccordion(_editor, config = null) constructor {
         onInit: function() {
           var context = this
           this.state.set("store", this.accordion.store)
-          context
-            .add(UIButton(
-              "accordion-item_event-inspector_preview",
-              {
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                font: "font_inter_10_regular",
-                color: VETheme.color.textFocus,
-                sprite: { name: "texture_ve_event_inspector_button_preview" },
-                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.preview,
-                onMousePressedLeft: function(data) {
-                  var eventInspector = this.context.accordion.eventInspector
-                  var event = eventInspector.store.getValue("event")
-                  if (!Core.isType(event, VEEvent)) {
-                    return
-                  }
-                  
-                  var handler = Beans.get(BeanVisuController).trackService.handlers
-                    .get(event.type)
-                  handler(event.toTemplate().event.data)
-                },
-              }
-            ))
-            .add(UIText(
-              "accordion-item_event-inspector_label",
-              {
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                font: "font_inter_10_regular",
-                color: VETheme.color.textFocus,
-                align: { v: VAlign.CENTER, h: HAlign.LEFT },
-                text: "Event inspector",
-                offset: { x: 0 },
-                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.label,
-              }
-            ))
-            .add(UICheckbox(
-              "accordion-item_event-inspector_checkbox",
-              {
-                spriteOn: { name: "visu_texture_checkbox_switch_on" },
-                spriteOff: { name: "visu_texture_checkbox_switch_off" },
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.checkbox,
-                store: { key: "render-event-inspector" },
-              }
-            ))
-            add(UIText(
-              "accordion-item_template-toolbar_label",
-              {
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                font: "font_inter_10_regular",
-                color: VETheme.color.textFocus,
-                align: { v: VAlign.CENTER, h: HAlign.LEFT },
-                text: "Templates",
-                offset: { x: 32 },
-                layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.label,
-              }
-            ))
-            .add(UICheckbox(
-              "accordion-item_template-toolbar_checkbox",
-              {
-                spriteOn: { name: "visu_texture_checkbox_switch_on" },
-                spriteOff: { name: "visu_texture_checkbox_switch_off" },
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.checkbox,
-                store: { key: "render-template-toolbar" },
-              }
-            ))
         },
         items: {
           "resize_accordion": {
@@ -299,7 +179,7 @@ function VEAccordion(_editor, config = null) constructor {
                 }
                 
                 container.surfaceTick.skip()
-                container.updateTimer.time = container.updateTimer.duration
+                container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
               }
 
               if (MouseUtil.getClipboard() == this.clipboard) {
@@ -331,9 +211,94 @@ function VEAccordion(_editor, config = null) constructor {
                 this.clipboard.drop()
               }
             },
-          }
+          },
         }
-      }
+      },
+      "_ve-accordion_accordion-options": {
+        name: "_ve-accordion_accordion-options",
+        state: new Map(String, any, {
+          "background-alpha": 1.0,
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "components": new Array(Struct, [
+            {
+              name: "ve-accordion-option-button_event-inspector",
+              template: VEComponents.get("category-button"),
+              layout: VELayouts.get("vertical-item"),
+              config: {
+                backgroundColor: VETheme.color.primary,
+                backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+                backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+                backgroundMargin: { top: 0, bottom: 1, left: 1, right: 0 },
+                callback: function() { 
+                  Core.print("ve-accordion-option-button_event-inspector callback")
+                  var store = this.context.state.get("store")
+                  var item = store.get("render-event-inspector")
+                  item.set(!item.get())
+                },
+                updateCustom: function() {
+                  var store = this.context.state.get("store")
+                  var render = store.getValue("render-event-inspector")
+                  this.backgroundColor = render
+                    ? this.backgroundColorOn
+                    : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                },
+                onMouseHoverOver: function(event) { },
+                onMouseHoverOut: function(event) { },
+                label: { 
+                  font: "font_inter_8_bold",
+                  text: String.toArray("EVENT").join("\n"),
+                },
+              },
+            },
+            {
+              name: "ve-accordion-option-button_template-toolbar",
+              template: VEComponents.get("category-button"),
+              layout: VELayouts.get("vertical-item"),
+              config: {
+                backgroundColor: VETheme.color.primary,
+                backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+                backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+                backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
+                callback: function() { 
+                  Core.print("ve-accordion-option-button_template-toolbar callback")
+                  var store = this.context.state.get("store")
+                  var item = store.get("render-template-toolbar")
+                  item.set(!item.get())
+                },
+                updateCustom: function() {
+                  var store = this.context.state.get("store")
+                  var render = store.getValue("render-template-toolbar")
+                  this.backgroundColor = render
+                    ? this.backgroundColorOn
+                    : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                },
+                onMouseHoverOver: function(event) { },
+                onMouseHoverOut: function(event) { },
+                label: { 
+                  font: "font_inter_8_bold",
+                  text: String.toArray("TEMPLATE").join("\n"),
+                },
+              },
+            }
+          ]),
+        }),
+        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+        accordion: accordion,
+        layout: layout.nodes.options,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        render: Callable.run(UIUtil.renderTemplates.get("renderDefaultNoSurface")),
+        onInit: function() {
+          var layout = this.layout
+          this.collection = new UICollection(this, { layout: layout })
+          this.state.set("store", this.accordion.store)
+          this.state.get("components")
+            .forEach(function(component, index, collection) {
+              collection.add(new UIComponent(component))
+            }, this.collection)
+        },
+      },
     })
 
     return new Task("init-container")
@@ -341,6 +306,10 @@ function VEAccordion(_editor, config = null) constructor {
         context: accordion,
         containers: containerIntents,
         queue: new Queue(String, GMArray.sort(containerIntents.keys().getContainer())),
+        eventInspector: accordion.eventInspector,
+        eventInspectorEvent: eventInspectorEvent,
+        templateToolbar: accordion.templateToolbar,
+        templateToolbarEvent: templateToolbarEvent,
       })
       .whenUpdate(function() {
         var key = this.state.queue.pop()
@@ -361,6 +330,9 @@ function VEAccordion(_editor, config = null) constructor {
           keys: GMArray.sort(containers.keys().getContainer()),
           containers: containers,
         })
+
+        this.state.eventInspector.send(this.state.eventInspectorEvent)
+        this.state.templateToolbar.send(this.state.templateToolbarEvent)
       })
   }
 
@@ -413,12 +385,30 @@ function VEAccordion(_editor, config = null) constructor {
     context.update()
   }
 
+  ///@private
+  ///@param {UIContainer} container
+  resetUpdateTimer = function(container) {
+    if (!Optional.is(container.updateTimer)) {
+      return
+    }
+    container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+  }
+
   ///@return {VEBrushToolbar}
   update = function() { 
+
     try {
       this.dispatcher.update()
-      this.updateContainerObject(this.eventInspector, this.store.getValue("render-event-inspector"))
-      this.updateContainerObject(this.templateToolbar, this.store.getValue("render-template-toolbar"))
+      var renderEventInspector = this.store.getValue("render-event-inspector")
+      var renderTemplateToolbar = this.store.getValue("render-template-toolbar")
+      if (this.eventInspector.enable != renderEventInspector
+          || this.templateToolbar.enable != renderTemplateToolbar) {
+        this.containers.forEach(this.resetUpdateTimer)
+        this.eventInspector.containers.forEach(this.resetUpdateTimer)
+        this.templateToolbar.containers.forEach(this.resetUpdateTimer)
+      }
+      this.updateContainerObject(this.eventInspector, renderEventInspector)
+      this.updateContainerObject(this.templateToolbar, renderTemplateToolbar)
     } catch (exception) {
       var message = $"VEAccordion dispatcher fatal error: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))

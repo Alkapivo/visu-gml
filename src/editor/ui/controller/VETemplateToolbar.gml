@@ -5,724 +5,113 @@
 ///@static
 ///@type {Map<String, Callable>}
 global.__VisuTemplateContainers = new Map(String, Callable, {
-  "type": function(name, templateToolbar, layout) {
+  /*
+  "title": function(name, templateToolbar, layout) {
     return {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
-        "types": new Array(Struct, [
-          {
-            name: "button_type-shader",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 5 },
-              callback: function() { 
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(this.templateType)
-                
-                this.context.templateToolbar.store
-                  .get("template")
-                  .set(null)
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { text: "Shader" },
-              templateType: VETemplateType.SHADER,
-            },
-          },
-          {
-            name: "button_type-shroom",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
-              callback: function() { 
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(this.templateType)
-                
-                this.context.templateToolbar.store
-                  .get("template")
-                  .set(null)
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { text: "Shroom" },
-              templateType: VETemplateType.SHROOM,
-            },
-          },
-          {
-            name: "button_type-bullet",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
-              callback: function() { 
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(this.templateType)
-                
-                this.context.templateToolbar.store
-                  .get("template")
-                  .set(null)
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { text: "Bullet" },
-              templateType: VETemplateType.BULLET,
-            },
-          },
-          {
-            name: "button_type-coin",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
-              callback: function() { 
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(this.templateType)
-                
-                this.context.templateToolbar.store
-                  .get("template")
-                  .set(null)
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { text: "Coin" },
-              templateType: VETemplateType.COIN,
-            },
-          },
-          {
-            name: "button_type-lyrics",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
-              callback: function() { 
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(this.templateType)
-                
-                this.context.templateToolbar.store
-                  .get("template")
-                  .set(null)
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { text: "Lyrics" },
-              templateType: VETemplateType.LYRICS,
-            },
-          },
-          {
-            name: "button_type-particle",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
-              callback: function() { 
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(this.templateType)
-                
-                this.context.templateToolbar.store
-                  .get("template")
-                  .set(null)
-
-                var templateBar = this.context.templateToolbar.containers
-                  .get("ve-template-toolbar_template-bar")
-                if (Optional.is(templateBar)) {
-                  templateBar.updateTimer.time = templateBar.updateTimer.duration
-                }
-
-                var templateView = this.context.templateToolbar.containers
-                  .get("ve-template-toolbar_template-view")
-                if (Optional.is(templateView)) {
-                  templateView.updateTimer.time = templateView.updateTimer.duration
-                }
-
-                var inspectorBar = this.context.templateToolbar.containers
-                  .get("ve-template-toolbar_inspector-bar")
-                if (Optional.is(inspectorBar)) {
-                  inspectorBar.updateTimer.time = inspectorBar.updateTimer.duration
-                }
-
-                var inspectorView = this.context.templateToolbar.containers
-                  .get("ve-template-toolbar_inspector-view")
-                if (Optional.is(inspectorView)) {
-                  inspectorView.updateTimer.time = inspectorView.updateTimer.duration
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { text: "Particle" },
-              templateType: VETemplateType.PARTICLE,
-            },
-          },
-          {
-            name: "button_type-texture",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("horizontal-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
-              callback: function() { 
-                this.context.templateToolbar.store
-                  .get("type")
-                  .set(this.templateType)
-                
-                this.context.templateToolbar.store
-                  .get("template")
-                  .set(null)
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { text: "Texture" },
-              templateType: VETemplateType.TEXTURE,
-            },
-          },
-        ])
+        "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-      render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
-      onInit: function() {
-        var container = this
-        this.collection = new UICollection(this, { layout: this.layout })
-        this.state
-          .set("store", this.templateToolbar.store)
-          .get("types")
-          .forEach(function(component, index, collection) {
-            collection.add(new UIComponent(component))
-          }, this.collection)
-      },
-    }
-  },
-  "add": function(name, templateToolbar, layout) {
-    return {
-      name: name,
-      state: new Map(String, any, {
-        "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
-        "template_shader": new Array(Struct, [
-          {
-            name: "text-field_new-shader-template_name",
-            template: VEComponents.get("text-field"),
-            layout: VELayouts.get("text-field"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Name" },
-              field: { store: { key: "template_shader_name" } },
-            },
+      render: Callable.run(UIUtil.renderTemplates.get("renderDefaultNoSurface")),
+      items: {
+        "label_ve-template-toolbar-title": {
+          type: UIButton,
+          label: {
+            text: "Template toolbar",
+            font: "font_inter_8_regular",
+            color: VETheme.color.textFocus,
+            align: { v: VAlign.CENTER, h: HAlign.LEFT },
+            offset: { x: 4 },
           },
-          {
-            name: "text-field_new-shader-template_shader",
-            template: VEComponents.get("spin-select"),
-            layout: VELayouts.get("spin-select"),
-            config: { 
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Shader" },
-              previous: { store: { key: "shader" } },
-              preview: Struct.appendRecursive({ 
-                store: { key: "shader" },
-              }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-              next: { store: { key: "shader" } },
+          backgroundColor: VETheme.color.accentShadow,
+          clipboard: {
+            name: "label_ve-template-toolbar-title",
+            drag: function() {
+              Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_VERTICAL)
             },
+            drop: function() {
+              Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+            }
           },
-          {
-            name: "button_new-shader-template_add",
-            template: VEComponents.get("button"),
-            layout: VELayouts.get("button"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.acceptShadow,
-              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function(event) {
-                if (Core.isType(GMTFContext.get(), GMTF)) {
-                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
-                    GMTFContext.get().uiItem.update()
-                  }
-                  GMTFContext.get().unfocus()
+          __height: 0.0,
+          __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
+          updateCustom: function() {
+            this.__update()
+            if (MouseUtil.getClipboard() == this.clipboard) {
+              this.updateLayout(MouseUtil.getMouseY())
+              this.context.templateToolbar.containers.forEach(function(container) {
+                if (!Optional.is(container.updateTimer)) {
+                  return
                 }
-
-                this.context.templateToolbar.send(new Event("add-template"))
-
-                if (Optional.is(this.context.updateTimer)) {
-                  this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-              },
-              label: { text: "Create shader" },
-              colorHoverOver: VETheme.color.accept,
-              colorHoverOut: VETheme.color.acceptShadow,
-              onMouseHoverOver: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-              },
-              onMouseHoverOut: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-              },
-            },
-          },
-        ]),
-        "template_shroom": new Array(Struct, [
-          {
-            name: "text-field_new-shroom-template_name",
-            template: VEComponents.get("text-field"),
-            layout: VELayouts.get("text-field"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Name" },
-              field: { store: { key: "template_shroom_name" } },
-            },
-          },
-          {
-            name: "button_new-shroom-template_add",
-            template: VEComponents.get("button"),
-            layout: VELayouts.get("button"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.acceptShadow,
-              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function(event) {
-                if (Core.isType(GMTFContext.get(), GMTF)) {
-                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
-                    GMTFContext.get().uiItem.update()
-                  }
-                  GMTFContext.get().unfocus()
-                }
-
-                this.context.templateToolbar.send(new Event("add-template"))
-
-                if (Optional.is(this.context.updateTimer)) {
-                  this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-              },
-              label: { text: "Create shroom" },
-              colorHoverOver: VETheme.color.accept,
-              colorHoverOut: VETheme.color.acceptShadow,
-              onMouseHoverOver: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-              },
-              onMouseHoverOut: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-              },
-            },
-          },
-        ]),
-        "template_bullet": new Array(Struct, [
-          {
-            name: "text-field_new-bullet-template_name",
-            template: VEComponents.get("text-field"),
-            layout: VELayouts.get("text-field"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Name" },
-              field: { store: { key: "template_bullet_name" } },
-            },
-          },
-          {
-            name: "button_new-bullet-template_add",
-            template: VEComponents.get("button"),
-            layout: VELayouts.get("button"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.acceptShadow,
-              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function(event) {
-                if (Core.isType(GMTFContext.get(), GMTF)) {
-                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
-                    GMTFContext.get().uiItem.update()
-                  }
-                  GMTFContext.get().unfocus()
-                }
-
-                this.context.templateToolbar.send(new Event("add-template"))
                 
-                if (Optional.is(this.context.updateTimer)) {
-                  this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-              },
-              label: { text: "Create bullet" },
-              colorHoverOver: VETheme.color.accept,
-              colorHoverOut: VETheme.color.acceptShadow,
-              onMouseHoverOver: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-              },
-              onMouseHoverOut: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-              },
-            },
-          },
-        ]),
-        "template_coin": new Array(Struct, [
-          {
-            name: "text-field_new-coin-template_name",
-            template: VEComponents.get("text-field"),
-            layout: VELayouts.get("text-field"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Name" },
-              field: { store: { key: "template_coin_name" } },
-            },
-          },
-          {
-            name: "button_new-coin-template_add",
-            template: VEComponents.get("button"),
-            layout: VELayouts.get("button"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.acceptShadow,
-              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function(event) {
-                if (Core.isType(GMTFContext.get(), GMTF)) {
-                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
-                    GMTFContext.get().uiItem.update()
-                  }
-                  GMTFContext.get().unfocus()
-                }
-
-                this.context.templateToolbar.send(new Event("add-template"))
-                
-                if (Optional.is(this.context.updateTimer)) {
-                  this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-              },
-              label: { text: "Create coin" },
-              colorHoverOver: VETheme.color.accept,
-              colorHoverOut: VETheme.color.acceptShadow,
-              onMouseHoverOver: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-              },
-              onMouseHoverOut: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-              },
-            },
-          },
-        ]),
-        "template_lyrics": new Array(Struct, [
-          {
-            name: "text-field_new-lyrics-template_name",
-            template: VEComponents.get("text-field"),
-            layout: VELayouts.get("text-field"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Name" },
-              field: { store: { key: "template_lyrics_name" } },
-            },
-          },
-          {
-            name: "button_new-lyrics-template_add",
-            template: VEComponents.get("button"),
-            layout: VELayouts.get("button"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.acceptShadow,
-              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function(event) {
-                if (Core.isType(GMTFContext.get(), GMTF)) {
-                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
-                    GMTFContext.get().uiItem.update()
-                  }
-                  GMTFContext.get().unfocus()
-                }
-
-                this.context.templateToolbar.send(new Event("add-template"))
-
-                if (Optional.is(this.context.updateTimer)) {
-                  this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-              },
-              label: { text: "Create lyrics" },
-              colorHoverOver: VETheme.color.accept,
-              colorHoverOut: VETheme.color.acceptShadow,
-              onMouseHoverOver: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-              },
-              onMouseHoverOut: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-              },
-            },
-          },
-        ]),
-        "template_particle": new Array(Struct, [
-          {
-            name: "text-field_new-particle-template_name",
-            template: VEComponents.get("text-field"),
-            layout: VELayouts.get("text-field"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Name" },
-              field: { store: { key: "template_particle_name" } },
-            },
-          },
-          {
-            name: "button_new-particle-template_add",
-            template: VEComponents.get("button"),
-            layout: VELayouts.get("button"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.acceptShadow,
-              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function(event) {
-                if (Core.isType(GMTFContext.get(), GMTF)) {
-                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
-                    GMTFContext.get().uiItem.update()
-                  }
-                  GMTFContext.get().unfocus()
-                }
-
-                this.context.templateToolbar.send(new Event("add-template"))
-                
-                if (Optional.is(this.context.updateTimer)) {
-                  this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-              },
-              label: { text: "Create particle" },
-              colorHoverOver: VETheme.color.accept,
-              colorHoverOut: VETheme.color.acceptShadow,
-              onMouseHoverOver: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-              },
-              onMouseHoverOut: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-              },
-            },
-          },
-        ]),
-        "template_texture": new Array(Struct, [
-          {
-            name: "text-field_new-texture-template_name",
-            template: VEComponents.get("text-field"),
-            layout: VELayouts.get("text-field"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Name" },
-              field: { store: { key: "template_texture_name" } },
-            },
-          },
-          {
-            name: "text-field_new-texture-template_file",  
-            template: VEComponents.get("text-field-button"),
-            layout: VELayouts.get("text-field-button"),
-            config: { 
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Texture" },
-              field: { 
-                read_only: true,
-                updateCustom: function() {
-                  var intent = this.context.state.get("store").getValue("texture-intent")
-                  if (intent.file != "" && Core.isType(intent.file, String)) {
-                    this.textField.setText(FileUtil.getFilenameFromPath(intent.file))
-                  } else {
-                    this.textField.setText("")
-                  }
-                },
-              },
-              button: { 
-                label: { text: "Open" },
-                callback: function() {
-                  var path = FileUtil.getPathToOpenWithDialog({
-                    description: "PNG, JPG, BMP file",
-                    extension: "png;*.jpg;*.jpeg;*.bmp",
-                  })
-                  if (!FileUtil.fileExists(path)) {
-                    return
-                  }
-      
-                  var intent = this.context.state.get("store").getValue("texture-intent")
-                  intent.file = path
-                },
-                colorHoverOver: VETheme.color.accent,
-                colorHoverOut: VETheme.color.accentShadow,
-                onMouseHoverOver: function(event) {
-                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-                },
-                onMouseHoverOut: function(event) {
-                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-                },
-              },
-            },
-          },
-          {
-            name: "text-field_new-texture-template_frames",
-            template: VEComponents.get("text-field"),
-            layout: VELayouts.get("text-field"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { text: "Frames" },
-              field: { 
-                store: { 
-                  key: "texture-intent",
-                  set: function(value) { 
-                    var parsed = NumberUtil.parse(value)
-                    if (!Core.isType(parsed, Number)) {
-                      return
-                    }
-                    
-                    var intent = this.context.context.state.get("store")
-                      .getValue("texture-intent")
-                    if (!Core.isType(intent, TextureIntent)) {
-                      return
-                    }
-
-                    intent.frames = parsed
-                  },
-                  callback: function(value, data) { 
-                    if (!Core.isType(value, TextureIntent)) {
-                      return
-                    }
-                    
-                    data.textField.setText(value.frames)
-                  },
-                }
-              },
-            },
-          },
-          {
-            name: "button_new-texture-template_add",
-            template: VEComponents.get("button"),
-            layout: VELayouts.get("button"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              backgroundColor: VETheme.color.acceptShadow,
-              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              callback: function(event) {
-                if (Core.isType(GMTFContext.get(), GMTF)) {
-                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
-                    GMTFContext.get().uiItem.update()
-                  }
-                  GMTFContext.get().unfocus()
-                }
-
-                this.context.templateToolbar.send(new Event("add-template"))
-
-                if (Optional.is(this.context.updateTimer)) {
-                  this.context.updateTimer.time = this.context.updateTimer.duration
-                }
-              },
-              label: { text: "Create texture" },
-              colorHoverOver: VETheme.color.accept,
-              colorHoverOut: VETheme.color.acceptShadow,
-              onMouseHoverOver: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-              },
-              onMouseHoverOut: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-              },
-            },
-          },
-        ]),
-      }),
-      updateTimer: new Timer(FRAME_MS * 24, { loop: Infinity, shuffle: true }),
-      templateToolbar: templateToolbar,
-      layout: layout,
-      updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-      updateCustom: function() {
-        ///@hack
-        this.layout.context.nodes.add.__height = this.fetchViewHeight()
-      },
-      render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
-      onInit: function() {
-        var container = this
-        this.collection = new UICollection(this, { layout: this.layout })
-        this.templateToolbar.store.get("type").addSubscriber({ 
-          name: container.name,
-          callback: function(type, data) {
-            data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
-            data.collection.components.clear() ///@todo replace with remove lambda
-            data.state.set("store", data.templateToolbar.store)
-            data.addUIComponents(data.state.get(type)
-              .map(function(component) {
-                return new UIComponent(component)
-              }),
-              new UILayout({
-                area: data.area,
-                width: function() { return this.area.getWidth() },
+                container.surfaceTick.skip()
+                container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
               })
-            )
+
+              if (!mouse_check_button(mb_left)) {
+                MouseUtil.clearClipboard()
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            } else {
+              var editor = Beans.get(BeanVisuEditorController)
+              var height = editor.layout.nodes.accordion.height()
+              if (this.__height != height) {
+                this.__height = height
+                this.updateLayout(this.context.area.getY() + this.area.getY())
+              }
+            }
           },
-          data: container
-        })
-      },
-      onDestroy: function() {
-        this.templateToolbar.store
-          .get("type")
-          .removeSubscriber(this.name)
-      },
+          updateLayout: new BindIntent(function(position) {
+            var editor = Beans.get(BeanVisuEditorController)
+            var accordion = editor.accordion
+            var accordionNode = editor.layout.nodes.accordion
+            var store = accordion.layout.store
+            var height = accordionNode.height()
+            if (height < 250) {
+              return
+            }
+
+            var ratio = 250 / height
+            var percentage = clamp((position - accordionNode.y()) / height, ratio, 1.0 - ratio)
+            var current = Struct.get(store, "templates-percentage")
+            if (percentage == current) {
+              return
+            }
+
+            Struct.set(store, "templates-percentage", 1.0 - percentage)
+            accordion.containers.forEach(accordion.resetUpdateTimer)
+            accordion.eventInspector.containers.forEach(accordion.resetUpdateTimer)
+            accordion.templateToolbar.containers.forEach(accordion.resetUpdateTimer)
+          }),
+          onMousePressedLeft: function(event) {
+            MouseUtil.setClipboard(this.clipboard)
+          },
+          onMouseHoverOver: function(event) {
+            if (!mouse_check_button(mb_left)) {
+              this.clipboard.drag()
+            }
+          },
+          onMouseHoverOut: function(event) {
+            if (!mouse_check_button(mb_left)) {
+              this.clipboard.drop()
+            }
+          },
+        }, 
+      }
     }
   },
-  "template-bar": function(name, templateToolbar, layout) {
+  */
+  "title": function(name, templateToolbar, layout) {
     return {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -730,25 +119,101 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
       items: {
-        "label_template-title": Struct.appendRecursiveUnique(
-          {
-            type: UIText,
-            text: "Templates",
-            update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
+        "label_template-title": {
+          type: UIText,
+          text: "Template toolbar",
+          font: "font_inter_8_regular",
+          color: VETheme.color.textFocus,
+          align: { v: VAlign.CENTER, h: HAlign.LEFT },
+          offset: { x: 4 },
+          margin: { right: 96 },
+          backgroundColor: VETheme.color.accentShadow,
+          clipboard: {
+            name: "label_template-title",
+            drag: function() {
+              Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_VERTICAL)
+            },
+            drop: function() {
+              Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+            }
           },
-          VEStyles.get("bar-title"),
-          false
-        ),
+          __height: 0.0,
+          __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
+          updateCustom: function() {
+            this.__update()
+            if (MouseUtil.getClipboard() == this.clipboard) {
+              this.updateLayout(MouseUtil.getMouseY())
+              this.context.templateToolbar.containers.forEach(function(container) {
+                if (!Optional.is(container.updateTimer)) {
+                  return
+                }
+                
+                container.surfaceTick.skip()
+                container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+              })
+
+              if (!mouse_check_button(mb_left)) {
+                MouseUtil.clearClipboard()
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            } else {
+              var editor = Beans.get(BeanVisuEditorController)
+              var height = editor.layout.nodes.accordion.height()
+              if (this.__height != height) {
+                this.__height = height
+                this.updateLayout(this.context.area.getY() + this.area.getY())
+              }
+            }
+          },
+          updateLayout: new BindIntent(function(position) {
+            var editor = Beans.get(BeanVisuEditorController)
+            var accordion = editor.accordion
+            var accordionNode = editor.layout.nodes.accordion
+            var store = accordion.layout.store
+            var height = accordionNode.height()
+            if (height < 240) {
+              return
+            }
+
+            var ratio = 240 / height
+            var percentage = clamp((position - accordionNode.y()) / height, 0.16, 1.0 - ratio)
+            var current = Struct.get(store, "templates-percentage")
+            if (percentage == current) {
+              return
+            }
+
+            Struct.set(store, "templates-percentage", 1.0 - percentage)
+            accordion.containers.forEach(accordion.resetUpdateTimer)
+            accordion.eventInspector.containers.forEach(accordion.resetUpdateTimer)
+            accordion.templateToolbar.containers.forEach(accordion.resetUpdateTimer)
+          }),
+          onMousePressedLeft: function(event) {
+            MouseUtil.setClipboard(this.clipboard)
+          },
+          onMouseHoverOver: function(event) {
+            if (!mouse_check_button(mb_left)) {
+              this.clipboard.drag()
+            }
+          },
+          onMouseHoverOut: function(event) {
+            if (!mouse_check_button(mb_left)) {
+              this.clipboard.drop()
+            }
+          },
+        },
         "button_template-load": Struct.appendRecursiveUnique(
           {
             type: UIButton,
-            label: { text: "Import" },
+            label: { 
+              font: "font_inter_8_regular",
+              text: "Import",
+            },
             align: { v: VAlign.CENTER, h: HAlign.RIGHT },
             group: { index: 1, size: 2, width: 48 },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
-            backgroundColor: VETheme.color.primary,
-            colorHoverOver: VETheme.color.accentShadow,
-            colorHoverOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.accentShadow,
+            colorHoverOver: VETheme.color.primary,
+            colorHoverOut: VETheme.color.accentShadow,
             onMouseHoverOver: function(event) {
               var type = this.context.templateToolbar.store.getValue("type")
               if (type == this.enable.key) {
@@ -1004,10 +469,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "button_template-save": Struct.appendRecursiveUnique(
           {
             type: UIButton,
-            label: { text: "Export" },
-            backgroundColor: VETheme.color.primary,
-            colorHoverOver: VETheme.color.accentShadow,
-            colorHoverOut: VETheme.color.primary,
+            label: { 
+              font: "font_inter_8_regular",
+              text: "Export",
+            },
+            backgroundColor: VETheme.color.accentShadow,
+            colorHoverOver: VETheme.color.primary,
+            colorHoverOut: VETheme.color.accentShadow,
             onMouseHoverOver: function(event) {
               this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
             },
@@ -1100,6 +568,740 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       }
     }
   },
+  "type": function(name, templateToolbar, layout) {
+    return {
+      name: name,
+      state: new Map(String, any, {
+        "background-alpha": 1.0,
+        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "types": new Array(Struct, [
+          {
+            name: "button_type-shader",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 2, bottom: 1, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Shader" },
+              templateType: VETemplateType.SHADER,
+            },
+          },
+          {
+            name: "button_type-shroom",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 2, bottom: 1, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Shroom" },
+              templateType: VETemplateType.SHROOM,
+            },
+          },
+          {
+            name: "button_type-bullet",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 2, bottom: 1, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Bullet" },
+              templateType: VETemplateType.BULLET,
+            },
+          },
+          {
+            name: "button_type-coin",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 2, bottom: 1, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Coin" },
+              templateType: VETemplateType.COIN,
+            },
+          },
+          {
+            name: "button_type-lyrics",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 2, bottom: 1, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Lyrics" },
+              templateType: VETemplateType.LYRICS,
+            },
+          },
+          {
+            name: "button_type-particle",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 2, bottom: 1, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+
+                var templateBar = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_template-bar")
+                if (Optional.is(templateBar)) {
+                  templateBar.updateTimer.time = templateBar.updateTimer.duration + random(templateBar.updateTimer.duration / 2.0)
+                }
+
+                var templateView = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_template-view")
+                if (Optional.is(templateView)) {
+                  templateView.updateTimer.time = templateView.updateTimer.duration + random(templateView.updateTimer.duration / 2.0)
+                }
+
+                var inspectorBar = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_inspector-bar")
+                if (Optional.is(inspectorBar)) {
+                  inspectorBar.updateTimer.time = inspectorBar.updateTimer.duration + random(inspectorBar.updateTimer.duration / 2.0)
+                }
+
+                var inspectorView = this.context.templateToolbar.containers
+                  .get("ve-template-toolbar_inspector-view")
+                if (Optional.is(inspectorView)) {
+                  inspectorView.updateTimer.time = inspectorView.updateTimer.duration + random(inspectorView.updateTimer.duration / 2.0)
+                }
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Particle" },
+              templateType: VETemplateType.PARTICLE,
+            },
+          },
+          {
+            name: "button_type-texture",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 2, bottom: 1, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Texture" },
+              templateType: VETemplateType.TEXTURE,
+            },
+          },
+        ])
+      }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      templateToolbar: templateToolbar,
+      layout: layout,
+      updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+      render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
+      onInit: function() {
+        var container = this
+        this.collection = new UICollection(this, { layout: this.layout })
+        this.state
+          .set("store", this.templateToolbar.store)
+          .get("types")
+          .forEach(function(component, index, collection) {
+            collection.add(new UIComponent(component))
+          }, this.collection)
+      },
+    }
+  },
+  "add": function(name, templateToolbar, layout) {
+    return {
+      name: name,
+      state: new Map(String, any, {
+        "background-alpha": 1.0,
+        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "template_shader": new Array(Struct, [
+          {
+            name: "text-field_new-shader-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "template_shader_name" } },
+            },
+          },
+          {
+            name: "text-field_new-shader-template_shader",
+            template: VEComponents.get("spin-select"),
+            layout: VELayouts.get("spin-select"),
+            config: { 
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Shader" },
+              previous: { store: { key: "shader" } },
+              preview: Struct.appendRecursive({ 
+                store: { key: "shader" },
+              }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+              next: { store: { key: "shader" } },
+            },
+          },
+          {
+            name: "button_new-shader-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              label: { 
+                font: "font_inter_10_bold",
+                text: "Create shader",
+              },
+              callback: function(event) {
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
+                  }
+                  GMTFContext.get().unfocus()
+                }
+
+                this.context.templateToolbar.send(new Event("add-template"))
+
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration + random(this.context.updateTimer.duration / 2.0)
+                }
+              },
+              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              colorHoverOver: VETheme.color.accentShadow,
+              colorHoverOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.primaryShadow,
+              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+            },
+          },
+        ]),
+        "template_shroom": new Array(Struct, [
+          {
+            name: "text-field_new-shroom-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "template_shroom_name" } },
+            },
+          },
+          {
+            name: "button_new-shroom-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              label: {
+                font: "font_inter_10_bold",
+                text: "Create shroom",
+              },
+              callback: function(event) {
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
+                  }
+                  GMTFContext.get().unfocus()
+                }
+
+                this.context.templateToolbar.send(new Event("add-template"))
+
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration + random(this.context.updateTimer.duration / 2.0)
+                }
+              },
+              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              colorHoverOver: VETheme.color.accentShadow,
+              colorHoverOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.primaryShadow,
+              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+            },
+          },
+        ]),
+        "template_bullet": new Array(Struct, [
+          {
+            name: "text-field_new-bullet-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "template_bullet_name" } },
+            },
+          },
+          {
+            name: "button_new-bullet-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              label: {
+                font: "font_inter_10_bold",
+                text: "Create bullet",
+              },
+              callback: function(event) {
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
+                  }
+                  GMTFContext.get().unfocus()
+                }
+
+                this.context.templateToolbar.send(new Event("add-template"))
+                
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration + random(this.context.updateTimer.duration / 2.0)
+                }
+              },
+              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              colorHoverOver: VETheme.color.accentShadow,
+              colorHoverOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.primaryShadow,
+              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+            },
+          },
+        ]),
+        "template_coin": new Array(Struct, [
+          {
+            name: "text-field_new-coin-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "template_coin_name" } },
+            },
+          },
+          {
+            name: "button_new-coin-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              label: {
+                font: "font_inter_10_bold",
+                text: "Create coin",
+              },
+              callback: function(event) {
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
+                  }
+                  GMTFContext.get().unfocus()
+                }
+
+                this.context.templateToolbar.send(new Event("add-template"))
+                
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration + random(this.context.updateTimer.duration / 2.0)
+                }
+              },
+              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              colorHoverOver: VETheme.color.accentShadow,
+              colorHoverOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.primaryShadow,
+              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+            },
+          },
+        ]),
+        "template_lyrics": new Array(Struct, [
+          {
+            name: "text-field_new-lyrics-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "template_lyrics_name" } },
+            },
+          },
+          {
+            name: "button_new-lyrics-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              label: {
+                font: "font_inter_10_bold",
+                text: "Create lyrics",
+              },
+              callback: function(event) {
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
+                  }
+                  GMTFContext.get().unfocus()
+                }
+
+                this.context.templateToolbar.send(new Event("add-template"))
+
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration + random(this.context.updateTimer.duration / 2.0)
+                }
+              },
+              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              colorHoverOver: VETheme.color.accentShadow,
+              colorHoverOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.primaryShadow,
+              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+            },
+          },
+        ]),
+        "template_particle": new Array(Struct, [
+          {
+            name: "text-field_new-particle-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "template_particle_name" } },
+            },
+          },
+          {
+            name: "button_new-particle-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              label: {
+                font: "font_inter_10_bold",
+                text: "Create particle",
+              },
+              callback: function(event) {
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
+                  }
+                  GMTFContext.get().unfocus()
+                }
+
+                this.context.templateToolbar.send(new Event("add-template"))
+                
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration + random(this.context.updateTimer.duration / 2.0)
+                }
+              },
+              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              colorHoverOver: VETheme.color.accentShadow,
+              colorHoverOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.primaryShadow,
+              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+            },
+          },
+        ]),
+        "template_texture": new Array(Struct, [
+          {
+            name: "text-field_new-texture-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "template_texture_name" } },
+            },
+          },
+          {
+            name: "text-field_new-texture-template_file",  
+            template: VEComponents.get("text-field-button"),
+            layout: VELayouts.get("text-field-button"),
+            config: { 
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Texture" },
+              field: { 
+                read_only: true,
+                updateCustom: function() {
+                  var intent = this.context.state.get("store").getValue("texture-intent")
+                  if (intent.file != "" && Core.isType(intent.file, String)) {
+                    this.textField.setText(FileUtil.getFilenameFromPath(intent.file))
+                  } else {
+                    this.textField.setText("")
+                  }
+                },
+              },
+              button: { 
+                label: { text: "Open" },
+                callback: function() {
+                  var path = FileUtil.getPathToOpenWithDialog({
+                    description: "PNG, JPG, BMP file",
+                    extension: "png;*.jpg;*.jpeg;*.bmp",
+                  })
+                  if (!FileUtil.fileExists(path)) {
+                    return
+                  }
+      
+                  var intent = this.context.state.get("store").getValue("texture-intent")
+                  intent.file = path
+                },
+                colorHoverOver: VETheme.color.accent,
+                colorHoverOut: VETheme.color.accentShadow,
+                onMouseHoverOver: function(event) {
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                },
+                onMouseHoverOut: function(event) {
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                },
+              },
+            },
+          },
+          {
+            name: "text-field_new-texture-template_frames",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Frames" },
+              field: { 
+                store: { 
+                  key: "texture-intent",
+                  set: function(value) { 
+                    var parsed = NumberUtil.parse(value)
+                    if (!Core.isType(parsed, Number)) {
+                      return
+                    }
+                    
+                    var intent = this.context.context.state.get("store")
+                      .getValue("texture-intent")
+                    if (!Core.isType(intent, TextureIntent)) {
+                      return
+                    }
+
+                    intent.frames = parsed
+                  },
+                  callback: function(value, data) { 
+                    if (!Core.isType(value, TextureIntent)) {
+                      return
+                    }
+                    
+                    data.textField.setText(value.frames)
+                  },
+                }
+              },
+            },
+          },
+          {
+            name: "button_new-texture-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              label: {
+                font: "font_inter_10_bold",
+                text: "Create texture",
+              },
+              callback: function(event) {
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
+                  }
+                  GMTFContext.get().unfocus()
+                }
+
+                this.context.templateToolbar.send(new Event("add-template"))
+
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration + random(this.context.updateTimer.duration / 2.0)
+                }
+              },
+              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              colorHoverOver: VETheme.color.accentShadow,
+              colorHoverOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.primaryShadow,
+              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+            },
+          },
+        ]),
+      }),      
+
+      updateTimer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
+      templateToolbar: templateToolbar,
+      layout: layout,
+      updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+      updateCustom: function() {
+        ///@hack
+        this.layout.context.nodes.add.__height = this.fetchViewHeight()
+      },
+      render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
+      onInit: function() {
+        var container = this
+        this.collection = new UICollection(this, { layout: this.layout })
+        this.templateToolbar.store.get("type").addSubscriber({ 
+          name: container.name,
+          callback: function(type, data) {
+            data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
+            data.collection.components.clear() ///@todo replace with remove lambda
+            data.state.set("store", data.templateToolbar.store)
+            data.addUIComponents(data.state.get(type)
+              .map(function(component) {
+                return new UIComponent(component)
+              }),
+              new UILayout({
+                area: data.area,
+                width: function() { return this.area.getWidth() },
+              })
+            )
+          },
+          data: container
+        })
+      },
+      onDestroy: function() {
+        this.templateToolbar.store
+          .get("type")
+          .removeSubscriber(this.name)
+      },
+    }
+  },
   "template-view": function(name, templateToolbar, layout) {
     return {
       name: name,
@@ -1107,7 +1309,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      updateTimer: new Timer(FRAME_MS * 24, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.template-toolbar.template-view.updateTimer", 30), { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       executor: null,
@@ -1259,7 +1461,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
-                        task.state.inspector.updateTimer.finish()
+                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
                   })
@@ -1376,7 +1578,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
-                        task.state.inspector.updateTimer.finish()
+                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
                   })
@@ -1493,7 +1695,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
-                        task.state.inspector.updateTimer.finish()
+                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
                   })
@@ -1610,7 +1812,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
-                        task.state.inspector.updateTimer.finish()
+                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
                   })
@@ -1727,7 +1929,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
-                        task.state.inspector.updateTimer.finish()
+                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
                   })
@@ -1844,7 +2046,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
-                        task.state.inspector.updateTimer.finish()
+                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
                   })
@@ -1960,7 +2162,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
-                        task.state.inspector.updateTimer.finish()
+                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
                   })
@@ -1999,7 +2201,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      updateTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -2029,7 +2231,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   }
                   
                   container.surfaceTick.skip()
-                  container.updateTimer.time = container.updateTimer.duration
+                  container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
                 })
 
                 if (!mouse_check_button(mb_left)) {
@@ -2043,27 +2245,23 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               var titleBar = uiService.find("ve-title-bar")
               var statusBar = uiService.find("ve-status-bar")
 
+              var titleNode = Struct.get(this.context.layout.context.nodes, "title")
               var typeNode = Struct.get(this.context.layout.context.nodes, "type")
               var addNode = Struct.get(this.context.layout.context.nodes, "add")
-              var templateBarNode = Struct.get(this.context.layout.context.nodes, "template-bar")
               var templateViewNode = Struct.get(this.context.layout.context.nodes, "template-view")
               var controlNode = Struct.get(this.context.layout.context.nodes, "control")
               var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
 
               var editor = Beans.get(BeanVisuEditorController)
               var nodes = editor.accordion.layout.nodes
-              var barEventInspectorNode = Struct.get(nodes, "bar_event-inspector")
               var viewEventInspectorNode = Struct.get(nodes, "view_event-inspector")
-              var barTemplateToolbarNode = Struct.get(nodes, "bar_template-toolbar")
               var timelineNode = editor.layout.nodes.timeline
               
               var top = titleBar.layout.height() + titleBar.margin.top + titleBar.margin.bottom
-                + barEventInspectorNode.height() + barEventInspectorNode.margin.top + barEventInspectorNode.margin.bottom
                 + viewEventInspectorNode.height() + viewEventInspectorNode.margin.top + viewEventInspectorNode.margin.bottom
-                + barTemplateToolbarNode.height() + barTemplateToolbarNode.margin.top + barTemplateToolbarNode.margin.bottom
+                + titleNode.height() + titleNode.margin.top + titleNode.margin.bottom
                 + typeNode.height() + typeNode.margin.top + typeNode.margin.bottom
                 + addNode.height() + addNode.margin.top + addNode.margin.bottom
-                + templateBarNode.height() + templateBarNode.margin.top + templateBarNode.margin.bottom
               var bottom = GuiHeight()
                 -  statusBar.layout.height() 
                 - (timelineNode.height() + timelineNode.margin.top + timelineNode.margin.bottom)
@@ -2100,7 +2298,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
-      updateTimer: new Timer(FRAME_MS * 24, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.template-toolbar.inspector-view.updateTimer", 30), { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
       executor: null,
@@ -2206,7 +2404,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   var index = task.state.componentsQueue.pop()
                   if (!Optional.is(index)) {
                     if (Optional.is(task.state.context.updateTimer)) {
-                      task.state.context.updateTimer.finish()
+                      task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
                     }
 
                     task.fullfill()
@@ -2254,9 +2452,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("horizontal-item"),
             config: {
-              backgroundColor: VETheme.color.acceptShadow,
-              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-              label: { text: "Save template" },
+              label: {
+                font: "font_inter_10_bold",
+                text: "Save template",
+              },
               callback: function() { 
                 if (Core.isType(GMTFContext.get(), GMTF)) {
                   if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
@@ -2269,7 +2468,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 var inspector = this.context.templateToolbar.containers
                   .get("ve-template-toolbar_inspector-view")
                 if (Optional.is(inspector)) {
-                  inspector.updateTimer.time = inspector.updateTimer.duration
+                  inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
                 }
                 
                 if (Optional.is(inspector.updateArea)) {
@@ -2284,8 +2483,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   inspector.updateCustom()
                 }
               },
-              colorHoverOver: VETheme.color.accept,
-              colorHoverOut: VETheme.color.acceptShadow,
+              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              colorHoverOver: VETheme.color.accentShadow,
+              colorHoverOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.primaryShadow,
+              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -2415,19 +2617,23 @@ function VETemplateToolbar(_editor) constructor {
       {
         name: "template-toolbar",
         staticHeight: new BindIntent(function() {
+          var title = Struct.get(this.nodes, "title")
           var type = Struct.get(this.nodes, "type")
           var add = Struct.get(this.nodes, "add")
-          var templateBar = Struct.get(this.nodes, "template-bar")
           var inspectorBar = Struct.get(this.nodes, "inspector-bar")
           var control = Struct.get(this.nodes, "control")
-          return type.height() + add.height() + templateBar.height() 
-            + inspectorBar.height() + control.height()
+          return title.height() + type.height() + add.height() + inspectorBar.height() + control.height()
         }),
         nodes: {
+          "title": {
+            name: "template-toolbar.title",
+            y: function() { return this.context.y() },
+            height: function() { return 16 },
+          },
           "type": {
             name: "template-toolbar.type",
-            y: function() { return this.context.y() },
-            height: function() { return 32 },
+            y: function() { return this.context.nodes.title.bottom() },
+            height: function() { return 26 },
           },
           "add": {
             name: "template-toolbar.add",
@@ -2435,17 +2641,12 @@ function VETemplateToolbar(_editor) constructor {
             __height: 32,
             height: function() { return this.__height },
           },
-          "template-bar": {
-            name: "template-toolbar.template-bar",
-            y: function() { return this.context.nodes.add.bottom() },
-            height: function() { return 16 },
-          },
           "template-view": {
             name: "template-toolbar.template-view",
             percentageHeight: 0.25,
-            margin: { top: 2, bottom: 2, left: 10 },
+            margin: { top: 1, bottom: 1, left: 10 },
             x: function() { return this.context.x() + this.margin.left },
-            y: function() { return this.margin.top + Struct.get(this.context.nodes, "template-bar").bottom() },
+            y: function() { return this.margin.top + this.context.nodes.add.bottom() },
             height: function() { return ceil((this.context.height() 
               - this.context.staticHeight()) * this.percentageHeight)
               - this.margin.top - this.margin.bottom },
@@ -2458,7 +2659,7 @@ function VETemplateToolbar(_editor) constructor {
           "inspector-view": {
             name: "template-toolbar.inspector-view",
             percentageHeight: 0.75,
-            margin: { top: 2, bottom: 2, left: 10 },
+            margin: { top: 1, bottom: 1, left: 10 },
             x: function() { return this.context.x() + this.margin.left },
             y: function() { return this.margin.top + Struct.get(this.context.nodes, "inspector-bar").bottom() },
             height: function() { return ceil((this.context.height() 
@@ -2468,7 +2669,7 @@ function VETemplateToolbar(_editor) constructor {
           "control": {
             name: "template-toolbar.control",
             y: function() { return Struct.get(this.context.nodes, "inspector-view").bottom() },
-            height: function() { return 32 },
+            height: function() { return 24 },
           }
         }
       },

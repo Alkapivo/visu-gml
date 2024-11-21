@@ -26,8 +26,25 @@ function VEEventInspector(_editor) constructor {
   factoryLayout = function(parent) {
     return new UILayout({ 
       name: "event-inspector",
-      margin: { left: 10 },
-      x: function() { return this.context.x() + this.margin.left },
+      staticHeight: new BindIntent(function() { return this.nodes.title.height() + this.nodes.control.height() }),
+      nodes: {
+        "title": {
+          name: "event-inspector.title",
+          height: function() { return 16 },
+        },
+        "view": {
+          name: "event-inspector.view",
+          margin: { left: 10 },
+          height: function() { return this.context.height() - this.context.staticHeight() },
+          y: function() { return this.context.nodes.title.bottom() },
+        },
+        "control": {
+          name: "event-inspector.control",
+          height: function() { return 24 },
+          margin: { left: 0, right: 1 },
+          y: function() { return this.context.nodes.view.bottom() },
+        }
+      }
     }, parent)
   }
 
@@ -36,8 +53,32 @@ function VEEventInspector(_editor) constructor {
   ///@return {Task}
   factoryOpenTask = function(parent) {
     var eventInspector = this
-    this.layout = this.factoryLayout(parent)
+    var layout = this.factoryLayout(parent)
+    this.layout = layout
     var containerIntents = new Map(String, Struct, {
+      "ve-event-inspector-title": {
+        name: "ve-event-inspector-title",
+        state: new Map(String, any, {
+          "background-alpha": 1.0,
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+        }),
+        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+        layout: layout.nodes.title,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        render: Callable.run(UIUtil.renderTemplates.get("renderDefaultNoSurface")),
+        items: {
+          "label_ve-event-inspector-title": {
+            type: UIText,
+            text: "Event inspector",
+            update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
+            backgroundColor: VETheme.color.accentShadow,
+            font: "font_inter_8_regular",
+            color: VETheme.color.textFocus,
+            align: { v: VAlign.CENTER, h: HAlign.LEFT },
+            offset: { x: 4 },
+          }, 
+        }
+      },
       "ve-event-inspector-properties": {
         name: "ve-event-inspector-properties",
         state: new Map(String, any, {
@@ -51,9 +92,9 @@ function VEEventInspector(_editor) constructor {
           "inspectorType": VEEventInspector,
           "updateTrackEvent": false,
         }),
-        updateTimer: new Timer(FRAME_MS * 30, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.event-inspector.properties.updateTimer", 60), { loop: Infinity, shuffle: true }),
         eventInspector: eventInspector,
-        layout: layout,
+        layout: layout.nodes.view,
         _updateTrackEvent: new BindIntent(function() {
           if (!this.state.get("updateTrackEvent")) {
             return
@@ -222,7 +263,7 @@ function VEEventInspector(_editor) constructor {
                       var key = task.state.subscribersQueue.pop()
                       if (!Optional.is(key)) {
                         if (Optional.is(task.state.context.updateTimer)) {
-                          task.state.context.updateTimer.finish()
+                          task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
                         }
 
                         task.fullfill()
@@ -256,6 +297,83 @@ function VEEventInspector(_editor) constructor {
               .get("selected-event")
               .removeSubscriber(this.name)
           }
+        },
+      },
+      "ve-event-inspector-control": {
+        name: "ve-event-inspector-control",
+        state: new Map(String, any, {
+          "background-alpha": 1.0,
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "components": new Array(Struct, [
+            {
+              name: "button_control-preview",
+              template: VEComponents.get("category-button"),
+              layout: VELayouts.get("horizontal-item"),
+              config: {
+                colorHoverOver: VETheme.color.accentShadow,
+                colorHoverOut: VETheme.color.primaryShadow,
+                backgroundColor: VETheme.color.primaryShadow,
+                backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+                label: { 
+                  font: "font_inter_10_bold",
+                  text: "Preview",
+                },
+                callback: function() { 
+                  var eventInspector = this.context.eventInspector
+                  var event = eventInspector.store.getValue("event")
+                  if (!Core.isType(event, VEEvent)) {
+                    return
+                  }
+
+                  var trackService = Beans.get(BeanVisuController).trackService
+                  var handler = trackService.handlers.get(event.type)
+                  handler(event.toTemplate().event.data)
+                },
+                onMouseHoverOver: function(event) {
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                },
+                onMouseHoverOut: function(event) {
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                },
+              },
+            },
+            /* 
+            {
+              name: "button_control-to-brush",
+              template: VEComponents.get("category-button"),
+              layout: VELayouts.get("horizontal-item"),
+              config: {
+                colorHoverOver: VETheme.color.accentShadow,
+                colorHoverOut: VETheme.color.primaryShadow,
+                backgroundColor: VETheme.color.primaryShadow,
+                backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                label: { text: "To brush" },
+                callback: function() { 
+                  Core.print("callback to brush")
+                },
+                onMouseHoverOver: function(event) {
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                },
+                onMouseHoverOut: function(event) {
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                },
+              },
+            }
+            */
+          ]),
+        }),
+        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+        eventInspector: eventInspector,
+        layout: layout.nodes.control,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        render: Callable.run(UIUtil.renderTemplates.get("renderDefaultNoSurface")),
+        onInit: function() {
+          var layout = this.layout
+          this.collection = new UICollection(this, { layout: layout })
+          this.state.get("components")
+            .forEach(function(component, index, collection) {
+              collection.add(new UIComponent(component))
+            }, this.collection)
         },
       },
     })
