@@ -6,6 +6,14 @@ function brush_view_config(json = null) {
   return {
     name: "brush_view_config",
     store: new Map(String, Struct, {
+      "view-config_use-render-grid": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_use-render-grid", false),
+      },
+      "view-config_render-grid": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_render-grid", false),
+      },
       "view-config_use-render-particles": {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_use-render-particles", false),
@@ -47,6 +55,29 @@ function brush_view_config(json = null) {
       },
     }),
     components: new Array(Struct, [
+      {
+        name: "view-config_use-render-grid",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Render grid",
+            enable: { key: "view-config_use-render-grid" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-render-grid" },
+          },
+          input: {
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "grid-config_render-grid" },
+            enable: { key: "view-config_use-render-grid" },
+          }
+        },
+      },
       {
         name: "view-config_use-render-HUD",
         template: VEComponents.get("property"),
