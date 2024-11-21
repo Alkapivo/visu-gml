@@ -129,6 +129,19 @@ function VEStatusBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 24 },
           },
+          updateLabel: {
+            name: "status-bar.updateLabel",
+            x: function() { return this.context.nodes.autosaveCheckbox.right() + this.margin.left },
+            y: function() { return 0 },
+            margin: { left: 6 },
+            width: function() { return 48 },
+          },
+          updateCheckbox: {
+            name: "status-bar.updateLabel",
+            x: function() { return this.context.nodes.updateLabel.right() + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 24 },
+          },
           ws: {
             name: "status-bar.ws",
             x: function() { return this.context.nodes.stateLabel.left() 
@@ -386,6 +399,7 @@ function VEStatusBar(_editor) constructor {
     var controller = this
     var layout = this.factoryLayout(parent)
     var autosaveEnabled = Beans.get(BeanVisuEditorController).autosave.value
+    var updateServices = Beans.get(BeanVisuEditorController).updateServices
     return new Map(String, UI, {
       "ve-status-bar": new UI({
         name: "ve-status-bar",
@@ -520,6 +534,18 @@ function VEStatusBar(_editor) constructor {
               if (!editor.autosave.value) {
                 editor.autosave.timer.time = 0
               }
+            },
+          }),
+          "text_ve-status-bar_updateLabel": factoryLabel({
+            text: "Update:",
+            layout: layout.nodes.updateLabel,
+          }),
+          "text_ve-status-bar_updateCheckbox": factoryCheckbox({
+            layout: layout.nodes.updateCheckbox,
+            value: updateServices,
+            callback: function() {
+              var editor = Beans.get(BeanVisuEditorController)
+              editor.updateServices = !editor.updateServices
             },
           }),
           "text_ve-status-ws": factoryValue({

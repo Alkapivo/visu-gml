@@ -130,17 +130,10 @@ function VisuEditorController() constructor {
     },
     "timeline-zoom": {
       type: Number,
-      value: 10,
+      value: Assert.isType(Visu.settings.getValue("visu.editor.timeline-zoom", 10), Number),
       passthrough: function(value) {
         return clamp(value, 5, 20)
       },
-    },
-    "shader-quality": {
-      type: Number,
-      value: Assert.isType(Visu.settings.getValue("visu.graphics.shader-quality", 0.5), Number),
-      passthrough: function(value) {
-        return clamp(value, 0.2, 1.0)
-      }
     },
   })
 
@@ -179,6 +172,8 @@ function VisuEditorController() constructor {
       }
     }
   }
+
+  updateServices = Core.getProperty("visu.editor.update-services", true)
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
@@ -376,6 +371,11 @@ function VisuEditorController() constructor {
       .generateSettingsSubscriber("visu.editor.timeline-zoom"))
 
     this.layout = this.factoryLayout()
+
+    if (this.renderUI) {
+      this.renderUI = Beans.get(BeanVisuController).menu.containers.size() == 0
+    }
+    
     return this
   }
 
@@ -476,18 +476,17 @@ function VisuEditorController() constructor {
   ///@return {VisuEditorController}
   updateLayout = function() {
     static updateAccordion = function(container, key, enable) {
-      if (key == "_ve-accordion_accordion-items") {
+      if (key == "_ve-accordion_accordion-items"
+          || key == "_ve-accordion_accordion-options") {
         container.enable = enable
-      } else {
-        if (!enable) {
-          container.enable = false
-        }
+      } else if (!enable) {
+        container.enable = false
       }
     }
 
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
-    brushNode.minWidth = renderBrush ? 270 : 0
+    brushNode.minWidth = renderBrush ? 288 : 0
     brushNode.maxWidth = renderBrush ? GuiWidth() * 0.37 : 0
     this.brushToolbar.containers.forEach(function(container, key, enable) {
       container.enable = enable
@@ -496,14 +495,14 @@ function VisuEditorController() constructor {
     var renderTimeline = this.store.getValue("render-timeline")
     var timelineNode = Struct.get(this.layout.nodes, "timeline")
     timelineNode.minHeight = renderTimeline ? 96 : 0
-    timelineNode.maxHeight = renderTimeline ? GuiHeight() * 0.41 : 0
+    timelineNode.maxHeight = renderTimeline ? GuiHeight() * 0.58 : 0
     this.timeline.containers.forEach(function(container, key, enable) {
       container.enable = enable
     }, renderTimeline)
 
     var renderEvent = this.store.getValue("render-event")
     var accordionNode = Struct.get(this.layout.nodes, "accordion")
-    accordionNode.minWidth = renderEvent ? 270 : 0
+    accordionNode.minWidth = renderEvent ? 288 : 0
     accordionNode.maxWidth = renderEvent ? GuiWidth() * 0.37 : 0
     this.accordion.containers.forEach(updateAccordion, renderEvent)
     this.accordion.eventInspector.containers.forEach(updateAccordion, renderEvent)
@@ -573,6 +572,10 @@ function VisuEditorController() constructor {
   ///@private
   ///@return {VisuEditorController}
   updateUIService = function() {
+    if (this.renderUI) {
+      this.renderUI = Beans.get(BeanVisuController).menu.containers.size() == 0
+    }
+    
     if (this.renderUI && this.requestOpenUI) {
       this.executor.add(this.uiInitialized 
         ? this.factoryOpenUITask()
@@ -607,7 +610,7 @@ function VisuEditorController() constructor {
     }
 
     container.surfaceTick.skip()
-    container.updateTimer.time = container.updateTimer.duration
+    container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
   }
 
   ///@param {Event} event
@@ -621,7 +624,7 @@ function VisuEditorController() constructor {
     this.updateDispatcher()
     this.updateExecutor()
     this.updateUIService()
-    this.services.forEach(this.updateService, Beans.get(BeanVisuController))
+    this.services.forEach(this.updateService, this)
     this.updateLayout()
     return this
   }
