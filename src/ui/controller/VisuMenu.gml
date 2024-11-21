@@ -378,6 +378,33 @@ function VisuMenu(_config = null) constructor {
       }, 0)
     }
 
+    if (Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
+      event.data.content.add({
+        name: "main-menu_menu-button-entry_retry",
+        template: VisuComponents.get("menu-button-entry"),
+        layout: VisuLayouts.get("menu-button-entry"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Retry",
+            callback: new BindIntent(function() {
+              var controller = Beans.get(BeanVisuController)
+              Assert.isType(controller.track, VisuTrack, "VisuController.track must be type of VisuTrack")
+              controller.send(new Event("load", {
+                manifest: $"{controller.track.path}manifest.visu",
+                autoplay: true,
+              }))
+              controller.sfxService.play("menu-select-entry")
+            }),
+            callbackData: config,
+            onMouseReleasedLeft: function() {
+              this.callback()
+            },
+          },
+        }
+      }, 1)
+    }
+
     if (Core.getRuntimeType() != RuntimeType.GXGAMES) {
       event.data.content.add({
         name: "main-menu_menu-button-entry_quit",
@@ -407,12 +434,13 @@ function VisuMenu(_config = null) constructor {
   ///@param {?Struct} [_config]
   ///@return {Event}
   factoryConfirmationDialog = function(_config = null) {
+    var context = this
     var config = Struct.appendUnique(
       _config,
       {
         accept: function() { return new Event("game-end") },
         acceptLabel: "Yes",
-        decline: this.factoryOpenMainMenuEvent, 
+        decline: context.factoryOpenMainMenuEvent, 
         declineLabel: "No",
         message: "Are you sure?"
       }
@@ -453,7 +481,7 @@ function VisuMenu(_config = null) constructor {
           }
         },
         {
-          name: "confirmation-dialog_menu-button-decline",
+          name: "confirmation-dialog_menu-button-entry_decline",
           template: VisuComponents.get("menu-button-entry"),
           layout: VisuLayouts.get("menu-button-entry"),
           config: {
@@ -882,12 +910,6 @@ function VisuMenu(_config = null) constructor {
               updateCustom: function() {
                 var value = round(Visu.settings.getValue("visu.graphics.shader-quality") * 10)
                 this.label.text = string(int64(value))
-
-                var editor = Beans.get(BeanVisuEditorController)
-                if (Optional.is(editor)) {
-                  editor.store.get("shader-quality").set(Visu.settings.getValue("visu.graphics.shader-quality"))
-                }
-                
               },
             },
             next: { 
@@ -1613,7 +1635,7 @@ function VisuMenu(_config = null) constructor {
           config: {
             layout: { type: UILayoutType.VERTICAL },
             label: { 
-              text: "Restart",
+              text: "Restart game",
               callback: new BindIntent(function() {
                 Scene.open("scene_visu")
               }),
