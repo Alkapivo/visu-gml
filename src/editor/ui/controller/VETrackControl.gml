@@ -242,7 +242,7 @@ function VETrackControl(_editor) constructor {
           },
           sendEvent: new BindIntent(function() {
             var controller = Beans.get(BeanVisuController)
-            var timestamp = this.value * controller.trackService.duration
+            var timestamp = this.value * (controller.trackService.duration - (FRAME_MS * 4))
             var promise = controller
               .send(new Event("rewind")
               .setData({ timestamp: timestamp })
