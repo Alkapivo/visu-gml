@@ -1897,15 +1897,20 @@ function VETimeline(_editor) constructor {
           var camera = this.state.get("camera")
           var cameraPrevious = this.state.get("cameraPrevious")
           var maxWidth = spd * duration
-          if (controller.fsm.getStateName() == "play" || time != null) 
-            && ((position > camera + width) || (position < camera)) {
-            camera = clamp(position - width / 2, 0, maxWidth - width)
+          var stateName = controller.fsm.getStateName()
+
+          if ((stateName == "play" || stateName == "paused" || time != null) 
+            && ((position > camera + width) || (position < camera))) {
+            camera = clamp(position - (width / 2), 0, maxWidth - width)
           }
+          
           this.state.set("camera", camera)
           this.state.set("cameraPrevious", camera)
           this.state.set("position", position)
           this.state.set("speed", spd)
-          this.state.set("time", null)
+          if (stateName != "rewind") {
+            this.state.set("time", null)
+          }
           this.offset.x = -1 * camera
 
           var events = this.controller.containers.get("ve-timeline-events")
@@ -1921,6 +1926,7 @@ function VETimeline(_editor) constructor {
               timestamp = duration - (FRAME_MS * 4.0)
             }
             this.state.set("mouseX", null)
+            this.state.set("time", timestamp)
             MouseUtil.clearClipboard()
             return controller.send(new Event("rewind", { 
               timestamp: timestamp,
@@ -2038,6 +2044,7 @@ function VETimeline(_editor) constructor {
           }
           this.state.set("mouseX", null)
           this.state.set("mouseXTime", null)
+          this.state.set("time", timestamp)
           return Beans.get(BeanVisuController).send(new Event("rewind", { 
             timestamp: timestamp,
           }))

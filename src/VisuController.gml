@@ -555,7 +555,7 @@ function VisuController(layerName) constructor {
         fsmEvent.setPromise(event.promise)
         event.setPromise(null)
       }
-      this.fsm.dispatcher.send(fsmEvent)
+      this.fsm.dispatcher.execute(fsmEvent)
     },
     "quit": function(event) {
       this.fsm.dispatcher.send(new Event("transition", { name: "quit" }))
