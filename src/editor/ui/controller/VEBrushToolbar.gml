@@ -80,7 +80,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
 
                 container.surfaceTick.skip()
-                container.updateTimer.time = container.updateTimer.duration
+                container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
               })
 
               // reset timeline timer to avoid ghost effect,
@@ -91,7 +91,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
 
                 container.surfaceTick.skip()
-                container.updateTimer.time = container.updateTimer.duration
+                container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
               })
 
               if (!mouse_check_button(mb_left)) {
@@ -107,7 +107,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
             var events = editor.uiService.find("ve-timeline-events")
             if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
-              events.updateTimer.finish()
+              events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
             }
           }),
           onMousePressedLeft: function(event) {
@@ -157,7 +157,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
-              label: { text: String.toArray("SHADER").join("\n") },
+              label: { 
+                font: "font_inter_8_bold",
+                text: String.toArray("SHADER").join("\n"),
+              },
               category: "shader",
             },
           },
@@ -184,7 +187,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
-              label: { text: String.toArray("SHROOM").join("\n") },
+              label: {
+                font: "font_inter_8_bold",
+                text: String.toArray("SHROOM").join("\n"),
+              },
               category: "shroom",
             },
           },
@@ -211,7 +217,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
-              label: { text: String.toArray("GRID").join("\n") },
+              label: {
+                font: "font_inter_8_bold",
+                text: String.toArray("GRID").join("\n"),
+              },
               category: "grid",
             },
           },
@@ -238,7 +247,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
-              label: { text: String.toArray("VIEW").join("\n") },
+              label: {
+                font: "font_inter_8_bold",
+                text: String.toArray("VIEW").join("\n"),
+              },
               category: "view",
             },
           },
@@ -248,7 +260,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-      render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
+      render: Callable.run(UIUtil.renderTemplates.get("renderDefaultNoSurface")),
       onInit: function() {
         this.collection = new UICollection(this, { layout: this.layout })
         this.state.get("components")
@@ -445,7 +457,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           {
             type: UIButton,
             group: { index: 1, size: 2, width: 48 },
-            label: { text: "Import" },
+            label: { 
+              font: "font_inter_8_regular",
+              text: "Import",
+            },
             backgroundColor: VETheme.color.primary,
             colorHoverOver: VETheme.color.accentShadow,
             colorHoverOut: VETheme.color.primary,
@@ -474,6 +489,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
+                      ///@todo refactor
                       if (result == null) {
                         return new Task("dummy-task").whenUpdate(function(executor) {
                           this.fullfill()
@@ -500,7 +516,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           {
             type: UIButton,
             group: { index: 0, size: 2, width: 48 },
-            label: { text: "Export" },
+            label: { 
+              font: "font_inter_8_regular",
+              text: "Export",
+            },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
             backgroundColor: VETheme.color.primary,
             colorHoverOver: VETheme.color.accentShadow,
@@ -559,7 +578,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         }),
         "dragItem": null,
       }),
-      updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.brush-view.updateTimer", 60), { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       scrollbarY: { align: HAlign.RIGHT },
@@ -682,7 +701,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               item.backgroundColor = ColorUtil.fromHex(item.colorHoverOut).toGMColor()
             })
 
-            this.updateTimer.time = this.updateTimer.duration
+            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
         }
       },
@@ -763,7 +782,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       }),
-      updateTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -793,7 +812,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   }
 
                   container.surfaceTick.skip()
-                  container.updateTimer.time = container.updateTimer.duration
+                  container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
                 })
 
                 if (!mouse_check_button(mb_left)) {
@@ -844,7 +863,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
         "inspectorType": VEBrushToolbar,
       }),
-      updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.inspector-view.updateTimer", 60), { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
       executor: null,
@@ -945,7 +964,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   var index = task.state.componentsQueue.pop()
                   if (!Optional.is(index)) {
                     if (Optional.is(task.state.context.updateTimer)) {
-                      task.state.context.updateTimer.finish()
+                      task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
                     }
 
                     task.fullfill()
@@ -995,7 +1014,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
               backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              label: { text: "Preview" },
+              label: {
+                font: "font_inter_10_bold",
+                text: "Preview",
+              },
               callback: function() { 
                 var brushToolbar = this.context.brushToolbar
                 var brush = brushToolbar.store.getValue("brush")
@@ -1023,7 +1045,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
               backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              label: { text: "Save" },
+              label: { 
+                font: "font_inter_10_bold",
+                text: "Save",
+              },
               callback: function() { 
                 if (Core.isType(GMTFContext.get(), GMTF)) {
                   if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
@@ -1038,7 +1063,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
                 if (Core.isType(inspector, UI) 
                   && Optional.is(inspector.updateTimer)) {
-                  inspector.updateTimer.time = inspector.updateTimer.duration
+                  inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
                 }
 
                 if (Optional.is(inspector.updateArea)) {
@@ -1118,6 +1143,8 @@ function VEBrushToolbar(_editor) constructor {
 
   ///@type {VisuEditorController}
   editor = Assert.isType(_editor, VisuEditorController)
+
+  enable = true
 
   ///@type {?UILayout}
   layout = null
@@ -1367,7 +1394,7 @@ function VEBrushToolbar(_editor) constructor {
 
               if (Core.isType(inspector, UI) 
                 && Optional.is(inspector.updateTimer)) {
-                inspector.updateTimer.time = inspector.updateTimer.duration
+                inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
               }
             }
           },
