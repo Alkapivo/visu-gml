@@ -248,6 +248,20 @@ function VisuEditorIO() constructor {
       if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
         editor.exitModal.send(new Event("close"))
       } else if (!exitModalKeyDispatched) {
+        controller.visuRenderer.gridRenderer.camera.enableMouseLook = false
+        controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = false
+        editor.executor.add(new Task("disable-renderUI")
+          .whenUpdate(function() {
+            var editor = Beans.get(BeanVisuEditorController)
+            if (!Optional.is(editor)) {
+              this.fullfill()
+            }
+            
+            editor.renderUI = false
+            this.fullfill()
+          })
+          .setTimeout(2.0))
+        /*
         editor.exitModal.send(new Event("open").setData({
           layout: new UILayout({
             name: "display",
@@ -257,8 +271,7 @@ function VisuEditorIO() constructor {
             height: function() { return GuiHeight() },
           }),
         }))
-        controller.visuRenderer.gridRenderer.camera.enableMouseLook = false
-        controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = false
+        */
       }
     }
 
