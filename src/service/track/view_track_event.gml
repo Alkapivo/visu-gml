@@ -40,11 +40,6 @@ global.__view_track_event = {
 
     if (Struct.get(data, "view-wallpaper_use-texture") == true) {
       var sprite = Struct.get(data, "view-wallpaper_texture")
-      var animate = Struct.get(data, "view-wallpaper_use-texture-speed")
-      if (animate) {
-        Struct.set(sprite, "animate", animate)
-        Struct.set(sprite, "speed", Struct.get(data, "view-wallpaper_texture-speed"))
-      }
 
       if (Struct.get(data, "view-wallpaper_use-texture-blend")) {
         Struct.set(sprite, "blend", Struct.get(data, "view-wallpaper_texture-blend"))
@@ -360,6 +355,10 @@ global.__view_track_event = {
   "brush_view_config": function(data) {
     var controller = Beans.get(BeanVisuController)
     var gridService = controller.gridService
+    if (Struct.get(data, "view-config_use-render-grid")) {
+      controller.gridService.properties.renderGrid = Struct
+        .get(data, "view-config_render-grid")
+    }
 
     if (Struct.get(data, "view-config_use-render-particles")) {
       gridService.properties.renderParticles = Struct
