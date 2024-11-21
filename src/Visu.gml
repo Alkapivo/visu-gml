@@ -63,8 +63,10 @@ function _Visu() constructor {
         "name":"texture_bullet"
       },
       "mask":{
-        "width":128.0,
-        "height":128.0
+        "x": 16,
+        "y": 16,
+        "width":32.0,
+        "height":32.0
       },
     },
   }
