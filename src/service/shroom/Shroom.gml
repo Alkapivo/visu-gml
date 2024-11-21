@@ -11,14 +11,13 @@ function ShroomTemplate(_name, json) constructor {
   sprite = Assert.isType(Struct.get(json, "sprite"), Struct)
 
   ///@type {?Struct}
-  mask = Struct.contains(json, "mask")
-    ? Assert.isType(json.mask, Struct)
-    : null
+  mask = Struct.getIfType(json, "mask", Struct, null)
 
   ///@type {?Number}
-  healthPoints = Core.isType(Struct.get(json, "healthPoints"), Number) 
-    ? json.healthPoints 
-    : null
+  lifespawnMax = Struct.getIfType(json, "lifespawnMax", Number)
+
+  ///@type {?Number}
+  healthPoints = Struct.getIfType(json, "healthPoints", Number)
   
   ///@type {Struct}
   gameModes = Struct.appendUnique(
@@ -40,6 +39,10 @@ function ShroomTemplate(_name, json) constructor {
       Struct.set(json, "mask", this.mask)
     }
 
+    if (Optional.is(this.lifespawnMax)) {
+      Struct.set(json, "lifespawnMax", this.lifespawnMax)
+    }
+
     if (Optional.is(this.healthPoints)) {
       Struct.set(json, "healthPoints", this.healthPoints)
     }
@@ -57,6 +60,9 @@ function Shroom(template): GridItem(template) constructor {
   state = Struct.getDefault(template, "state", new Map(String, any))
 
   ///@type {Number}
+  lifespawnMax = Struct.getIfType(template, "lifespawnMax", Number, 15.0)
+
+  ///@type {Number}
   healthPoints = Core.isType(Struct.get(template, "healthPoints"), Number) 
     ? template.healthPoints 
     : 1
@@ -66,6 +72,11 @@ function Shroom(template): GridItem(template) constructor {
   static update = function(controller) {
     if (Optional.is(this.gameMode)) {
       gameMode.update(this, controller)
+    }
+
+    this.lifespawn += DeltaTime.apply(FRAME_MS)
+    if (this.lifespawn >= this.lifespawnMax) {
+      this.signal("kill")
     }
 
     if (this.fadeIn < 1.0) {

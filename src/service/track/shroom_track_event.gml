@@ -7,19 +7,36 @@ global.__shroom_track_event = {
     var controller = Beans.get(BeanVisuController)
     var shroom = {
       template: Struct.get(data, "shroom-spawn_template"),
-      spawnX: Struct.get(data, "shroom-spawn_use-spawn-x")
-        ? Struct.get(data, "shroom-spawn_spawn-x")
-        : Struct.getDefault(data, "shroom-spawn_spawn-x-random-from", -1.5) 
-          + random(Struct.getDefault(data, "shroom-spawn_spawn-x-random-size", 3.0)),
-      spawnY: Struct.get(data, "shroom-spawn_use-spawn-y")
-        ? Struct.get(data, "shroom-spawn_spawn-y")
-        : Struct.getDefault(data, "shroom-spawn_spawn-y-random-from", -2.5) 
-          + random(Struct.getDefault(data, "shroom-spawn_spawn-y-random-size", 4.0)),
-      angle: Struct.get(data, "shroom-spawn_angle"),
-      speed: Struct.get(data, "shroom-spawn_speed"),
-      snapH: Struct.getDefault(data, "shroom-spawn_use-snap-h", false),
-      snapV: Struct.getDefault(data, "shroom-spawn_use-snap-v", false),
+      speed: abs(Struct.get(data, "shroom-spawn_speed")
+        + (Struct.get(data, "shroom-spawn_use-speed-rng")
+          ? (random(Struct.get(data, "shroom-spawn_speed-rng") / 2.0)
+            * choose(1.0, -1.0))
+          : 0.0)),
+      angle: Math.normalizeAngle(Struct.get(data, "shroom-spawn_angle")
+        + (Struct.get(data, "shroom-spawn_use-angle-rng")
+          ? (random(Struct.get(data, "shroom-spawn_angle-rng") / 2.0)
+          * choose(1.0, -1.0))
+        : 0.0)),
+      spawnX: Struct.get(data, "shroom-spawn_channel")
+        * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
+        + 0.5
+        + (Struct.get(data, "shroom-spawn_use-channel-rng")
+          ? (random(Struct.get(data, "shroom-spawn_channel-rng") / 2.0)
+            * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
+            * choose(1.0, -1.0))
+          : 0.0),
+      snapH: Struct.getDefault(data, "shroom-spawn_channel-snap", false),
+      spawnY: Struct.get(data, "shroom-spawn_row")
+        * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
+        - 0.5
+        + (Struct.get(data, "shroom-spawn_use-row-rng")
+          ? (random(Struct.get(data, "shroom-spawn_row-rng") / 2.0)
+            * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
+            * choose(1.0, -1.0))
+          : 0.0),
+      snapV: Struct.getDefault(data, "shroom-spawn_row-snap", false),
     }
+
     controller.shroomService.send(new Event("spawn-shroom", shroom))
     
     ///@ecs
@@ -28,8 +45,14 @@ global.__shroom_track_event = {
     controller.gridECS.add(new GridEntity({
       type: GridEntityType.ENEMY,
       position: { 
-        x: controller.gridService.view.x + Struct.get(data, "shroom-spawn_spawn-x"), 
-        y: controller.gridService.view.y + Struct.get(data, "shroom-spawn_spawn-y"),
+        x: controller.gridService.view.x
+          + (Struct.get(data, "shroom-spawn_channel") 
+            * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT) 
+            + 0.5),
+        y: controller.gridService.view.y
+          + (Struct.get(data, "shroom-spawn_row") 
+            * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT) 
+            - 0.5),
       },
       velocity: { 
         speed: Struct.get(data, "shroom-spawn_speed") / 1000, 

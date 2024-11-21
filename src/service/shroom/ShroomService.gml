@@ -8,16 +8,13 @@ function ShroomService(_controller, config = {}): Service() constructor {
   controller = Assert.isType(_controller, VisuController)
 
   ///@type {Array<Shroom>} 
-  shrooms = new Array(Shroom)
+  shrooms = new Array(Shroom).enableGC()
 
   ///@type {GridItemChunkService}
   chunkService = new GridItemChunkService(GRID_ITEM_CHUNK_SERVICE_SIZE)
 
   ///@type {Map<String, ShroomTemplate>}
   templates = new Map(String, ShroomTemplate)
-
-  ///@type {Stack<Number>}
-  gc = new Stack(Number)
 
   ///@type {?Struct}
   spawner = null
@@ -124,7 +121,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
     static updateShroom = function(shroom, index, context) {
       shroom.update(context.controller)
       if (shroom.signals.kill) {
-        context.gc.push(index)
+        context.shrooms.addToGC(index)
         context.chunkService.remove(shroom)
       }
     }
@@ -135,10 +132,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
     }
 
     this.dispatcher.update()
-    this.shrooms.forEach(updateShroom, this)
-    if (this.gc.size() > 0) {
-      this.shrooms.removeMany(this.gc)
-    }
+    this.shrooms.forEach(updateShroom, this).runGC()
     return this
   }
 
