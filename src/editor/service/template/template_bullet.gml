@@ -14,7 +14,7 @@ function template_bullet(json = null) {
         type: Number,
         value: Core.isType(Struct.get(json, "lifespawnMax"), Number) ? json.lifespawnMax : 15.0,
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, 99.9)
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 99.9)
         },
       },
       "bullet_use-damage": {
@@ -25,7 +25,7 @@ function template_bullet(json = null) {
         type: Number,
         value: Core.isType(Struct.get(json, "damage"), Number) ? json.damage : 1.0,
         passthrough: function(value) {
-          return round(clamp(NumberUtil.parse(value, this.value), 0, 999.9))
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.9)
         },
       },
       "bullet_texture": {

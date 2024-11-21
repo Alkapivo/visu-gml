@@ -186,7 +186,7 @@ function Bullet(template): GridItem(template) constructor {
   ///@type {Number}
   damage = Core.isType(Struct.get(template, "damage"), Number) 
     ? template.damage 
-    : 1
+    : 1.0
 
   ///@type {Boolean}
   wiggle = Struct.getIfType(template, "wiggle", Boolean, false)
