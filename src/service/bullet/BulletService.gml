@@ -34,13 +34,10 @@ function BulletService(_controller, config = {}): Service() constructor {
   controller = Assert.isType(_controller, VisuController)
 
   ///@type {Array<Bullet>}
-  bullets = new Array(Bullet)
+  bullets = new Array(Bullet).enableGC()
 
   ///@type {Map<String, BulletTemplate>}
   templates = new Map(String, BulletTemplate)
-  
-  ///@type {Stack<Number>}
-  gc = new Stack(Number)
 
   ///@type {?GameMode}
   gameMode = null
@@ -82,8 +79,6 @@ function BulletService(_controller, config = {}): Service() constructor {
       //bullet.updateGameMode(this.controller.gameMode)
 
       this.bullets.add(bullet)
-
-      
     },
     "clear-bullets": function(event) {
       this.bullets.clear()
@@ -109,24 +104,37 @@ function BulletService(_controller, config = {}): Service() constructor {
 
     static updateBullet = function (bullet, index, context) {
       bullet.update(context.controller)
-      if (bullet.signals.kill) {
-        context.gc.push(index)
-        if (bullet.producer == Player) {
-          context.chunkService.remove(bullet)
-        }
+      if (!bullet.signals.kill) {
+        return
+      }
 
-        if (Optional.is(bullet.bulletTemplateOnDeath)) {
-          for (var idx = 0; idx < bullet.bulletAmountOnDeath; idx++) {
-            context.send(new Event("spawn-bullet", {
-              x: bullet.x,
-              y: bullet.y,
-              angle: bullet.angle + bullet.bulletSpawnAngleOnDeath + (idx * bullet.bulletAngleStepOnDeath),
-              speed: bullet.speed * 1000.0,
-              producer: bullet.producer,
-              template: bullet.bulletTemplateOnDeath,
-            }))
-          }
-        }
+      context.bullets.addToGC(index)
+      if (bullet.producer == Player) {
+        context.chunkService.remove(bullet)
+      }
+
+      if (!Optional.is(bullet.onDeath)) {
+        return
+      }
+      
+      for (var idx = 0; idx < bullet.onDeathAmount; idx++) {
+        var rngDir = bullet.onDeathAngleRng ? choose(1, -1) : 1
+        var rngSpd = random(bullet.onDeathRngSpeed)
+        var dir = bullet.angle + (rngDir * bullet.onDeathAngle) 
+          + (rngDir * idx * bullet.onDeathAngleStep) 
+          + (rngDir * (random(2.0 * bullet.onDeathRngStep) - bullet.onDeathRngStep))
+        var spd = clamp(abs(bullet.onDeathSpeedMerge 
+          ? (rngSpd + (bullet.speed * 1000.0) + bullet.onDeathSpeed) 
+          : (rngSpd + bullet.onDeathSpeed)), 0.1, 99.9)
+
+        context.send(new Event("spawn-bullet", {
+          x: bullet.x,
+          y: bullet.y,
+          angle: dir,
+          speed: spd,
+          producer: bullet.producer,
+          template: bullet.onDeath,
+        }))
       }
     }
 
@@ -136,10 +144,7 @@ function BulletService(_controller, config = {}): Service() constructor {
     //}
 
     this.dispatcher.update()
-    this.bullets.forEach(updateBullet, this)
-    if (this.gc.size() > 0) {
-      this.bullets.removeMany(this.gc)
-    }
+    this.bullets.forEach(updateBullet, this).runGC()
     return this
   }
 

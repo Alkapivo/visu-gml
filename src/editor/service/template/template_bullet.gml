@@ -6,17 +6,16 @@ function template_bullet(json = null) {
   var template = {
     name: Assert.isType(json.name, String),
     store: new Map(String, Struct, {
-      "bullet_texture": {
-        type: Sprite,
-        value: SpriteUtil.parse(json.sprite, { name: "texture_bullet" }),
-      },
-      "use_bullet_mask": {
+      "bullet_use-lifespawn": {
         type: Boolean,
-        value: Struct.getDefault(json, "mask", false) == true,
+        value: Core.isType(Struct.get(json, "lifespawnMax"), Number),
       },
-      "bullet_mask": {
-        type: Rectangle,
-        value: new Rectangle(Struct.getDefault(json, "mask", null)),
+      "bullet_lifespawn": {
+        type: Number,
+        value: Core.isType(Struct.get(json, "lifespawnMax"), Number) ? json.lifespawnMax : 15.0,
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0, 99.9)
+        },
       },
       "bullet_use-damage": {
         type: Boolean,
@@ -29,160 +28,173 @@ function template_bullet(json = null) {
           return round(clamp(NumberUtil.parse(value, this.value), 0, 999.9))
         },
       },
-      "bullet_use-lifespawn": {
-        type: Boolean,
-        value: Core.isType(Struct.get(json, "lifespawnMax"), Number),
+      "bullet_texture": {
+        type: Sprite,
+        value: SpriteUtil.parse(json.sprite, { name: "texture_bullet" }),
       },
-      "bullet_lifespawn": {
+      "use_bullet_mask": {
+        type: Boolean,
+        value: Optional.is(Struct.getDefault(json, "mask", null)),
+      },
+      "bullet_mask": {
+        type: Rectangle,
+        value: new Rectangle(Struct.getDefault(json, "mask", null)),
+      },
+      "bullet_use-wiggle": {
+        type: Boolean,
+        value: Struct.getIfType(json, "wiggle", Boolean, false),
+      },
+      "bullet_wiggle-time": {
         type: Number,
-        value: Core.isType(Struct.get(json, "lifespawnMax"), Number) ? json.lifespawnMax : 30.0,
+        value: Struct.getIfType(json, "wiggleTime", Number, 8.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, 99.9)
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 99.9)
         },
       },
-      "bullet_use-template-on-death": {
+      "bullet_use-wiggle-time-rng": {
         type: Boolean,
-        value: Core.isType(Struct.get(json, "bulletTemplateOnDeath"), String),
+        value: Struct.getIfType(json, "wiggleTimeRng", Boolean, false),
       },
-      "bullet_template-on-death": {
+      "bullet_wiggle-frequency": {
+        type: Number,
+        value: Struct.getIfType(json, "wiggleFrequency", Number, 8.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), -99.9, 99.9)
+        },
+      },
+      "bullet_use-wiggle-dir-rng": {
+        type: Boolean,
+        value: Struct.getIfType(json, "wiggleDirRng", Boolean, false),
+      },
+      "bullet_wiggle-amplitude": {
+        type: Number,
+        value: Struct.getIfType(json, "wiggleAmplitude", Number, 5.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), -99.9, 99.9)
+        },
+      },
+      "bullet_use-angle-offset": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "angleOffset"), Struct),
+      },
+      "bullet_angle-offset": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "angleOffset",
+          { value: 0.0, target: 0.0, factor: 0.0, increase: 0.0 },
+        )),
+      },
+      "bullet_use-angle-offset-rng": {
+        type: Boolean,
+        value: Struct.getIfType(json, "angleOffsetRng", Boolean, false),
+      },
+      "bullet_use-speed-offset": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "speedOffset"), Struct),
+      },
+      "bullet_speed-offset": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "speedOffset",
+          { value: 0.0, target: 0.0, factor: 0.0, increase: 0.0 },
+        )),
+      },
+      "bullet_use-on-death": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "onDeath"), String),
+      },
+      "bullet_on-death": {
         type: String,
-        value: Core.isType(Struct.get(json, "bulletTemplateOnDeath"), String) ? json.bulletTemplateOnDeath : "bullet-default",
+        value: Struct.getIfType(json, "onDeath", String, "bullet-default"),
         passthrough: function(value) {
           var bulletService = Beans.get(BeanVisuController).bulletService
-          return bulletService.templates.contains(value) || Visu.assets().bulletTemplates.contains(value)
-            ? value
-            : (Core.isType(this.value, String) ? this.value : "bullet-default")
+          return !bulletService.templates.contains(value) &&
+              !Visu.assets().bulletTemplates.contains(value)
+                ? Struct.getIfType(this, "value", String, "bullet-default")
+                : value
         },
       },
-      "bullet_template-amount-on-death": {
+      "bullet_on-death-amount": {
         type: Number,
-        value: Core.isType(Struct.get(json, "bulletAmountOnDeath"), Number) ? json.bulletAmountOnDeath : 1,
+        value: Struct.getIfType(json, "onDeathAmount", Number, 1),
         passthrough: function(value) {
           return round(clamp(NumberUtil.parse(value, this.value), 1, 16))
         },
       },
-      "bullet_template-spawn-angle-on-death": {
+      "bullet_on-death-angle": {
         type: Number,
-        value: Core.isType(Struct.get(json, "bulletSpawnAngleOnDeath"), Number) ? json.bulletSpawnAngleOnDeath : 0.0,
+        value: Struct.getIfType(json, "onDeathAngle", Number, 0.0),
         passthrough: function(value) {
           return clamp(NumberUtil.parse(value, this.value), -360.0, 360.0)
         },
       },
-      "bullet_template-angle-step-on-death": {
+      "bullet_on-death-angle-rng": {
+        type: Boolean,
+        value: Struct.getIfType(json, "onDeathAngleRng", Boolean, false),
+      },
+      "bullet_on-death-angle-step": {
         type: Number,
-        value: Core.isType(Struct.get(json, "bulletAngleStepOnDeath"), Number) ? json.sth : 0.0,
+        value: Struct.getIfType(json, "onDeathAngleStep", Number, 0.0),
         passthrough: function(value) {
           return clamp(NumberUtil.parse(value, this.value), -360.0, 360.0)
         },
       },
-      "bullet_use-transform-speed": {
+      "bullet_on-death-rng-step": {
+        type: Number,
+        value: Struct.getIfType(json, "onDeathRngStep", Number, 0.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 360.0)
+        },
+      },
+      "bullet_on-death-speed": {
+        type: Number,
+        value: Struct.getIfType(json, "onDeathSpeed", Number, 0.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), -99.9, 99.9)
+        },
+      },
+      "bullet_on-death-speed-merge": {
         type: Boolean,
-        value: Core.isType(Struct.get(json, "speedTransformer"), Struct),
+        value: Struct.getIfType(json, "onDeathSpeedMerge", Boolean, true),
       },
-      "bullet_transform-speed": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "speedTransformer")),
-      },
-      "bullet_use-wiggle-speed": {
-        type: Boolean,
-        value: Core.isType(Struct.get(json, "speedWiggleValue"), Struct) 
-          && Core.isType(Struct.get(json, "speedWiggleInterval"), Struct),
-      },
-      "bullet_wiggle-speed-value": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "speedWiggleValue")),
-      },
-      "bullet_wiggle-speed-interval": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "speedWiggleInterval")),
-      },
-      "bullet_use-transform-angle": {
-        type: Boolean,
-        value: Core.isType(Struct.get(json, "angleTransformer"), Struct),
-      },
-      "bullet_transform-angle": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "angleTransformer")),
-      },
-      "bullet_use-wiggle-angle": {
-        type: Boolean,
-        value: Core.isType(Struct.get(json, "angleWiggleValue"), Struct) 
-          && Core.isType(Struct.get(json, "angleWiggleInterval"), Struct),
-      },
-      "bullet_wiggle-angle-value": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "angleWiggleValue")),
-      },
-      "bullet_wiggle-angle-interval": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "angleWiggleInterval")),
-      },
-      "bullet_use-random-direction": {
-        type: Boolean,
-        value: Core.isType(Struct.get(json, "randomDirection"), Boolean),
-      },
-      "bullet_random-direction": {
-        type: Boolean,
-        value: Core.isType(Struct.get(json, "randomDirection"), Boolean) 
-          ? json.randomDirection 
-          : false,
+      "bullet_on-death-rng-speed": {
+        type: Number,
+        value: Struct.getIfType(json, "onDeathRngSpeed", Number, 0.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 99.9)
+        },
       },
     }),
     components: new Array(Struct, [
       {
-        name: "bullet_use-lifespawn",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Set max lifespawn",
-            enable: { key: "bullet_use-lifespawn" },
-          },  
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "bullet_use-lifespawn" },
-          },
-        },
-      },
-      {
         name: "bullet_lifespawn",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Damage",
+            text: "Lifespawn",
             enable: { key: "bullet_use-lifespawn" },
           },  
           field: { 
             store: { key: "bullet_lifespawn" },
             enable: { key: "bullet_use-lifespawn" },
           },
-        },
-      },
-      {
-        name: "bullet_use-damage",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Set damage",
-            enable: { key: "bullet_use-damage" },
-          },  
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "bullet_use-damage" },
+            store: { key: "bullet_use-lifespawn" },
+          },
+          title: { 
+            text: "Override",
+            enable: { key: "bullet_use-lifespawn" },
           },
         },
       },
       {
         name: "bullet_damage",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -193,10 +205,19 @@ function template_bullet(json = null) {
             store: { key: "bullet_damage" },
             enable: { key: "bullet_use-damage" },
           },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-damage" },
+          },
+          title: { 
+            text: "Override",
+            enable: { key: "bullet_use-damage" },
+          },
         },
       },
       {
-        name: "bullet-texture",
+        name: "bullet_texture",
         template: VEComponents.get("texture-field-ext"),
         layout: VELayouts.get("texture-field-ext"),
         config: { 
@@ -208,37 +229,12 @@ function template_bullet(json = null) {
             label: { text: "Texture" }, 
             field: { store: { key: "bullet_texture" } },
           },
-          animate: {
-            label: { text: "Animate" }, 
-            checkbox: { 
-              store: { key: "bullet_texture" },
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-            },
+          preview: {
+            image: { name: "texture_empty" },
+            store: { key: "bullet_texture" },
           },
-          randomFrame: {
-            label: { text: "Random frame" }, 
-            checkbox: { 
-              store: { key: "bullet_texture" },
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-            },
-          },
-          frame: {
-            label: { text: "Frame" },
-            field: { store: { key: "bullet_texture" } },
-          },
-          speed: {
-            label: { text: "Speed" },
-            field: { store: { key: "bullet_texture" } },
-          },
-          scaleX: {
-            label: { text: "Scale X" },
-            field: { store: { key: "bullet_texture" } },
-          },
-          scaleY: {
-            label: { text: "Scale Y" },
-            field: { store: { key: "bullet_texture" } },
+          resolution: {
+            store: { key: "bullet_texture" },
           },
           alpha: {
             label: { text: "Alpha" },
@@ -249,32 +245,73 @@ function template_bullet(json = null) {
               store: { key: "bullet_texture" },
             },
           },
+          speed: {
+            label: { text: "Speed" },
+            field: { store: { key: "bullet_texture" } },
+            checkbox: { 
+              store: { key: "bullet_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { text: "Animate" }, 
+          },
+          frame: {
+            label: { text: "Frame" },
+            field: { store: { key: "bullet_texture" } },
+            checkbox: { 
+              store: { key: "bullet_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { text: "Rng" }, 
+          },
+          scaleX: {
+            label: { text: "Scale X" },
+            field: { store: { key: "bullet_texture" } },
+          },
+          scaleY: {
+            label: { text: "Scale Y" },
+            field: { store: { key: "bullet_texture" } },
+          },
+        },
+      },
+      {
+        name: "bullet_mask-property",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Collision mask",
+            enable: { key: "use_bullet_mask" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "use_bullet_mask" },
+          },
+        },
+      },
+      {
+        name: "bullet_preview_mask",
+        template: VEComponents.get("preview-image-mask"),
+        layout: VELayouts.get("preview-image-mask"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
           preview: {
+            enable: { key: "use_bullet_mask" },
             image: { name: "texture_empty" },
             store: { key: "bullet_texture" },
-          },
-          resolution: {
-            store: { key: "bullet_texture" },
+            mask: "bullet_mask",
           },
         },
       },
       {
         name: "bullet_mask",
-        template: VEComponents.get("vec4-field"),
-        layout: VELayouts.get("vec4-field"),
+        template: VEComponents.get("vec4"),
+        layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Mask",
-              enable: { key: "use_bullet_mask" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "use_bullet_mask" },
-            },
-          },
           x: {
             label: {
               text: "X",
@@ -318,390 +355,370 @@ function template_bullet(json = null) {
         },
       },
       {
-        name: "bullet_random-direction",
+        name: "bullet_angle-wiggle-property",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Randomize direction",
-            enable: { key: "bullet_use-random-direction" },
-          },  
+          label: { text: "Wiggle" },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "bullet_use-random-direction" },
-          },
-          input: { 
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "bullet_random-direction" },
-            enable: { key: "bullet_use-random-direction" },
+            store: { key: "bullet_use-wiggle" },
           },
         },
       },
       {
-        name: "bullet_transform-speed",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Transform speed",
-              enable: { key: "bullet_use-transform-speed" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-transform-speed" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_use-transform-speed" },
-            },
-            field: {
-              store: { key: "bullet_transform-speed" },
-              enable: { key: "bullet_use-transform-speed" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_use-transform-speed" },
-            },
-            field: {
-              store: { key: "bullet_transform-speed" },
-              enable: { key: "bullet_use-transform-speed" },
-            },
-          },
-          increment: {
-            label: {
-              text: "Increase",
-              enable: { key: "bullet_use-transform-speed" },
-            },
-            field: {
-              store: { key: "bullet_transform-speed" },
-              enable: { key: "bullet_use-transform-speed" },
-            },
-          },
-        },
-      },
-      {
-        name: "bullet_wiggle-speed-value",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Wiggle speed value",
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-wiggle-speed" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-speed-value" },
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-speed-value" },
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-          },
-          increment: {
-            label: {
-              text: "Increase",
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-speed-value" },
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-          },
-        },
-      },
-      {
-        name: "bullet_wiggle-speed-interval",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Wiggle speed interval",
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-speed-interval" },
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-speed-interval" },
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-          },
-          increment: {
-            label: {
-              text: "Increase",
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-speed-interval" },
-              enable: { key: "bullet_use-wiggle-speed" },
-            },
-          },
-        },
-      },
-      {
-        name: "bullet_transform-angle",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Transform angle",
-              enable: { key: "bullet_use-transform-angle" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-transform-angle" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_use-transform-angle" },
-            },
-            field: {
-              store: { key: "bullet_transform-angle" },
-              enable: { key: "bullet_use-transform-angle" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_use-transform-angle" },
-            },
-            field: {
-              store: { key: "bullet_transform-angle" },
-              enable: { key: "bullet_use-transform-angle" },
-            },
-          },
-          increment: {
-            label: {
-              text: "Increase",
-              enable: { key: "bullet_use-transform-angle" },
-            },
-            field: {
-              store: { key: "bullet_transform-angle" },
-              enable: { key: "bullet_use-transform-angle" },
-            },
-          },
-        },
-      },
-      {
-        name: "bullet_wiggle-angle-value",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Wiggle angle value",
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-wiggle-angle" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-angle-value" },
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-angle-value" },
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-          },
-          increment: {
-            label: {
-              text: "Increase",
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-angle-value" },
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-          },
-        },
-      },
-      {
-        name: "bullet_wiggle-angle-interval",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Wiggle angle interval",
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-angle-interval" },
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-angle-interval" },
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-          },
-          increment: {
-            label: {
-              text: "Increase",
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-            field: {
-              store: { key: "bullet_wiggle-angle-interval" },
-              enable: { key: "bullet_use-wiggle-angle" },
-            },
-          },
-        },
-      },
-      {
-        name: "bullet_use-template-on-death",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
+        name: "bullet_angle-wiggle",
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Spawn bullet on death",
-            enable: { key: "bullet_use-template-on-death" },
+            text: "Time",
+            enable: { key: "bullet_use-wiggle" },
           },  
+          field: { 
+            store: { key: "bullet_wiggle-time" },
+            enable: { key: "bullet_use-wiggle" },
+          },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "bullet_use-template-on-death" },
+            store: { key: "bullet_use-wiggle-time-rng" },
+            enable: { key: "bullet_use-wiggle" },
+          },
+          title: { 
+            text: "Rng time",
+            enable: { key: "bullet_use-wiggle" },
           },
         },
       },
       {
-        name: "bullet_template-on-death",
+        name: "bullet_wiggle-frequency",
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Frequency",
+            enable: { key: "bullet_use-wiggle" },
+          },  
+          field: { 
+            store: { key: "bullet_wiggle-frequency" },
+            enable: { key: "bullet_use-wiggle" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-wiggle-dir-rng" },
+            enable: { key: "bullet_use-wiggle" },
+          },
+          title: { 
+            text: "Rng dir.",
+            enable: { key: "bullet_use-wiggle" },
+          },
+        },
+      },
+      {
+        name: "bullet_wiggle-amplitude",
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Template",
-            enable: { key: "bullet_use-template-on-death" },
+            text: "Size",
+            enable: { key: "bullet_use-wiggle" },
           },  
           field: { 
-            store: { key: "bullet_template-on-death" },
-            enable: { key: "bullet_use-template-on-death" },
+            store: { key: "bullet_wiggle-amplitude" },
+            enable: { key: "bullet_use-wiggle" },
           },
         },
       },
       {
-        name: "bullet_template-amount-on-death",
+        name: "bullet_angle-offset",
+        template: VEComponents.get("transform-numeric-uniform"),
+        layout: VELayouts.get("transform-numeric-uniform"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL },
+          title: { 
+            label: { 
+              text: "Angle offset",
+              enable: { key: "bullet_use-angle-offset" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-angle-offset" },
+            },
+          },
+          value: {
+            label: { 
+              text: "Value",
+              enable: { key: "bullet_use-angle-offset" },
+            },
+            field: { 
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_use-angle-offset" },
+            },
+          },
+          target: {
+            label: { 
+              text: "Target",
+              enable: { key: "bullet_use-angle-offset" },
+            },
+            field: { 
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_use-angle-offset" },
+            },
+          },
+          factor: {
+            label: { 
+              text: "Factor",
+              enable: { key: "bullet_use-angle-offset" },
+            },
+            field: { 
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_use-angle-offset" },
+            },
+          },
+          increase: {
+            label: { 
+              text: "Increase",
+              enable: { key: "bullet_use-angle-offset" },
+            },
+            field: { 
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_use-angle-offset" },
+            },
+          },
+        },
+      },
+      {
+        name: "bullet_use-angle-offset-rng",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Random direction",
+            enable: { key: "bullet_use-angle-offset" },
+          },
+          enable: { key: "bullet_use-angle-offset" },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-angle-offset-rng" },
+            enable: { key: "bullet_use-angle-offset" },
+          },
+        },
+      },
+      {
+        name: "bullet_speed-offset",
+        template: VEComponents.get("transform-numeric-uniform"),
+        layout: VELayouts.get("transform-numeric-uniform"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL },
+          title: { 
+            label: { 
+              text: "Speed offset",
+              enable: { key: "bullet_use-speed-offset" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-speed-offset" },
+            },
+          },
+          value: {
+            label: { 
+              text: "Value",
+              enable: { key: "bullet_use-speed-offset" },
+            },
+            field: { 
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_use-speed-offset" },
+            },
+          },
+          target: {
+            label: { 
+              text: "Target",
+              enable: { key: "bullet_use-speed-offset" },
+            },
+            field: { 
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_use-speed-offset" },
+            },
+          },
+          factor: {
+            label: { 
+              text: "Factor",
+              enable: { key: "bullet_use-speed-offset" },
+            },
+            field: { 
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_use-speed-offset" },
+            },
+          },
+          increase: {
+            label: { 
+              text: "Increase",
+              enable: { key: "bullet_use-speed-offset" },
+            },
+            field: { 
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_use-speed-offset" },
+            },
+          },
+        },
+      },
+      {
+        name: "bullet_use-on-death",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Spawn on death",
+            enable: { key: "bullet_use-on-death" },
+          },  
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-on-death" },
+          },
+        },
+      },
+      {
+        name: "bullet_on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Name",
+            enable: { key: "bullet_use-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_on-death" },
+            enable: { key: "bullet_use-on-death" },
+          },
+        },
+      },
+      {
+        name: "bullet_on-death-amount",
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Amount",
-            enable: { key: "bullet_use-template-on-death" },
+            enable: { key: "bullet_use-on-death" },
           },  
           field: { 
-            store: { key: "bullet_template-amount-on-death" },
-            enable: { key: "bullet_use-template-on-death" },
+            store: { key: "bullet_on-death-amount" },
+            enable: { key: "bullet_use-on-death" },
           },
         },
       },
       {
-        name: "bullet_template-spawn-angle-on-death",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        name: "bullet_on-death-angle",
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Start angle",
-            enable: { key: "bullet_use-template-on-death" },
+            text: "Angle",
+            enable: { key: "bullet_use-on-death" },
           },  
           field: { 
-            store: { key: "bullet_template-spawn-angle-on-death" },
-            enable: { key: "bullet_use-template-on-death" },
+            store: { key: "bullet_on-death-angle" },
+            enable: { key: "bullet_use-on-death" },
           },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_on-death-angle-rng" },
+            enable: { key: "bullet_use-on-death" },
+          },
+          title: { 
+            text: "Rng dir.",
+            enable: { key: "bullet_use-on-death" },
+          },  
         },
       },
       {
-        name: "bullet_template-angle-step-on-death",
+        name: "bullet_on-death-angle-step",
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Angle step",
-            enable: { key: "bullet_use-template-on-death" },
+            enable: { key: "bullet_use-on-death" },
           },  
           field: { 
-            store: { key: "bullet_template-angle-step-on-death" },
-            enable: { key: "bullet_use-template-on-death" },
+            store: { key: "bullet_on-death-angle-step" },
+            enable: { key: "bullet_use-on-death" },
+          },
+        },
+      },
+      {
+        name: "bullet_on-death-rng-step",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Rng step",
+            enable: { key: "bullet_use-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_on-death-rng-step" },
+            enable: { key: "bullet_use-on-death" },
+          },
+        },
+      },
+      {
+        name: "bullet_on-death-speed",
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Speed",
+            enable: { key: "bullet_use-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_on-death-speed" },
+            enable: { key: "bullet_use-on-death" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_on-death-speed-merge" },
+            enable: { key: "bullet_use-on-death" },
+          },
+          title: { 
+            text: "Merge",
+            enable: { key: "bullet_use-on-death" },
+          },  
+        },
+      },
+      {
+        name: "bullet_on-death-rng-speed",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Rng speed",
+            enable: { key: "bullet_use-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_on-death-rng-speed" },
+            enable: { key: "bullet_use-on-death" },
           },
         },
       },

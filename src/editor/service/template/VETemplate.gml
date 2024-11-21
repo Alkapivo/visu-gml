@@ -141,6 +141,10 @@ function VETemplate(json) constructor {
       }
     }
 
+    if (this.store.getValue("shroom_use-lifespawn")) {
+      Struct.set(json, "lifespawnMax", this.store.getValue("shroom_lifespawn"))
+    }
+
     if (this.store.getValue("shroom_use-health-points")) {
       Struct.set(json, "healthPoints", this.store.getValue("shroom_health-points"))
     }
@@ -157,51 +161,71 @@ function VETemplate(json) constructor {
     var sprite = this.store.getValue("bullet_texture")
     var json = {
       name: Assert.isType(this.store.getValue("template-name"), String),
-      sprite: sprite.serialize(),
-      damage: this.store.getValue("bullet_use-damage")
-        ? this.store.getValue("bullet_damage")
-        : null,
       lifespawnMax: this.store.getValue("bullet_use-lifespawn")
         ? this.store.getValue("bullet_lifespawn")
         : null,
-      bulletTemplateOnDeath: this.store.getValue("bullet_use-template-on-death")
-        ? this.store.getValue("bullet_template-on-death")
+      damage: this.store.getValue("bullet_use-damage")
+        ? this.store.getValue("bullet_damage")
         : null,
-      bulletAmountOnDeath: this.store.getValue("bullet_use-template-on-death")
-        ? this.store.getValue("bullet_template-amount-on-death")
+      sprite: sprite.serialize(),
+      wiggle: this.store.getValue("bullet_use-wiggle"),
+      wiggleTime: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_wiggle-time")
         : null,
-      bulletSpawnAngleOnDeath: this.store.getValue("bullet_use-template-on-death")
-        ? this.store.getValue("bullet_template-spawn-angle-on-death")
+      wiggleTimeRng: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_use-wiggle-time-rng")
         : null,
-      bulletAngleStepOnDeath: this.store.getValue("bullet_use-template-on-death")
-        ? this.store.getValue("bullet_template-angle-step-on-death")
+      wiggleFrequency: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_wiggle-frequency")
         : null,
-      speedTransformer: this.store.getValue("bullet_use-transform-speed")
-        ? this.store.getValue("bullet_transform-speed").serialize()
+      wiggleDirRng: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_use-wiggle-dir-rng")
         : null,
-      speedWiggleValue: this.store.getValue("bullet_use-wiggle-speed")
-        ? this.store.getValue("bullet_wiggle-speed-value").serialize()
+      wiggleAmplitude: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_wiggle-amplitude")
         : null,
-      speedWiggleInterval: this.store.getValue("bullet_use-wiggle-speed")
-        ? this.store.getValue("bullet_wiggle-speed-interval").serialize()
+      angleOffset: this.store.getValue("bullet_use-angle-offset")
+        ? this.store.getValue("bullet_angle-offset")
         : null,
-      angleTransformer: this.store.getValue("bullet_use-transform-angle")
-        ? this.store.getValue("bullet_transform-angle").serialize()
+      angleOffsetRng: this.store.getValue("bullet_use-angle-offset")
+        ? this.store.getValue("bullet_use-angle-offset-rng")
         : null,
-      angleWiggleValue : this.store.getValue("bullet_use-wiggle-angle")
-        ? this.store.getValue("bullet_wiggle-angle-value").serialize()
+      speedOffset: this.store.getValue("bullet_use-speed-offset")
+        ? this.store.getValue("bullet_speed-offset")
         : null,
-      angleWiggleInterval: this.store.getValue("bullet_use-wiggle-angle")
-        ? this.store.getValue("bullet_wiggle-angle-interval").serialize()
+      onDeath: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death")
         : null,
-      randomDirection: this.store.getValue("bullet_use-random-direction")
-        ? this.store.getValue("bullet_random-direction")
+      onDeathAmount: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-amount")
+        : null,
+      onDeathAngle: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-angle")
+        : null,
+      onDeathAngleRng: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-angle-rng")
+        : null,
+      onDeathAngleStep: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-angle-step")
+        : null,
+      onDeathRngStep: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-rng-step")
+        : null,
+      onDeathSpeed: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-speed")
+        : null,
+      onDeathSpeedMerge: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-speed-merge")
+        : null,
+      onDeathRngSpeed: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-rng-speed")
         : null,
     }
 
     if (this.store.getValue("use_bullet_mask")) {
       Struct.set(json, "mask", this.store.getValue("bullet_mask").serialize())
     }
+
     return new BulletTemplate(json.name, json)
   }
 
