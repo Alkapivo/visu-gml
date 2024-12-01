@@ -79,7 +79,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             controller.shroomService.dispatcher.execute(new Event("clear-shrooms")).execute(new Event("reset-templates"))
             controller.bulletService.dispatcher.execute(new Event("clear-bullets")).execute(new Event("reset-templates"))
             controller.coinService.dispatcher.execute(new Event("clear-coins")).execute(new Event("reset-templates"))
-            controller.lyricsService.dispatcher.execute(new Event("clear-lyrics")).execute(new Event("reset-templates"))
+            controller.subtitleService.dispatcher.execute(new Event("clear-subtitle")).execute(new Event("reset-templates"))
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
             controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
               if (task.name == "fade-color" 
@@ -304,16 +304,16 @@ function VisuTrackLoader(_controller): Service() constructor {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
                     }))
               ),
-              "lyrics": Beans.get(BeanFileService).send(
+              "subtitle": Beans.get(BeanFileService).send(
                 new Event("fetch-file")
-                  .setData({ path: $"{data.path}{data.manifest.lyrics}" })
+                  .setData({ path: $"{data.path}{data.manifest.subtitle}" })
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        //Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load subtitle template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
-                      acc: controller.lyricsService.templates,
+                      acc: controller.subtitleService.templates,
                       steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
@@ -549,7 +549,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             var promises = new Map(String, Promise, {
               "bullet": addTask(tasks.get("bullet"), executor),
               "coin": addTask(tasks.get("coin"), executor),
-              "lyrics": addTask(tasks.get("lyrics"), executor),
+              "subtitle": addTask(tasks.get("subtitle"), executor),
               "particle": addTask(tasks.get("particle"), executor),
               "shroom": addTask(tasks.get("shroom"), executor),
               "track": addTask(tasks.get("track"), executor),

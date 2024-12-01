@@ -768,13 +768,46 @@ function VisuMenu(_config = null) constructor {
           }
         },
         {
+          name: "graphics_menu-button-input-entry_bkg-shaders",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Background shaders",
+              callback: new BindIntent(function() {
+                var value = Visu.settings.getValue("visu.graphics.bkg-shaders")
+                Visu.settings.setValue("visu.graphics.bkg-shaders", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                var value = Visu.settings.getValue("visu.graphics.bkg-shaders")
+                Visu.settings.setValue("visu.graphics.bkg-shaders", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = Visu.settings.getValue("visu.graphics.bkg-shaders") ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
           name: "graphics_menu-button-input-entry_main-shaders",
           template: VisuComponents.get("menu-button-input-entry"),
           layout: VisuLayouts.get("menu-button-input-entry"),
           config: {
             layout: { type: UILayoutType.VERTICAL },
             label: { 
-              text: "Main shaders",
+              text: "Grid shaders",
               callback: new BindIntent(function() {
                 var value = Visu.settings.getValue("visu.graphics.main-shaders")
                 Visu.settings.setValue("visu.graphics.main-shaders", !value)
@@ -801,16 +834,16 @@ function VisuMenu(_config = null) constructor {
           }
         },
         {
-          name: "graphics_menu-button-input-entry_bkg-shaders",
+          name: "graphics_menu-button-input-entry_combined-shaders",
           template: VisuComponents.get("menu-button-input-entry"),
           layout: VisuLayouts.get("menu-button-input-entry"),
           config: {
             layout: { type: UILayoutType.VERTICAL },
             label: { 
-              text: "Background shaders",
+              text: "Combined shaders",
               callback: new BindIntent(function() {
-                var value = Visu.settings.getValue("visu.graphics.bkg-shaders")
-                Visu.settings.setValue("visu.graphics.bkg-shaders", !value)
+                var value = Visu.settings.getValue("visu.graphics.combined-shaders")
+                Visu.settings.setValue("visu.graphics.combined-shaders", !value)
                 Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
               }),
               onMouseReleasedLeft: function() {
@@ -820,12 +853,12 @@ function VisuMenu(_config = null) constructor {
             input: {
               label: { text: "Enabled" },
               callback: function() {
-                var value = Visu.settings.getValue("visu.graphics.bkg-shaders")
-                Visu.settings.setValue("visu.graphics.bkg-shaders", !value)
+                var value = Visu.settings.getValue("visu.graphics.combined-shaders")
+                Visu.settings.setValue("visu.graphics.combined-shaders", !value)
                 Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
               },
               updateCustom: function() {
-                this.label.text = Visu.settings.getValue("visu.graphics.bkg-shaders") ? "Enabled" : "Disabled"
+                this.label.text = Visu.settings.getValue("visu.graphics.combined-shaders") ? "Enabled" : "Disabled"
               },
               onMouseReleasedLeft: function() {
                 this.callback()
@@ -1797,6 +1830,7 @@ function VisuMenu(_config = null) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
           "content": content,
           "isKeyboardEvent": true,
+          "initPress": false,
           "remapKey": null,
           "remapKeyRestored": 2,
           "uiAlpha": 0.0,
@@ -1821,6 +1855,30 @@ function VisuMenu(_config = null) constructor {
           if (remapKeyRestored > 0) {
             this.state.set("remapKeyRestored", remapKeyRestored - 1)
             return
+          }
+
+          if (this.state.get("initPress")) {
+            this.state.set("initPress", false)
+            var pointer = Struct.inject(this, "selectedIndex", 0)
+            pointer = Core.isType(pointer, Number) ? clamp(pointer, 0, this.collection.size() - 1) : 0
+            this.state.set("isKeyboardEvent", true)
+            Struct.set(this, "selectedIndex", pointer)
+
+            this.collection.components.forEach(function(component, iterator, pointer) {
+              if (component.index == pointer) {
+                component.items.forEach(function(item) {
+                  item.backgroundColor = Struct.contains(item, "colorHoverOver") 
+                    ? ColorUtil.fromHex(item.colorHoverOver).toGMColor()
+                    : item.backgroundColor
+                })
+              } else {
+                component.items.forEach(function(item) {
+                  item.backgroundColor = Struct.contains(item, "colorHoverOut") 
+                    ? ColorUtil.fromHex(item.colorHoverOut).toGMColor()
+                    : item.backgroundColor
+                })
+              }
+            }, pointer)
           }
 
           var keyboard = Beans.get(BeanVisuIO).keyboards.get("player").update()
@@ -2139,6 +2197,7 @@ function VisuMenu(_config = null) constructor {
             }, Struct.inject(this, "selectedIndex", 0))
           }
 
+          this.state.set("initPress", true)
           this.scrollbarY.render = method(this.scrollbarY, function() { })
         },
       })
@@ -2218,7 +2277,7 @@ function VisuMenu(_config = null) constructor {
           Struct.set(container, "updateCustom", method(container, function() {
             this.state.set("uiAlphaFactor", -0.05)
             var blur = Beans.get(BeanVisuController).visuRenderer.blur
-            blur.value = Math.transformNumber(blur.value, 0.0, 0.5)
+            blur.value = Math.transformNumber(blur.value, 0.0, DeltaTime.apply(0.5))
             if (blur.value == 0.0) {
               this.controller.send(new Event("close"))
             }

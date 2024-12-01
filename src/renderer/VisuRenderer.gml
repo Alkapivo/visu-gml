@@ -5,8 +5,8 @@ function VisuRenderer() constructor {
   ///@type {GridRenderer}
   gridRenderer = new GridRenderer()
 
-  ///@type {LyricsRenderer}
-  lyricsRenderer = new LyricsRenderer()
+  ///@type {SubtitleRenderer}
+  subtitleRenderer = new SubtitleRenderer()
 
   ///@type {VisuHUDRenderer}
   hudRenderer = new VisuHUDRenderer()
@@ -229,7 +229,7 @@ function VisuRenderer() constructor {
     if (controller.menu.containers.size() == 0) {
       this.blur.reset()
       this.gridRenderer.renderGUI(_layout)
-      this.lyricsRenderer.renderGUI(_layout)  
+      this.subtitleRenderer.renderGUI(_layout)  
       if (Visu.settings.getValue("visu.interface.render-hud")) {
         this.hudRenderer.renderGUI(_layout)
       }

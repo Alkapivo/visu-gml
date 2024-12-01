@@ -231,7 +231,6 @@ function VEAccordion(_editor, config = null) constructor {
                 backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
                 backgroundMargin: { top: 0, bottom: 1, left: 1, right: 0 },
                 callback: function() { 
-                  Core.print("ve-accordion-option-button_event-inspector callback")
                   var store = this.context.state.get("store")
                   var item = store.get("render-event-inspector")
                   item.set(!item.get())
@@ -262,7 +261,6 @@ function VEAccordion(_editor, config = null) constructor {
                 backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
                 backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
                 callback: function() { 
-                  Core.print("ve-accordion-option-button_template-toolbar callback")
                   var store = this.context.state.get("store")
                   var item = store.get("render-template-toolbar")
                   item.set(!item.get())

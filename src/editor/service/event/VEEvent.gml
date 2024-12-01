@@ -166,27 +166,23 @@ function VEEvent(_context, json = null) constructor {
   toTemplate = function() {
     var event = this
     return {
-      channel: Assert.isType(event.store
-        .getValue("event-channel"), String),
+      channel: Assert.isType(event.store.getValue("event-channel"), String),
       event: {
         callable: Assert.isType(event.type, String),
-        timestamp: Assert.isType(event.store
-          .getValue("event-timestamp"), Number),
+        timestamp: Assert.isType(event.store.getValue("event-timestamp"), Number),
         data: Struct.appendUnique(
           {
             icon: {
-              name: Assert.isType(event.store
-                .getValue("event-texture"), String),
-              blend: Assert.isType(event.store
-                .getValue("event-color").toHex(), String),
+              name: Assert.isType(event.store.getValue("event-texture"), String),
+              blend: Assert.isType(event.store.getValue("event-color").toHex(), String),
             }
           },
           event.store.container
             .filter(function(item) {
               return item.name != "event-timestamp"
-                && item.name != "event-channel"
-                && item.name != "event-color"
-                && item.name != "event-texture"
+                  && item.name != "event-channel"
+                  && item.name != "event-color"
+                  && item.name != "event-texture"
             })
             .toStruct(function(item) { 
               return item.serialize()

@@ -26,11 +26,11 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Color}
   channelsPrimaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.channelsPrimaryColor ", "#023ef2")), Color)
+    .getDefault(config, "properties.channelsPrimaryColor", "#023ef2")), Color)
 
   ///@type {Color}
   channelsSecondaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.channelsSecondaryColor ", "#ff11bb")), Color)
+    .getDefault(config, "properties.channelsSecondaryColor", "#ff11bb")), Color)
 
   ///@type {Number}
   channelsPrimaryAlpha = Assert.isType(Struct
@@ -47,6 +47,10 @@ function GridProperties(config = {}) constructor {
   ///@type {Number}
   channelsSecondaryThickness = Assert.isType(Struct
     .getDefault(config, "properties.channelsSecondaryThickness", 10), Number)
+
+  ///@type {String}
+  channelsMode = Assert.isType(Struct
+    .getDefault(config, "properties.channelsMode", "DUAL"), String)
   #endregion
 
   #region separators
@@ -77,6 +81,10 @@ function GridProperties(config = {}) constructor {
   ///@type {Number}
   separatorsSecondaryThickness = Assert.isType(Struct
     .getDefault(config, "properties.separatorsSecondaryThickness", 6), Number)
+
+  ///@type {String}
+  separatorsMode = Assert.isType(Struct
+    .getDefault(config, "properties.separatorsMode", "DUAL"), String)
   #endregion
 
   #region borders
@@ -153,6 +161,10 @@ function GridProperties(config = {}) constructor {
   ///@type {Boolean}
   renderBackgroundShaders = Assert.isType(Struct
     .getDefault(config, "properties.renderBackgroundShaders", true), Boolean)
+
+  ///@type {Boolean}
+  renderCombinedShaders = Assert.isType(Struct
+    .getDefault(config, "properties.renderCombinedShaders", true), Boolean)
 
   ///@type {Boolean}
   renderParticles = Assert.isType(Struct

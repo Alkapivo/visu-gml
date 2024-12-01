@@ -494,7 +494,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@override
   ///@return {GridService}
   update = function() {
-
     this.properties.update(this)
     this.dispatcher.update()
     this.executor.update()
@@ -504,9 +503,9 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       this.movement.angle.update()
       this.movement.speed.update()
       this.targetLocked.setX(this.targetLocked.x + Math
-        .fetchCircleX(this.movement.speed.get() / 500.0, this.movement.angle.get()))
+        .fetchCircleX(DeltaTime.apply(this.movement.speed.get()) / 500.0, this.movement.angle.get()))
       this.targetLocked.setY(this.targetLocked.y + Math
-        .fetchCircleY(this.movement.speed.get() / 500.0, this.movement.angle.get()))
+        .fetchCircleY(DeltaTime.apply(this.movement.speed.get()) / 500.0, this.movement.angle.get()))
     } else {
       if (Core.isType(player, Player)) {
         this.targetLocked.setX(player.x)

@@ -366,6 +366,17 @@ function VisuController(layerName) constructor {
     },
   })
 
+  ///@type {ShaderPipeline}
+  shaderCombinedPipeline = new ShaderPipeline({
+    templates: this.shaderPipeline.templates,
+    getLimit: function() {
+      return Beans.get(BeanVisuController).shaderPipeline.getLimit()
+    },
+    getTemplate: function(name) {
+      return Beans.get(BeanVisuController).shaderPipeline.getTemplate(name)
+    },
+  })
+
   ///@type {UIService}
   uiService = new UIService(this)
 
@@ -389,9 +400,15 @@ function VisuController(layerName) constructor {
     handlers: new Map(String, Callable)
       .merge(
         DEFAULT_TRACK_EVENT_HANDLERS,
-        new Map(String, Callable, grid_track_event),
+        #region Old API
+        new Map(String, Callable, grid_old_track_event),
         new Map(String, Callable, shader_track_event),
         new Map(String, Callable, shroom_track_event),
+        new Map(String, Callable, view_old_track_event),
+        #endregion
+        new Map(String, Callable, effect_track_event),
+        new Map(String, Callable, entity_track_event),
+        new Map(String, Callable, grid_track_event),
         new Map(String, Callable, view_track_event)
       ),
     isTrackLoaded: function() {
@@ -424,8 +441,8 @@ function VisuController(layerName) constructor {
   ///@type {SFXService}
   sfxService = new SFXService()
 
-  ///@type {LyricsService}
-  lyricsService = new LyricsService(this)
+  ///@type {SubtitleService}
+  subtitleService = new SubtitleService(this)
 
   ///@type {VEBrushService}
   brushService = new VEBrushService()
@@ -602,11 +619,12 @@ function VisuController(layerName) constructor {
   gameplayServices = new Array(Struct, GMArray.map([
     "shaderPipeline",
     "shaderBackgroundPipeline",
+    "shaderCombinedPipeline",
     "particleService",
     "trackService",
     "gridService",
     //"gridECS", ///@ecs
-    "lyricsService",
+    "subtitleService",
     "coinService",
   ], function(name, index, controller) {
     Logger.debug(BeanVisuController, $"Load gameplay service '{name}'")
@@ -883,3 +901,23 @@ function VisuController(layerName) constructor {
 
   this.init()
 }
+
+/*
+Simulate FPS drops with:
+```
+if (keyboard_check(ord("B"))) {
+  if (irandom(100) > 40) {
+    var spd = 15 + irandom(keyboard_check(ord("N")) ? 15 : 45)
+    game_set_speed(spd, gamespeed_fps)
+    Core.print("set spd", spd, "DT", DeltaTime.get())
+  }
+} else {
+  var spd = game_get_speed(gamespeed_fps)
+  if (game_get_speed(gamespeed_fps) < 60) {
+    spd = clamp(spd + choose(1, 0, 1, 0, 0, 2, 0, 1, 0, 0, 0, 0, -1, 0, 1, 1, 0, -1, 1), 15, 60)
+    game_set_speed(spd, gamespeed_fps)
+    Core.print("restore spd60:", spd, "DT", DeltaTime.get())
+  }
+}
+```
+*/

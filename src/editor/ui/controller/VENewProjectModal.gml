@@ -367,7 +367,7 @@ function VisuNewProjectForm(json = null) constructor {
         "bullet": "template/bullet.json",
         "coin": "template/coin.json",
         "editor": [],
-        "lyrics": "template/lyrics.json",
+        "subtitle": "template/subtitle.json",
         "particle": "template/particle.json",
         "shader": "template/shader.json",
         "shroom": "template/shroom.json",
@@ -388,8 +388,8 @@ function VisuNewProjectForm(json = null) constructor {
         "version": "1",
         "data": {},
       },
-      "lyrics": {
-        "model": "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+      "subtitle": {
+        "model": "Collection<io.alkapivo.visu.service.subtitle.SubtitleTemplate>",
         "version": "1",
         "data": {},
       },
@@ -468,7 +468,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"grid columns",
               "events":[
                 {
-                  "callable":"brush_grid_channel",
+                  "callable":"brush_grid_old_channel",
                   "timestamp":0.0,
                   "data":{
                     "grid-channel_secondary-color":"#2C7C80",
@@ -531,7 +531,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"grid rows",
               "events":[
                 {
-                  "callable":"brush_grid_separator",
+                  "callable":"brush_grid_old_separator",
                   "timestamp":0.0,
                   "data":{
                     "grid-separator_primary-color":"#FFB2F4",
@@ -594,7 +594,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"grid config",
               "events":[
                 {
-                  "callable":"brush_grid_config",
+                  "callable":"brush_grid_old_config",
                   "timestamp":0.0,
                   "data":{
                     "grid-config_border-bottom-alpha":{
@@ -684,7 +684,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"view background",
               "events":[
                 {
-                  "callable":"brush_view_wallpaper",
+                  "callable":"brush_view_old_wallpaper",
                   "timestamp":0.0,
                   "data":{
                     "view-wallpaper_angle":0.0,
@@ -756,7 +756,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"view foreground",
               "events":[
                 {
-                  "callable":"brush_view_wallpaper",
+                  "callable":"brush_view_old_wallpaper",
                   "timestamp":0.0,
                   "data":{
                     "view-wallpaper_angle":0.0,
@@ -828,7 +828,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"view camera",
               "events":[
                 {
-                  "callable":"brush_view_camera",
+                  "callable":"brush_view_old_camera",
                   "timestamp":0.0,
                   "data":{
                     "view-config_follow-margin-x":0.5,
@@ -907,7 +907,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"view config",
               "events":[
                 {
-                  "callable":"brush_view_config",
+                  "callable":"brush_view_old_config",
                   "timestamp":0.0,
                   "data":{
                     "icon":{
@@ -1042,7 +1042,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"player",
               "events":[
                 {
-                  "callable":"brush_grid_player",
+                  "callable":"brush_grid_old_player",
                   "timestamp":0.0,
                   "data":{
                     "grid-player_bullet-hell":{
@@ -1164,7 +1164,7 @@ function VisuNewProjectForm(json = null) constructor {
               ]
             },
             {
-              "name":"lyrics",
+              "name":"subtitle",
               "events":[
               ]
             }
@@ -1183,14 +1183,14 @@ function VisuNewProjectForm(json = null) constructor {
       templates.remove("shroom")
       templates.remove("bullet")
       templates.remove("coin")
-      templates.remove("lyrics")
+      templates.remove("subtitle")
       templates.remove("particle")
       templates.remove("texture")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.shader}"), $"{path}{manifest.data.shader}")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.shroom}"), $"{path}{manifest.data.shroom}")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.bullet}"), $"{path}{manifest.data.bullet}")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.coin}"), $"{path}{manifest.data.coin}")
-      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.lyrics}"), $"{path}{manifest.data.lyrics}")
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.subtitle}"), $"{path}{manifest.data.subtitle}")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.particle}"), $"{path}{manifest.data.particle}")
       var textures = JSON.parse(FileUtil.readFileSync(FileUtil.get($"{visuTrack.path}{visuTrack.texture}")).getData()).data
       Struct.forEach(textures, function(config, name, acc) {

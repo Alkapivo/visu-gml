@@ -3641,7 +3641,7 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "vec4-field": function(name, layout, config = null) {
+  "vec4-value-checkbox": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
       items.add(item)
@@ -3653,6 +3653,263 @@ global.__VEComponents = new Map(String, Callable, {
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    static factoryTextFieldCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+
+    var items = new Array(UIItem)
+
+    //factoryTitle(
+    //  $"{name}_title",
+    //  layout.nodes.title,
+    //  Struct.get(config, "title")
+    //).forEach(addItem, items)
+
+    factoryTextFieldCheckbox(
+      $"{name}_value",
+      layout.nodes.value,
+      Struct.appendRecursive(
+        Struct.get(config, "value"),
+        { field: { transformNumericProperty: "value" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldCheckbox(
+      $"{name}_target",
+      layout.nodes.target,
+      Struct.appendRecursive(
+        Struct.get(config, "target"),
+        { field: { transformNumericProperty: "target" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_factor",
+      layout.nodes.factor,
+      Struct.appendRecursive(
+        Struct.get(config, "factor"),
+        { field: { transformNumericProperty: "factor" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_increase",
+      layout.nodes.increase,
+      Struct.appendRecursive(
+        Struct.get(config, "increase"),
+        { field: { transformNumericProperty: "increase" } },
+        false
+      )
+    ).forEach(addItem, items)
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "vec4-slider": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryNumericSliderField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) 
+                    || !Struct.contains(vec4, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(vec4, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(vec4, key, parsedValue))
+                },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) 
+                    || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  data.value = Struct.get(vec4, key)
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(vec4, key, parsedValue))
+                },
+              },
+            }
+          },
+          false
+        )
       }).toUIItems(layout)
     }
 
@@ -3709,48 +3966,54 @@ global.__VEComponents = new Map(String, Callable, {
 
     var items = new Array(UIItem)
 
-    factoryTitle(
-      $"{name}_title",
-      layout.nodes.title,
-      Struct.get(config, "title")
-    ).forEach(addItem, items)
-
-    factoryTextField(
+    factoryNumericSliderField(
       $"{name}_x",
       layout.nodes.x,
       Struct.appendRecursive(
         Struct.get(config, "x"),
-        { field: { vec4Property: "x" } },
+        {
+          field: { vec4Property: "x" },
+          slider: { vec4Property: "x" },
+        },
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
+    factoryNumericSliderField(
       $"{name}_y",
       layout.nodes.y,
       Struct.appendRecursive(
         Struct.get(config, "y"),
-        { field: { vec4Property: "y" } },
+        { 
+          field: { vec4Property: "y" },
+          slider: { vec4Property: "y" },
+        },
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
+    factoryNumericSliderField(
       $"{name}_z",
       layout.nodes.z,
       Struct.appendRecursive(
         Struct.get(config, "z"),
-        { field: { vec4Property: "z" } },
+        {
+          field: { vec4Property: "z" },
+          slider: { vec4Property: "z" },
+        },
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
+    factoryNumericSliderField(
       $"{name}_a",
       layout.nodes.a,
       Struct.appendRecursive(
         Struct.get(config, "a"),
-        { field: { vec4Property: "a" } },
+        {
+          field: { vec4Property: "a" },
+          slider: { vec4Property: "a" },
+        },
         false
       )
     ).forEach(addItem, items)

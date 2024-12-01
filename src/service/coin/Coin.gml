@@ -143,8 +143,8 @@ function Coin(config) constructor {
     }
 
     value = abs(value) + this.magnetSpeed
-    this.x += Math.fetchCircleX(value, this.angle)
-    this.y += Math.fetchCircleY(value, this.angle)
+    this.x += Math.fetchCircleX(DeltaTime.apply(value), this.angle)
+    this.y += Math.fetchCircleY(DeltaTime.apply(value), this.angle)
     return this
   }
 }

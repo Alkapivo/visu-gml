@@ -134,6 +134,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
         "components": new Array(Struct, [
+          #region Old API
           {
             name: "button_category-shader",
             template: VEComponents.get("category-button"),
@@ -159,7 +160,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: { 
                 font: "font_inter_8_bold",
-                text: String.toArray("SHADER").join("\n"),
+                text: String.toArray("s").join("\n"),
               },
               category: "shader",
             },
@@ -189,9 +190,130 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("SHROOM").join("\n"),
+                text: String.toArray("e").join("\n"),
               },
               category: "shroom",
+            },
+          },
+          {
+            name: "button_category-grid_old",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("vertical-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
+              callback: function() { 
+                var category = this.context.brushToolbar.store.get("category")
+                if (category.get() != this.category) {
+                  category.set(this.category)
+                }
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: {
+                font: "font_inter_8_bold",
+                text: String.toArray("g").join("\n"),
+              },
+              category: "grid_old",
+            },
+          },
+          {
+            name: "button_category-view_old",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("vertical-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
+              callback: function() { 
+                var category = this.context.brushToolbar.store.get("category")
+                if (category.get() != this.category) {
+                  category.set(this.category)
+                }
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: {
+                font: "font_inter_8_bold",
+                text: String.toArray("v").join("\n"),
+              },
+              category: "view_old",
+            },
+          },
+          #endregion
+          {
+            name: "button_category-effect",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("vertical-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
+              callback: function() { 
+                var category = this.context.brushToolbar.store.get("category")
+                if (category.get() != this.category) {
+                  category.set(this.category)
+                }
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { 
+                font: "font_inter_8_bold",
+                text: String.toArray("E").join("\n"),
+              },
+              category: "effect",
+            },
+          },
+          {
+            name: "button_category-entity",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("vertical-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
+              callback: function() { 
+                var category = this.context.brushToolbar.store.get("category")
+                if (category.get() != this.category) {
+                  category.set(this.category)
+                }
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: {
+                font: "font_inter_8_bold",
+                text: String.toArray("E").join("\n"),
+              },
+              category: "entity",
             },
           },
           {
@@ -219,7 +341,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("GRID").join("\n"),
+                text: String.toArray("G").join("\n"),
               },
               category: "grid",
             },
@@ -249,11 +371,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("VIEW").join("\n"),
+                text: String.toArray("V").join("\n"),
               },
               category: "view",
             },
-          },
+          }
         ]),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
@@ -317,31 +439,124 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             brushType: VEBrushType.SHROOM_CONFIG,
           },
         ]).map(factoryVEBrushToolbarTypeItem),
+        "grid_old": new Array(Struct, [
+          {
+            name: "button_category-grid_old_type-channel",
+            text: "Cols",
+            brushType: VEBrushType.GRID_OLD_CHANNEL,
+          },
+          {
+            name: "button_category-grid_old_type-separator",
+            text: "Rows",
+            brushType: VEBrushType.GRID_OLD_SEPARATOR,
+          },
+          {
+            name: "button_category-grid_old_type-particle",
+            text: "Particle",
+            brushType: VEBrushType.GRID_OLD_PARTICLE,
+          },
+          {
+            name: "button_category-grid_old_type-player",
+            text: "Player",
+            brushType: VEBrushType.GRID_OLD_PLAYER,
+          },
+          {
+            name: "button_category-grid_old_type-coin",
+            text: "Coin",
+            brushType: VEBrushType.GRID_OLD_COIN,
+          },
+          {
+            name: "button_category-grid_old_type-config",
+            text: "Config",
+            brushType: VEBrushType.GRID_OLD_CONFIG,
+          },
+        ]).map(factoryVEBrushToolbarTypeItem),
+        "view_old": new Array(Struct, [
+          {
+            name: "button_category-view_old_type-wallpaper",
+            text: "Wallpaper",
+            brushType: VEBrushType.VIEW_OLD_WALLPAPER,
+          },
+          {
+            name: "button_category-view_old_type-camera",
+            text: "Camera",
+            brushType: VEBrushType.VIEW_OLD_CAMERA,
+          },
+          {
+            name: "button_category-view_old_type-lyrics",
+            text: "Subtitle",
+            brushType: VEBrushType.VIEW_OLD_LYRICS,
+          },
+          {
+            name: "button_category-view_old_type-glitch",
+            text: "Glitch",
+            brushType: VEBrushType.VIEW_OLD_GLITCH,
+          },
+          {
+            name: "button_category-view_old_type-config",
+            text: "Config",
+            brushType: VEBrushType.VIEW_OLD_CONFIG,
+          },
+        ]).map(factoryVEBrushToolbarTypeItem),
+        "effect": new Array(Struct, [
+          {
+            name: "button_category-effect_type-shader",
+            text: "Shader",
+            brushType: VEBrushType.EFFECT_SHADER,
+          },
+          {
+            name: "button_category-effect_type-glitch",
+            text: "Glitch",
+            brushType: VEBrushType.EFFECT_GLITCH,
+          },
+          {
+            name: "button_category-effect_type-particle",
+            text: "Particle",
+            brushType: VEBrushType.EFFECT_PARTICLE,
+          },
+          {
+            name: "button_category-effect_type-config",
+            text: "Config",
+            brushType: VEBrushType.EFFECT_CONFIG,
+          },
+        ]).map(factoryVEBrushToolbarTypeItem),
+        "entity": new Array(Struct, [
+          {
+            name: "button_category-entity_type-shroom",
+            text: "Shroom",
+            brushType: VEBrushType.ENTITY_SHROOM,
+          },
+          {
+            name: "button_category-entity_type-coin",
+            text: "Coin",
+            brushType: VEBrushType.ENTITY_COIN,
+          },
+          {
+            name: "button_category-entity_type-player",
+            text: "Player",
+            brushType: VEBrushType.ENTITY_PLAYER,
+          },
+          {
+            name: "button_category-entity_type-config",
+            text: "Config",
+            brushType: VEBrushType.ENTITY_CONFIG,
+          },
+        ]).map(factoryVEBrushToolbarTypeItem),
         "grid": new Array(Struct, [
           {
-            name: "button_category-grid_type-channel",
-            text: "Cols",
-            brushType: VEBrushType.GRID_CHANNEL,
+            name: "button_category-grid_type-area",
+            text: "Area",
+            brushType: VEBrushType.GRID_AREA,
           },
           {
-            name: "button_category-grid_type-separator",
-            text: "Rows",
-            brushType: VEBrushType.GRID_SEPARATOR,
+            name: "button_category-grid_type-column",
+            text: "Column",
+            brushType: VEBrushType.GRID_COLUMN,
           },
           {
-            name: "button_category-grid_type-particle",
-            text: "Particle",
-            brushType: VEBrushType.GRID_PARTICLE,
-          },
-          {
-            name: "button_category-grid_type-player",
-            text: "Player",
-            brushType: VEBrushType.GRID_PLAYER,
-          },
-          {
-            name: "button_category-grid_type-coin",
-            text: "Coin",
-            brushType: VEBrushType.GRID_COIN,
+            name: "button_category-grid_type-row",
+            text: "Row",
+            brushType: VEBrushType.GRID_ROW,
           },
           {
             name: "button_category-grid_type-config",
@@ -351,24 +566,19 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         ]).map(factoryVEBrushToolbarTypeItem),
         "view": new Array(Struct, [
           {
-            name: "button_category-view_type-wallpaper",
-            text: "Wallpaper",
-            brushType: VEBrushType.VIEW_WALLPAPER,
-          },
-          {
             name: "button_category-view_type-camera",
             text: "Camera",
             brushType: VEBrushType.VIEW_CAMERA,
           },
           {
-            name: "button_category-view_type-lyrics",
-            text: "Lyrics",
-            brushType: VEBrushType.VIEW_LYRICS,
+            name: "button_category-view_type-wallpaper",
+            text: "Wallpaper",
+            brushType: VEBrushType.VIEW_WALLPAPER,
           },
           {
-            name: "button_category-view_type-glitch",
-            text: "Glitch",
-            brushType: VEBrushType.VIEW_GLITCH,
+            name: "button_category-view_type-subtitle",
+            text: "Subtitle",
+            brushType: VEBrushType.VIEW_SUBTITLE,
           },
           {
             name: "button_category-view_type-config",
@@ -1144,6 +1354,7 @@ function VEBrushToolbar(_editor) constructor {
   ///@type {VisuEditorController}
   editor = Assert.isType(_editor, VisuEditorController)
 
+  ///@type {Boolean}
   enable = true
 
   ///@type {?UILayout}
@@ -1177,31 +1388,57 @@ function VEBrushToolbar(_editor) constructor {
 
   ///@type {Map<String, Array>}
   categories = new Map(String, Array, {
-    "shader": new Array(String, [ 
-      VEBrushType.SHADER_SPAWN, 
-      VEBrushType.SHADER_OVERLAY, 
-      VEBrushType.SHADER_CLEAR, 
-      VEBrushType.SHADER_CONFIG 
+    #region Old API
+    "shader": new Array(String, [
+      VEBrushType.SHADER_SPAWN,
+      VEBrushType.SHADER_OVERLAY,
+      VEBrushType.SHADER_CLEAR,
+      VEBrushType.SHADER_CONFIG
     ]),
-    "shroom": new Array(String, [ 
-      VEBrushType.SHROOM_SPAWN, 
-      VEBrushType.SHROOM_CLEAR, 
-      VEBrushType.SHROOM_CONFIG 
+    "shroom": new Array(String, [
+      VEBrushType.SHROOM_SPAWN,
+      VEBrushType.SHROOM_CLEAR,
+      VEBrushType.SHROOM_CONFIG
     ]),
-    "grid": new Array(String, [ 
-      VEBrushType.GRID_CHANNEL,
-      VEBrushType.GRID_COIN,  
-      VEBrushType.GRID_CONFIG, 
-      VEBrushType.GRID_PARTICLE,
-      VEBrushType.GRID_PLAYER,
-      VEBrushType.GRID_SEPARATOR
+    "grid_old": new Array(String, [
+      VEBrushType.GRID_OLD_CHANNEL,
+      VEBrushType.GRID_OLD_COIN,
+      VEBrushType.GRID_OLD_CONFIG,
+      VEBrushType.GRID_OLD_PARTICLE,
+      VEBrushType.GRID_OLD_PLAYER,
+      VEBrushType.GRID_OLD_SEPARATOR
     ]),
-    "view": new Array(String, [ 
-      VEBrushType.VIEW_WALLPAPER, 
+    "view_old": new Array(String, [
+      VEBrushType.VIEW_OLD_WALLPAPER,
+      VEBrushType.VIEW_OLD_CAMERA,
+      VEBrushType.VIEW_OLD_LYRICS,
+      VEBrushType.VIEW_OLD_GLITCH,
+      VEBrushType.VIEW_OLD_CONFIG
+    ]),
+    #endregion
+    "effect": new Array(String, [
+      VEBrushType.EFFECT_SHADER,
+      VEBrushType.EFFECT_GLITCH,
+      VEBrushType.EFFECT_PARTICLE,
+      VEBrushType.EFFECT_CONFIG
+    ]),
+    "entity": new Array(String, [
+      VEBrushType.ENTITY_SHROOM,
+      VEBrushType.ENTITY_COIN, 
+      VEBrushType.ENTITY_PLAYER,
+      VEBrushType.ENTITY_CONFIG 
+    ]),
+    "grid": new Array(String, [
+      VEBrushType.GRID_AREA,
+      VEBrushType.GRID_COLUMN,
+      VEBrushType.GRID_ROW,
+      VEBrushType.GRID_CONFIG
+    ]),
+    "view": new Array(String, [
       VEBrushType.VIEW_CAMERA,
-      VEBrushType.VIEW_LYRICS,
-      VEBrushType.VIEW_GLITCH,
-      VEBrushType.VIEW_CONFIG 
+      VEBrushType.VIEW_WALLPAPER,
+      VEBrushType.VIEW_SUBTITLE,
+      VEBrushType.VIEW_CONFIG
     ]),
   })
 

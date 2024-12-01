@@ -35,6 +35,13 @@ function GridRenderer() constructor {
   })
   
   ///@private
+  ///@type {Surface}
+  shaderCombinedSurface = new Surface({ 
+    width: ceil(GuiWidth() / Visu.settings.getValue("visu.graphics.shader-quality", 1.0)), 
+    height: ceil(GuiHeight() / Visu.settings.getValue("visu.graphics.shader-quality", 1.0)),
+  })
+
+  ///@private
   ///@type {?GMVertexBuffer}
   vertexBuffer = null
 
@@ -114,79 +121,142 @@ function GridRenderer() constructor {
     var separatorsSize = separators * 3
     var secondaryTreshold = separatorsSize / 3
     var duration = gridService.properties.separatorTimer.duration
-
     var borderRatio = clamp(1.0 - (time / duration), 0.0, 1.0)
     var size = floor(separatorsSize)
     var primaryBegin = round(secondaryTreshold)
     var primaryEnd = round(size - secondaryTreshold)
-    for (var index = -1 * primaryBegin; index <= primaryBegin; index++) {
-      var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
-      var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
-      var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
-      var endY = beginY
-      var _alpha = index == (-1 * primaryBegin) ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
-      if (index + 1 > primaryBegin) {
-        _alpha = secondaryAlpha * borderRatio
-      } else if (index < 0.0) {
-        _alpha = ((primaryBegin - abs(index)) / primaryBegin) * _alpha
-      }
+    var mode = gridService.properties.separatorsMode
+    switch (mode) {
+      case "SINGLE":
+        for (var index = -1 * primaryBegin; index <= primaryBegin; index++) {
+          var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
+          var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
+          var endY = beginY
+          var _alpha = index == (-1 * primaryBegin) ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
+          if (index + 1 > primaryBegin) {
+            _alpha = primaryAlpha * borderRatio
+          } else if (index < 0.0) {
+            _alpha = ((primaryBegin - abs(index)) / primaryBegin) * _alpha
+          }
 
-      GPU.render.texturedLineSimple(
-        beginX, beginY, 
-        endX, endY, 
-        secondaryThickness, 
-        _alpha, 
-        secondaryColor,
-        this.textureLine
-      )
+          GPU.render.texturedLineSimple(
+            beginX, beginY, 
+            endX, endY, 
+            primaryThickness, 
+            _alpha, 
+            primaryColor,
+            this.textureLine
+          )
+        }
+
+        for (var index = primaryEnd; index <= size; index++) {
+          var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
+          var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
+          var endY = beginY
+          var _alpha = index == primaryEnd ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
+          if (index + 1 > size) {
+            _alpha = primaryAlpha * borderRatio
+          }
+    
+          GPU.render.texturedLineSimple(
+            beginX, beginY, 
+            endX, endY, 
+            primaryThickness, 
+            _alpha, 
+            primaryColor,
+            this.textureLine
+          )
+        }
+
+        for (var index = primaryBegin; index <= primaryEnd; index++) {
+          var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
+          var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
+          var endY = beginY
+
+          GPU.render.texturedLineSimple(
+            beginX, beginY, 
+            endX, endY, 
+            primaryThickness,
+            primaryAlpha, 
+            primaryColor,
+            this.textureLine
+          )
+        }
+        break
+      case "DUAL":
+        for (var index = -1 * primaryBegin; index <= primaryBegin; index++) {
+          var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
+          var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
+          var endY = beginY
+          var _alpha = index == (-1 * primaryBegin) ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
+          if (index + 1 > primaryBegin) {
+            _alpha = secondaryAlpha * borderRatio
+          } else if (index < 0.0) {
+            _alpha = ((primaryBegin - abs(index)) / primaryBegin) * _alpha
+          }
+    
+          GPU.render.texturedLineSimple(
+            beginX, beginY, 
+            endX, endY, 
+            secondaryThickness, 
+            _alpha, 
+            secondaryColor,
+            this.textureLine
+          )
+        }
+    
+        for (var index = primaryEnd; index <= size; index++) {
+          var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
+          var beginY = ((-6 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
+          var endY = beginY
+          var _alpha = index == primaryEnd ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
+          if (index + 1 > size) {
+            _alpha = secondaryAlpha * borderRatio
+          }
+    
+          GPU.render.texturedLineSimple(
+            beginX, beginY, 
+            endX, endY, 
+            secondaryThickness, 
+            _alpha, 
+            secondaryColor,
+            this.textureLine
+          )
+        }
+    
+        for (var index = primaryBegin; index <= primaryEnd; index++) {
+          var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
+          var beginY = ((-6 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
+          var endY = beginY
+          //var alpha = index == primaryBegin ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
+          //if (index + 1 > primaryEnd) {
+          //  alpha = primaryAlpha * borderRatio
+          //}
+          var alpha = primaryAlpha
+    
+          var thickness = index == primaryBegin ? primaryThickness * (1.0 - borderRatio) : primaryThickness
+          if (index + 1 > primaryEnd) {
+            thickness = primaryThickness * borderRatio
+          }
+    
+          GPU.render.texturedLineSimple(
+            beginX, beginY, 
+            endX, endY, 
+            thickness,//max(thickness, secondaryThickness), 
+            alpha, 
+            primaryColor,
+            this.textureLine
+          )
+        }
+        break
     }
-
-    for (var index = primaryEnd; index <= size; index++) {
-      var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
-      var beginY = ((-6 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
-      var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
-      var endY = beginY
-      var _alpha = index == primaryEnd ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
-      if (index + 1 > size) {
-        _alpha = secondaryAlpha * borderRatio
-      }
-
-      GPU.render.texturedLineSimple(
-        beginX, beginY, 
-        endX, endY, 
-        secondaryThickness, 
-        _alpha, 
-        secondaryColor,
-        this.textureLine
-      )
-    }
-
-    for (var index = primaryBegin; index <= primaryEnd; index++) {
-      var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
-      var beginY = ((-6 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
-      var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
-      var endY = beginY
-      //var alpha = index == primaryBegin ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
-      //if (index + 1 > primaryEnd) {
-      //  alpha = primaryAlpha * borderRatio
-      //}
-      var alpha = primaryAlpha
-
-      var thickness = index == primaryBegin ? primaryThickness * (1.0 - borderRatio) : primaryThickness
-      if (index + 1 > primaryEnd) {
-        thickness = primaryThickness * borderRatio
-      }
-
-      GPU.render.texturedLineSimple(
-        beginX, beginY, 
-        endX, endY, 
-        thickness,//max(thickness, secondaryThickness), 
-        alpha, 
-        primaryColor,
-        this.textureLine
-      )
-    }
-
+   
     return this
   }
 
@@ -205,6 +275,7 @@ function GridRenderer() constructor {
     var secondaryColor = properties.channelsSecondaryColor.toGMColor()
     var secondaryAlpha = properties.channelsSecondaryAlpha
     var secondaryThickness = properties.channelsSecondaryThickness
+    var mode = properties.channelsMode
     
     var view = gridService.view
     var viewX = view.x
@@ -232,29 +303,85 @@ function GridRenderer() constructor {
     var offset = floor(viewX * GRID_SERVICE_PIXEL_HEIGHT) - this.channelXStart
     var indexLeft = (floor(viewX * GRID_SERVICE_PIXEL_WIDTH) - this.channelXStart) div channelPxWidth
     var indexRight = indexLeft + floor(channels)
-    for (var index = 0; index <= size; index++) {
-      var beginX = this.channelXStart + (index * channelPxWidth) - (viewX * GRID_SERVICE_PIXEL_WIDTH)
-      var beginY = -6.0 * GRID_SERVICE_PIXEL_HEIGHT
-      var endX = beginX
-      var endY = (viewHeight + 6.0) * GRID_SERVICE_PIXEL_HEIGHT
-      if (index < indexLeft) {
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * clamp((index - (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), secondaryColor, this.textureLine)
-      } else if (index > indexRight) {
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * clamp((size - index + (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), secondaryColor, this.textureLine)
-      }else if (index == indexLeft) {
-        var factor = 1.0 - ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * (1.0 - factor), secondaryColor, this.textureLine)
-        if (indexLeft != indexRight) {
-          GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha, primaryColor, this.textureLine)
+    var indexMiddle = indexLeft + floor(abs(indexRight - indexLeft) / 2.0)
+
+    switch (mode) {
+      case "SINGLE":
+        for (var index = 0; index <= size; index++) {
+          var beginX = this.channelXStart + (index * channelPxWidth) - (viewX * GRID_SERVICE_PIXEL_WIDTH)
+          var beginY = -6.0 * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = beginX
+          var endY = (viewHeight + 6.0) * GRID_SERVICE_PIXEL_HEIGHT
+          if (index < indexLeft) {
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha * clamp((index - (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), primaryColor, this.textureLine)
+          } else if (index > indexRight) {
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha * clamp((size - index + (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), primaryColor, this.textureLine)
+          } else {
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha, primaryColor, this.textureLine)
+          }
         }
-      } else if (index == indexRight) {
-        var factor = ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * (1.0 - factor), secondaryColor, this.textureLine)
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha, primaryColor, this.textureLine)
-      } else if (index > indexLeft && index < indexRight) {
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha, primaryColor, this.textureLine)
-      }
+        break
+      case "DUAL":
+        for (var index = 0; index <= indexLeft; index++) {
+          var beginX = this.channelXStart + (index * channelPxWidth) - (viewX * GRID_SERVICE_PIXEL_WIDTH)
+          var beginY = -6.0 * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = beginX
+          var endY = (viewHeight + 6.0) * GRID_SERVICE_PIXEL_HEIGHT
+          if (index == indexLeft) {
+            var factor = 1.0 - ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * (1.0 - factor), secondaryColor, this.textureLine)
+          } else {
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * clamp((index - (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), secondaryColor, this.textureLine)
+          }
+        }
+        
+        for (var index = indexRight; index <= size; index++) {
+          var beginX = this.channelXStart + (index * channelPxWidth) - (viewX * GRID_SERVICE_PIXEL_WIDTH)
+          var beginY = -6.0 * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = beginX
+          var endY = (viewHeight + 6.0) * GRID_SERVICE_PIXEL_HEIGHT
+          if (index == indexRight) {
+            var factor = ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * (1.0 - factor), secondaryColor, this.textureLine)
+          } else {
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * clamp((size - index + (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), secondaryColor, this.textureLine)
+          }
+        }
+    
+        for (var index = indexLeft; index < indexMiddle; index++) {
+          var beginX = this.channelXStart + (index * channelPxWidth) - (viewX * GRID_SERVICE_PIXEL_WIDTH)
+          var beginY = -6.0 * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = beginX
+          var endY = (viewHeight + 6.0) * GRID_SERVICE_PIXEL_HEIGHT
+          if (index == indexLeft && indexLeft != indexRight) {
+            var factor = 1.0 - ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha, primaryColor, this.textureLine)
+          } else if (index == indexRight) {
+            var factor = ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha, primaryColor, this.textureLine)
+          } else {
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha, primaryColor, this.textureLine)
+          }
+        }
+    
+        for (var index = indexRight; index >= indexMiddle; index--) {
+          var beginX = this.channelXStart + (index * channelPxWidth) - (viewX * GRID_SERVICE_PIXEL_WIDTH)
+          var beginY = -6.0 * GRID_SERVICE_PIXEL_HEIGHT
+          var endX = beginX
+          var endY = (viewHeight + 6.0) * GRID_SERVICE_PIXEL_HEIGHT
+          if (index == indexLeft && indexLeft != indexRight) {
+            var factor = 1.0 - ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha, primaryColor, this.textureLine)
+          } else if (index == indexRight) {
+            var factor = ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha, primaryColor, this.textureLine)
+          } else {
+            GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha, primaryColor, this.textureLine)
+          }
+        }
+        break
     }
+
     return this
   }
 
@@ -1065,7 +1192,7 @@ function GridRenderer() constructor {
     return this
   }
 
-    ///@private
+  ///@private
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   renderShaderBackgroundSurface = function(layout) {
@@ -1082,8 +1209,8 @@ function GridRenderer() constructor {
     var controller = Beans.get(BeanVisuController)
     var properties = controller.gridService.properties
     if (!properties.renderBackgroundShaders 
-      || !Visu.settings.getValue("visu.graphics.bkg-shaders")) {
-      return
+        || !Visu.settings.getValue("visu.graphics.bkg-shaders")) {
+      return this
     }
 
     var width = this.shaderSurface.width
@@ -1115,10 +1242,55 @@ function GridRenderer() constructor {
   ///@private
   ///@param {UILayout} layout
   ///@return {GridRenderer}
+  renderShaderCombinedSurface = function(layout) {
+    static renderCombinedShader = function(task, index, gridRenderer) {
+      gridRenderer.gameSurface.renderStretched(
+        gridRenderer.shaderCombinedSurface.width, 
+        gridRenderer.shaderCombinedSurface.height, 
+        0, 
+        0,
+        task.state.getDefault("alpha", 1.0)
+      )
+    }
+    
+    var controller = Beans.get(BeanVisuController)
+    var properties = controller.gridService.properties
+    if (!properties.renderCombinedShaders
+      || !Visu.settings.getValue("visu.graphics.combined-shaders")) {
+      return this
+    }
+
+    var width = this.shaderCombinedSurface.width
+    var height = this.shaderCombinedSurface.height
+    draw_clear_alpha(c_white, 0.0)
+
+    controller.shaderCombinedPipeline
+      .setWidth(width)
+      .setHeight(height)
+      .render(renderCombinedShader, this)
+
+    return this
+  }
+
+  ///@private
+  ///@param {UILayout} layout
+  ///@return {GridRenderer}
   renderGlitch = function(layout) {
-    this.gameSurface
-      .update(layout.width(), layout.height())
-      .render(layout.x(), layout.y())
+    var width = layout.width()
+    var height = layout.height()
+    var _x = layout.x()
+    var _y = layout.y()
+    var controller = Beans.get(BeanVisuController)
+    var properties = controller.gridService.properties
+    this.gameSurface.update(width, height).render(_x, _y)
+
+    if (!properties.renderCombinedShaders 
+        || !Visu.settings.getValue("visu.graphics.combined-shaders")
+        || controller.shaderCombinedPipeline.executor.tasks.size() == 0) {
+      return this
+    }
+
+    this.shaderCombinedSurface.renderStretched(width, height, _x, _y)
     return this
   }
 
@@ -1210,6 +1382,9 @@ function GridRenderer() constructor {
     this.gameSurface
       .update(width, height)
       .renderOn(this.renderGameSurface, layout)
+    this.shaderCombinedSurface
+      .update(ceil(width * shaderQuality), ceil(height * shaderQuality))
+      .renderOn(this.renderShaderCombinedSurface, layout)
 
     return this
   }
@@ -1246,6 +1421,7 @@ function GridRenderer() constructor {
     this.gameSurface.free()
     this.shaderSurface.free()
     this.shaderBackgroundSurface.free()
+    this.shaderCombinedSurface.free()
     return this
   }
 

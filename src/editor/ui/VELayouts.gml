@@ -175,8 +175,8 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "property",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 42 - this.margin.top - this.margin.bottom },
-      margin: { top: 5, bottom: 5 },
+      height: function() { return 36 - this.margin.top - this.margin.bottom },
+      margin: { top: 2, bottom: 2 },
       nodes: {
         checkbox: {
           name: "property.checkbox",
@@ -710,11 +710,13 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "color-picker.title",
-          height: function() { return 42 },
+          height: function() { return 36 - this.margin.top - this.margin.bottom },
+          margin: { top: 2, bottom: 2 },
         },
         red: {
           name: "color-picker.red",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          margin: { top: 3 },
           height: function() { return 32 },
         },
         green: {
@@ -764,7 +766,7 @@ global.__VELayouts = new Map(String, Callable, {
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       y: function() { return this.context.bottom() + this.margin.top },
       height: function() { return 32 },
-      margin: { top: 5, bottom: 5 },
+      margin: { top: 2, bottom: 2 },
       nodes: {
         label: {
           name: "spin-select.label",
@@ -1162,7 +1164,6 @@ global.__VELayouts = new Map(String, Callable, {
   ///@param {?Struct} [config]
   ///@return {Struct}
   "vec4": function(config = null) {
-    var textField = VELayouts.get("text-field")
     return {
       name: "vec4-field",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
@@ -1193,35 +1194,34 @@ global.__VELayouts = new Map(String, Callable, {
 
   ///@param {?Struct} [config]
   ///@return {Struct}
-  "vec4-field": function(config = null) {
-    var textField = VELayouts.get("text-field")
+  "vec4-value-checkbox": function(config = null) {
     return {
-      name: "vec4-field",
+      name: "vec4-value-checkbox",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return this.nodes.a.bottom() - this.y() },
+      height: function() { return this.nodes.increase.bottom() - this.y() },
       nodes: {
-        title: {
-          name: "vec4-field.title",
-          height: function() { return 42 },
-        },
-        x: {
-          name: "vec4-field.x",
-          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+        //title: {
+        //  name: "vec4-value-checkbox.title",
+        //  height: function() { return 42 },
+        //},
+        value: {
+          name: "vec4-value-checkbox.value",
+          //y: function() { return this.context.nodes.title.bottom() + this.margin.top },
           height: function() { return 32 },
         },
-        y: {
-          name: "vec4-field.y",
-          y: function() { return this.context.nodes.x.bottom() + this.margin.top },
+        target: {
+          name: "vec4-value-checkbox.target",
+          y: function() { return this.context.nodes.value.bottom() + this.margin.top },
           height: function() { return 32 },
         },
-        z: {
-          name: "vec4-field.z",
-          y: function() { return this.context.nodes.y.bottom() + this.margin.top },
+        factor: {
+          name: "vec4-value-checkbox.factor",
+          y: function() { return this.context.nodes.target.bottom() + this.margin.top },
           height: function() { return 32 },
         },
-        a: {
-          name: "vec4-field.a",
-          y: function() { return this.context.nodes.z.bottom() + this.margin.top },
+        increase: {
+          name: "vec4-value-checkbox.increase",
+          y: function() { return this.context.nodes.factor.bottom() + this.margin.top },
           height: function() { return 32 },
         },
       }

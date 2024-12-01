@@ -2,6 +2,7 @@
 
 ///@enum
 function _VEBrushType(): Enum() constructor {
+  #region Old API
   SHADER_SPAWN = "brush_shader_spawn"
   SHADER_OVERLAY = "brush_shader_overlay"
   SHADER_CLEAR = "brush_shader_clear"
@@ -9,17 +10,35 @@ function _VEBrushType(): Enum() constructor {
   SHROOM_SPAWN = "brush_shroom_spawn"
   SHROOM_CLEAR = "brush_shroom_clear"
   SHROOM_CONFIG = "brush_shroom_config"
-  VIEW_WALLPAPER = "brush_view_wallpaper"
-  VIEW_CAMERA = "brush_view_camera"
-  VIEW_LYRICS = "brush_view_lyrics"
-  VIEW_GLITCH = "brush_view_glitch"
-  VIEW_CONFIG = "brush_view_config"
-  GRID_CHANNEL = "brush_grid_channel"
-  GRID_COIN = "brush_grid_coin"
+  VIEW_OLD_WALLPAPER = "brush_view_old_wallpaper"
+  VIEW_OLD_CAMERA = "brush_view_old_camera"
+  VIEW_OLD_LYRICS = "brush_view_old_lyrics"
+  VIEW_OLD_GLITCH = "brush_view_old_glitch"
+  VIEW_OLD_CONFIG = "brush_view_old_config"
+  GRID_OLD_CHANNEL = "brush_grid_old_channel"
+  GRID_OLD_COIN = "brush_grid_old_coin"
+  GRID_OLD_CONFIG = "brush_grid_old_config"
+  GRID_OLD_PARTICLE = "brush_grid_old_particle"
+  GRID_OLD_PLAYER = "brush_grid_old_player"
+  GRID_OLD_SEPARATOR = "brush_grid_old_separator"
+  #endregion
+
+  EFFECT_SHADER = "brush_effect_shader"
+  EFFECT_GLITCH = "brush_effect_glitch"
+  EFFECT_PARTICLE = "brush_effect_particle"
+  EFFECT_CONFIG = "brush_effect_config"
+  ENTITY_SHROOM = "brush_entity_shroom"
+  ENTITY_COIN = "brush_entity_coin"
+  ENTITY_PLAYER = "brush_entity_player"
+  ENTITY_CONFIG = "brush_entity_config"
+  GRID_AREA = "brush_grid_area"
+  GRID_COLUMN = "brush_grid_column"
+  GRID_ROW = "brush_grid_row"
   GRID_CONFIG = "brush_grid_config"
-  GRID_PARTICLE = "brush_grid_particle"
-  GRID_PLAYER = "brush_grid_player"
-  GRID_SEPARATOR = "brush_grid_separator"
+  VIEW_CAMERA = "brush_view_camera"
+  VIEW_WALLPAPER = "brush_view_wallpaper"
+  VIEW_SUBTITLE = "brush_view_subtitle"
+  VIEW_CONFIG = "brush_view_config"
 }
 global.__VEBrushType = new _VEBrushType()
 #macro VEBrushType global.__VEBrushType
@@ -28,6 +47,7 @@ global.__VEBrushType = new _VEBrushType()
 ///@static
 ///@type {Struct}
 global.__VEBrushTypeNames = {
+  #region Old API
   "brush_shader_spawn": "Shader spawn",
   "brush_shader_overlay": "Shader overlay",
   "brush_shader_clear": "Shader clear",
@@ -35,17 +55,35 @@ global.__VEBrushTypeNames = {
   "brush_shroom_spawn": "Shroom spawn",
   "brush_shroom_clear": "Shroom clear",
   "brush_shroom_config": "Shroom config",
-  "brush_view_wallpaper": "View wallpaper",
-  "brush_view_camera": "View camera",
-  "brush_view_lyrics": "View config",
-  "brush_view_glitch": "View glitch",
-  "brush_view_config": "View lyrics",
-  "brush_grid_channel": "Grid columns",
-  "brush_grid_coin": "Spawn coin",
+  "brush_view_old_wallpaper": "View wallpaper",
+  "brush_view_old_camera": "View camera",
+  "brush_view_old_lyrics": "View subtitle",
+  "brush_view_old_glitch": "View glitch",
+  "brush_view_old_config": "View config",
+  "brush_grid_old_channel": "Grid columns",
+  "brush_grid_old_coin": "Spawn coin",
+  "brush_grid_old_config": "Grid config",
+  "brush_grid_old_particle": "Spawn particle",
+  "brush_grid_old_player": "Spawn player",
+  "brush_grid_old_separator": "Grid rows",
+  #endregion
+
+  "brush_effect_shader": "Effect shader",
+  "brush_effect_glitch": "Effect glitch",
+  "brush_effect_particle": "Effect particle",
+  "brush_effect_config": "Effect config",
+  "brush_entity_shroom": "Entity shroom",
+  "brush_entity_coin": "Entity coin",
+  "brush_entity_player": "Entity player",
+  "brush_entity_config": "Enttiy config",
+  "brush_grid_area": "Grid area",
+  "brush_grid_column": "Grid column",
+  "brush_grid_row": "Grid row",
   "brush_grid_config": "Grid config",
-  "brush_grid_particle": "Spawn particle",
-  "brush_grid_player": "Spawn player",
-  "brush_grid_separator": "Grid rows",
+  "brush_view_camera": "View camera",
+  "brush_view_wallpaper": "View wallpaper",
+  "brush_view_subtitle": "View subtitle",
+  "brush_view_config": "View config"
 }
 #macro VEBrushTypeNames global.__VEBrushTypeNames
 
@@ -111,19 +149,20 @@ function VEBrush(template) constructor {
     },
     "brush-color": {
       type: Color,
-      value: ColorUtil.fromHex(template.color),
-      validate: function(value) {
-        Assert.isType(ColorUtil.fromHex(value), Color)
+      value: ColorUtil.fromHex(Struct.get(template, "color"), ColorUtil.fromHex("#FFFFFF")),
+      passthrough: function(value) {
+        return ColorUtil.fromHex(value, this.value)
       },
     },
     "brush-texture": {
       type: String,
-      value: template.texture,
-      validate: function(value) {
-        Assert.isType(TextureUtil.parse(value), Texture)
-        Assert.isTrue(this.data.contains(value))
+      value: Struct.getIfType(template, "texture", String, "texture_missing"),
+      passthrough: function(value) {
+        return Core.isType(TextureUtil.parse(value), Texture)
+            && GMArray.contains(BRUSH_TEXTURES, value)
+              ? value
+              : this.value
       },
-      data: new Array(String, BRUSH_TEXTURES),
     }
   })
 
@@ -227,8 +266,8 @@ function VEBrush(template) constructor {
     var properties = this.store.container
       .filter(function(item) {
         return item.name != "brush-name" 
-          && item.name != "brush-color" 
-          && item.name != "brush-texture" 
+            && item.name != "brush-color" 
+            && item.name != "brush-texture" 
       })
       .toStruct(function(item) { 
         return item.serialize()

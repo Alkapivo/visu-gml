@@ -175,9 +175,10 @@ function VEEventInspector(_editor) constructor {
                 }
 
                 var trackEvent = selectedEvent.data
+                var icon = Struct.get(trackEvent.data, "icon")
                 var event = new VEEvent(null, {
-                  "event-color": Struct.getDefault(trackEvent.data.icon, "blend", "#FFFFFF"),
-                  "event-texture": trackEvent.data.icon.name,
+                  "event-color": Struct.getIfType(icon, "blend", String, "#FFFFFF"),
+                  "event-texture": Struct.getIfType(icon, "name", String, "texture_missing"),
                   "event-timestamp": trackEvent.timestamp,
                   "event-channel": selectedEvent.channel,
                   "type": trackEvent.callableName,

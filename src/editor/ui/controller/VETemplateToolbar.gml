@@ -392,15 +392,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       return task
                     })
                   break
-                case VETemplateType.LYRICS:
-                  event.data.filename = "lyrics"
+                case VETemplateType.SUBTITLE:
+                  event.data.filename = "subtitle"
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        //Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load subtitle template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
-                      acc: controller.lyricsService.templates,
+                      acc: controller.subtitleService.templates,
                       steps: MAGIC_NUMBER_TASK,
                       store: store,
                     })
@@ -511,10 +511,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   model = "Collection<io.alkapivo.visu.service.coin.CoinTemplate>"
                   filename = "coin"
                   break
-                case VETemplateType.LYRICS:
-                  templates = controller.lyricsService.templates
-                  model = "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>"
-                  filename = "lyrics"
+                case VETemplateType.SUBTITLE:
+                  templates = controller.subtitleService.templates
+                  model = "Collection<io.alkapivo.visu.service.subtitle.SubtitleTemplate>"
+                  filename = "subtitle"
                   break
                 case VETemplateType.PARTICLE:
                   templates = controller.particleService.templates
@@ -721,8 +721,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               },
               onMouseHoverOver: function(event) { },
               onMouseHoverOut: function(event) { },
-              label: { text: "Lyrics" },
-              templateType: VETemplateType.LYRICS,
+              label: { text: "Sub" },
+              templateType: VETemplateType.SUBTITLE,
             },
           },
           {
@@ -1040,7 +1040,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             },
           },
         ]),
-        "template_lyrics": new Array(Struct, [
+        "template_subtitle": new Array(Struct, [
           {
             name: "text-field_new-lyrics-template_name",
             template: VEComponents.get("text-field"),
@@ -1048,7 +1048,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               layout: { type: UILayoutType.VERTICAL },
               label: { text: "Name" },
-              field: { store: { key: "template_lyrics_name" } },
+              field: { store: { key: "template_subtitle_name" } },
             },
           },
           {
@@ -1058,7 +1058,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               label: {
                 font: "font_inter_10_bold",
-                text: "Create lyrics",
+                text: "Create subtitle",
               },
               callback: function(event) {
                 if (Core.isType(GMTFContext.get(), GMTF)) {
@@ -1821,15 +1821,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     handler(this)
                   })
                 break
-              case VETemplateType.LYRICS:
-                task = new Task("load-lyrics-templates")
+              case VETemplateType.SUBTITLE:
+                task = new Task("load-subtitle-templates")
                   .setState({
                     inspector: data.templateToolbar.containers.get("ve-template-toolbar_inspector-view"),
                     collection: data.collection,
-                    templates: Beans.get(BeanVisuController).lyricsService.templates,
-                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanVisuController).lyricsService.templates.keys().getContainer())),
-                    assets: Visu.assets().lyricsTemplates,
-                    assetNames: new Queue(String, GMArray.sort(Visu.assets().lyricsTemplates.keys().getContainer())),
+                    templates: Beans.get(BeanVisuController).subtitleService.templates,
+                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanVisuController).subtitleService.templates.keys().getContainer())),
+                    assets: Visu.assets().subtitleTemplates,
+                    assetNames: new Queue(String, GMArray.sort(Visu.assets().subtitleTemplates.keys().getContainer())),
                     stage: "parseTemplate",
                     context: data,
                     parseTemplate: function(task) {
@@ -1850,16 +1850,16 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               colorHoverOver: VETheme.color.accentShadow,
                               colorHoverOut: VETheme.color.primaryShadow,
                               onMouseReleasedLeft: function() {
-                                var lyrics = Beans.get(BeanVisuController).lyricsService
+                                var subtitle = Beans.get(BeanVisuController).subtitleService
                                   .getTemplate(this.templateName)
-                                if (!Core.isType(lyrics, LyricsTemplate)) {
+                                if (!Core.isType(subtitle, SubtitleTemplate)) {
                                   return
                                 }
                 
-                                Struct.set(lyrics, "type", VETemplateType.LYRICS)
+                                Struct.set(subtitle, "type", VETemplateType.SUBTITLE)
                                 this.context.templateToolbar.store
                                   .get("template")
-                                  .set(new VETemplate(lyrics))
+                                  .set(new VETemplate(subtitle))
                               },
                               templateName: template.name,
                             },
@@ -1870,7 +1870,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               callback: function() {
                                 this.removeUIItemfromUICollection()
-                                Beans.get(BeanVisuController).lyricsService.templates
+                                Beans.get(BeanVisuController).subtitleService.templates
                                   .remove(this.templateName)
                               },
                               templateName: template.name,
@@ -1899,15 +1899,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               colorHoverOver: VETheme.color.accentShadow,
                               colorHoverOut: VETheme.color.dark,
                               onMouseReleasedLeft: function() {
-                                var lyrics = Visu.assets().lyricsTemplates.get(this.templateName)
-                                if (!Core.isType(lyrics, LyricsTemplate)) {
+                                var subtitle = Visu.assets().subtitleTemplates.get(this.templateName)
+                                if (!Core.isType(subtitle, SubtitleTemplate)) {
                                   return
                                 }
                   
-                                Struct.set(lyrics, "type", VETemplateType.LYRICS)
+                                Struct.set(subtitle, "type", VETemplateType.SUBTITLE)
                                 this.context.templateToolbar.store
                                   .get("template")
-                                  .set(new VETemplate(lyrics))
+                                  .set(new VETemplate(subtitle))
                               },
                               templateName: template.name,
                               backgroundColor: VETheme.color.dark,
@@ -2575,9 +2575,9 @@ function VETemplateToolbar(_editor) constructor {
       type: String,
       value: "coin",
     },
-    "template_lyrics_name": {
+    "template_subtitle_name": {
       type: String,
-      value: "lyrics",
+      value: "subtitle",
     },
     "template_particle_name": {
       type: String,
@@ -2786,16 +2786,16 @@ function VETemplateToolbar(_editor) constructor {
             }))
             .size()
           break
-        case VETemplateType.LYRICS:
-          sizeBefore = controller.lyricsService.templates.size()
-          sizeAfter = controller.lyricsService.templates
-            .set(name, new LyricsTemplate(name, { todo: "json" }))
+        case VETemplateType.SUBTITLE:
+          sizeBefore = controller.subtitleService.templates.size()
+          sizeAfter = controller.subtitleService.templates
+            .set(name, new SubtitleTemplate(name, { todo: "json" })) ///@todo
             .size()
           break
         case VETemplateType.PARTICLE:
           sizeBefore = controller.particleService.templates.size()
           sizeAfter = controller.particleService.templates
-            .set(name, new ParticleTemplate(name, { todo: "json" }))
+            .set(name, new ParticleTemplate(name, { todo: "json" })) ///@todo
             .size()
           break
         case VETemplateType.TEXTURE:
@@ -2855,9 +2855,9 @@ function VETemplateToolbar(_editor) constructor {
           sizeBefore = controller.coinService.templates.size()
           sizeAfter = controller.coinService.templates.set(name, serialized).size()
           break
-        case VETemplateType.LYRICS:
-          sizeBefore = controller.lyricsService.templates.size()
-          sizeAfter = controller.lyricsService.templates.set(name, serialized).size()
+        case VETemplateType.SUBTITLE:
+          sizeBefore = controller.subtitleService.templates.size()
+          sizeAfter = controller.subtitleService.templates.set(name, serialized).size()
           break
         case VETemplateType.PARTICLE:
           sizeBefore = controller.particleService.templates.size()

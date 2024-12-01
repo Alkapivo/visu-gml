@@ -19,7 +19,7 @@ global.__GameMode = new _GameMode()
 function _Visu() constructor {
 
   ///@type {Settings}
-  settings = new Settings($"{working_directory}visu-settings.json")
+  settings = new Settings($"{game_save_id}visu-settings.json")
 
   ///@private
   ///@type {?Struct}
@@ -193,11 +193,11 @@ function _Visu() constructor {
 
   ///@private
   ///@type {Struct}
-  lyricsTemplates = {
-    "lyrics-default": {
+  subtitleTemplates = {
+    "subtitle-default": {
       "lines": [ "Lorem ipsum" ]
     },
-    "lyrics-preview-mode": {
+    "subtitle-preview-mode": {
       "lines": [
         "[SYSTEM] preview-mode detected",
         "[SYSTEM] Showing preview-mode message",
@@ -575,10 +575,10 @@ function _Visu() constructor {
             function(json, name) {
               return new CoinTemplate(name, json)
             }),
-        lyricsTemplates: Struct
-          .toMap(this.lyricsTemplates, String, LyricsTemplate, 
+        subtitleTemplates: Struct
+          .toMap(this.subtitleTemplates, String, SubtitleTemplate, 
             function(json, name) {
-              return new LyricsTemplate(name, json)
+              return new SubtitleTemplate(name, json)
             }),
         particleTemplates: Struct
           .toMap(this.particleTemplates, String, ParticleTemplate, 
@@ -683,6 +683,7 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.graphics.resolution", type: SettingTypes.STRING, defaultValue: "1440x900" }))
       .set(new SettingEntry({ name: "visu.graphics.main-shaders", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.graphics.bkg-shaders", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.graphics.combined-shaders", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.graphics.shaders-limit", type: SettingTypes.NUMBER, defaultValue: 10 }))
       .set(new SettingEntry({ name: "visu.graphics.bkt-glitch", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.graphics.particle", type: SettingTypes.BOOLEAN, defaultValue: true }))

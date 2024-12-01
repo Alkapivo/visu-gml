@@ -26,6 +26,40 @@ function VEBrushService() constructor {
       return this
     }
 
+    ///@description migration
+    if (Core.getProperty("visu.editor.migrate", false)) {
+      switch (template.type) {
+        case VEBrushType.SHADER_SPAWN:
+          template.type = VEBrushType.EFFECT_SHADER
+          template.properties = migrateShaderSpawnEvent(template.properties)
+          break
+        case VEBrushType.VIEW_OLD_GLITCH:
+          template.type = VEBrushType.EFFECT_GLITCH
+          template.properties = migrateViewOldGlitchEvent(template.properties)
+          break
+        case VEBrushType.GRID_OLD_PARTICLE:
+          template.type = VEBrushType.EFFECT_PARTICLE
+          template.properties = migrateGridOldParticleEvent(template.properties)
+          break
+        case VEBrushType.SHADER_CONFIG:
+          template.type = VEBrushType.EFFECT_CONFIG
+          template.properties = migrateShaderConfigEvent(template.properties)
+          break
+        case VEBrushType.SHROOM_SPAWN:
+          template.type = VEBrushType.ENTITY_SHROOM
+          template.properties = migrateShroomSpawnEvent(template.properties)
+          break
+        case VEBrushType.GRID_OLD_COIN:
+          template.type = VEBrushType.ENTITY_COIN
+          template.properties = migrateGridOldCoinEvent(template.properties)
+          break
+        case VEBrushType.GRID_OLD_PLAYER:
+          template.type = VEBrushType.ENTITY_PLAYER
+          template.properties = migrateGridOldPlayerEvent(template.properties)
+          break
+      }
+    }
+
     var templates = this.templates.get(template.type)
     if (!Core.isType(templates, Array)) {
       Logger.warn("VEBrushService", $"Unable to find template for type '{template.type}'")
@@ -35,11 +69,6 @@ function VEBrushService() constructor {
     var index = templates.findIndex(function(template, index, name) {
       return template.name == name
     }, template.name)
-
-    ///@description migration
-    if (template.type == VEBrushType.SHROOM_SPAWN) {
-      template.properties = migrateShroomSpawnEvent(template.properties)
-    }
 
     if (Optional.is(index)) {
       //Logger.info("VEBrushService", $"Template of type '{template.type}' updated: '{template.name}'")

@@ -6,7 +6,7 @@ function _VETemplateType(): Enum() constructor {
   SHROOM = "template_shroom"
   BULLET = "template_bullet"
   COIN = "template_coin"
-  LYRICS = "template_lyrics"
+  SUBTITLE = "template_subtitle"
   PARTICLE = "template_particle"
   TEXTURE = "template_texture"
 }
@@ -21,7 +21,7 @@ global.__VETemplateTypeNames = new Map(String, String)
   .set(VETemplateType.SHROOM, "Shroom template")
   .set(VETemplateType.BULLET, "Bullet template")
   .set(VETemplateType.COIN, "Coin template")
-  .set(VETemplateType.LYRICS, "Lyrics template")
+  .set(VETemplateType.SUBTITLE, "Subtitle template")
   .set(VETemplateType.PARTICLE, "Particle template")
   .set(VETemplateType.TEXTURE, "Texture template")
 #macro VETemplateTypeNames global.__VETemplateTypeNames
@@ -258,10 +258,10 @@ function VETemplate(json) constructor {
   }
 
   ///@private
-  ///@return {LyricsTemplate}
-  toLyricsTemplate = function() {
+  ///@return {SubtitleTemplate}
+  toSubtitleTemplate = function() {
     var store = this.store
-    return new LyricsTemplate(
+    return new SubtitleTemplate(
       store.getValue("template-name"), 
       { lines: String.split(store.getValue("lines"), "\n").getContainer() }
     )
@@ -301,14 +301,14 @@ function VETemplate(json) constructor {
   }
 
   ///@throws {Exception}
-  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate|CoinTemplate|LyricsTemplate|ParticleTemplate|TextureTemplate}
+  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate|CoinTemplate|SubtitleTemplate|ParticleTemplate|TextureTemplate}
   serialize = function() {
     switch (this.type) {
       case VETemplateType.SHADER: return this.toShaderTemplate()
       case VETemplateType.SHROOM: return this.toShroomTemplate()
       case VETemplateType.BULLET: return this.toBulletTemplate()
       case VETemplateType.COIN: return this.toCoinTemplate()
-      case VETemplateType.LYRICS: return this.toLyricsTemplate()
+      case VETemplateType.SUBTITLE: return this.toSubtitleTemplate()
       case VETemplateType.PARTICLE: return this.toParticleTemplate()
       case VETemplateType.TEXTURE: return this.toTextureTemplate()
       default: throw new Exception($"Serialize dispatcher for type '{this.type}' wasn't found")

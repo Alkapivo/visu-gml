@@ -1518,7 +1518,7 @@ function VETimeline(_editor) constructor {
                 "channel": channelName,
               }),
               component: component,
-              sprite: event.data.icon,
+              sprite: Struct.getIfType(event.data, "icon", Struct, { name: "texture_missing" }),
               updateArea: function() {
                 this.area.setY(this.component.index * this.area.getHeight())
               },

@@ -19,6 +19,9 @@ function ShroomTemplate(_name, json) constructor {
   ///@type {?Number}
   healthPoints = Struct.getIfType(json, "healthPoints", Number)
   
+  ///@type {Boolean}
+  hostile = Struct.getIfType(json, "hostile", Boolean, true)
+
   ///@type {Struct}
   gameModes = Struct.appendUnique(
     Struct.filter(Struct.getDefault(json, "gameModes", {}), function(gameMode, key) { 
@@ -66,6 +69,9 @@ function Shroom(template): GridItem(template) constructor {
   healthPoints = Core.isType(Struct.get(template, "healthPoints"), Number) 
     ? template.healthPoints 
     : 1
+
+  ///@type {Boolean}
+  hostile = Struct.getIfType(template, "hostile", Boolean, true)
 
   ///@param {VisuController} controller
   ///@return {Shroom}

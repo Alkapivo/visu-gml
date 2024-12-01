@@ -36,7 +36,7 @@ function VisuIO() constructor {
   fullscreenKeyboardEvent = function(controller) {
     if (this.keyboard.keys.fullscreen.pressed) {
       var fullscreen = controller.displayService.getFullscreen()
-      Logger.debug("VisuIO", String.join("Set fullscreen to ", fullscreen ? "'false'" : "'true'", "."))
+      Logger.debug("VisuIO", String.join("Set fullscreen to", fullscreen ? "'false'" : "'true'", "."))
       controller.displayService.setFullscreen(!fullscreen)
     }
   }
