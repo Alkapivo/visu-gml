@@ -57,6 +57,14 @@ function VEBrushService() constructor {
           template.type = VEBrushType.ENTITY_PLAYER
           template.properties = migrateGridOldPlayerEvent(template.properties)
           break
+        case VEBrushType.GRID_OLD_CHANNEL:
+          template.type = VEBrushType.GRID_COLUMN
+          template.properties = migrateGridOldChannelEvent(template.properties)
+          break
+        case VEBrushType.GRID_OLD_SEPARATOR:
+          template.type = VEBrushType.GRID_ROW
+          template.properties = migrateGridOldSeparatorEvent(template.properties)
+          break
       }
     }
 

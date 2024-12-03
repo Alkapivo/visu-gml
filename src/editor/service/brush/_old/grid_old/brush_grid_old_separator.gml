@@ -1,5 +1,31 @@
 ///@package io.alkapivo.visu.editor.service.brush._old.grid_old
 
+///@param {Struct} json
+///@return {Struct}
+function migrateGridOldSeparatorEvent(json) {
+  return {
+    "gr-r_use-mode": Struct.getIfType(json, "grid-separator_use-mode", Boolean, false),
+    "gr-r_mode": Struct.getIfType(json, "grid-separator_mode", String, "SINGLE"),
+    "gr-r_use-amount": Struct.getIfType(json, "grid-separator_use-transform-amount", Boolean, false),
+    "gr-r_amount": Struct.getIfType(json, "grid-separator_transform-amount", Struct),
+    "gr-r_use-main-col": Struct.getIfType(json, "grid-separator_use-primary-color", Boolean, false),
+    "gr-r_main-col": Struct.getIfType(json, "grid-separator_primary-color", String, "#ffffff"),
+    "gr-r_use-main-col-spd": Struct.getIfType(json, "gr-r_use-main-col-spd", Boolean, true),
+    "gr-r_main-col-spd": Struct.getIfType(json, "grid-separator_primary-color-speed", Number),
+    "gr-r_use-main-alpha": Struct.getIfType(json, "grid-separator_use-transform-primary-alpha", Boolean, false),
+    "gr-r_main-alpha": Struct.getIfType(json, "grid-separator_transform-primary-alpha", Boolean, false),
+    "gr-r_use-main-size": Struct.getIfType(json, "grid-separator_use-transform-primary-size", Boolean, false),
+    "gr-r_main-size": Struct.getIfType(json, "grid-separator_transform-primary-size", Boolean, false),
+    "gr-r_use-side-col": Struct.getIfType(json, "grid-separator_use-secondary-color", Boolean, false),
+    "gr-r_side-col": Struct.getIfType(json, "grid-separator_secondary-color", Boolean, false),
+    "gr-r_use-side-col-spd": Struct.getIfType(json, "gr-r_use-side-col-spd", Boolean, true),
+    "gr-r_side-col-spd": Struct.getIfType(json, "grid-separator_secondary-color-speed", Boolean, false),
+    "gr-r_use-side-alpha": Struct.getIfType(json, "grid-separator_use-transform-secondary-alpha", Boolean, false),
+    "gr-r_use-side-size": Struct.getIfType(json, "grid-separator_use-transform-secondary-size", Boolean, false),
+    "gr-r_side-size": Struct.getIfType(json, "grid-separator_transform-secondary-size", Boolean, false),
+  }
+}
+
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_grid_old_separator(json = null) {

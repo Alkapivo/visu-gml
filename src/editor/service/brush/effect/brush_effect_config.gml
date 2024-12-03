@@ -120,7 +120,6 @@ function brush_effect_config(json = null) {
       "ef-cfg_change-cls-frame-alpha": {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_change-cls-frame-alpha", Boolean, false),
-
       },
     }),
     components: new Array(Struct, [
