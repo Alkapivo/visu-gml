@@ -42,7 +42,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
           updateCustom: function() {
             this.__update()
-            if (MouseUtil.getClipboard() == this.clipboard) {
+            if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
               this.updateLayout(MouseUtil.getMouseY())
               this.context.templateToolbar.containers.forEach(function(container) {
                 if (!Optional.is(container.updateTimer)) {
@@ -54,7 +54,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               })
 
               if (!mouse_check_button(mb_left)) {
-                MouseUtil.clearClipboard()
+                Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
                 Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
               }
             } else {
@@ -89,7 +89,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             accordion.templateToolbar.containers.forEach(accordion.resetUpdateTimer)
           }),
           onMousePressedLeft: function(event) {
-            MouseUtil.setClipboard(this.clipboard)
+            Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
           },
           onMouseHoverOver: function(event) {
             if (!mouse_check_button(mb_left)) {
@@ -141,7 +141,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
           updateCustom: function() {
             this.__update()
-            if (MouseUtil.getClipboard() == this.clipboard) {
+            if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
               this.updateLayout(MouseUtil.getMouseY())
               this.context.templateToolbar.containers.forEach(function(container) {
                 if (!Optional.is(container.updateTimer)) {
@@ -153,7 +153,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               })
 
               if (!mouse_check_button(mb_left)) {
-                MouseUtil.clearClipboard()
+                Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
                 Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
               }
             } else {
@@ -188,7 +188,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             accordion.templateToolbar.containers.forEach(accordion.resetUpdateTimer)
           }),
           onMousePressedLeft: function(event) {
-            MouseUtil.setClipboard(this.clipboard)
+            Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
           },
           onMouseHoverOver: function(event) {
             if (!mouse_check_button(mb_left)) {
@@ -1377,6 +1377,39 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var shader = Beans.get(BeanVisuController).shaderPipeline.templates
+                                  .get(this.templateName)
+                                if (!Core.isType(shader, ShaderTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(shader, "type", VETemplateType.SHADER)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(shader))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).shaderPipeline.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1395,20 +1428,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                             },
-                            button: { 
-                              sprite: {
-                                name: "texture_ve_icon_trash",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() {
-                                this.removeUIItemfromUICollection()
-                                Beans.get(BeanVisuController).shaderPipeline.templates
-                                  .remove(this.templateName)
-                              },
-                              templateName: template.name,
-                              removeUIItemfromUICollection: new BindIntent(Callable
-                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                            },
                           },
                         }))
                       }
@@ -1426,6 +1445,34 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var shader = Visu.assets().shaderTemplates.get(this.templateName)
+                                if (!Core.isType(shader, ShaderTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(shader, "type", VETemplateType.SHADER)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(shader))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1444,15 +1491,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                               backgroundColor: VETheme.color.dark,
                             },
-                            button: { 
-                              backgroundColor: VETheme.color.dark,
-                              sprite: {
-                                name: "texture_ve_icon_lock",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() { },
-                              templateName: template.name,
-                            },
+                            
                           },
                         }))
                       }
@@ -1494,6 +1533,39 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var shroom = Beans.get(BeanVisuController).shroomService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(shroom, ShroomTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(shroom, "type", VETemplateType.SHROOM)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(shroom))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).shroomService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1512,20 +1584,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                             },
-                            button: { 
-                              sprite: {
-                                name: "texture_ve_icon_trash",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() {
-                                this.removeUIItemfromUICollection()
-                                Beans.get(BeanVisuController).shroomService.templates
-                                  .remove(this.templateName)
-                              },
-                              templateName: template.name,
-                              removeUIItemfromUICollection: new BindIntent(Callable
-                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                            },
                           },
                         }))
                       }
@@ -1543,6 +1601,34 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var shroom = Visu.assets().shroomTemplates.get(this.templateName)
+                                if (!Core.isType(shroom, ShroomTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(shroom, "type", VETemplateType.SHROOM)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(shroom))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1560,15 +1646,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                               backgroundColor: VETheme.color.dark,
-                            },
-                            button: { 
-                              backgroundColor: VETheme.color.dark,
-                              sprite: {
-                                name: "texture_ve_icon_lock",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() { },
-                              templateName: template.name,
                             },
                           },
                         }))
@@ -1611,6 +1688,39 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var bullet = Beans.get(BeanVisuController).bulletService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(bullet, BulletTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(bullet, "type", VETemplateType.BULLET)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(bullet))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).bulletService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1629,20 +1739,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                             },
-                            button: { 
-                              sprite: {
-                                name: "texture_ve_icon_trash",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() {
-                                this.removeUIItemfromUICollection()
-                                Beans.get(BeanVisuController).bulletService.templates
-                                  .remove(this.templateName)
-                              },
-                              templateName: template.name,
-                              removeUIItemfromUICollection: new BindIntent(Callable
-                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                            },
                           },
                         }))
                       }
@@ -1660,6 +1756,34 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var bullet = Visu.assets().bulletTemplates.get(this.templateName)
+                                if (!Core.isType(bullet, BulletTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(bullet, "type", VETemplateType.BULLET)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(bullet))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1677,15 +1801,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                               backgroundColor: VETheme.color.dark,
-                            },
-                            button: { 
-                              backgroundColor: VETheme.color.dark,
-                              sprite: {
-                                name: "texture_ve_icon_lock",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() { },
-                              templateName: template.name,
                             },
                           },
                         }))
@@ -1728,6 +1843,39 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var coin = Beans.get(BeanVisuController).coinService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(coin, CoinTemplate)) {
+                                  return
+                                }
+    
+                                Struct.set(coin, "type", VETemplateType.COIN)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(coin))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).coinService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1746,20 +1894,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                             },
-                            button: { 
-                              sprite: {
-                                name: "texture_ve_icon_trash",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() {
-                                this.removeUIItemfromUICollection()
-                                Beans.get(BeanVisuController).coinService.templates
-                                  .remove(this.templateName)
-                              },
-                              templateName: template.name,
-                              removeUIItemfromUICollection: new BindIntent(Callable
-                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                            },
                           },
                         }))
                       }
@@ -1777,6 +1911,34 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var coin = Visu.assets().coinTemplates.get(this.templateName)
+                                if (!Core.isType(coin, CoinTemplate)) {
+                                  return
+                                }
+      
+                                Struct.set(coin, "type", VETemplateType.COIN)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(coin))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1794,15 +1956,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                               backgroundColor: VETheme.color.dark,
-                            },
-                            button: { 
-                              backgroundColor: VETheme.color.dark,
-                              sprite: {
-                                name: "texture_ve_icon_lock",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() { },
-                              templateName: template.name,
                             },
                           },
                         }))
@@ -1845,6 +1998,39 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var subtitle = Beans.get(BeanVisuController).subtitleService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(subtitle, SubtitleTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(subtitle, "type", VETemplateType.SUBTITLE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(subtitle))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).subtitleService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1863,20 +2049,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                             },
-                            button: { 
-                              sprite: {
-                                name: "texture_ve_icon_trash",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() {
-                                this.removeUIItemfromUICollection()
-                                Beans.get(BeanVisuController).subtitleService.templates
-                                  .remove(this.templateName)
-                              },
-                              templateName: template.name,
-                              removeUIItemfromUICollection: new BindIntent(Callable
-                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                            },
                           },
                         }))
                       }
@@ -1894,6 +2066,34 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var subtitle = Visu.assets().subtitleTemplates.get(this.templateName)
+                                if (!Core.isType(subtitle, SubtitleTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(subtitle, "type", VETemplateType.SUBTITLE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(subtitle))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1911,15 +2111,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                               backgroundColor: VETheme.color.dark,
-                            },
-                            button: { 
-                              backgroundColor: VETheme.color.dark,
-                              sprite: {
-                                name: "texture_ve_icon_lock",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() { },
-                              templateName: template.name,
                             },
                           },
                         }))
@@ -1962,6 +2153,39 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var particle = Beans.get(BeanVisuController).particleService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(particle, ParticleTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(particle, "type", VETemplateType.PARTICLE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(particle))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).particleService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -1980,20 +2204,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                             },
-                            button: { 
-                              sprite: {
-                                name: "texture_ve_icon_trash",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() {
-                                this.removeUIItemfromUICollection()
-                                Beans.get(BeanVisuController).particleService.templates
-                                  .remove(this.templateName)
-                              },
-                              templateName: template.name,
-                              removeUIItemfromUICollection: new BindIntent(Callable
-                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                            },
                           },
                         }))
                       }
@@ -2011,6 +2221,34 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var particle = Visu.assets().particleTemplates.get(this.templateName)
+                                if (!Core.isType(particle, ParticleTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(particle, "type", VETemplateType.PARTICLE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(particle))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -2028,15 +2266,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                               backgroundColor: VETheme.color.dark,
-                            },
-                            button: { 
-                              backgroundColor: VETheme.color.dark,
-                              sprite: {
-                                name: "texture_ve_icon_lock",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() { },
-                              templateName: template.name,
                             },
                           },
                         }))
@@ -2078,6 +2307,39 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var texture = Beans.get(BeanTextureService)
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(texture, TextureTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(texture, "type", VETemplateType.TEXTURE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(texture))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanTextureService).templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -2096,20 +2358,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                             },
-                            button: { 
-                              sprite: {
-                                name: "texture_ve_icon_trash",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() {
-                                this.removeUIItemfromUICollection()
-                                Beans.get(BeanTextureService).templates
-                                  .remove(this.templateName)
-                              },
-                              templateName: template.name,
-                              removeUIItemfromUICollection: new BindIntent(Callable
-                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                            },
                           },
                         }))
                       }
@@ -2127,6 +2375,34 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           template: VEComponents.get("template-entry"),
                           layout: VELayouts.get("template-entry"),
                           config: {
+                            settings: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_settings",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                var texture = Visu.assets().textures.get(this.templateName)
+                                if (!Core.isType(texture, TextureTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(texture, "type", VETemplateType.TEXTURE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(texture))
+                              },
+                              templateName: template.name,
+                            },
+                            remove: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
                             label: { 
                               text: template.name,
                               colorHoverOver: VETheme.color.accentShadow,
@@ -2144,15 +2420,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               },
                               templateName: template.name,
                               backgroundColor: VETheme.color.dark,
-                            },
-                            button: { 
-                              backgroundColor: VETheme.color.dark,
-                              sprite: {
-                                name: "texture_ve_icon_lock",
-                                blend: VETheme.color.textShadow,
-                              },
-                              callback: function() { },
-                              templateName: template.name,
                             },
                           },
                         }))
@@ -2223,7 +2490,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
             updateCustom: function() {
               this.__update()
-              if (MouseUtil.getClipboard() == this.clipboard) {
+              if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
                 this.context.templateToolbar.containers.forEach(function(container) {
                   if (!Optional.is(container.updateTimer)) {
@@ -2235,7 +2502,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 })
 
                 if (!mouse_check_button(mb_left)) {
-                  MouseUtil.clearClipboard()
+                  Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
                   Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
                 }
               }
@@ -2272,7 +2539,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               templateViewNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
             }),
             onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this.clipboard)
+              Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
             },
             onMouseHoverOver: function(event) {
               if (!mouse_check_button(mb_left)) {

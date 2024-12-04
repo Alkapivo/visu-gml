@@ -182,14 +182,14 @@ function VEAccordion(_editor, config = null) constructor {
                 container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
               }
 
-              if (MouseUtil.getClipboard() == this.clipboard) {
+              if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseX())
                 this.context.accordion.containers.forEach(updateAccordionTimer)
                 this.context.accordion.eventInspector.containers.forEach(updateAccordionTimer)
                 this.context.accordion.templateToolbar.containers.forEach(updateAccordionTimer)
   
                 if (!mouse_check_button(mb_left)) {
-                  MouseUtil.clearClipboard()
+                  Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
                   Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
                 }
               }
@@ -199,7 +199,7 @@ function VEAccordion(_editor, config = null) constructor {
               node.percentageWidth = position / GuiWidth()
             }),
             onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this.clipboard)
+              Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
             },
             onMouseHoverOver: function(event) {
               if (!mouse_check_button(mb_left)) {

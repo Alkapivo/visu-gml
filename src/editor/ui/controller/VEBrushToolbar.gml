@@ -72,7 +72,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
-            if (MouseUtil.getClipboard() == this.clipboard) {
+            if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
               this.updateLayout(MouseUtil.getMouseX())
               this.context.brushToolbar.containers.forEach(function(container) {
                 if (!Optional.is(container.updateTimer)) {
@@ -95,7 +95,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               })
 
               if (!mouse_check_button(mb_left)) {
-                MouseUtil.clearClipboard()
+                Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
                 Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
               }
             }
@@ -111,7 +111,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             }
           }),
           onMousePressedLeft: function(event) {
-            MouseUtil.setClipboard(this.clipboard)
+            Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
           },
           onMouseHoverOver: function(event) {
             if (!mouse_check_button(mb_left)) { ///@todo replace mouse_check_button
@@ -850,14 +850,14 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
         if (Optional.is(component)) {
           this.state.set("dragItem", component)
-          MouseUtil.setClipboard(component)
+          Beans.get(BeanVisuEditorIO).mouse.setClipboard(component)
         }
       },
       onMouseDropLeft: function(event) {
         var dragItem = this.state.get("dragItem")
-        if (Optional.is(dragItem) && MouseUtil.getClipboard() == dragItem) {
+        if (Optional.is(dragItem) && Beans.get(BeanVisuEditorIO).mouse.getClipboard() == dragItem) {
           this.state.set("dragItem", null)
-          MouseUtil.setClipboard(null)
+          Beans.get(BeanVisuEditorIO).mouse.setClipboard(null)
 
           var component = this.collection.components.find(function(component) {
             var text = component.items.find(function(item) {
@@ -1014,7 +1014,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
             updateCustom: function() {
               this.__update()
-              if (MouseUtil.getClipboard() == this.clipboard) {
+              if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
                 this.context.brushToolbar.containers.forEach(function(container) {
                   if (!Optional.is(container.updateTimer)) {
@@ -1026,7 +1026,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 })
 
                 if (!mouse_check_button(mb_left)) {
-                  MouseUtil.clearClipboard()
+                  Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
                   Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
                 }
               }
@@ -1047,7 +1047,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               brushNode.percentageHeight = 1.0 - inspectorNode.percentageHeight
             }),
             onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this.clipboard)
+              Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
             },
             onMouseHoverOver: function(event) {
               if (!mouse_check_button(mb_left)) {
@@ -1637,7 +1637,7 @@ function VEBrushToolbar(_editor) constructor {
           },
           brushTemplate: template,
         },
-        button: { 
+        remove: { 
           sprite: {
             name: "texture_ve_icon_trash",
             blend: VETheme.color.textShadow,
@@ -1645,6 +1645,41 @@ function VEBrushToolbar(_editor) constructor {
           callback: function() {
             Beans.get(BeanVisuController).brushService.removeTemplate(this.brushTemplate)
             this.context.collection.remove(this.component.index)
+          },
+          brushTemplate: template,
+        },
+        settings: { 
+          sprite: {
+            name: "texture_ve_icon_settings",
+            blend: VETheme.color.textShadow,
+          },
+          callback: function() {
+            var template = this.context.brushToolbar.store.get("template")
+            if (!Core.isType(template.get(), VEBrushTemplate)
+              || template.get().name != this.brushTemplate.name) {
+
+              var templates = Beans.get(BeanVisuController).brushService.fetchTemplates(this.brushTemplate.type)
+              if (!Core.isType(templates, Array)) {
+                return
+              }
+
+              var foundTemplate = templates.find(function(template, index, name) {
+                return template.name = name
+              }, this.brushTemplate.name)
+              if (!Core.isType(foundTemplate, VEBrushTemplate)) {
+                return
+              }
+
+              template.set(foundTemplate)
+
+              var inspector = this.context.brushToolbar.containers
+                .get("ve-brush-toolbar_inspector-view")
+
+              if (Core.isType(inspector, UI) 
+                && Optional.is(inspector.updateTimer)) {
+                inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
+              }
+            }
           },
           brushTemplate: template,
         },

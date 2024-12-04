@@ -123,12 +123,22 @@ global.__VEStyles = new Map(String, Struct, {
       color: VETheme.color.textShadow,
       offset: { x: -5 },
     },
-    remove: {
-      backgroundColor: VETheme.color.primary,
+    settings: {
+      backgroundColor: VETheme.color.primaryShadow,
       label: {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
+        backgroundColor: VETheme.color.primaryShadow,
+      }
+    },
+    remove: {
+      backgroundColor: VETheme.color.primaryShadow,
+      label: {
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+        font: "font_inter_10_regular",
+        color: VETheme.color.textShadow,
+        backgroundColor: VETheme.color.primaryShadow,
       }
     },
     mute: {
@@ -136,7 +146,9 @@ global.__VEStyles = new Map(String, Struct, {
     },
   },
   "brush-entry": {
-    image: {},
+    image: {
+      backgroundColor: VETheme.color.primaryShadow,
+    },
     label: {
       backgroundColor: VETheme.color.primaryShadow,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
@@ -150,16 +162,28 @@ global.__VEStyles = new Map(String, Struct, {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
+        backgroundColor: VETheme.color.primaryShadow,
+      }
+    },
+    settings: {
+      backgroundColor: VETheme.color.primaryShadow,
+      label: {
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+        font: "font_inter_10_regular",
+        color: VETheme.color.textShadow,
+        backgroundColor: VETheme.color.primaryShadow,
       }
     },
   },
   "template-entry": {
-    label: {
+    settings: {
       backgroundColor: VETheme.color.primaryShadow,
-      align: { v: VAlign.CENTER, h: HAlign.LEFT },
-      font: "font_inter_10_regular",
-      color: VETheme.color.textShadow,
-      offset: { x: 4 },
+      label: {
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+        font: "font_inter_10_regular",
+        color: VETheme.color.textShadow,
+        backgroundColor: VETheme.color.primaryShadow,
+      }
     },
     remove: {
       backgroundColor: VETheme.color.primaryShadow,
@@ -167,8 +191,16 @@ global.__VEStyles = new Map(String, Struct, {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
+        backgroundColor: VETheme.color.primaryShadow,
       }
-    }
+    },
+    label: {
+      backgroundColor: VETheme.color.primaryShadow,
+      align: { v: VAlign.CENTER, h: HAlign.LEFT },
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      offset: { x: 4 },
+    },
   },
   "property": {
     checkbox: {
@@ -176,6 +208,7 @@ global.__VEStyles = new Map(String, Struct, {
     },
     label: {
       backgroundColor: VETheme.color.primaryShadow,
+      offset: { x: 4 },
       font: "font_inter_10_bold",
       color: VETheme.color.textFocus,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
@@ -190,6 +223,7 @@ global.__VEStyles = new Map(String, Struct, {
     },
     label: {
       backgroundColor: VETheme.color.accentShadow,
+      offset: { x: 4 },
       font: "font_inter_10_bold",
       color: VETheme.color.textFocus,
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
@@ -321,13 +355,36 @@ global.__VEStyles = new Map(String, Struct, {
     lh: 20,
     padding: { top: 0, bottom: 0, left: 4, right: 0 }
   },
-  "slider-horizontal": {},
+  "slider-horizontal": {
+    pointer: {
+      name: "texture_slider_pointer_simple",
+      scaleX: 0.125,
+      scaleY: 0.125,
+      blend: VETheme.color.accent,
+    },
+    progress: {
+      thickness: 1.0,
+      blend: VETheme.color.accent,
+    },
+    background: {
+      thickness: 1.33,
+      blend: VETheme.color.dark,
+    },
+  },
   "spin-select": {
     previous: {
-      sprite: { name: "texture_button_previous" }
+      label: {
+        font: "font_inter_10_regular",
+        color: VETheme.color.textFocus,
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+      },
     },
     next: {
-      sprite: { name: "texture_button_next" }
+      label: {
+        font: "font_inter_10_regular",
+        color: VETheme.color.textFocus,
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+      },
     },
   },
   "spin-select-image": {

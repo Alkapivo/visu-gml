@@ -120,6 +120,24 @@ function VisuEditorController() constructor {
       type: String,
       value: "channel name",
     },
+    "channel-settings-target": {
+      type: String,
+      value: "",
+    },
+    "channel-settings-name": {
+      type: String,
+      value: "",
+    },
+    "channel-settings-config": {
+      type: String,
+      value: "{}",
+      serialize: function() {
+        return JSON.parse(this.get())
+      },
+      validate: function(value) {
+        Assert.isType(JSON.parse(value), Struct)
+      },
+    },
     "selected-event": {
       type: Optional.of(Struct),
       value: null,
@@ -496,9 +514,19 @@ function VisuEditorController() constructor {
     var timelineNode = Struct.get(this.layout.nodes, "timeline")
     timelineNode.minHeight = renderTimeline ? 96 : 0
     timelineNode.maxHeight = renderTimeline ? GuiHeight() * 0.58 : 0
-    this.timeline.containers.forEach(function(container, key, enable) {
-      container.enable = enable
-    }, renderTimeline)
+    switch (this.timeline.channelsMode) {
+      case "list":
+        this.timeline.containers.forEach(function(container, key, enable) {
+          container.enable = key == "ve-timeline-channel-settings" ? false : enable
+        }, renderTimeline)
+        break
+      case "settings":
+        this.timeline.containers.forEach(function(container, key, enable) {
+          container.enable = key == "ve-timeline-channels" || key == "ve-timeline-form" ? false : enable
+        }, renderTimeline)
+        break
+    }
+    
 
     var renderEvent = this.store.getValue("render-event")
     var accordionNode = Struct.get(this.layout.nodes, "accordion")

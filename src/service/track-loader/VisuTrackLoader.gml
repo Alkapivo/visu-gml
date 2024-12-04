@@ -264,9 +264,61 @@ function VisuTrackLoader(_controller): Service() constructor {
                       callback: function(prototype, json, key, acc) {
                         var name = Struct.get(json, "name")
                         //Logger.debug("VisuTrackLoader", $"Load track '{name}'")
-                        acc.openTrack(new prototype(json, { handlers: acc.handlers }))
+                        acc.trackService.openTrack(new prototype(json, { 
+                          handlers: acc.trackService.handlers,
+                          parseEvent: acc.parseEvent,
+                        }))
                       },
-                      acc: controller.trackService
+                      acc: {
+                        trackService: controller.trackService,
+                        parseEvent: function(event, index, config = null) {
+                          ///@description migration
+                          if (Core.getProperty("visu.editor.migrate", false)) {
+                            var icon = Struct.get(event.data, "icon")
+                            switch (Struct.get(event, "callable")) {
+                              case VEBrushType.SHADER_SPAWN:
+                                event.callable = VEBrushType.EFFECT_SHADER
+                                event.data = migrateShaderSpawnEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_GLITCH:
+                                event.callable = VEBrushType.EFFECT_GLITCH
+                                event.data = migrateViewOldGlitchEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_PARTICLE:
+                                event.callable = VEBrushType.EFFECT_PARTICLE
+                                event.data = migrateGridOldParticleEvent(event.data)
+                                break
+                              case VEBrushType.SHADER_CONFIG:
+                                event.callable = VEBrushType.EFFECT_CONFIG
+                                event.data = migrateShaderConfigEvent(event.data)
+                                break
+                              case VEBrushType.SHROOM_SPAWN:
+                                event.callable = VEBrushType.ENTITY_SHROOM
+                                event.data = migrateShroomSpawnEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_COIN:
+                                event.callable = VEBrushType.ENTITY_COIN
+                                event.data = migrateGridOldCoinEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_PLAYER:
+                                event.callable = VEBrushType.ENTITY_PLAYER
+                                event.data = migrateGridOldPlayerEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_CHANNEL:
+                                event.callable = VEBrushType.GRID_COLUMN
+                                event.data = migrateGridOldChannelEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_SEPARATOR:
+                                event.callable = VEBrushType.GRID_ROW
+                                event.data = migrateGridOldSeparatorEvent(event.data)
+                                break
+                            }
+                            Struct.set(event.data, "icon", icon)
+                          }
+                          
+                          return new TrackEvent(event, config)
+                        },
+                      }
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)

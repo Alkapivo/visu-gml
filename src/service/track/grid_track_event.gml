@@ -33,7 +33,6 @@ global.__grid_track_event = {
     }
 
     if (Struct.get(data, "gr-c_use-main-col")) {
-      Core.print("color time!", Struct.get(data, "gr-c_main-col"))
       controller.gridService.send(new Event("transform-property", {
         key: "channelsPrimaryColor",
         container: controller.gridService.properties,
@@ -143,7 +142,7 @@ global.__grid_track_event = {
       }))
     }
   },
-  "brush_grid_row": function(data) {
+  "brush_grid_row": function(data, channel) {
     var controller = Beans.get(BeanVisuController)
     if (Struct.get(data, "gr-r_use-mode")) {
       controller.gridService.properties.separatorsMode = Struct.get(data, "gr-r_mode")

@@ -109,18 +109,18 @@ global.__VEComponents = new Map(String, Callable, {
   ///@return {Array<UIItem>}
   "channel-entry": function(name, layout, config = null) {
     return new Array(UIItem, [
-      UIText(
-        $"{name}_channel-entry_label",
+      UIButton(
+        $"{name}_channel-entry_settings", 
         Struct.appendRecursive(
           Struct.appendRecursive(
             { 
-              layout: layout.nodes.label,
+              layout: layout.nodes.settings,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
             }, 
-            VEStyles.get("channel-entry").label,
+            VEStyles.get("channel-entry").settings,
             false
           ),
-          Struct.get(config, "label"),
+          Struct.get(config, "settings"),
           false
         )
       ),
@@ -135,7 +135,22 @@ global.__VEComponents = new Map(String, Callable, {
             VEStyles.get("channel-entry").remove,
             false
           ),
-          Struct.get(config, "button"),
+          Struct.get(config, "remove"),
+          false
+        )
+      ),
+      UIText(
+        $"{name}_channel-entry_label",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("channel-entry").label,
+            false
+          ),
+          Struct.get(config, "label"),
           false
         )
       ),
@@ -207,7 +222,22 @@ global.__VEComponents = new Map(String, Callable, {
             VEStyles.get("brush-entry").remove,
             false
           ),
-          Struct.get(config, "button"),
+          Struct.get(config, "remove"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_brush-entry_settings", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.settings,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("brush-entry").settings,
+            false
+          ),
+          Struct.get(config, "settings"),
           false
         )
       ),
@@ -220,18 +250,18 @@ global.__VEComponents = new Map(String, Callable, {
   ///@return {Array<UIItem>}
   "template-entry": function(name, layout, config = null) {
     return new Array(UIItem, [
-      UIText(
-        $"{name}_brush-entry_label",
+      UIButton(
+        $"{name}_brush-entry_settings", 
         Struct.appendRecursive(
           Struct.appendRecursive(
             { 
-              layout: layout.nodes.label,
+              layout: layout.nodes.settings,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
             }, 
-            VEStyles.get("brush-entry").label,
+            VEStyles.get("template-entry").settings,
             false
           ),
-          Struct.get(config, "label"),
+          Struct.get(config, "settings"),
           false
         )
       ),
@@ -243,10 +273,25 @@ global.__VEComponents = new Map(String, Callable, {
               layout: layout.nodes.remove,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
             }, 
-            VEStyles.get("brush-entry").remove,
+            VEStyles.get("template-entry").remove,
             false
           ),
-          Struct.get(config, "button"),
+          Struct.get(config, "remove"),
+          false
+        )
+      ),
+      UIText(
+        $"{name}_brush-entry_label",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("template-entry").label,
+            false
+          ),
+          Struct.get(config, "label"),
           false
         )
       ),
@@ -1719,6 +1764,8 @@ global.__VEComponents = new Map(String, Callable, {
             { 
               layout: layout.nodes.slider,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
+              setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
             },
             VEStyles.get("slider-horizontal"),
             false
@@ -1788,6 +1835,8 @@ global.__VEComponents = new Map(String, Callable, {
             { 
               layout: layout.nodes.slider,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
+              setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
             },
             VEStyles.get("slider-horizontal"),
             false
@@ -1857,6 +1906,8 @@ global.__VEComponents = new Map(String, Callable, {
             { 
               layout: layout.nodes.slider,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
+              setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
             },
             VEStyles.get("slider-horizontal"),
             false
@@ -2163,12 +2214,20 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.appendRecursive(
             { 
               increment: -1,
+              backgroundColor: VETheme.color.primary,
+              backgroundColorSelected: VETheme.color.accent,
+              backgroundColorOut: VETheme.color.primary,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+                if (Optional.is(this.enable) && !this.enable.value) {
+                  this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                  return
+                }
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
               },
               onMouseHoverOut: function(event) {
-                this.sprite.setBlend(c_white)
-              },            
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },
+              label: { text: "<" },
             },
             Struct.get(config, "previous"), 
             false
@@ -2189,12 +2248,20 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.appendRecursive(
             { 
               increment: 1,
+              backgroundColor: VETheme.color.primary,
+              backgroundColorSelected: VETheme.color.accent,
+              backgroundColorOut: VETheme.color.primary,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+                if (Optional.is(this.enable) && !this.enable.value) {
+                  this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                  return
+                }
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
               },
               onMouseHoverOut: function(event) {
-                this.sprite.setBlend(c_white)
-              },            
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },    
+              label: { text: ">" },
             },
             Struct.get(config, "next"),
             false

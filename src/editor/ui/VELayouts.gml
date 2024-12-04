@@ -18,12 +18,12 @@ global.__VELayouts = new Map(String, Callable, {
           height: function() { return this.context.height() 
             - this.margin.top 
             - this.margin.bottom },
-          margin: { top: 5, bottom: 5 },
+          margin: { top: 2, bottom: 2 },
         },
         resolution: {
-          name: "imate.resolution",
+          name: "image.resolution",
           y: function() { return this.context.nodes.image.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 24 },
         },
       },
     }
@@ -66,18 +66,28 @@ global.__VELayouts = new Map(String, Callable, {
       y: function() { return this.margin.top + this.collection.getIndex() * this.height() },
       height: function() { return 32 },
       nodes: {
+        settings: {
+          name: "channel-entry.settings",
+          width: function() { return 34 - this.margin.left - this.margin.right },
+          height: function() { return 32 - this.margin.top - this.margin.bottom },
+          margin: { top: 0, left: 2, right: 2, bottom: 2 },
+        },
         remove: {
           name: "channel-entry.remove",
-          width: function() { return this.context.height() - this.margin.left - this.margin.right },
+          width: function() { return 32 - this.margin.left - this.margin.right },
           height: function() { return 32 - this.margin.top - this.margin.bottom },
-          margin: { top: 4, left: 4, right: 4, bottom: 4 },
+          x: function() { return this.context.nodes.settings.right() },
+          margin: { top: 0, left: 0, right: 2, bottom: 2 },
         },
         label: {
           name: "channel-entry.label",
           width: function() { return this.context.width() 
+            - this.context.nodes.settings.width()
+            - this.context.nodes.settings.margin.left
+            - this.context.nodes.settings.margin.right
             - this.context.nodes.remove.width()
             - this.context.nodes.remove.margin.left
-            - this.context.nodes.remove.margin.right 
+            - this.context.nodes.remove.margin.right
             - this.context.nodes.mute.width()
             - this.context.nodes.mute.margin.left
             - this.context.nodes.mute.margin.right },
@@ -88,8 +98,8 @@ global.__VELayouts = new Map(String, Callable, {
           name: "channel-entry.mute",
           width: function() { return 32 - this.margin.left - this.margin.right },
           height: function() { return 32 - this.margin.top - this.margin.bottom },
-          margin: { top: 0, left: 0, right: 0, bottom: 0 },
-          x: function() { return this.context.nodes.label.right() },
+          margin: { top: 0, left: 2, right: 0, bottom: 2 },
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
           y: function() { return this.context.y() + this.margin.top },
         },
       }
@@ -122,16 +132,28 @@ global.__VELayouts = new Map(String, Callable, {
             - this.context.nodes.image.margin.right
             - this.context.nodes.remove.width()
             - this.context.nodes.remove.margin.left
-            - this.context.nodes.remove.margin.right },
+            - this.context.nodes.remove.margin.right 
+            - this.context.nodes.settings.width()
+            - this.context.nodes.settings.margin.left
+            - this.context.nodes.settings.margin.right },
           height: function() { return 30 },
           x: function() { return this.context.x() + this.context.nodes.image.right() },
         },
         remove: {
           name: "brush-entry.remove",
+          width: function() { return 34 - this.margin.left - this.margin.right },
+          height: function() { return 32 - this.margin.top - this.margin.bottom },
+          margin: { top: 0, left: 2, right: 2, bottom: 2 },
+          x: function() { return this.context.x() + this.context.nodes.label.right()
+            + this.margin.right },
+          y: function() { return this.context.y() + this.margin.top },
+        },
+        settings: {
+          name: "brush-entry.settings",
           width: function() { return 32 - this.margin.left - this.margin.right },
           height: function() { return 32 - this.margin.top - this.margin.bottom },
-          margin: { top: 4, left: 4, right: 4, bottom: 4 },
-          x: function() { return this.context.x() + this.context.nodes.label.right()
+          margin: { top: 0, left: 0, right: 2, bottom: 2 },
+          x: function() { return this.context.x() + this.context.nodes.remove.right()
             + this.margin.right },
           y: function() { return this.context.y() + this.margin.top },
         },
@@ -150,18 +172,28 @@ global.__VELayouts = new Map(String, Callable, {
       y: function() { return this.margin.top + this.collection.getIndex() * this.height() },
       height: function() { return 32 },
       nodes: {
+        settings: {
+          name: "template-entry.settings",
+          width: function() { return 34 - this.margin.left - this.margin.right },
+          height: function() { return 32 - this.margin.top - this.margin.bottom },
+          margin: { top: 0, left: 2, right: 2, bottom: 2 },
+        },
         remove: {
           name: "template-entry.remove",
-          width: function() { return this.context.height() - this.margin.left - this.margin.right },
+          width: function() { return 32 - this.margin.left - this.margin.right },
           height: function() { return 32 - this.margin.top - this.margin.bottom },
-          margin: { top: 4, left: 4, right: 4, bottom: 4 },
+          x: function() { return this.context.nodes.settings.right() },
+          margin: { top: 0, left: 0, right: 2, bottom: 2 },
         },
         label: {
           name: "template-entry.label",
           width: function() { return this.context.width() 
+            - this.context.nodes.settings.width()
+            - this.context.nodes.settings.margin.left
+            - this.context.nodes.settings.margin.right
             - this.context.nodes.remove.width()
             - this.context.nodes.remove.margin.left
-            - this.context.nodes.remove.margin.right  },
+            - this.context.nodes.remove.margin.right },
           height: function() { return 30 },
           x: function() { return this.context.nodes.remove.right() },
         },
@@ -175,12 +207,12 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "property",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 36 - this.margin.top - this.margin.bottom },
-      margin: { top: 2, bottom: 2 },
+      height: function() { return 30 - this.margin.top - this.margin.bottom },
+      margin: { top: 2, bottom: 4 },
       nodes: {
         checkbox: {
           name: "property.checkbox",
-          width: function() { return 32 },
+          width: function() { return 24 },
         },
         label: {
           name: "property.label",
@@ -192,7 +224,7 @@ global.__VELayouts = new Map(String, Callable, {
         input: {
           name: "property.input",
           x: function() { return this.context.nodes.label.right() },
-          width: function() { return 56 },
+          width: function() { return 42 },
         },
       }
     }
@@ -204,12 +236,12 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "property-bar",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 - this.margin.top - this.margin.bottom },
-      margin: { top: 0, bottom: 5 },
+      height: function() { return 28 - this.margin.top - this.margin.bottom },
+      margin: { top: 0, bottom: 4 },
       nodes: {
         checkbox: {
           name: "property-bar.checkbox",
-          width: function() { return 56 },
+          width: function() { return 42 },
         },
         label: {
           name: "property-bar.label",
@@ -221,7 +253,7 @@ global.__VELayouts = new Map(String, Callable, {
         input: {
           name: "property-bar.input",
           x: function() { return this.context.nodes.label.right() },
-          width: function() { return 56 },
+          width: function() { return 42 },
         },
       }
     }
@@ -247,13 +279,13 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "text-field",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      _height: 32,
+      _height: 28,
       height: function() { return this._height },
       nodes: {
         label: {
           name: "text-field.label",
-          width: function() { return 70 - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, left: 5 },
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         field: {
           name: "text-field.field",
@@ -262,7 +294,7 @@ global.__VELayouts = new Map(String, Callable, {
             - this.margin.left - this.margin.right },
           height: function() { return this.context.height() 
             - this.margin.top - this.margin.bottom },
-          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          margin: { top: 3, bottom: 4, right: 5, left: 5 },
           setHeight: new BindIntent(function(height) {
             this.context._height = height + this.margin.top + this.margin.bottom
           }),
@@ -277,12 +309,12 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "text-area",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      _height: 32,
+      _height: 28,
       height: function() { return this._height },
       nodes: {
         field: {
           name: "text-area.field",
-          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          margin: { top: 3, bottom: 4, right: 5, left: 5 },
           setHeight: new BindIntent(function(height) {
             this.context._height = height + this.margin.top + this.margin.bottom
           }),
@@ -297,12 +329,12 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "text-field-button",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
+      height: function() { return 28 },
       nodes: {
         label: {
           name: "text-field-button.label",
-          width: function() { return 70 - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, left: 5 },
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         field: {
           name: "text-field-button.field",
@@ -314,13 +346,13 @@ global.__VELayouts = new Map(String, Callable, {
             - this.margin.left - this.margin.right },
           height: function() { return this.context.height() 
             - this.margin.top - this.margin.bottom },
-          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          margin: { top: 3, bottom: 4, right: 5, left: 5 },
         },
         button: {
           name: "text-field-button.button",
           x: function() { return this.context.nodes.field.right() + this.margin.left },
-          width: function() { return 32 },
-          margin: { top: 5, bottom: 5, right: 5 },
+          width: function() { return 28 },
+          margin: { top: 2, bottom: 2, right: 5 },
         },
       }
     }
@@ -332,30 +364,31 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "text-field-checkbox",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
+      height: function() { return 28 },
       nodes: {
         label: {
           name: "text-field-checkbox.label",
-          width: function() { return 70 - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, left: 5 },
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         field: {
           name: "text-field-checkbox.field",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
           width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
             - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          margin: { top: 3, bottom: 4, right: 5, left: 5 },
         },
         checkbox: {
           name: "text-field-checkbox.checkbox",
           x: function() { return this.context.nodes.field.right() },
-          width: function() { return 32 },
+          width: function() { return 28 - this.margin.top - this.margin.bottom },
+          margin: { top: 2, bottom: 2 },
         },
         title: {
           name: "text-field-checkbox.title",
           x: function() { return this.context.nodes.checkbox.right() + this.margin.left },
           width: function() { return this.context.width() - this.context.nodes.checkbox.right() - this.margin.left },
-          margin: { top: 5, bottom: 5, left: 5 },
+          margin: { top: 2, bottom: 2, left: 4 },
         },
       }
     }
@@ -367,19 +400,19 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "text-field-button-checkbox",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
+      height: function() { return 28 },
       nodes: {
         checkbox: {
           name: "text-field-button-checkbox.checkbox",
-          width: function() { return 56 },
-          margin: { top: 5, bottom: 5, left: 5 },
+          width: function() { return 42 },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         label: {
           name: "text-field-button-checkbox.label",
           x: function() { return this.context.nodes.checkbox.right() 
             + this.margin.left },
-          width: function() { return 70 - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, left: 5 },
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         field: {
           name: "text-field-button-checkbox.field",
@@ -398,13 +431,13 @@ global.__VELayouts = new Map(String, Callable, {
             - this.margin.right },
           height: function() { return this.context.height() 
             - this.margin.top - this.margin.bottom },
-          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          margin: { top: 3, bottom: 4, right: 5, left: 4 },
         },
         button: {
           name: "text-field-button.button",
           x: function() { return this.context.nodes.field.right() + this.margin.left },
-          width: function() { return 56 },
-          margin: { top: 5, bottom: 5, right: 5 },
+          width: function() { return 42 },
+          margin: { top: 2, bottom: 2, right: 5 },
         },
       }
     }
@@ -416,20 +449,20 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "boolean-field",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
+      height: function() { return 28 },
       nodes: {
         label: {
           name: "boolean-field.label",
-          width: function() { return 70 - this.margin.left - this.margin.right },
+          width: function() { return 72 - this.margin.left - this.margin.right },
           y: function() { return this.context.y() + this.margin.top + this.margin.bottom },
-          margin: { top: 5, bottom: 5, left: 5 },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         field: {
           name: "boolean-field.field",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
-          width: function() { return 56 },
+          width: function() { return 42 },
           height: function() { return this.context.height() },
-          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          margin: { top: 2, bottom: 2, right: 5, left: 5 },
         }
       }
     }
@@ -445,33 +478,33 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "texture-field.title",
-          height: function() { return 42 },
+          height: function() { return 28 },
         },
         texture: {
           name: "texture-field.texture",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         preview: {
           name: "texture-field.preview",
           y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 144 },
-          margin: { top: 10, bottom: 10, left: 10, right: 10 },
+          margin: { top: 8, bottom: 8, left: 8, right: 8 },
         },
         alpha: {
           name: "texture-field.alpha",
           y: function() { return this.context.nodes.preview.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         speed: {
           name: "texture-field.speed",
           y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         frame: {
           name: "texture-field.frame",
           y: function() { return this.context.nodes.speed.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       },
     }
@@ -487,18 +520,18 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "texture-field.title",
-          height: function() { return 42 },
+          height: function() { return 28 },
         },
         texture: {
           name: "texture-field.texture",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         preview: {
           name: "texture-field.preview",
           y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 144 },
-          margin: { top: 10, bottom: 10, left: 10, right: 10 },
+          margin: { top: 8, bottom: 8, left: 8, right: 8 },
         },
       },
     }
@@ -514,48 +547,48 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "texture-field-ext.title",
-          height: function() { return 42 },
+          height: function() { return 28 },
         },
         texture: {
           name: "texture-field-ext.texture",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         preview: {
           name: "texture-field-ext.preview",
           y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 144 },
-          margin: { top: 10, bottom: 10, left: 10, right: 10 },
+          margin: { top: 8, bottom: 8, left: 8, right: 8 },
         },
         resolution: {
           name: "texture-field-ext.resolution",
           y: function() { return this.context.nodes.preview.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         alpha: {
           name: "texture-field-ext.alpha",
           y: function() { return this.context.nodes.resolution.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         speed: {
           name: "texture-field-ext.speed",
           y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         frame: {
           name: "texture-field-ext.frame",
           y: function() { return this.context.nodes.speed.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         scaleX: {
           name: "texture-field-ext.scaleX",
           y: function() { return this.context.nodes.frame.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         scaleY: {
           name: "texture-field-ext.scaleY",
           y: function() { return this.context.nodes.scaleX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       },
     }
@@ -572,7 +605,7 @@ global.__VELayouts = new Map(String, Callable, {
         preview: {
           name: "preview-image-mask.preview",
           height: function() { return 144 },
-          margin: { top: 10, bottom: 10, left: 10, right: 10 },
+          margin: { top: 8, bottom: 8, left: 8, right: 8 },
         },
       },
     }
@@ -584,26 +617,26 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "numeric-slider-field",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
+      height: function() { return 28 },
       nodes: {
         label: {
           name: "numeric-slider-field.label",
-          width: function() { return 70 - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, left: 5 },
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         field: {
           name: "numeric-slider-field.field",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
           width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
             - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          margin: { top: 3, bottom: 4, right: 5, left: 5 },
         },
         slider: {
           name: "numeric-slider-field.slider",
           x: function() { return this.context.nodes.field.right() + this.margin.left },
           width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
             - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, right: 15, left: 10 },
+          margin: { top: 2, bottom: 2, right: 15, left: 10 },
         }
       }
     }
@@ -615,25 +648,25 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "numeric-slider-field-button",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
+      height: function() { return 28 },
       nodes: {
         label: {
           name: "numeric-slider-field-button.label",
-          width: function() { return 70 - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, left: 5 },
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         field: {
           name: "numeric-slider-field-button.field",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
           width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
             - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+          margin: { top: 3, bottom: 4, right: 5, left: 5 },
         },
         decrease: {
           name: "numeric-slider-field-button.decrease",
           x: function() { return this.context.nodes.field.right() + this.margin.left },
-          width: function() { return 14 },
-          margin: { top: 5, bottom: 5, right: 0, left: 5 },
+          width: function() { return 24 },
+          margin: { top: 2, bottom: 2, right: 0, left: 5 },
         },
         slider: {
           name: "numeric-slider-field-button.slider",
@@ -647,13 +680,13 @@ global.__VELayouts = new Map(String, Callable, {
             - this.context.nodes.increase.margin.left
             - this.context.nodes.increase.margin.right
             - this.context.nodes.increase.width() },
-          margin: { top: 5, bottom: 5, right: 13, left: 10 },
+          margin: { top: 2, bottom: 2, right: 13, left: 10 },
         },
         increase: {
           name: "numeric-slider-field-button.increase",
           x: function() { return this.context.width() - this.margin.right - this.width() },
-          width: function() { return 14 },
-          margin: { top: 5, bottom: 5, right: 14, left: 0 },
+          width: function() { return 24 },
+          margin: { top: 2, bottom: 2, right: 14, left: 0 },
         },
       }
     }
@@ -665,18 +698,18 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "numeric-slider-button",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 32 },
+      height: function() { return 20 },
       nodes: {
         label: {
           name: "numeric-slider-button.label",
-          width: function() { return 70 - this.margin.left - this.margin.right },
-          margin: { top: 5, bottom: 5, left: 5 },
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         decrease: {
           name: "numeric-slider-button.decrease",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
-          width: function() { return 14 },
-          margin: { top: 5, bottom: 5, right: 0, left: 5 },
+          width: function() { return 16 },
+          margin: { top: 2, bottom: 2, right: 0, left: 5 },
         },
         slider: {
           name: "numeric-slider-button.slider",
@@ -688,13 +721,13 @@ global.__VELayouts = new Map(String, Callable, {
             - this.context.nodes.increase.margin.left
             - this.context.nodes.increase.margin.right
             - this.context.nodes.increase.width() },
-          margin: { top: 5, bottom: 5, right: 13, left: 10 },
+          margin: { top: 2, bottom: 2, right: 13, left: 10 },
         },
         increase: {
           name: "numeric-slider-button.increase",
           x: function() { return this.context.width() - this.margin.right - this.width() },
-          width: function() { return 14 },
-          margin: { top: 5, bottom: 5, right: 14, left: 0 },
+          width: function() { return 16 },
+          margin: { top: 2, bottom: 2, right: 14, left: 0 },
         },
       }
     }
@@ -710,29 +743,28 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "color-picker.title",
-          height: function() { return 36 - this.margin.top - this.margin.bottom },
-          margin: { top: 2, bottom: 2 },
+          height: function() { return 28 },
         },
         red: {
           name: "color-picker.red",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          margin: { top: 3 },
-          height: function() { return 32 },
+          height: function() { return 28 },
+          margin: { top: 2 },
         },
         green: {
           name: "color-picker.green",
-          y: function() { return this.context.nodes.red.bottom() + this.margin.top },
-          height: function() { return 32 },
+          y: function() { return this.context.nodes.red.bottom() },
+          height: function() { return 28 },
         },
         blue: {
           name: "color-picker.blue",
-          y: function() { return this.context.nodes.green.bottom() + this.margin.top },
-          height: function() { return 32 },
+          y: function() { return this.context.nodes.green.bottom() },
+          height: function() { return 28 },
         },
         hex: {
           name: "color-picker.hex",
-          y: function() { return this.context.nodes.blue.bottom() + this.margin.top },
-          height: function() { return 32 },
+          y: function() { return this.context.nodes.blue.bottom()  },
+          height: function() { return 28 },
         }
       }
     }
@@ -745,14 +777,14 @@ global.__VELayouts = new Map(String, Callable, {
 
     Struct.set(layout.nodes, "alpha", {
       name: "color-picker.alpha",
-      y: function() { return this.context.nodes.blue.bottom() + this.margin.top },
-      height: function() { return 32 },
+      y: function() { return this.context.nodes.blue.bottom() },
+      height: function() { return 28 },
     })
 
     Struct.set(layout.nodes, "hex", {
       name: "color-picker.hex",
-      y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
-      height: function() { return 32 },
+      y: function() { return this.context.nodes.alpha.bottom()  },
+      height: function() { return 28 },
     })
 
     return layout
@@ -765,33 +797,32 @@ global.__VELayouts = new Map(String, Callable, {
       name: "spin-select",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       y: function() { return this.context.bottom() + this.margin.top },
-      height: function() { return 32 },
-      margin: { top: 2, bottom: 2 },
+      height: function() { return 28 },
       nodes: {
         label: {
           name: "spin-select.label",
-          width: function() { return 70 - this.margin.left - this.margin.right },
-          margin: { right: 5, left: 5 },
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
         },
         previous: {
           name: "spin-select.previous",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
-          width: function() { return 32 - this.margin.left - this.margin.right },
-          margin: { top: 8, bottom: 8, right: 8, left: 8 },
+          width: function() { return 20 },
+          margin: { top: 4, bottom: 4, right: 0, left: 5 },
         },
         preview: {
           name: "spin-select.preview",
           x: function() { return this.context.nodes.label.right()
             + (this.context.width() - this.context.nodes.label.right()) / 2.0
             - (this.width() / 2.0) },
-          width: function() { return 32 },
+          width: function() { return 28 },
         },
         next: {
           name: "spin-select.next",
           x: function() { return this.context.x() + this.context.width()
             - this.width() - this.margin.right },
-          width: function() { return 32 - this.margin.left - this.margin.right },
-          margin: { top: 8, bottom: 8, right: 8, left: 8 },
+          width: function() { return 20 },
+          margin: { top: 4, bottom: 4, right: 5, left: 0 },
         },
       }
     }
@@ -808,22 +839,22 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "transform-numeric-property.title",
-          height: function() { return 42 },
+          height: function() { return 28 },
         },
         target: {
           name: "transform-numeric-property.target",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factor: {
           name: "transform-numeric-property.factor",
           y: function() { return this.context.nodes.target.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         increment: {
           name: "transform-numeric-property.increment",
           y: function() { return this.context.nodes.factor.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       }
     }
@@ -839,27 +870,28 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "transform-numeric-uniform.title",
-          height: function() { return 42 },
+          height: function() { return 28 },
         },
         value: {
           name: "transform-numeric-uniform.value",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          margin: { top: 2 },
+          height: function() { return 28 },
         },
         target: {
           name: "transform-numeric-uniform.target",
           y: function() { return this.context.nodes.value.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factor: {
           name: "transform-numeric-uniform.factor",
           y: function() { return this.context.nodes.target.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         increase: {
           name: "transform-numeric-uniform.increase",
           y: function() { return this.context.nodes.factor.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       }
     }
@@ -883,47 +915,47 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "transform-vec2-uniform.title",
-          height: function() { return 42 },
+          height: function() { return 28 },
         },
         valueX: {
           name: "transform-vec2-uniform.valueX",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetX: {
           name: "transform-vec2-uniform.targetX",
           y: function() { return this.context.nodes.valueX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorX: {
           name: "transform-vec2-uniform.factorX",
           y: function() { return this.context.nodes.targetX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementX: {
           name: "transform-vec2-uniform.incrementX",
           y: function() { return this.context.nodes.factorX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         valueY: {
           name: "transform-vec2-uniform.valueY",
           y: function() { return this.context.nodes.incrementX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetY: {
           name: "transform-vec2-uniform.targetY",
           y: function() { return this.context.nodes.valueY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorY: {
           name: "transform-vec2-uniform.factorY",
           y: function() { return this.context.nodes.targetY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementY: {
           name: "transform-vec2-uniform.incrementY",
           y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       }
     }
@@ -947,67 +979,67 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "transform-vec3-uniform.title",
-          height: function() { return 42 },
+          height: function() { return 28 },
         },
         valueX: {
           name: "transform-vec3-uniform.valueX",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetX: {
           name: "transform-vec3-uniform.targetX",
           y: function() { return this.context.nodes.valueX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorX: {
           name: "transform-vec3-uniform.factorX",
           y: function() { return this.context.nodes.targetX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementX: {
           name: "transform-vec3-uniform.incrementX",
           y: function() { return this.context.nodes.factorX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         valueY: {
           name: "transform-vec3-uniform.valueY",
           y: function() { return this.context.nodes.incrementX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetY: {
           name: "transform-vec3-uniform.targetY",
           y: function() { return this.context.nodes.valueY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorY: {
           name: "transform-vec3-uniform.factorY",
           y: function() { return this.context.nodes.targetY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementY: {
           name: "transform-vec3-uniform.incrementY",
           y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         valueZ: {
           name: "transform-vec3-uniform.valueZ",
           y: function() { return this.context.nodes.incrementY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetZ: {
           name: "transform-vec3-uniform.targetZ",
           y: function() { return this.context.nodes.valueZ.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorZ: {
           name: "transform-vec3-uniform.factorZ",
           y: function() { return this.context.nodes.targetZ.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementZ: {
           name: "transform-vec3-uniform.incrementZ",
           y: function() { return this.context.nodes.factorZ.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       }
     }
@@ -1031,87 +1063,87 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         title: {
           name: "transform-vec4-uniform.title",
-          height: function() { return 42 },
+          height: function() { return 28 },
         },
         valueX: {
           name: "transform-vec4-uniform.valueX",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetX: {
           name: "transform-vec4-uniform.targetX",
           y: function() { return this.context.nodes.valueX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorX: {
           name: "transform-vec4-uniform.factorX",
           y: function() { return this.context.nodes.targetX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementX: {
           name: "transform-vec4-uniform.incrementX",
           y: function() { return this.context.nodes.factorX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         valueY: {
           name: "transform-vec4-uniform.valueY",
           y: function() { return this.context.nodes.incrementX.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetY: {
           name: "transform-vec4-uniform.targetY",
           y: function() { return this.context.nodes.valueY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorY: {
           name: "transform-vec4-uniform.factorY",
           y: function() { return this.context.nodes.targetY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementY: {
           name: "transform-vec4-uniform.incrementY",
           y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         valueZ: {
           name: "transform-vec4-uniform.valueZ",
           y: function() { return this.context.nodes.incrementY.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetZ: {
           name: "transform-vec4-uniform.targetZ",
           y: function() { return this.context.nodes.valueZ.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorZ: {
           name: "transform-vec4-uniform.factorZ",
           y: function() { return this.context.nodes.targetZ.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementZ: {
           name: "transform-vec4-uniform.incrementZ",
           y: function() { return this.context.nodes.factorZ.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         valueA: {
           name: "transform-vec4-uniform.valueA",
           y: function() { return this.context.nodes.incrementZ.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         targetA: {
           name: "transform-vec4-uniform.targetA",
           y: function() { return this.context.nodes.valueA.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factorA: {
           name: "transform-vec4-uniform.factorA",
           y: function() { return this.context.nodes.targetA.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         incrementA: {
           name: "transform-vec4-uniform.incrementA",
           y: function() { return this.context.nodes.factorA.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       }
     }
@@ -1131,7 +1163,7 @@ global.__VELayouts = new Map(String, Callable, {
           y: function() { return this.context.y() + this.margin.top },
           width: function() { return this.context.width() 
             - this.margin.left - this.margin.right },
-          height: function() { return 20 
+          height: function() { return 28 
             - this.margin.top - this.margin.bottom },
           margin: { bottom: 2, left: 5, right: 5 },
         },
@@ -1142,9 +1174,9 @@ global.__VELayouts = new Map(String, Callable, {
             + this.margin.top },
           width: function() { return this.context.width() 
             - this.margin.left - this.margin.right },
-          height: function() { return 32 
+          height: function() { return 28 
             - this.margin.top - this.margin.bottom },
-          margin: { bottom: 5, left: 5, right: 5 },
+          margin: { top: 2, bottom: 2, left: 5, right: 5 },
         },
         vec2y: {
           name: "uniform-vec2-field.vec2y",
@@ -1153,9 +1185,9 @@ global.__VELayouts = new Map(String, Callable, {
             + this.margin.top },
           width: function() { return this.context.width() 
             - this.margin.left - this.margin.right },
-          height: function() { return 32 
+          height: function() { return 28
             - this.margin.top - this.margin.bottom },
-          margin: { bottom: 5, left: 5, right: 5 },
+          margin: { top: 2, bottom: 2, left: 5, right: 5 },
         },
       }
     }
@@ -1171,22 +1203,22 @@ global.__VELayouts = new Map(String, Callable, {
       nodes: {
         x: {
           name: "vec4-field.x",
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         y: {
           name: "vec4-field.y",
           y: function() { return this.context.nodes.x.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         z: {
           name: "vec4-field.z",
           y: function() { return this.context.nodes.y.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         a: {
           name: "vec4-field.a",
           y: function() { return this.context.nodes.z.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       }
     }
@@ -1207,22 +1239,22 @@ global.__VELayouts = new Map(String, Callable, {
         value: {
           name: "vec4-value-checkbox.value",
           //y: function() { return this.context.nodes.title.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         target: {
           name: "vec4-value-checkbox.target",
           y: function() { return this.context.nodes.value.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         factor: {
           name: "vec4-value-checkbox.factor",
           y: function() { return this.context.nodes.target.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
         increase: {
           name: "vec4-value-checkbox.increase",
           y: function() { return this.context.nodes.factor.bottom() + this.margin.top },
-          height: function() { return 32 },
+          height: function() { return 28 },
         },
       }
     }

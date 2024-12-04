@@ -315,32 +315,7 @@ function brush_entity_shroom(json = null) {
         },
       },
       {
-        name: "en-shr_dir-rng",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Rng",
-            enable: { key: "en-shr_use-dir-rng" },
-          },  
-          field: { 
-            store: { key: "en-shr_dir-rng" },
-            enable: { key: "en-shr_use-dir-rng" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "en-shr_use-dir-rng" },
-          },
-          title: { 
-            text: "Enable",
-            enable: { key: "en-shr_use-dir-rng" },
-          },
-        },
-      },
-      {
-        name: "shroom-spawn_angle-slider",  
+        name: "en-shr_dir-slider",  
         template: VEComponents.get("numeric-slider-button"),
         layout: VELayouts.get("numeric-slider-button"),
         config: { 
@@ -380,6 +355,95 @@ function brush_entity_shroom(json = null) {
             minValue: 0.0,
             maxValue: 360.0,
             store: { key: "en-shr_dir" },
+            label: { text: "+" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() {
+              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
+            },
+          },
+        },
+      },
+      {
+        name: "en-shr_dir-rng",
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Rng",
+            enable: { key: "en-shr_use-dir-rng" },
+          },  
+          field: { 
+            store: { key: "en-shr_dir-rng" },
+            enable: { key: "en-shr_use-dir-rng" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "en-shr_use-dir-rng" },
+          },
+          title: { 
+            text: "Enable",
+            enable: { key: "en-shr_use-dir-rng" },
+          },
+        },
+      },
+      {
+        name: "en-shr_dir-rng-slider",  
+        template: VEComponents.get("numeric-slider-button"),
+        layout: VELayouts.get("numeric-slider-button"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "" },
+          decrease: {
+            factor: -1.0,
+            minValue: 0.0,
+            maxValue: 360.0,
+            store: { key: "en-shr_dir-rng" },
+            enable: { key: "en-shr_use-dir-rng" },
+            label: { text: "-" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() {
+              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
+            },
+          },
+          slider: {
+            minValue: 0.0,
+            maxValue: 360.0,
+            snapValue: 1.0 / 360.0,
+            store: { key: "en-shr_dir-rng" },
+            enable: { key: "en-shr_use-dir-rng" },
+          },
+          increase: {
+            factor: 1.0,
+            minValue: 0.0,
+            maxValue: 360.0,
+            store: { key: "en-shr_dir-rng" },
+            enable: { key: "en-shr_use-dir-rng" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
             backgroundColorSelected: VETheme.color.accent,

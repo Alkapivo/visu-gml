@@ -152,6 +152,8 @@ function VETrackControl(_editor) constructor {
           value: 0.0,
           minValue: 0.0,
           maxValue: 1.0,
+          getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
+          setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
           pointer: {
             name: "texture_slider_pointer_track_control",
             scaleX: 0.125,
@@ -169,7 +171,7 @@ function VETrackControl(_editor) constructor {
           updateCustom: function() {
             var controller = Beans.get(BeanVisuController)
             var trackService = controller.trackService
-            var mousePromise = MouseUtil.getClipboard()
+            var mousePromise = Beans.get(BeanVisuEditorIO).mouse.getClipboard()
             var context = Struct.get(Struct.get(mousePromise, "state"), "context")
             var ruler = Beans.get(BeanVisuEditorController).timeline.containers.get("ve-timeline-ruler")
             if (context == this) {
@@ -230,7 +232,7 @@ function VETrackControl(_editor) constructor {
           },
           onMouseDragLeft: function(event) {
             var context = this
-            MouseUtil.setClipboard(new Promise()
+            Beans.get(BeanVisuEditorIO).mouse.setClipboard(new Promise()
               .setState({
                 context: context,
                 callback: context.sendEvent,

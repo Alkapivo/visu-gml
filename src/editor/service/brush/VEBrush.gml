@@ -151,7 +151,7 @@ function VEBrush(template) constructor {
       type: Color,
       value: ColorUtil.fromHex(Struct.get(template, "color"), ColorUtil.fromHex("#FFFFFF")),
       passthrough: function(value) {
-        return ColorUtil.fromHex(value, this.value)
+        return Core.isType(value, Color) ? value : this.value
       },
     },
     "brush-texture": {
