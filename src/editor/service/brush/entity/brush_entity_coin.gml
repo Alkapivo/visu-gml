@@ -73,7 +73,7 @@ function brush_entity_coin(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Spawner preview",
+            text: "Preview spawn position",
             enable: { key: "en-coin_preview" },
             backgroundColor: VETheme.color.accentShadow,
             updateCustom: function() {
@@ -184,53 +184,15 @@ function brush_entity_coin(json = null) {
         layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Template" },
+          label: { text: "Coin" },
           field: { store: { key: "en-coin_template" } },
         },
       },
       {
-        name: "en-coin_x",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "X" },  
-          field: { store: { key: "en-coin_x" } },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "en-coin_snap-x" },
-          },
-          title: { 
-            text: "Snap",
-            enable: { key: "en-coin_snap-x" },
-          },
-        },
-      },
-      {
-        name: "en-coin_rng-x",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Rng",
-            enable: { key: "en-coin_use-rng-x" },
-          },  
-          field: { 
-            store: { key: "en-coin_rng-x" },
-            enable: { key: "en-coin_use-rng-x" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "en-coin_use-rng-x" },
-          },
-          title: { 
-            text: "Enable",
-            enable: { key: "en-coin_use-rng-x" },
-          },
-        },
+        name: "en-coin_x-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "en-coin_x-slider",  
@@ -238,7 +200,11 @@ function brush_entity_coin(json = null) {
         layout: VELayouts.get("numeric-slider-button"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "" },
+          label: { 
+            text: "X",
+            font: "font_inter_10_bold",
+            offset: { y: 14 },
+          }, 
           decrease: {
             factor: -1.0,
             minValue: -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2),
@@ -273,6 +239,143 @@ function brush_entity_coin(json = null) {
             minValue: -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2),
             maxValue: SHROOM_SPAWN_CHANNEL_AMOUNT / 2,
             store: { key: "en-coin_x" },
+            label: { text: "+" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() {
+              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
+            },
+          },
+        },
+      },
+      {
+        name: "en-coin_x",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "",
+            font: "font_inter_10_bold",
+          },  
+          field: { store: { key: "en-coin_x" } },
+          decrease: {
+            store: { key: "en-coin_x" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-coin_x" },
+            factor: 0.25,
+          },
+          field: { store: { key: "en-coin_x" } },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "en-coin_snap-x" },
+          },
+          title: { 
+            text: "Snap",
+            enable: { key: "en-coin_snap-x" },
+          },
+        },
+      },
+      {
+        name: "en-coin_rng-x",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Random",
+            enable: { key: "en-coin_use-rng-x" },
+          },  
+          field: { 
+            store: { key: "en-coin_rng-x" },
+            enable: { key: "en-coin_use-rng-x" },
+          },
+          decrease: {
+            store: { key: "en-coin_rng-x" },
+            enable: { key: "en-coin_use-rng-x" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-coin_rng-x" },
+            enable: { key: "en-coin_use-rng-x" },
+            factor: 0.25,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "en-coin_use-rng-x" },
+          },
+          title: { 
+            text: "Enable",
+            enable: { key: "en-coin_use-rng-x" },
+          },
+        },
+      },
+      {
+        name: "en-coin_y-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "en-coin_y-slider",  
+        template: VEComponents.get("numeric-slider-button"),
+        layout: VELayouts.get("numeric-slider-button"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Y",
+            font: "font_inter_10_bold",
+            offset: { y: 14 },
+          },  
+          decrease: {
+            factor: -1.0,
+            minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
+            maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
+            store: { key: "en-coin_y" },
+            label: { text: "-" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() {
+              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
+            },
+          },
+          slider: {
+            minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
+            maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
+            snapValue: 0.1,
+            store: { key: "en-coin_y" },
+          },
+          increase: {
+            factor: 1.0,
+            minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
+            maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
+            store: { key: "en-coin_y" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
             backgroundColorSelected: VETheme.color.accent,
@@ -295,11 +398,23 @@ function brush_entity_coin(json = null) {
       },
       {
         name: "en-coin_y",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Y" },  
+          label: { 
+            text: "",
+            font: "font_inter_10_bold",
+          },  
+          field: { store: { key: "en-coin_y" } },
+          decrease: {
+            store: { key: "en-coin_y" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-coin_y" },
+            factor: 0.25,
+          },
           field: { store: { key: "en-coin_y" } },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -314,17 +429,27 @@ function brush_entity_coin(json = null) {
       },
       {
         name: "en-coin_rng-y",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Rng",
+            text: "Random",
             enable: { key: "en-coin_use-rng-y" },
           },  
           field: { 
             store: { key: "en-coin_rng-y" },
             enable: { key: "en-coin_use-rng-y" },
+          },
+          decrease: {
+            store: { key: "en-coin_rng-y" },
+            enable: { key: "en-coin_use-rng-y" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-coin_rng-y" },
+            enable: { key: "en-coin_use-rng-y" },
+            factor: 0.25,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -334,67 +459,6 @@ function brush_entity_coin(json = null) {
           title: { 
             text: "Enable",
             enable: { key: "en-coin_use-rng-y" },
-          },
-        },
-      },
-      {
-        name: "en-coin_y-slider",  
-        template: VEComponents.get("numeric-slider-button"),
-        layout: VELayouts.get("numeric-slider-button"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "" },
-          decrease: {
-            factor: -1.0,
-            minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
-            maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
-            store: { key: "en-coin_y" },
-            label: { text: "-" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
-          slider: {
-            minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
-            maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
-            snapValue: 0.1,
-            store: { key: "en-coin_y" },
-          },
-          increase: {
-            factor: 1.0,
-            minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
-            maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
-            store: { key: "en-coin_y" },
-            label: { text: "+" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
           },
         },
       },

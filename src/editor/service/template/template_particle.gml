@@ -8,7 +8,7 @@ function template_particle(json = null) {
     store: new Map(String, Struct, {
       "particle_use-preview": {
         type: Boolean,
-        value: Struct.getDefault(json, "particle_use-preview", false) == true,
+        value: Struct.getIfType(json, "particle_use-preview", Boolean, false),
       },
       "particle-template": {
         type: ParticleTemplate,
@@ -16,44 +16,32 @@ function template_particle(json = null) {
       },
       "particle-blend": {
         type: Boolean,
-        value: Struct.getDefault(json, "blend", false) == true,
+        value: Struct.getIfType(json, "blend", Boolean, false),
       },
       "particle-color-start": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "start"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "start"), ColorUtil.fromHex("#ffffff")),
       },
       "particle-color-halfway": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "halfway"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "halfway"), ColorUtil.fromHex("#ffffff")),
       },
       "particle-color-finish": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "finish"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "finish"), ColorUtil.fromHex("#ffffff")),
       },
       "particle-use-sprite": {
         type: Boolean,
-        value: Optional.is(Struct.get(json, "sprite")),
+        value: Optional.is(Struct.getIfType(json, "sprite", Struct)),
       },
       "particle-sprite": {
         type: Sprite,
-        value: SpriteUtil.parse(Struct.get(json, "sprite"), { name: "texture_particle" }),
-      },
-      "particle-sprite-animate": {
-        type: Boolean,
-        value: Optional.is(Struct.get(json, "sprite"))
-          ? Struct.getDefault(json.sprite, "animate", false) == true
-          : false,
-      },
-      "particle-sprite-randomValue": {
-        type: Boolean,
-        value: Optional.is(Struct.get(json, "sprite"))
-          ? Struct.getDefault(json.sprite, "randomValue", false) == true
-          : false,
+        value: SpriteUtil.parse(Struct.getIfType(json, "sprite", Struct), { name: "texture_particle" }),
       },
       "particle-sprite-stretch": {
         type: Boolean,
-        value: Optional.is(Struct.get(json, "sprite"))
-          ? Struct.getDefault(json.sprite, "stretch", false) == true
+        value: Core.isType(Struct.get(json, "sprite"), Struct)
+          ? Struct.getIfType(json.sprite, "stretch", Boolean, false)
           : false,
       },
     }),
@@ -65,7 +53,7 @@ function template_particle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Particle preview",
+            text: "Preview emitter area",
             enable: { key: "particle_use-preview" },
             backgroundColor: VETheme.color.accentShadow,
           },
@@ -80,77 +68,6 @@ function template_particle(json = null) {
           }
         },
       },
-      #region Shape
-      {
-        name: "particle_shape",
-        template: VEComponents.get("spin-select-override"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Shape" },
-          previous: { 
-            callback: function() {
-              var template = this.store.get("particle-template").get()
-              var keys = ParticleShape.keys()
-              var index = keys.findIndex(Lambda.equal, template.shape)
-              index = index - 1 < 0 ? keys.size() - 1 : index - 1
-              template.shape = keys.get(index)
-              this.store.get("particle-template").set(template)
-            },
-            store: { 
-              key: "particle-template",
-              callback: function(value, data) { },
-              set: function(value) { },
-            },
-          },
-          preview: Struct.appendRecursive({ 
-            store: {
-              key: "particle-template",
-              callback: function(value, data) {
-                if (!Core.isType(value, ParticleTemplate)) {
-                  return
-                }
-                data.label.text = value.shape
-              }
-            },
-          }, Struct.get(VEStyles.get("spin-select-label_no-store"), "preview"), false),
-          next: { 
-            callback: function() {
-              var template = this.store.get("particle-template").get()
-              var keys = ParticleShape.keys()
-              var index = keys.findIndex(function(key, index, acc) { ///@todo move to Lambda util
-                return key == acc
-              }, template.shape)
-              index = index + 1 >= keys.size() ? 0 : index + 1
-              template.shape = keys.get(index)
-              this.store.get("particle-template").set(template)
-            },
-            store: { 
-              key: "particle-template",
-              callback: function(value, data) { },
-              set: function(value) { },
-            },
-          },
-        },
-      },
-      #endregion
-      #region Blend
-      {
-        name: "particle_blend",
-        template: VEComponents.get("boolean-field"),
-        layout: VELayouts.get("boolean-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Blend" },
-          field: { 
-            store: { key: "particle-blend" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          },
-        },
-      },
-      #endregion
-      #region Sprite
       {
         name: "particle_sprite",
         template: VEComponents.get("texture-field-simple"),
@@ -159,7 +76,7 @@ function template_particle(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Set texture",
+              text: "Particle texture",
               enable: { key: "particle-use-sprite" },
             },  
             checkbox: { 
@@ -178,95 +95,181 @@ function template_particle(json = null) {
               enable: { key: "particle-use-sprite" },
             },
           },
-          frame: {
-            label: {
-              text: "Frame",
-              enable: { key: "particle-use-sprite" },
-            },
-            field: {
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-          },
-          alpha: {
-            label: {
-              text: "Alpha",
-              enable: { key: "particle-use-sprite" },
-            },
-            field: {
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-            slider: { 
-              minValue: 0.0,
-              maxValue: 1.0,
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-          },
           preview: {
             image: { name: "texture_empty" },
             store: { key: "particle-sprite" },
             enable: { key: "particle-use-sprite" },
           },
+          resolution: {
+            store: { key: "particle-sprite" },
+            enable: { key: "particle-use-sprite" },
+          },
+          frame: {
+            label: {
+              text: "Frame",
+              enable: { key: "particle-use-sprite" },
+            },
+            field: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            decrease: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            increase: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            checkbox: { 
+              store: { key: "particle-sprite" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "particle-use-sprite" },
+            },
+            title: { enable: { key: "particle-use-sprite" } },
+          },
+          speed: {
+            label: {
+              text: "Speed",
+              enable: { key: "particle-use-sprite" },
+            },
+            field: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            decrease: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            increase: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            checkbox: { 
+              store: { key: "particle-sprite" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "particle-use-sprite" },
+            },
+            title: { enable: { key: "particle-use-sprite" } },
+          },
         },
       },
       {
-        name: "particle_sprite-animate",
-        template: VEComponents.get("boolean-field"),
-        layout: VELayouts.get("boolean-field"),
+        name: "particle_sprite-blend-stretch",
+        template: VEComponents.get("double-checkbox"),
+        layout: VELayouts.get("double-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Animate",
+            text: "",
             enable: { key: "particle-use-sprite" },
           },
-          field: { 
-            store: { key: "particle-sprite-animate" },
+          checkbox1: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "particle-blend" },
             enable: { key: "particle-use-sprite" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
           },
-        },
-      },
-      {
-        name: "particle_sprite-stretch",
-        template: VEComponents.get("boolean-field"),
-        layout: VELayouts.get("boolean-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
+          label1: {
+            text: "Blend",
+            enable: { key: "particle-use-sprite" },
+          },
+          checkbox2: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "particle-sprite-stretch" },
+            enable: { key: "particle-use-sprite" },
+          },
+          label2: {
             text: "Stretch",
             enable: { key: "particle-use-sprite" },
           },
-          field: { 
-            store: { key: "particle-sprite-stretch" },
-            enable: { key: "particle-use-sprite" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+        },
+      },
+      {
+        name: "particle_sprite-blend-stretch-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "particle_shape",
+        template: VEComponents.get("spin-select-override"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Shape",
+            enable: { 
+              key: "particle-use-sprite",
+              negate: true,
+            },
+          },
+          previous: { 
+            callback: function() {
+              var template = this.store.get("particle-template").get()
+              var keys = ParticleShape.keys()
+              var index = keys.findIndex(Lambda.equal, template.shape)
+              index = index - 1 < 0 ? keys.size() - 1 : index - 1
+              template.shape = keys.get(index)
+              this.store.get("particle-template").set(template)
+            },
+            store: { 
+              key: "particle-template",
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+            enable: { 
+              key: "particle-use-sprite",
+              negate: true,
+            },
+          },
+          preview: Struct.appendRecursive({ 
+            store: {
+              key: "particle-template",
+              callback: function(value, data) {
+                if (!Core.isType(value, ParticleTemplate)) {
+                  return
+                }
+                data.label.text = value.shape
+              }
+            },
+            enable: { 
+              key: "particle-use-sprite",
+              negate: true,
+            },
+          }, Struct.get(VEStyles.get("spin-select-label_no-store"), "preview"), false),
+          next: { 
+            callback: function() {
+              var template = this.store.get("particle-template").get()
+              var keys = ParticleShape.keys()
+              var index = keys.findIndex(function(key, index, acc) { ///@todo move to Lambda util
+                return key == acc
+              }, template.shape)
+              index = index + 1 >= keys.size() ? 0 : index + 1
+              template.shape = keys.get(index)
+              this.store.get("particle-template").set(template)
+            },
+            store: { 
+              key: "particle-template",
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+            enable: { 
+              key: "particle-use-sprite",
+              negate: true,
+            },
           },
         },
       },
       {
-        name: "particle_sprite-randomValue",
-        template: VEComponents.get("boolean-field"),
-        layout: VELayouts.get("boolean-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Random",
-            enable: { key: "particle-use-sprite" },
-          },
-          field: { 
-            store: { key: "particle-sprite-randomValue" },
-            enable: { key: "particle-use-sprite" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          },
-        },
+        name: "particle-shape-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
-      #endregion
-      #region Color
       {
         name: "particle_color-start",
         template: VEComponents.get("color-picker"),
@@ -360,15 +363,24 @@ function template_particle(json = null) {
           },
         },
       },
-      #endregion
-      #region Alpha
+      {
+        name: "particle-color-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_alpha",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Alpha" },
+          label: { 
+            text: "Alpha",
+            //backgroundColor: VETheme.color.accentShadow,
+          },
+          //input: { backgroundColor: VETheme.color.accentShadow },
+          //checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -561,15 +573,24 @@ function template_particle(json = null) {
         },minValue: 0.0,
             maxValue: 1.0,
       },
-      #endregion
-      #region Angle
+      {
+        name: "particle-alpha-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_angle",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Angle" },
+          label: {
+            text: "Angle",
+            //backgroundColor: VETheme.color.accentShadow,
+          },
+          //input: { backgroundColor: VETheme.color.accentShadow },
+          //checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -768,15 +789,24 @@ function template_particle(json = null) {
           }
         },
       },
-      #endregion
-      #region Size
+      {
+        name: "particle-angle-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_size",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Size" },
+          label: {
+            text: "Size",
+            //backgroundColor: VETheme.color.accentShadow,
+          },
+          //input: { backgroundColor: VETheme.color.accentShadow },
+          //checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -919,15 +949,24 @@ function template_particle(json = null) {
           },
         },
       },
-      #endregion
-      #region Speed
+      {
+        name: "particle-size-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_speed",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Speed" },
+          label: {
+            text: "Speed",
+            //backgroundColor: VETheme.color.accentShadow,
+          },
+          //input: { backgroundColor: VETheme.color.accentShadow },
+          //checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -1070,15 +1109,24 @@ function template_particle(json = null) {
           },
         },
       },
-      #endregion
-      #region Scale
+      {
+        name: "particle-speed-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_scale",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Scale" },
+          label: {
+            text: "Scale",
+            //backgroundColor: VETheme.color.accentShadow,
+          },
+          //input: { backgroundColor: VETheme.color.accentShadow },
+          //checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -1151,15 +1199,24 @@ function template_particle(json = null) {
           },
         },
       },
-      #endregion
-      #region Gravity
+      {
+        name: "particle-scale-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_gravity",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Gravity" },
+          label: {
+            text: "Gravity",
+            //backgroundColor: VETheme.color.accentShadow,
+          },
+          //input: { backgroundColor: VETheme.color.accentShadow },
+          //checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -1260,15 +1317,24 @@ function template_particle(json = null) {
           },
         },
       },
-      #endregion
-      #region Life
+      {
+        name: "particle-gravity-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_life",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Life" },
+          label: {
+            text: "Life",
+            //backgroundColor: VETheme.color.accentShadow,
+          },
+          //input: { backgroundColor: VETheme.color.accentShadow },
+          //checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -1341,15 +1407,24 @@ function template_particle(json = null) {
           },
         },
       },
-      #endregion
-      #region Orientation
+      {
+        name: "particle-life-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_orientation",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Orientation" },
+          label: {
+            text: "Orientation",
+            //backgroundColor: VETheme.color.accentShadow,
+          },
+          //input: { backgroundColor: VETheme.color.accentShadow },
+          //checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -1583,7 +1658,6 @@ function template_particle(json = null) {
           }
         },
       },
-      #endregion
     ]),
   }
   return template

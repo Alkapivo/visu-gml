@@ -74,9 +74,6 @@ function GridRenderer() constructor {
   ///@type {?Number}
   channelXStart = null
 
-  ///@type {Boolean}
-  renderDebugSurfaces = Core.getProperty("visu.debug.renderDebugSurfaces", false)
-
   ///@private
   ///@return {GridRenderer}
   init = function() {
@@ -810,7 +807,8 @@ function GridRenderer() constructor {
           (shroom.y - ((shroom.sprite.texture.height * shroom.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((shroom.sprite.texture.offsetY * shroom.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
         )
         .setAlpha(alpha)
-      
+    }
+    static debugRenderShroomMask = function(shroom, index, gridService) {
       GPU.render.rectangle(
         (shroom.x - ((shroom.mask.getWidth() * shroom.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
         (shroom.y - ((shroom.mask.getHeight() * shroom.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
@@ -827,6 +825,7 @@ function GridRenderer() constructor {
     }
 
     shroomService.shrooms.forEach(debugRenderShroom, gridService)
+    shroomService.shrooms.forEach(debugRenderShroomMask, gridService)
     return this
   }
 
@@ -842,7 +841,8 @@ function GridRenderer() constructor {
           (bullet.x - ((bullet.sprite.texture.width * bullet.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((bullet.sprite.texture.offsetX * bullet.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
           (bullet.y - ((bullet.sprite.texture.height * bullet.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((bullet.sprite.texture.offsetY * bullet.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
         )
-
+    }
+    static debugRenderBulletMask = function(bullet, index, gridService) {
       GPU.render.rectangle(
         (bullet.x - ((bullet.mask.getWidth() * bullet.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
         (bullet.y - ((bullet.mask.getHeight() * bullet.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
@@ -859,6 +859,7 @@ function GridRenderer() constructor {
     }
 
     bulletService.bullets.forEach(debugRenderBullet, gridService)
+    bulletService.bullets.forEach(debugRenderBulletMask, gridService)
     return this
   }
 
@@ -868,12 +869,12 @@ function GridRenderer() constructor {
   ///@return {GridRenderer}
   debugRenderCoins = function(gridService, coinService) {
     static debugRenderCoin = function(coin, index, gridService) {
-      coin.sprite
-        .render(
-          (coin.x - ((coin.sprite.texture.width * coin.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((coin.sprite.texture.offsetX * coin.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-          (coin.y - ((coin.sprite.texture.height * coin.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((coin.sprite.texture.offsetY * coin.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-        )
-
+      coin.sprite.render(
+        (coin.x - ((coin.sprite.texture.width * coin.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((coin.sprite.texture.offsetX * coin.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (coin.y - ((coin.sprite.texture.height * coin.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((coin.sprite.texture.offsetY * coin.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+      )
+    }
+    static debugRenderCoinMask = function(coin, index, gridService) {
       GPU.render.rectangle(
         (coin.x - ((coin.mask.getWidth() * coin.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
         (coin.y - ((coin.mask.getHeight() * coin.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
@@ -890,6 +891,7 @@ function GridRenderer() constructor {
     }
 
     coinService.coins.forEach(debugRenderCoin, gridService)
+    coinService.coins.forEach(debugRenderCoinMask, gridService)
     return this
   }
 
@@ -977,7 +979,7 @@ function GridRenderer() constructor {
     var particleService = controller.particleService
     var width = layout.width()
     var height = layout.height()
-    var debugMode = is_debug_overlay_open()
+    var debugMode = Visu.settings.getValue("visu.debug.render-entities-mask", false)
     var _renderPlayer = this.renderPlayer
     var _renderShrooms = this.renderShrooms
     var _renderBullets = this.renderBullets
@@ -1392,7 +1394,7 @@ function GridRenderer() constructor {
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   renderGUI = function(layout) {
-    if (this.renderDebugSurfaces) {
+    if (Visu.settings.getValue("visu.debug.render-surfaces")) {
       draw_clear_alpha(c_fuchsia, 1.0)
       this.backgroundSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, 0.0, 0.0)
       this.gridSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, GuiWidth() / 2.0, 0.0)

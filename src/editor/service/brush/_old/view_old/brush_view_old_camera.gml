@@ -1,5 +1,14 @@
 ///@package io.alkapivo.visu.editor.service.brush._old.view_old
 
+///@param {Struct} json
+///@return {Struct}
+function migrateViewOldCameraEvent(json) {
+  return {
+
+  }
+}
+
+
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_view_old_camera(json = null) {

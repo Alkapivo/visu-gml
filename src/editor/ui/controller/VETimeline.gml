@@ -479,6 +479,12 @@ function VETimeline(_editor) constructor {
           }
         },
         onMouseDragLeft: function(event) {
+          var mouse = Beans.get(BeanVisuEditorIO).mouse
+          var name = Struct.get(mouse.getClipboard(), "name")
+          if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+            return
+          }
+
           var initialized = this.controller.containers
             .get("ve-timeline-events").state
             .get("initialized")
@@ -1038,6 +1044,7 @@ function VETimeline(_editor) constructor {
 
           if (!mouse_check_button(mb_left) && !mouse_check_button_released(mb_left)) {
             Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
+            Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
             return
           }
 
@@ -1730,6 +1737,12 @@ function VETimeline(_editor) constructor {
         },
 
         onMouseDragLeft: function(event) {
+          var mouse = Beans.get(BeanVisuEditorIO).mouse
+          var name = Struct.get(mouse.getClipboard(), "name")
+          if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+            return
+          }
+
           var timestampFrom = this.getTimestampFromMouseX(event.data.x)
           var channelIndexFrom = this.getChannelIndexFromMouseY(event.data.y)
           if (!Optional.is(channelIndexFrom)) {
@@ -1872,6 +1885,12 @@ function VETimeline(_editor) constructor {
                 this.area.setY(this.component.index * this.area.getHeight())
               },
               onMouseDragLeft: function(event) {
+                var mouse = Beans.get(BeanVisuEditorIO).mouse
+                var name = Struct.get(mouse.getClipboard(), "name")
+                if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+                  return
+                }
+                
                 var store = Beans.get(BeanVisuEditorController).store
                 var tool = store.getValue("tool")
                 if (tool == ToolType.ERASE) {
@@ -2277,6 +2296,7 @@ function VETimeline(_editor) constructor {
             this.state.set("mouseX", null)
             this.state.set("time", timestamp)
             Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
+            Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
             return controller.send(new Event("rewind", { 
               timestamp: timestamp,
             }))
@@ -2374,8 +2394,14 @@ function VETimeline(_editor) constructor {
         },
         onMouseDragLeft: function(event) {
           var context = this
+          var mouse = Beans.get(BeanVisuEditorIO).mouse
+          var name = Struct.get(mouse.getClipboard(), "name")
+          if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+            return
+          }
           this.state.set("mouseX", event.data.x)
-          Beans.get(BeanVisuEditorIO).mouse.setClipboard(new Promise()
+          
+          mouse.setClipboard(new Promise()
             .setState({
               context: context,
               callback: context.releaseMouseX,

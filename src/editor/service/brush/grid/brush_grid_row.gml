@@ -25,11 +25,20 @@ function brush_grid_row(json = null) {
       "gr-r_amount": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getIfType(json, "gr-r_amount", Struct, { 
-          value: 0, 
-          target: 1, 
+          value: 0.0, 
+          target: 4.0, 
           factor: 0.01, 
-          increase: 0,
+          increase: 0.0,
         })),
+        passthrough: function(value) {
+          if (!Core.isType(value, NumberTransformer)) {
+            return this.value
+          }
+
+          value.value = clamp(value.value, 0.0, 999.9)
+          value.target = clamp(value.target, 0.0, 999.9)
+          return value
+        },
       },
       "gr-r_change-amount": {
         type: Boolean,
@@ -61,11 +70,20 @@ function brush_grid_row(json = null) {
       "gr-r_main-alpha": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getIfType(json, "gr-r_main-alpha", Struct, { 
-          value: 0, 
-          target: 1, 
-          factor: 0.01, 
-          increase: 0,
+          value: 0.0, 
+          target: 1.0, 
+          factor: 0.001, 
+          increase: 0.0,
         })),
+        passthrough: function(value) {
+          if (!Core.isType(value, NumberTransformer)) {
+            return this.value
+          }
+
+          value.value = clamp(value.value, 0.0, 1.0)
+          value.target = clamp(value.target, 0.0, 1.0)
+          return value
+        },
       },
       "gr-r_change-main-alpha": {
         type: Boolean,
@@ -78,11 +96,20 @@ function brush_grid_row(json = null) {
       "gr-r_main-size": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getIfType(json, "gr-r_main-size", Struct, { 
-          value: 0, 
-          target: 1, 
+          value: 0.0, 
+          target: 5.0, 
           factor: 0.01, 
-          increase: 0,
+          increase: 0.0,
         })),
+        passthrough: function(value) {
+          if (!Core.isType(value, NumberTransformer)) {
+            return this.value
+          }
+
+          value.value = clamp(value.value, 0.0, 9999.9)
+          value.target = clamp(value.target, 0.0, 9999.9)
+          return value
+        },
       },
       "gr-r_change-main-size": {
         type: Boolean,
@@ -114,11 +141,20 @@ function brush_grid_row(json = null) {
       "gr-r_side-alpha": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getIfType(json, "gr-r_side-alpha", Struct, { 
-          value: 0, 
-          target: 1, 
-          factor: 0.01, 
-          increase: 0,
+          value: 0.0, 
+          target: 1.0, 
+          factor: 0.001, 
+          increase: 0.0,
         })),
+        passthrough: function(value) {
+          if (!Core.isType(value, NumberTransformer)) {
+            return this.value
+          }
+
+          value.value = clamp(value.value, 0.0, 1.0)
+          value.target = clamp(value.target, 0.0, 1.0)
+          return value
+        },
       },
       "gr-r_change-side-alpha": {
         type: Boolean,
@@ -131,11 +167,20 @@ function brush_grid_row(json = null) {
       "gr-r_side-size": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getIfType(json, "gr-r_side-size", Struct, { 
-          value: 0, 
-          target: 1, 
+          value: 0.0, 
+          target: 5.0, 
           factor: 0.01, 
-          increase: 0,
+          increase: 0.0,
         })),
+        passthrough: function(value) {
+          if (!Core.isType(value, NumberTransformer)) {
+            return this.value
+          }
+
+          value.value = clamp(value.value, 0.0, 9999.9)
+          value.target = clamp(value.target, 0.0, 9999.9)
+          return value
+        },
       },
       "gr-r_change-side-size": {
         type: Boolean,
@@ -150,13 +195,16 @@ function brush_grid_row(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Render mode",
+            text: "Row render mode",
             enable: { key: "gr-r_use-mode" },
+            backgroundColor: VETheme.color.accentShadow,
           },
+          input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "gr-r_use-mode" },
+            backgroundColor: VETheme.color.accentShadow,
           },
         },
       },
@@ -185,28 +233,37 @@ function brush_grid_row(json = null) {
         },
       },
       {
-        name: "gr-r_amount-title",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Amount" },
-        },
+        name: "gr-r_mode-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "gr-r_amount",
-        template: VEComponents.get("vec4-value-checkbox"),
-        layout: VELayouts.get("vec4-value-checkbox"),
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Value",
+              text: "Amount",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textFocus,
               enable: { key: "gr-r_use-amount" },
             },
             field: {
               store: { key: "gr-r_amount" },
               enable: { key: "gr-r_use-amount" },
+            },
+            decrease: {
+              store: { key: "gr-r_amount" },
+              enable: { key: "gr-r_use-amount" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "gr-r_amount" },
+              enable: { key: "gr-r_use-amount" },
+              factor: 0.25,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -227,6 +284,16 @@ function brush_grid_row(json = null) {
               store: { key: "gr-r_amount" },
               enable: { key: "gr-r_change-amount" },
             },
+            decrease: {
+              store: { key: "gr-r_amount" },
+              enable: { key: "gr-r_change-amount" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "gr-r_amount" },
+              enable: { key: "gr-r_change-amount" },
+              factor: 0.25,
+            },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
@@ -246,6 +313,16 @@ function brush_grid_row(json = null) {
               store: { key: "gr-r_amount" },
               enable: { key: "gr-r_change-amount" },
             },
+            decrease: {
+              store: { key: "gr-r_amount" },
+              enable: { key: "gr-r_change-amount" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "gr-r_amount" },
+              enable: { key: "gr-r_change-amount" },
+              factor: 0.01,
+            },
           },
           increase: {
             label: {
@@ -255,6 +332,258 @@ function brush_grid_row(json = null) {
             field: {
               store: { key: "gr-r_amount" },
               enable: { key: "gr-r_change-amount" },
+            },
+            decrease: {
+              store: { key: "gr-r_amount" },
+              enable: { key: "gr-r_change-amount" },
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "gr-r_amount" },
+              enable: { key: "gr-r_change-amount" },
+              factor: 0.001,
+            },
+          },
+        },
+      },
+      {
+        name: "gr-r_amount-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "gr-r_main-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Main rows",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
+        },
+      },
+      {
+        name: "gr-r_main-size",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          value: {
+            label: {
+              text: "Thickness",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textFocus,
+              enable: { key: "gr-r_use-main-size" },
+            },
+            field: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_use-main-size" },
+            },
+            decrease: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_use-main-size" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_use-main-size" },
+              factor: 0.25,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "gr-r_use-main-size" },
+            },
+            title: { 
+              text: "Override",
+              enable: { key: "gr-r_use-main-size" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "gr-r_change-main-size" },
+            },
+            field: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+            },
+            decrease: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+              factor: 0.25,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "gr-r_change-main-size" },
+            },
+            title: { 
+              text: "Change",
+              enable: { key: "gr-r_change-main-size" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "gr-r_change-main-size" },
+            },
+            field: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+            },
+            decrease: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+              factor: 0.01,
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: { key: "gr-r_change-main-size" },
+            },
+            field: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+            },
+            decrease: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "gr-r_main-size" },
+              enable: { key: "gr-r_change-main-size" },
+              factor: 0.001,
+            },
+          },
+        },
+      },
+      {
+        name: "gr-r_main-size-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "gr-r_main-alpha",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          value: {
+            label: {
+              text: "Alpha",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textFocus,
+              enable: { key: "gr-r_use-main-alpha" },
+            },
+            field: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_use-main-alpha" },
+            },
+            decrease: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_use-main-alpha" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_use-main-alpha" },
+              factor: 0.01,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "gr-r_use-main-alpha" },
+            },
+            title: { 
+              text: "Override",
+              enable: { key: "gr-r_use-main-alpha" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "gr-r_change-main-alpha" },
+            },
+            field: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+            },
+            decrease: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+              factor: 0.01,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "gr-r_change-main-alpha" },
+            },
+            title: { 
+              text: "Change",
+              enable: { key: "gr-r_change-main-alpha" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "gr-r_change-main-alpha" },
+            },
+            field: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+            },
+            decrease: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+              factor: 0.001,
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: { key: "gr-r_change-main-alpha" },
+            },
+            field: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+            },
+            decrease: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+              factor: -0.0001,
+            },
+            increase: {
+              store: { key: "gr-r_main-alpha" },
+              enable: { key: "gr-r_change-main-alpha" },
+              factor: 0.0001,
             },
           },
         },
@@ -267,7 +596,7 @@ function brush_grid_row(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: { 
             label: {
-              text: "Main color",
+              text: "Color",
               enable: { key: "gr-r_use-main-col" },
             },
             checkbox: { 
@@ -336,8 +665,8 @@ function brush_grid_row(json = null) {
       },
       {
         name: "gr-r_main-col-spd",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -347,6 +676,16 @@ function brush_grid_row(json = null) {
           field: { 
             store: { key: "gr-r_main-col-spd" },
             enable: { key: "gr-r_use-main-col-spd" },
+          },
+          decrease: {
+            store: { key: "gr-r_main-col-spd" },
+            enable: { key: "gr-r_use-main-col-spd" },
+            factor: -0.001,
+          },
+          increase: {
+            store: { key: "gr-r_main-col-spd" },
+            enable: { key: "gr-r_use-main-col-spd" },
+            factor: 0.001,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -360,151 +699,243 @@ function brush_grid_row(json = null) {
         },
       },
       {
-        name: "gr-r_main-alpha-title",
+        name: "gr-r_main-col-spd-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "gr-r_side-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Main alpha" },
+          label: { 
+            text: "Side rows",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
-        name: "gr-r_main-alpha",
-        template: VEComponents.get("vec4-value-checkbox"),
-        layout: VELayouts.get("vec4-value-checkbox"),
+        name: "gr-r_side-size",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Value",
-              enable: { key: "gr-r_use-main-alpha" },
+              text: "Thickness",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textFocus,
+              enable: { key: "gr-r_use-side-size" },
             },
             field: {
-              store: { key: "gr-r_main-alpha" },
-              enable: { key: "gr-r_use-main-alpha" },
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_use-side-size" },
+            },
+            decrease: {
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_use-side-size" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_use-side-size" },
+              factor: 0.25,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-r_use-main-alpha" },
+              store: { key: "gr-r_use-side-size" },
             },
             title: { 
               text: "Override",
-              enable: { key: "gr-r_use-main-alpha" },
+              enable: { key: "gr-r_use-side-size" },
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "gr-r_change-main-alpha" },
+              enable: { key: "gr-r_change-side-size" },
             },
             field: {
-              store: { key: "gr-r_main-alpha" },
-              enable: { key: "gr-r_change-main-alpha" },
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+            },
+            decrease: {
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+              factor: 0.25,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-r_change-main-alpha" },
+              store: { key: "gr-r_change-side-size" },
             },
             title: { 
               text: "Change",
-              enable: { key: "gr-r_change-main-alpha" },
+              enable: { key: "gr-r_change-side-size" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "gr-r_change-main-alpha" },
+              enable: { key: "gr-r_change-side-size" },
             },
             field: {
-              store: { key: "gr-r_main-alpha" },
-              enable: { key: "gr-r_change-main-alpha" },
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+            },
+            decrease: {
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+              factor: 0.01,
             },
           },
           increase: {
             label: {
               text: "Increase",
-              enable: { key: "gr-r_change-main-alpha" },
+              enable: { key: "gr-r_change-side-size" },
             },
             field: {
-              store: { key: "gr-r_main-alpha" },
-              enable: { key: "gr-r_change-main-alpha" },
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+            },
+            decrease: {
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "gr-r_side-size" },
+              enable: { key: "gr-r_change-side-size" },
+              factor: 0.001,
             },
           },
         },
       },
       {
-        name: "gr-r_main-size-title",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Main size" },
-        },
+        name: "gr-r_side-size-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "gr-r_main-size",
-        template: VEComponents.get("vec4-value-checkbox"),
-        layout: VELayouts.get("vec4-value-checkbox"),
+        name: "gr-r_side-alpha",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Value",
-              enable: { key: "gr-r_use-main-size" },
+              text: "Alpha",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textFocus,
+              enable: { key: "gr-r_use-side-alpha" },
             },
             field: {
-              store: { key: "gr-r_main-size" },
-              enable: { key: "gr-r_use-main-size" },
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_use-side-alpha" },
+            },
+            decrease: {
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_use-side-alpha" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_use-side-alpha" },
+              factor: 0.01,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-r_use-main-size" },
+              store: { key: "gr-r_use-side-alpha" },
             },
             title: { 
               text: "Override",
-              enable: { key: "gr-r_use-main-size" },
+              enable: { key: "gr-r_use-side-alpha" },
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "gr-r_change-main-size" },
+              enable: { key: "gr-r_change-side-alpha" },
             },
             field: {
-              store: { key: "gr-r_main-size" },
-              enable: { key: "gr-r_change-main-size" },
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+            },
+            decrease: {
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+              factor: 0.01,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-r_change-main-size" },
+              store: { key: "gr-r_change-side-alpha" },
             },
             title: { 
               text: "Change",
-              enable: { key: "gr-r_change-main-size" },
+              enable: { key: "gr-r_change-side-alpha" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "gr-r_change-main-size" },
+              enable: { key: "gr-r_change-side-alpha" },
             },
             field: {
-              store: { key: "gr-r_main-size" },
-              enable: { key: "gr-r_change-main-size" },
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+            },
+            decrease: {
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+              factor: 0.001,
             },
           },
           increase: {
             label: {
               text: "Increase",
-              enable: { key: "gr-r_change-main-size" },
+              enable: { key: "gr-r_change-side-alpha" },
             },
             field: {
-              store: { key: "gr-r_main-size" },
-              enable: { key: "gr-r_change-main-size" },
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+            },
+            decrease: {
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+              factor: -0.0001,
+            },
+            increase: {
+              store: { key: "gr-r_side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" },
+              factor: 0.0001,
             },
           },
         },
@@ -517,7 +948,7 @@ function brush_grid_row(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: { 
             label: {
-              text: "Side color",
+              text: "Color",
               enable: { key: "gr-r_use-side-col" },
             },
             checkbox: { 
@@ -586,8 +1017,8 @@ function brush_grid_row(json = null) {
       },
       {
         name: "gr-r_side-col-spd",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -598,6 +1029,16 @@ function brush_grid_row(json = null) {
             store: { key: "gr-r_side-col-spd" },
             enable: { key: "gr-r_use-side-col-spd" },
           },
+          decrease: {
+            store: { key: "gr-r_side-col-spd" },
+            enable: { key: "gr-r_use-side-col-spd" },
+            factor: -0.001,
+          },
+          increase: {
+            store: { key: "gr-r_side-col-spd" },
+            enable: { key: "gr-r_use-side-col-spd" },
+            factor: 0.001,
+          },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
@@ -606,156 +1047,6 @@ function brush_grid_row(json = null) {
           title: { 
             text: "Enable",
             enable: { key: "gr-r_use-side-col-spd" },
-          },
-        },
-      },
-      {
-        name: "gr-r_side-alpha-title",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Side alpha" },
-        },
-      },
-      {
-        name: "gr-r_side-alpha",
-        template: VEComponents.get("vec4-value-checkbox"),
-        layout: VELayouts.get("vec4-value-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          value: {
-            label: {
-              text: "Value",
-              enable: { key: "gr-r_use-side-alpha" },
-            },
-            field: {
-              store: { key: "gr-r_side-alpha" },
-              enable: { key: "gr-r_use-side-alpha" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-r_use-side-alpha" },
-            },
-            title: { 
-              text: "Override",
-              enable: { key: "gr-r_use-side-alpha" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "gr-r_change-side-alpha" },
-            },
-            field: {
-              store: { key: "gr-r_side-alpha" },
-              enable: { key: "gr-r_change-side-alpha" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-r_change-side-alpha" },
-            },
-            title: { 
-              text: "Change",
-              enable: { key: "gr-r_change-side-alpha" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "gr-r_change-side-alpha" },
-            },
-            field: {
-              store: { key: "gr-r_side-alpha" },
-              enable: { key: "gr-r_change-side-alpha" },
-            },
-          },
-          increase: {
-            label: {
-              text: "Increase",
-              enable: { key: "gr-r_change-side-alpha" },
-            },
-            field: {
-              store: { key: "gr-r_side-alpha" },
-              enable: { key: "gr-r_change-side-alpha" },
-            },
-          },
-        },
-      },
-      {
-        name: "gr-r_side-size-title",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Side size" },
-        },
-      },
-      {
-        name: "gr-r_side-size",
-        template: VEComponents.get("vec4-value-checkbox"),
-        layout: VELayouts.get("vec4-value-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          value: {
-            label: {
-              text: "Value",
-              enable: { key: "gr-r_use-side-size" },
-            },
-            field: {
-              store: { key: "gr-r_side-size" },
-              enable: { key: "gr-r_use-side-size" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-r_use-side-size" },
-            },
-            title: { 
-              text: "Override",
-              enable: { key: "gr-r_use-side-size" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "gr-r_change-side-size" },
-            },
-            field: {
-              store: { key: "gr-r_side-size" },
-              enable: { key: "gr-r_change-side-size" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-r_change-side-size" },
-            },
-            title: { 
-              text: "Change",
-              enable: { key: "gr-r_change-side-size" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "gr-r_change-side-size" },
-            },
-            field: {
-              store: { key: "gr-r_side-size" },
-              enable: { key: "gr-r_change-side-size" },
-            },
-          },
-          increase: {
-            label: {
-              text: "Increase",
-              enable: { key: "gr-r_change-side-size" },
-            },
-            field: {
-              store: { key: "gr-r_side-size" },
-              enable: { key: "gr-r_change-side-size" },
-            },
           },
         },
       },

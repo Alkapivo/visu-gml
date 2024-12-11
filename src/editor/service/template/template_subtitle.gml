@@ -18,7 +18,12 @@ function template_subtitle(json = null) {
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Lines" },
+          label: {
+            text: "Text",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {

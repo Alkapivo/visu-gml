@@ -45,27 +45,24 @@ function template_coin(json = null) {
       },
       "coin_speed": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, 
-          "speed",
-          { value: -3.0, target: 1, factor: 0.1, increase: 0 },
-        )),
+        value: new NumberTransformer(Struct.getDefault(json, "speed", {
+          value: -3.0,
+          target: 1.0,
+          factor: 0.1,
+          increase: 0.0
+        })),
+        passthrough: function(value) {
+          if (!Core.isType(value, NumberTransformer)) {
+            return this.value
+          }
+
+          value.value = clamp(value.value, -99.9, 99.9)
+          value.target = clamp(value.target, -99.9, 99.9)
+          return value
+        },
       },
     }),
     components: new Array(Struct, [
-      {
-        name: "coin_category",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Category" },
-          previous: { store: { key: "coin_category" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "coin_category" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "coin_category" } },
-        },
-      },
       {
         name: "coin_amount",
         template: VEComponents.get("text-field-checkbox"),
@@ -92,13 +89,161 @@ function template_coin(json = null) {
         },
       },
       {
+        name: "coin_category",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Category" },
+          previous: { store: { key: "coin_category" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "coin_category" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "coin_category" } },
+        },
+      },
+      {
+        name: "coin_category-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "coin_speed-property",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Speed",
+            enable: { key: "coin_use-speed" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "coin_use-speed" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+        },
+      },
+      {
+        name: "coin_speed",
+        template: VEComponents.get("number-transformer-increase"),
+        layout: VELayouts.get("number-transformer-increase"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          value: {
+            label: {
+              text: "Value",
+              enable: { key: "coin_use-speed" },
+            },
+            field: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+            },
+            decrease: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+              factor: 0.01,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "coin_use-speed" },
+            },
+            title: { 
+              text: "Override",
+              enable: { key: "coin_use-speed" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "coin_use-speed" },
+            },
+            field: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+            },
+            decrease: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" }, 
+              factor: 0.01,
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "coin_use-speed" },
+            },
+            field: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+            },
+            decrease: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" }, 
+              factor: 0.001,
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: { key: "coin_use-speed" },
+            },
+            field: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+            },
+            decrease: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" },
+              factor: -0.0001,
+            },
+            increase: {
+              store: { key: "coin_speed" },
+              enable: { key: "coin_use-speed" }, 
+              factor: 0.0001,
+            },
+          },
+        },
+      },
+      {
+        name: "coin_speed-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "coin_sprite",
         template: VEComponents.get("texture-field-ext"),
         layout: VELayouts.get("texture-field-ext"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
-            label: { text: "Set texture" },
+            label: {
+              text: "Coin texture",
+              backgroundColor: VETheme.color.accentShadow,
+            },
+            input: { backgroundColor: VETheme.color.accentShadow },
+            checkbox: { backgroundColor: VETheme.color.accentShadow },
           },
           texture: {
             label: { text: "Texture" }, 
@@ -114,15 +259,20 @@ function template_coin(json = null) {
           alpha: {
             label: { text: "Alpha" },
             field: { store: { key: "coin_sprite" } },
+            decrease: { store: { key: "coin_sprite" } },
+            increase: { store: { key: "coin_sprite" } },
             slider: { 
               minValue: 0.0,
               maxValue: 1.0,
+              snapValue: 0.01 / 1.0,
               store: { key: "coin_sprite" },
             },
           },
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "coin_sprite" } },
+            decrease: { store: { key: "coin_sprite" } },
+            increase: { store: { key: "coin_sprite" } },
             checkbox: { 
               store: { key: "coin_sprite" },
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -133,6 +283,8 @@ function template_coin(json = null) {
           speed: {
             label: { text: "Speed" },
             field: { store: { key: "coin_sprite" } },
+            decrease: { store: { key: "coin_sprite" } },
+            increase: { store: { key: "coin_sprite" } },
             checkbox: { 
               store: { key: "coin_sprite" },
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -143,12 +295,22 @@ function template_coin(json = null) {
           scaleX: {
             label: { text: "Scale X" },
             field: { store: { key: "coin_sprite" } },
+            decrease: { store: { key: "coin_sprite" } },
+            increase: { store: { key: "coin_sprite" } },
           },
           scaleY: {
             label: { text: "Scale Y" },
             field: { store: { key: "coin_sprite" } },
+            decrease: { store: { key: "coin_sprite" } },
+            increase: { store: { key: "coin_sprite" } },
           },
         },
+      },
+      {
+        name: "coin_sprite-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "coin_mask-property",
@@ -158,12 +320,12 @@ function template_coin(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: {
             text: "Collision mask",
-            enable: { key: "use_coin_mask" },
+            enable: { key: "coin_use-mask" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "use_bullet_mask" },
+            store: { key: "coin_use-mask" },
           },
         },
       },
@@ -174,16 +336,20 @@ function template_coin(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           preview: {
-            enable: { key: "use_coin_mask" },
+            enable: { key: "coin_use-mask" },
             image: { name: "texture_empty" },
             store: { key: "coin_sprite" },
             mask: "coin_mask",
+          },
+          resolution: {
+            enable: { key: "coin_use-mask" },
+            store: { key: "coin_sprite" },
           },
         },
       },
       {
         name: "coin_mask",
-        template: VEComponents.get("vec4"),
+        template: VEComponents.get("vec4-increase"),
         layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
@@ -196,6 +362,16 @@ function template_coin(json = null) {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
             },
+            decrease: {
+              store: { key: "coin_mask" },
+              enable: { key: "coin_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "coin_mask" },
+              enable: { key: "coin_use-mask" },
+              factor: 1.0,
+            },
           },
           y: {
             label: {
@@ -205,6 +381,16 @@ function template_coin(json = null) {
             field: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
+            },
+            decrease: {
+              store: { key: "coin_mask" },
+              enable: { key: "coin_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "coin_mask" },
+              enable: { key: "coin_use-mask" },
+              factor: 1.0,
             },
           },
           z: {
@@ -216,6 +402,16 @@ function template_coin(json = null) {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
             },
+            decrease: {
+              store: { key: "coin_mask" },
+              enable: { key: "coin_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "coin_mask" },
+              enable: { key: "coin_use-mask" },
+              factor: 1.0,
+            },
           },
           a: {
             label: {
@@ -226,64 +422,15 @@ function template_coin(json = null) {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
             },
-          },
-        },
-      },
-      {
-        name: "coin_speed",
-        template: VEComponents.get("transform-numeric-uniform"),
-        layout: VELayouts.get("transform-numeric-uniform"),
-        config: {
-          layout: { type: UILayoutType.VERTICAL },
-          title: { 
-            label: { 
-              text: "Override speed",
-              enable: { key: "coin_use-speed" },
+            decrease: {
+              store: { key: "coin_mask" },
+              enable: { key: "coin_use-mask" },
+              factor: -1.0,
             },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "coin_use-speed" },
-            },
-          },
-          value: {
-            label: { 
-              text: "Value",
-              enable: { key: "coin_use-speed" },
-            },
-            field: { 
-              store: { key: "coin_speed" },
-              enable: { key: "coin_use-speed" },
-            },
-          },
-          target: {
-            label: { 
-              text: "Target",
-              enable: { key: "coin_use-speed" },
-            },
-            field: { 
-              store: { key: "coin_speed" },
-              enable: { key: "coin_use-speed" },
-            },
-          },
-          factor: {
-            label: { 
-              text: "Factor",
-              enable: { key: "coin_use-speed" },
-            },
-            field: { 
-              store: { key: "coin_speed" },
-              enable: { key: "coin_use-speed" },
-            },
-          },
-          increase: {
-            label: { 
-              text: "Increase",
-              enable: { key: "coin_use-speed" },
-            },
-            field: { 
-              store: { key: "coin_speed" },
-              enable: { key: "coin_use-speed" },
+            increase: {
+              store: { key: "coin_mask" },
+              enable: { key: "coin_use-mask" },
+              factor: 1.0,
             },
           },
         },

@@ -146,6 +146,7 @@ function VisuRenderer() constructor {
         + gridService.updateBulletServiceTimer.getValue()
         + this.renderTimer.getValue()
         + this.renderGUITimer.getValue()
+      gridService.avgTime.add(timeSum)        
   
       var text = $"shrooms: {shrooms}" + "\n"
         + $"bullets: {bullets}" + "\n"
@@ -157,7 +158,8 @@ function VisuRenderer() constructor {
         + gridService.updateBulletServiceTimer.getMessage() + "\n"
         + this.renderTimer.getMessage() + "\n"
         + this.renderGUITimer.getMessage() + "\n"
-        + $"Sum: {timeSum}" + "\n"
+        + $"Sum: {timeSum}ms" + "\n"
+        + $"Avg: {gridService.avgTime.get()}ms" + "\n"
       GPU.render.text(32, 32, text, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
     }
 

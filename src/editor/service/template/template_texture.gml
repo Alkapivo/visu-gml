@@ -13,9 +13,35 @@ function template_texture(json = null) {
     }),
     components: new Array(Struct, [
       {
+        name: "texture-preview",
+        template: VEComponents.get("texture-field-intent"),
+        layout: VELayouts.get("texture-field-intent"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          image: { 
+            name: json.name,
+            disableTextureService: json.file == "",
+          },
+          origin: "texture-template",
+          store: { key: "texture-template" },
+          resolution: { 
+            store: { 
+              key: "texture-template",
+              callback: function(value, data) { 
+                if (!Core.isType(value, TextureTemplate)) {
+                  return
+                }
+                
+                data.label.text = $"width: {sprite_get_width(value.asset)} height: {sprite_get_height(value.asset)}"
+              },
+            },
+          },
+        },
+      },
+      {
         name: "texture-origin-x",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Origin X" },
@@ -42,14 +68,68 @@ function template_texture(json = null) {
                 
                 data.textField.setText(value.originX)
               },
-            }
+            },
+          },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return 
+              }
+
+              var intent = item.get()
+              if (!Core.isType(item.get(), TextureTemplate)) {
+                return
+              }
+
+              intent.originX += factor
+              item.set(intent)
+            },
+            store: {
+              key: "texture-template",
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return 
+              }
+
+              var intent = item.get()
+              if (!Core.isType(item.get(), TextureTemplate)) {
+                return
+              }
+
+              intent.originX += factor
+              item.set(intent)
+            },
+            store: {
+              key: "texture-template",
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
           },
         },
       },
       {
         name: "texture-origin-y",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Origin Y" },
@@ -78,29 +158,58 @@ function template_texture(json = null) {
               },
             }
           },
-        },
-      },
-      {
-        name: "texture-preview",
-        template: VEComponents.get("image"),
-        layout: VELayouts.get("image"),
-        config: { 
-          image: { 
-            name: json.name,
-            disableTextureService: json.file == "",
-          },
-          origin: "texture-template",
-          store: { key: "texture-template" },
-          resolution: { 
-            store: { 
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return 
+              }
+
+              var intent = item.get()
+              if (!Core.isType(item.get(), TextureTemplate)) {
+                return
+              }
+
+              intent.originY += factor
+              item.set(intent)
+            },
+            store: {
               key: "texture-template",
-              callback: function(value, data) { 
-                if (!Core.isType(value, TextureTemplate)) {
-                  return
-                }
-                
-                data.label.text = $"width: {sprite_get_width(value.asset)} height: {sprite_get_height(value.asset)}"
-              },
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return 
+              }
+
+              var intent = item.get()
+              if (!Core.isType(item.get(), TextureTemplate)) {
+                return
+              }
+
+              intent.originY += factor
+              item.set(intent)
+            },
+            store: {
+              key: "texture-template",
+              callback: function(value, data) { },
+              set: function(value) { },
             },
           },
         },

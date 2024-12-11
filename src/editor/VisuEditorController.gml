@@ -617,7 +617,7 @@ function VisuEditorController() constructor {
     try {
       ///@description reset UI timers after resize to avoid ghost effect
       if (Beans.get(BeanVisuController).displayService.state == "resized") {
-        this.uiService.containers.forEach(this.resetUIContainerTimer)
+        this.uiService.containers.forEach(this.resetUITimer)
       }
       this.uiService.update()
     } catch (exception) {
@@ -631,14 +631,14 @@ function VisuEditorController() constructor {
   }
 
   ///@private
-  ///@param {UIContainer}
-  resetUIContainerTimer = function(container) {
-    if (!Optional.is(container.updateTimer)) {
+  ///@param {UI}
+  resetUITimer = function(ui) {
+    if (!Optional.is(ui.updateTimer)) {
       return
     }
 
-    container.surfaceTick.skip()
-    container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+    ui.surfaceTick.skip()
+    ui.updateTimer.time = ui.updateTimer.duration + random(ui.updateTimer.duration / 2.0)
   }
 
   ///@param {Event} event

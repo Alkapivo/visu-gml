@@ -163,6 +163,7 @@ function VEBrush(template) constructor {
               ? value
               : this.value
       },
+      data: new Array(String, BRUSH_TEXTURES),
     }
   })
 
@@ -251,6 +252,12 @@ function VEBrush(template) constructor {
         }, Struct.get(VEStyles.get("spin-select-image"), "preview"), false),
         next: { store: { key: "brush-texture" } },
       }
+    },
+    {
+      name: "brush_start-properties-line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
     }
   ])
 
@@ -288,4 +295,10 @@ function VEBrush(template) constructor {
   data.components.forEach(function(component, index, components) {
     components.add(component)
   }, this.components)
+  this.components.add({
+    name: "brush_finish-properties-line-h",
+    template: VEComponents.get("line-h"),
+    layout: VELayouts.get("line-h"),
+    config: { layout: { type: UILayoutType.VERTICAL } },
+  })
 }

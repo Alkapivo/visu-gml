@@ -312,6 +312,22 @@ function VisuTrackLoader(_controller): Service() constructor {
                                 event.callable = VEBrushType.GRID_ROW
                                 event.data = migrateGridOldSeparatorEvent(event.data)
                                 break
+                              case VEBrushType.VIEW_OLD_CAMERA:
+                                event.callable = VEBrushType.VIEW_CAMERA
+                                event.data = migrateViewOldCameraEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_LYRICS:
+                                event.callable = VEBrushType.VIEW_SUBTITLE
+                                event.data = migrateViewOldLyricsEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_WALLPAPER:
+                                event.callable = VEBrushType.VIEW_WALLPAPER
+                                event.data = migrateViewOldWallpaperEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_CONFIG:
+                                event.callable = VEBrushType.VIEW_CONFIG
+                                event.data = migrateViewOldConfigEvent(event.data)
+                                break
                             }
                             Struct.set(event.data, "icon", icon)
                           }
@@ -676,6 +692,7 @@ function VisuTrackLoader(_controller): Service() constructor {
           onStart: function(fsm, fsmState, tasks) { 
             var controller = Beans.get(BeanVisuController)
             controller.displayService.setCaption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {fsm.context.controller.track.path}")
+            controller.gridService.avgTime.reset()
 
             var editor = Beans.get(BeanVisuEditorController)
             if (Core.isType(editor, VisuEditorController)) {

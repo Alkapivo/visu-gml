@@ -138,7 +138,12 @@ function brush_entity_player(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
-            label: { text: "Set texture" },
+            label: {
+              text: "Player texture",
+              backgroundColor: VETheme.color.accentShadow,
+            },
+            input: { backgroundColor: VETheme.color.accentShadow },
+            checkbox: { backgroundColor: VETheme.color.accentShadow },
           },
           texture: {
             label: { text: "Texture" }, 
@@ -154,44 +159,59 @@ function brush_entity_player(json = null) {
           alpha: {
             label: { text: "Alpha" },
             field: { store: { key: "en-pl_texture" } },
+            decrease: { store: { key: "en-pl_texture" } },
+            increase: { store: { key: "en-pl_texture" } },
             slider: { 
               minValue: 0.0,
               maxValue: 1.0,
+              snapValue: 0.01 / 1.0,
               store: { key: "en-pl_texture" },
             },
           },
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "en-pl_texture" } },
+            decrease: { store: { key: "en-pl_texture" } },
+            increase: { store: { key: "en-pl_texture" } },
             checkbox: { 
               store: { key: "en-pl_texture" },
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
-            title: { text: "Rng" }, 
           },
           speed: {
             label: { text: "Speed" },
             field: { store: { key: "en-pl_texture" } },
+            decrease: { store: { key: "en-pl_texture" } },
+            increase: { store: { key: "en-pl_texture" } },
             checkbox: { 
               store: { key: "en-pl_texture" },
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
-            title: { text: "Animate" }, 
           },
           scaleX: {
             label: { text: "Scale X" },
             field: { store: { key: "en-pl_texture" } },
+            decrease: { store: { key: "en-pl_texture" } },
+            increase: { store: { key: "en-pl_texture" } },
           },
           scaleY: {
             label: { text: "Scale Y" },
             field: { store: { key: "en-pl_texture" } },
+            decrease: { store: { key: "en-pl_texture" } },
+            increase: { store: { key: "en-pl_texture" } },
           },
         },
       },
       {
-        name: "grid-player_mask-property",
+        name: "en-pl-texture-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "en-pl_mask-property",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
@@ -208,7 +228,7 @@ function brush_entity_player(json = null) {
         },
       },
       {
-        name: "grid-player_preview_mask",
+        name: "en-pl_preview_mask",
         template: VEComponents.get("preview-image-mask"),
         layout: VELayouts.get("preview-image-mask"),
         config: { 
@@ -219,11 +239,15 @@ function brush_entity_player(json = null) {
             store: { key: "en-pl_texture" },
             mask: "en-pl_mask",
           },
+          resolution: {
+            enable: { key: "en-pl_use-mask" },
+            store: { key: "en-pl_texture" },
+          },
         },
       },
       {
         name: "en-pl_mask",
-        template: VEComponents.get("vec4"),
+        template: VEComponents.get("vec4-increase"),
         layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
@@ -236,6 +260,16 @@ function brush_entity_player(json = null) {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
             },
+            decrease: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: 1.0,
+            },
           },
           y: {
             label: {
@@ -245,6 +279,16 @@ function brush_entity_player(json = null) {
             field: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
+            },
+            decrease: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: 1.0,
             },
           },
           z: {
@@ -256,6 +300,16 @@ function brush_entity_player(json = null) {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
             },
+            decrease: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: 1.0,
+            },
           },
           a: {
             label: {
@@ -266,8 +320,24 @@ function brush_entity_player(json = null) {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
             },
+            decrease: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: 1.0,
+            },
           },
         },
+      },
+      {
+        name: "en-pl_mask-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "en-pl_reset-pos",
@@ -276,15 +346,24 @@ function brush_entity_player(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Reset position",
+            text: "Reset spawn position",
             enable: { key: "en-pl_reset-pos" },
+            backgroundColor: VETheme.color.accentShadow,
           },
+          input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "en-pl_reset-pos" },
+            backgroundColor: VETheme.color.accentShadow,
           },
         },
+      },
+      {
+        name: "en-pl_reset-pos-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "en-pl_use-stats",
@@ -293,13 +372,16 @@ function brush_entity_player(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Use stats",
+            text: "Player stats",
             enable: { key: "en-pl_use-stats" },
+            backgroundColor: VETheme.color.accentShadow,
           },
+          input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "en-pl_use-stats" },
+            backgroundColor: VETheme.color.accentShadow,
           },
         },
       },
@@ -318,19 +400,28 @@ function brush_entity_player(json = null) {
         },
       },
       {
+        name: "en-pl_stats-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "en-pl_bullethell",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "BulletHell",
+            text: "Player config",
             enable: { key: "en-pl_use-bullethell" },
+            backgroundColor: VETheme.color.accentShadow,
           },
+          input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "en-pl_use-bullethell" },
+            backgroundColor: VETheme.color.accentShadow,
           },
         },
       },
@@ -348,6 +439,7 @@ function brush_entity_player(json = null) {
           },
         },
       },
+      /* 
       {
         name: "grid-player_mode_platformer",
         template: VEComponents.get("property"),
@@ -410,6 +502,7 @@ function brush_entity_player(json = null) {
           },
         },
       },
+      */
     ]),
   }
 }

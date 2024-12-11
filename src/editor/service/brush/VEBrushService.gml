@@ -65,6 +65,22 @@ function VEBrushService() constructor {
           template.type = VEBrushType.GRID_ROW
           template.properties = migrateGridOldSeparatorEvent(template.properties)
           break
+        case VEBrushType.VIEW_OLD_CAMERA:
+          template.type = VEBrushType.VIEW_CAMERA
+          template.properties = migrateViewOldCameraEvent(template.properties)
+          break
+        case VEBrushType.VIEW_OLD_LYRICS:
+          template.type = VEBrushType.VIEW_SUBTITLE
+          template.properties = migrateViewOldLyricsEvent(template.properties)
+          break
+        case VEBrushType.VIEW_OLD_WALLPAPER:
+          template.type = VEBrushType.VIEW_WALLPAPER
+          template.properties = migrateViewOldWallpaperEvent(template.properties)
+          break
+        case VEBrushType.VIEW_OLD_CONFIG:
+          template.type = VEBrushType.VIEW_CONFIG
+          template.properties = migrateViewOldConfigEvent(template.properties)
+          break
       }
     }
 

@@ -31,11 +31,9 @@ function brush_entity_shroom(json = null) {
         type: Boolean,
         value: Struct.getIfType(json, "en-shr_use-spd-rng", Boolean, false),
       },
-      "en-shr_spd-rng"
-    : {
+      "en-shr_spd-rng": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_spd-rng"
-      , Number, 0),
+        value: Struct.getIfType(json, "en-shr_spd-rng", Number, 0),
         passthrough: function(value) {
           return clamp(NumberUtil.parse(value, this.value), 0.0, 99.9) 
         },
@@ -227,30 +225,120 @@ function brush_entity_shroom(json = null) {
         },
       },
       {
-        name: "en-shr_spd",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Speed" },
-          field: { store: { key: "en-shr_spd" } },
-        },
+        name: "en-spd-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "en-shr_spd-rng"
-      ,
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        name: "en-shr_spd-slider",  
+        template: VEComponents.get("numeric-slider-button"),
+        layout: VELayouts.get("numeric-slider-button"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Rng",
+            text: "Speed",
+            font: "font_inter_10_bold",
+            offset: { y: 14 },
+          },
+          decrease: {
+            factor: -1.0,
+            minValue: 0.0,
+            maxValue: 99.0,
+            store: { key: "en-shr_spd" },
+            label: { text: "-" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() {
+              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
+            },
+          },
+          slider: {
+            mminValue: 0.0,
+            maxValue: 99.0,
+            snapValue: 1.0 / 99.0,
+            store: { key: "en-shr_spd" },
+          },
+          increase: {
+            factor: 1.0,
+            minValue: 0.0,
+            maxValue: 99.0,
+            store: { key: "en-shr_spd" },
+            label: { text: "+" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() {
+              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
+            },
+          },
+        },
+      },
+      {
+        name: "en-shr_spd",  
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "",
+            font: "font_inter_10_bold",
+          },
+          field: { store: { key: "en-shr_spd" } },
+          decrease: { 
+            store: { key: "en-shr_spd" },
+            factor: -0.25,
+          },
+          increase: { 
+            store: { key: "en-shr_spd" },
+            factor: 0.25,
+          },
+        },
+      },
+      {
+        name: "en-shr_spd-rng",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Random",
             enable: { key: "en-shr_use-spd-rng" },
           },  
           field: { 
-            store: { key: "en-shr_spd-rng"
-         },
+            store: { key: "en-shr_spd-rng" },
             enable: { key: "en-shr_use-spd-rng" },
+          },
+          decrease: {
+            store: { key: "en-shr_spd-rng" },
+            enable: { key: "en-shr_use-spd-rng" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-shr_spd-rng" },
+            enable: { key: "en-shr_use-spd-rng" },
+            factor: 0.25,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -264,13 +352,95 @@ function brush_entity_shroom(json = null) {
         },
       },
       {
-        name: "en-shr_dir",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        name: "en-dir-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "en-shr_dir-slider",  
+        template: VEComponents.get("numeric-slider-button"),
+        layout: VELayouts.get("numeric-slider-button"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Angle" },  
+          label: {
+            text: "Angle",
+            font: "font_inter_10_bold",
+            offset: { y: 14 },
+          },
+          decrease: {
+            factor: -1.0,
+            minValue: 0.0,
+            maxValue: 360.0,
+            store: { key: "en-shr_dir" },
+            label: { text: "-" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() {
+              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
+            },
+          },
+          slider: {
+            minValue: 0.0,
+            maxValue: 360.0,
+            snapValue: 1.0 / 360.0,
+            store: { key: "en-shr_dir" },
+          },
+          increase: {
+            factor: 1.0,
+            minValue: 0.0,
+            maxValue: 360.0,
+            store: { key: "en-shr_dir" },
+            label: { text: "+" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() {
+              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
+            },
+          },
+        },
+      },
+      {
+        name: "en-shr_dir",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "",
+            font: "font_inter_10_bold",
+          },
           field: { store: { key: "en-shr_dir" } },
+          decrease: {
+            store: { key: "en-shr_dir" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-shr_dir" },
+            factor: 0.25,
+          },
           checkbox: { 
             store: { 
               key: "en-shr_dir",
@@ -315,79 +485,28 @@ function brush_entity_shroom(json = null) {
         },
       },
       {
-        name: "en-shr_dir-slider",  
-        template: VEComponents.get("numeric-slider-button"),
-        layout: VELayouts.get("numeric-slider-button"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "" },
-          decrease: {
-            factor: -1.0,
-            minValue: 0.0,
-            maxValue: 360.0,
-            store: { key: "en-shr_dir" },
-            label: { text: "-" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
-          slider: {
-            minValue: 0.0,
-            maxValue: 360.0,
-            snapValue: 1.0 / 360.0,
-            store: { key: "en-shr_dir" },
-          },
-          increase: {
-            factor: 1.0,
-            minValue: 0.0,
-            maxValue: 360.0,
-            store: { key: "en-shr_dir" },
-            label: { text: "+" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
-        },
-      },
-      {
         name: "en-shr_dir-rng",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Rng",
+            text: "Random",
             enable: { key: "en-shr_use-dir-rng" },
           },  
           field: { 
             store: { key: "en-shr_dir-rng" },
             enable: { key: "en-shr_use-dir-rng" },
+          },
+          decrease: {
+            store: { key: "en-shr_dir-rng" },
+            enable: { key: "en-shr_use-dir-rng" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-shr_dir-rng" },
+            enable: { key: "en-shr_use-dir-rng" },
+            factor: 0.25,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -401,120 +520,22 @@ function brush_entity_shroom(json = null) {
         },
       },
       {
-        name: "en-shr_dir-rng-slider",  
+        name: "en-shr_x-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "en-shr_x-slider",  
         template: VEComponents.get("numeric-slider-button"),
         layout: VELayouts.get("numeric-slider-button"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "" },
-          decrease: {
-            factor: -1.0,
-            minValue: 0.0,
-            maxValue: 360.0,
-            store: { key: "en-shr_dir-rng" },
-            enable: { key: "en-shr_use-dir-rng" },
-            label: { text: "-" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
-          slider: {
-            minValue: 0.0,
-            maxValue: 360.0,
-            snapValue: 1.0 / 360.0,
-            store: { key: "en-shr_dir-rng" },
-            enable: { key: "en-shr_use-dir-rng" },
-          },
-          increase: {
-            factor: 1.0,
-            minValue: 0.0,
-            maxValue: 360.0,
-            store: { key: "en-shr_dir-rng" },
-            enable: { key: "en-shr_use-dir-rng" },
-            label: { text: "+" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
-        },
-      },
-      {
-        name: "en-shr_x",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "X" },  
-          field: { store: { key: "en-shr_x" } },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "en-shr_snap-x" },
-          },
-          title: { 
-            text: "Snap",
-            enable: { key: "en-shr_snap-x" },
-          },
-        },
-      },
-      {
-        name: "en-shr_rng-x",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Rng",
-            enable: { key: "en-shr_use-rng-x" },
-          },  
-          field: { 
-            store: { key: "en-shr_rng-x" },
-            enable: { key: "en-shr_use-rng-x" },
+            text: "X",
+            font: "font_inter_10_bold",
+            offset: { y: 14 },
           },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "en-shr_use-rng-x" },
-          },
-          title: { 
-            text: "Enable",
-            enable: { key: "en-shr_use-rng-x" },
-          },
-        },
-      },
-      {
-        name: "shroom-spawn_channel-slider",  
-        template: VEComponents.get("numeric-slider-button"),
-        layout: VELayouts.get("numeric-slider-button"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "" },
           decrease: {
             factor: -1.0,
             minValue: -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2),
@@ -570,56 +591,87 @@ function brush_entity_shroom(json = null) {
         },
       },
       {
-        name: "en-shr_y",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        name: "en-shr_x",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Y" },  
-          field: { store: { key: "en-shr_y" } },
+          label: { 
+            text: "",
+            font: "font_inter_10_bold",
+          },  
+          field: { store: { key: "en-shr_x" } },
+          decrease: {
+            store: { key: "en-shr_x" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-shr_x" },
+            factor: 0.25,
+          },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "en-shr_snap-y" },
+            store: { key: "en-shr_snap-x" },
           },
           title: { 
             text: "Snap",
-            enable: { key: "en-shr_snap-y" },
+            enable: { key: "en-shr_snap-x" },
           },
         },
       },
       {
-        name: "en-shr_rng-y",
+        name: "en-shr_rng-x",
         template: VEComponents.get("text-field-checkbox"),
         layout: VELayouts.get("text-field-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Rng",
-            enable: { key: "en-shr_use-rng-y" },
+            text: "Random",
+            enable: { key: "en-shr_use-rng-x" },
           },  
           field: { 
-            store: { key: "en-shr_rng-y" },
-            enable: { key: "en-shr_use-rng-y" },
+            store: { key: "en-shr_rng-x" },
+            enable: { key: "en-shr_use-rng-x" },
+          },
+          decrease: {
+            store: { key: "en-shr_rng-x" },
+            enable: { key: "en-shr_use-rng-x" },
+            factor: -1.0,
+          },
+          increase: {
+            store: { key: "en-shr_rng-x" },
+            enable: { key: "en-shr_use-rng-x" },
+            factor: 1.0,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "en-shr_use-rng-y" },
+            store: { key: "en-shr_use-rng-x" },
           },
           title: { 
             text: "Enable",
-            enable: { key: "en-shr_use-rng-y" },
+            enable: { key: "en-shr_use-rng-x" },
           },
         },
       },
       {
-        name: "shroom-spawn_row-slider",  
+        name: "en-shr_y-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "en-shr_y-slider",  
         template: VEComponents.get("numeric-slider-button"),
         layout: VELayouts.get("numeric-slider-button"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "" },
+          label: { 
+            text: "Y",
+            font: "font_inter_10_bold",
+            offset: { y: 14 },
+          },
           decrease: {
             factor: -1.0,
             minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
@@ -671,6 +723,71 @@ function brush_entity_shroom(json = null) {
             callback: function() {
               this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
             },
+          },
+        },
+      },
+      {
+        name: "en-shr_y",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "",
+            font: "font_inter_10_bold",
+          },  
+          field: { store: { key: "en-shr_y" } },
+          decrease: {
+            store: { key: "en-shr_y" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-shr_y" },
+            factor: 0.25,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "en-shr_snap-y" },
+          },
+          title: { 
+            text: "Snap",
+            enable: { key: "en-shr_snap-y" },
+          },
+        },
+      },
+      {
+        name: "en-shr_rng-y",
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Random",
+            enable: { key: "en-shr_use-rng-y" },
+          },  
+          field: { 
+            store: { key: "en-shr_rng-y" },
+            enable: { key: "en-shr_use-rng-y" },
+          },
+          decrease: {
+            store: { key: "en-shr_rng-y" },
+            enable: { key: "en-shr_use-rng-y" },
+            factor: -1.0,
+          },
+          increase: {
+            store: { key: "en-shr_rng-y" },
+            enable: { key: "en-shr_use-rng-y" },
+            factor: 1.0,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "en-shr_use-rng-y" },
+          },
+          title: { 
+            text: "Enable",
+            enable: { key: "en-shr_use-rng-y" },
           },
         },
       },

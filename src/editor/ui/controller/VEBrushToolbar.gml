@@ -52,7 +52,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
       }),
       brushToolbar: brushToolbar,
-      updateTimer: new Timer(FRAME_MS * 4, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       layout: brushToolbar.layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -838,6 +838,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
       onMouseDragLeft: function(event) {
+        var mouse = Beans.get(BeanVisuEditorIO).mouse
+        var name = Struct.get(mouse.getClipboard(), "name")
+        if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+          return
+        }
+        
         var component = this.collection.components.find(function(component) {
           var text = component.items.find(function(item) {
             return item.type == UIText
@@ -850,7 +856,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
         if (Optional.is(component)) {
           this.state.set("dragItem", component)
-          Beans.get(BeanVisuEditorIO).mouse.setClipboard(component)
+          mouse.setClipboard(component)
         }
       },
       onMouseDropLeft: function(event) {
@@ -1610,9 +1616,11 @@ function VEBrushToolbar(_editor) constructor {
           onMouseReleasedLeft: function() {
             var template = this.context.brushToolbar.store.get("template")
             if (!Core.isType(template.get(), VEBrushTemplate)
-              || template.get().name != this.brushTemplate.name) {
+                || template.get().name != this.brushTemplate.name
+                || template.get().type != this.brushTemplate.type) {
 
-              var templates = Beans.get(BeanVisuController).brushService.fetchTemplates(this.brushTemplate.type)
+              var templates = Beans.get(BeanVisuController).brushService
+                .fetchTemplates(this.brushTemplate.type)
               if (!Core.isType(templates, Array)) {
                 return
               }
@@ -1656,9 +1664,11 @@ function VEBrushToolbar(_editor) constructor {
           callback: function() {
             var template = this.context.brushToolbar.store.get("template")
             if (!Core.isType(template.get(), VEBrushTemplate)
-              || template.get().name != this.brushTemplate.name) {
+                || template.get().name != this.brushTemplate.name
+                || template.get().type != this.brushTemplate.type) {
 
-              var templates = Beans.get(BeanVisuController).brushService.fetchTemplates(this.brushTemplate.type)
+              var templates = Beans.get(BeanVisuController).brushService
+                .fetchTemplates(this.brushTemplate.type)
               if (!Core.isType(templates, Array)) {
                 return
               }

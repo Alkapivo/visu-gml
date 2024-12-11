@@ -384,12 +384,12 @@ function VEAccordion(_editor, config = null) constructor {
   }
 
   ///@private
-  ///@param {UIContainer} container
-  resetUpdateTimer = function(container) {
-    if (!Optional.is(container.updateTimer)) {
+  ///@param {UI} ui
+  resetUpdateTimer = function(ui) {
+    if (!Optional.is(ui.updateTimer)) {
       return
     }
-    container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+    ui.updateTimer.time = ui.updateTimer.duration + random(ui.updateTimer.duration / 2.0)
   }
 
   ///@return {VEBrushToolbar}

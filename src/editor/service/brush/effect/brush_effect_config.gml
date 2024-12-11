@@ -18,10 +18,6 @@ function brush_effect_config(json = null) {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_cls-shd-bkg", Boolean, false),
       },
-      "ef-cfg_cls-shd-bkg-smooth": {
-        type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-shd-bkg-smooth", Boolean, false),
-      },
       "ef-cfg_use-render-shd-gr": {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_use-render-shd-gr", Boolean, false),
@@ -33,10 +29,6 @@ function brush_effect_config(json = null) {
       "ef-cfg_cls-shd-gr": {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_cls-shd-gr", Boolean, false),
-      },
-      "ef-cfg_cls-shd-gr-smooth": {
-        type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-shd-gr-smooth", Boolean, false),
       },
       "ef-cfg_use-render-shd-all": {
         type: Boolean,
@@ -50,10 +42,6 @@ function brush_effect_config(json = null) {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_cls-shd-all", Boolean, false),
       },
-      "ef-cfg_cls-shd-all-smooth": {
-        type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-shd-all-smooth", Boolean, false),
-      },
       "ef-cfg_use-render-glt": {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_use-render-glt", Boolean, false),
@@ -66,10 +54,6 @@ function brush_effect_config(json = null) {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_cls-glt", Boolean, false),
       },
-      "ef-cfg_cls-glt-smooth": {
-        type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-glt-smooth", Boolean, false),
-      },
       "ef-cfg_use-render-part": {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_use-render-part", Boolean, false),
@@ -81,10 +65,6 @@ function brush_effect_config(json = null) {
       "ef-cfg_cls-part": {
         type: Boolean,
         value: Struct.getIfType(json, "ef-cfg_cls-part", Boolean, false),
-      },
-      "ef-cfg_cls-part-smooth": {
-        type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-part-smooth", Boolean, false),
       },
       "ef-cfg_use-cls-frame": {
         type: Boolean,
@@ -100,7 +80,7 @@ function brush_effect_config(json = null) {
       },
       "ef-cfg_cls-frame-col": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "ef-cfg_cls-frame-col"), ColorUtil.fromHex("#000000")),
+        value: ColorUtil.fromHex(Struct.getIfType(json, "ef-cfg_cls-frame-col", String), ColorUtil.fromHex("#000000")),
       },
       "ef-cfg_cls-frame-col-spd": {
         type: Number,
@@ -253,7 +233,13 @@ function brush_effect_config(json = null) {
         },
       },
       {
-        name: "ef-cfg_clear",
+        name: "ef-cfg_cls-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "ef-cfg_cls",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
@@ -273,19 +259,13 @@ function brush_effect_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Background shaders (smooth)",
+            text: "Background shaders",
             enable: { key: "ef-cfg_cls-shd-bkg" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "ef-cfg_cls-shd-bkg" },
-          },
-          input: { 
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "ef-cfg_cls-shd-bkg-smooth" },
-            enable: { key: "ef-cfg_cls-shd-bkg" },
           },
         },
       },
@@ -296,19 +276,13 @@ function brush_effect_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Grid shaders (smooth)",
+            text: "Grid shaders",
             enable: { key: "ef-cfg_cls-shd-gr" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "ef-cfg_cls-shd-gr" },
-          },
-          input: { 
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "ef-cfg_cls-shd-gr-smooth" },
-            enable: { key: "ef-cfg_cls-shd-gr" },
           },
         },
       },
@@ -319,19 +293,13 @@ function brush_effect_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Combined shaders (smooth)",
+            text: "Combined shaders",
             enable: { key: "ef-cfg_cls-shd-all" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "ef-cfg_cls-shd-all" },
-          },
-          input: { 
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "ef-cfg_cls-shd-all-smooth" },
-            enable: { key: "ef-cfg_cls-shd-all" },
           },
         },
       },
@@ -342,19 +310,13 @@ function brush_effect_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Glitches (smooth)",
+            text: "Glitches",
             enable: { key: "ef-cfg_cls-glt" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "ef-cfg_cls-glt" },
-          },
-          input: { 
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "ef-cfg_cls-glt-smooth" },
-            enable: { key: "ef-cfg_cls-glt" },
           },
         },
       },
@@ -365,7 +327,7 @@ function brush_effect_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Particles (smooth)",
+            text: "Particles",
             enable: { key: "ef-cfg_cls-part" },
           },
           checkbox: { 
@@ -373,13 +335,13 @@ function brush_effect_config(json = null) {
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "ef-cfg_cls-part" },
           },
-          input: { 
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "ef-cfg_cls-part-smooth" },
-            enable: { key: "ef-cfg_cls-part" },
-          },
         },
+      },
+      {
+        name: "ef-cfg_cls-frame-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "ef-cfg_cls-frame",
@@ -409,18 +371,30 @@ function brush_effect_config(json = null) {
       },
       {
         name: "ef-cfg_cls-frame-alpha",
-        template: VEComponents.get("vec4-value-checkbox"),
-        layout: VELayouts.get("vec4-value-checkbox"),
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
               text: "Alpha",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textFocus,
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
             },
             field: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
+            },
+            decrease: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_use-cls-frame-alpha" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_use-cls-frame-alpha" },
+              factor: 1.0,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -441,6 +415,16 @@ function brush_effect_config(json = null) {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
             },
+            decrease: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha"},
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha" },
+              factor: 1.0,
+            },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
@@ -460,6 +444,16 @@ function brush_effect_config(json = null) {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
             },
+            decrease: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha" },
+              factor: 1.0,
+            },
           },
           increase: {
             label: {
@@ -469,6 +463,16 @@ function brush_effect_config(json = null) {
             field: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
+            },
+            decrease: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha" },
+              factor: 0.001,
+            },
+            increase: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha"} ,
+              factor: 0.001,
             },
           },
         },
@@ -481,7 +485,7 @@ function brush_effect_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Clear frame color",
+              text: "Color",
               enable: { key: "ef-cfg_use-cls-frame-col" },
             },  
             checkbox: { 

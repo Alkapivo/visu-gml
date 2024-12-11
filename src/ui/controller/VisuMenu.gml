@@ -1493,6 +1493,103 @@ function VisuMenu(_config = null) constructor {
       },
       content: new Array(Struct, [
         {
+          name: "developer_menu-button-input-entry_debug",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Debug mode",
+              callback: new BindIntent(function() {
+                Core.debugOverlay(!is_debug_overlay_open())
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                Core.debugOverlay(!is_debug_overlay_open())
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = is_debug_overlay_open() ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
+          name: "developer_menu-button-input-entry_debug-render-entities-mask",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Render debug masks",
+              callback: new BindIntent(function() {
+                var value = Visu.settings.getValue("visu.debug.render-entities-mask")
+                Visu.settings.setValue("visu.debug.render-entities-mask", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                var value = Visu.settings.getValue("visu.debug.render-entities-mask")
+                Visu.settings.setValue("visu.debug.render-entities-mask", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = Visu.settings.getValue("visu.debug.render-entities-mask") ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
+          name: "developer_menu-button-input-entry_debug-render-surfaces",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Render debug surfaces",
+              callback: new BindIntent(function() {
+                var value = Visu.settings.getValue("visu.debug.render-surfaces")
+                Visu.settings.setValue("visu.debug.render-surfaces", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                var value = Visu.settings.getValue("visu.debug.render-surfaces")
+                Visu.settings.setValue("visu.debug.render-surfaces", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = Visu.settings.getValue("visu.debug.render-surfaces") ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
           name: "developer_menu-button-input-entry_god-mode",
           template: VisuComponents.get("menu-button-input-entry"),
           layout: VisuLayouts.get("menu-button-input-entry"),
@@ -1590,37 +1687,6 @@ function VisuMenu(_config = null) constructor {
           }
         },
         {
-          name: "developer_menu-button-input-entry_debug",
-          template: VisuComponents.get("menu-button-input-entry"),
-          layout: VisuLayouts.get("menu-button-input-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "Debug",
-              callback: new BindIntent(function() {
-                Core.debugOverlay(!is_debug_overlay_open())
-                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            },
-            input: {
-              label: { text: "Enabled" },
-              callback: function() {
-                Core.debugOverlay(!is_debug_overlay_open())
-                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-              },
-              updateCustom: function() {
-                this.label.text = is_debug_overlay_open() ? "Enabled" : "Disabled"
-              },
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            }
-          }
-        },
-        {
           name: "developer_menu-button-input-entry_ws",
           template: VisuComponents.get("menu-button-input-entry"),
           layout: VisuLayouts.get("menu-button-input-entry"),
@@ -1654,6 +1720,72 @@ function VisuMenu(_config = null) constructor {
               },
               updateCustom: function() {
                 this.label.text = Beans.get(BeanVisuController).server.isRunning() ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
+          name: "developer_menu-button-input-entry_optimalization-iterate-entities-once",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Iterate entities once",
+              callback: new BindIntent(function() {
+                var value = Visu.settings.getValue("visu.optimalization.iterate-entities-once")
+                Visu.settings.setValue("visu.optimalization.iterate-entities-once", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                var value = Visu.settings.getValue("visu.optimalization.iterate-entities-once")
+                Visu.settings.setValue("visu.optimalization.iterate-entities-once", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = Visu.settings.getValue("visu.optimalization.iterate-entities-once") ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
+          name: "developer_menu-button-input-entry_optimalization-sort-entities-by-txgroup",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Sort entities by txgroup",
+              callback: new BindIntent(function() {
+                var value = Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")
+                Visu.settings.setValue("visu.optimalization.sort-entities-by-txgroup", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                var value = Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")
+                Visu.settings.setValue("visu.optimalization.sort-entities-by-txgroup", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup") ? "Enabled" : "Disabled"
               },
               onMouseReleasedLeft: function() {
                 this.callback()

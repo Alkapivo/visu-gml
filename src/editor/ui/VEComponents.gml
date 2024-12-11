@@ -28,6 +28,10 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "image": function(name, layout, config = null) {
     var items = new Array(UIItem, [
       UIImage(
@@ -77,6 +81,85 @@ global.__VEComponents = new Map(String, Callable, {
     }
 
     return items
+  },
+  
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "texture-field-intent": function(name, layout, config = null) {
+    var items = new Array(UIItem, [
+      UIImage(
+        $"{name}_image",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.image,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          config,
+          false
+        )
+      )
+    ])
+
+    if (Struct.contains(config, "resolution")) {
+      items.add(UIText(
+        name,
+        Struct.appendRecursive(
+          {
+            layout: layout.nodes.resolution,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          Struct.appendRecursive(
+            Struct.appendRecursive(
+              { 
+                store: { 
+                  callback: function(value, data) {
+                    if (!Core.isType(value, Sprite)) {
+                      return
+                    }
+  
+                    data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
+                  },
+                  set: function(value) { },
+                }
+              },
+              VEStyles.get("texture-field-ext").resolution,
+              false
+            ),
+            Struct.get(config, "resolution"),
+            false
+          ),
+          false
+        )
+      ))
+    }
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "line-h": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIImage(
+        $"{name}_line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.image,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          Struct.appendRecursive(
+            Struct.get(config, "image"),
+            VEStyles.get("line-h").image,
+            false
+          ),
+          false
+        )
+      )
+    ])
   },
 
   ///@param {String} name
@@ -594,6 +677,368 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
+  "text-field-increase": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field-button").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UITextField(
+        $"field_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.field,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
+            },
+            VEStyles.get("text-field-button").field,
+            false
+          ),
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_increase", 
+        Struct.appendRecursive(
+          { 
+            factor: 1.0,
+            label: { 
+              text: "+",
+              font: "font_inter_10_regular",
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            layout: layout.nodes.increase,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "increase"),
+          false
+        )
+      ),
+    ])
+  },
+
+///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "text-field-increase-checkbox": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field-button").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UITextField(
+        $"field_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.field,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
+            },
+            VEStyles.get("text-field-button").field,
+            false
+          ),
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_increase", 
+        Struct.appendRecursive(
+          { 
+            factor: 1.0,
+            label: { 
+              text: "+",
+              font: "font_inter_10_regular",
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            layout: layout.nodes.increase,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UICheckbox(
+        $"{name}_checkbox", 
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.checkbox,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          Struct.get(config, "checkbox"),
+          false
+        )
+      ),
+      UIText(
+        $"{name}_title", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.title,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field-checkbox").title,
+            false
+          ),
+          Struct.get(config, "title"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "double-checkbox": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("double-checkbox").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UICheckbox(
+        $"checkbox1_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.checkbox1,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("double-checkbox").checkbox1,
+            false
+          ),
+          Struct.get(config, "checkbox1"),
+          false
+        )
+      ),
+      UIText(
+        $"label1_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label1,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("double-checkbox").label1,
+            false
+          ),
+          Struct.get(config, "label1"),
+          false
+        )
+      ),
+      UICheckbox(
+        $"checkbox2_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.checkbox2,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("double-checkbox").checkbox2,
+            false
+          ),
+          Struct.get(config, "checkbox2"),
+          false
+        )
+      ),
+      UIText(
+        $"label2_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label2,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("double-checkbox").label2,
+            false
+          ),
+          Struct.get(config, "label2"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "text-field-button-checkbox": function(name, layout, config = null) {
     return new Array(UIItem, [
       UICheckbox(
@@ -694,7 +1139,7 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "texture-field": function(name, layout, config = null) {
+  "__texture-field": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
       items.add(item)
@@ -1014,142 +1459,11 @@ global.__VEComponents = new Map(String, Callable, {
     return items
   },
 
-    ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
-  "texture-field-simple": function(name, layout, config = null) {
-    ///@todo move to Lambda util
-    static addItem = function(item, index, items) {
-      items.add(item)
-    }
-
-    ///@param {String} name
-    ///@param {UILayout} layout
-    ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
-    static factoryTitle = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: config,
-      }).toUIItems(layout)
-    }
-
-    ///@param {String} name
-    ///@param {UILayout} layout
-    ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
-    static factoryTextField = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: config,
-      }).toUIItems(layout)
-    }
-
-    ///@param {String} name
-    ///@param {UILayout} layout
-    ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
-    static factoryNumericSliderField = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: config,
-      }).toUIItems(layout)
-    }
-
-    ///@param {String} name
-    ///@param {UILayout} layout
-    ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
-    static factoryImage = function(name, layout, config) {
-      return UIImage(
-        name, 
-        Struct.appendRecursive(
-          {
-            layout: layout,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          },
-          config,
-          false
-        )
-      )
-    }
-
-    var items = new Array(UIItem)
-
-    factoryTitle(
-      $"{name}_title", 
-      layout.nodes.title, 
-      Struct.get(config, "title")
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_texture",
-      layout.nodes.texture, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.textField.setText(value.texture.name)
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item) || !TextureUtil.exists(value)) {
-                  return
-                }
-                
-                var json = item.get().serialize()
-                json.name = value
-                item.set(SpriteUtil.parse(json))
-              },
-            }
-          }
-        }, 
-        Struct.get(config, "texture"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    items.add(
-      factoryImage(
-        $"{name}_preview", 
-        layout.nodes.preview, 
-        Struct.appendRecursive(
-          { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.image = value
-              },
-              set: function(value) { },
-            }
-          },
-          Struct.get(config, "preview"),
-          false
-        )
-      )
-    )
-
-    return items
-  },
-
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "texture-field-ext": function(name, layout, config = null) {
+  "texture-field": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
       items.add(item)
@@ -1198,11 +1512,698 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {UILayout} layout
     ///@param {?Struct} [config]
     ///@return {UIComponent}
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncreaseCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryDoubleCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("double-checkbox"),
+        layout: VELayouts.get("double-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
     static factoryNumericSliderField = function(name, layout, config) {
       return new UIComponent({
         name: name,
         template: VEComponents.get("numeric-slider-field"),
         layout: VELayouts.get("numeric-slider-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryNumericSliderIncreaseField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIItem}
+    static factoryImage = function(name, layout, config) {
+      return UIImage(
+        name, 
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIItem}
+    static factoryLabel = function(name, layout, config) {
+      return UIText(
+        name,
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryProperty = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title", 
+      layout.nodes.title, 
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_texture",
+      layout.nodes.texture, 
+      Struct.appendRecursive(
+        { 
+          label: { text: "Texture" },
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+                
+                data.textField.setText(value.texture.name)
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item) || !TextureUtil.exists(value)) {
+                  return
+                }
+
+                var json = item.get().serialize()
+                json.name = value
+                item.set(SpriteUtil.parse(json))
+              },
+            }
+          }
+        }, 
+        Struct.get(config, "texture"),
+        false
+      )
+    ).forEach(addItem, items)
+    
+    items.add(
+      factoryImage(
+        $"{name}_preview", 
+        layout.nodes.preview, 
+        Struct.appendRecursive(
+          { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.image = value
+              },
+              set: function(value) { },
+            },
+            preRender: function() {
+              if (this.image == null) {
+                return
+              }
+
+              Struct.inject(this.image, "_restoreFrame", this.image.getFrame())
+              this.image.setFrame(Struct.inject(this.image, "_frame", this.image.getFrame()))
+            },
+            postRender: function() {
+              if (this.image == null) {
+                return
+              }
+
+              Struct.set(this.image, "_frame", this.image.getFrame())
+              this.image.setFrame(Struct.inject(this.image, "_restoreFrame", this.image.getFrame()))
+            },
+          },
+          Struct.get(config, "preview"),
+          false
+        )
+      )
+    )
+
+    items.add(
+      factoryLabel(
+        $"{name}_resolution", 
+        layout.nodes.resolution, 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              store: { 
+                callback: function(value, data) {
+                  if (!Core.isType(value, Sprite)) {
+                    return
+                  }
+
+                  data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
+                },
+                set: function(value) { },
+              }
+            },
+            VEStyles.get("texture-field-ext").resolution,
+            false
+          ),
+          Struct.get(config, "resolution"),
+          false
+        )
+      )
+    )
+
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_frame",
+      layout.nodes.frame, 
+      Struct.appendRecursive(
+        { 
+          label: { text: "Frame" },
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite) || !Core.isType(data, UIItem)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                var frame = value.getFrame()
+                Struct.set(value, "_restoreFrame", frame)
+                Struct.set(value, "_frame", frame)
+                data.textField.setText(frame)
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+
+                var frame = sprite.setFrame(NumberUtil.parse(value, sprite.getFrame())).getFrame()
+                Struct.set(value, "_restoreFrame", frame)
+                Struct.set(value, "_frame", frame)
+                item.set(sprite)
+              },
+            }
+          },
+          decrease: { 
+            factor: -1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              var frame = sprite.setFrame(sprite.getFrame() + factor).getFrame()
+              Struct.set(sprite, "_restoreFrame", frame)
+              Struct.set(sprite, "_frame", frame)
+              item.set(sprite)
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+          },
+          increase: { 
+            factor: 1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              var frame = sprite.setFrame(sprite.getFrame() + factor).getFrame()
+              Struct.set(sprite, "_restoreFrame", frame)
+              Struct.set(sprite, "_frame", frame)
+              item.set(sprite)
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                data.value = value.getRandomFrame()
+              },
+              set: function(value) { 
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+
+                item.set(sprite.setRandomFrame(value))
+              },
+            }
+          },
+          title: { text: "Rng frame" }, 
+        },
+        Struct.get(config, "frame"),
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_speed",
+      layout.nodes.speed, 
+      Struct.appendRecursive(
+        { 
+          label: { text: "Speed" },
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getSpeed())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setSpeed(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          decrease: { 
+            factor: -0.5,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setSpeed(sprite.getSpeed() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          increase: { 
+            factor: 0.5,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setSpeed(sprite.getSpeed() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                data.value = value.getAnimate()
+              },
+              set: function(value) { 
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+                
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                item.set(sprite.setAnimate(value))
+              },
+            }
+          },
+          title: { text: "Animate" },
+        },
+        Struct.get(config, "speed"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryNumericSliderIncreaseField(
+      $"{name}_alpha",
+      layout.nodes.alpha, 
+      Struct.appendRecursive(
+        { 
+          label: { text: "Alpha" },
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getAlpha())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                sprite.setAlpha(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          decrease: { 
+            factor: -0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setAlpha(sprite.getAlpha() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          increase: { 
+            factor: 0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setAlpha(sprite.getAlpha() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.value = value.getAlpha()
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                sprite.setAlpha(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            },
+          },
+        },
+        Struct.get(config, "alpha"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "texture-field-simple": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncreaseCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryDoubleCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("double-checkbox"),
+        layout: VELayouts.get("double-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryNumericSliderField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryNumericSliderIncreaseField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: config,
       }).toUIItems(layout)
     }
@@ -1299,7 +2300,7 @@ global.__VEComponents = new Map(String, Callable, {
         false
       )
     ).forEach(addItem, items)
-
+    
     items.add(
       factoryImage(
         $"{name}_preview", 
@@ -1314,7 +2315,23 @@ global.__VEComponents = new Map(String, Callable, {
                 data.image = value
               },
               set: function(value) { },
-            }
+            },
+            preRender: function() {
+              if (this.image == null) {
+                return
+              }
+
+              Struct.inject(this.image, "_restoreFrame", this.image.getFrame())
+              this.image.setFrame(Struct.inject(this.image, "_frame", this.image.getFrame()))
+            },
+            postRender: function() {
+              if (this.image == null) {
+                return
+              }
+
+              Struct.set(this.image, "_frame", this.image.getFrame())
+              this.image.setFrame(Struct.inject(this.image, "_restoreFrame", this.image.getFrame()))
+            },
           },
           Struct.get(config, "preview"),
           false
@@ -1348,8 +2365,765 @@ global.__VEComponents = new Map(String, Callable, {
         )
       )
     )
+
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_frame",
+      layout.nodes.frame, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite) || !Core.isType(data, UIItem)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                var frame = value.getFrame()
+                Struct.set(value, "_restoreFrame", frame)
+                Struct.set(value, "_frame", frame)
+                data.textField.setText(frame)
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+
+                var frame = sprite.setFrame(NumberUtil.parse(value, sprite.getFrame())).getFrame()
+                Struct.set(value, "_restoreFrame", frame)
+                Struct.set(value, "_frame", frame)
+                item.set(sprite)
+              },
+            }
+          },
+          decrease: { 
+            factor: -1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              var frame = sprite.setFrame(sprite.getFrame() + factor).getFrame()
+              Struct.set(sprite, "_restoreFrame", frame)
+              Struct.set(sprite, "_frame", frame)
+              item.set(sprite)
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+          },
+          increase: { 
+            factor: 1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              var frame = sprite.setFrame(sprite.getFrame() + factor).getFrame()
+              Struct.set(sprite, "_restoreFrame", frame)
+              Struct.set(sprite, "_frame", frame)
+              item.set(sprite)
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                data.value = value.getRandomFrame()
+              },
+              set: function(value) { 
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+
+                item.set(sprite.setRandomFrame(value))
+              },
+            }
+          },
+          title: { text: "Rng frame" }, 
+        },
+        Struct.get(config, "frame"),
+        false
+      )
+    ).forEach(addItem, items)
     
-    factoryNumericSliderField(
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_speed",
+      layout.nodes.speed, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getSpeed())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setSpeed(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          decrease: { 
+            factor: -0.5,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setSpeed(sprite.getSpeed() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          increase: { 
+            factor: 0.5,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setSpeed(sprite.getSpeed() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                data.value = value.getAnimate()
+              },
+              set: function(value) { 
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+                
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                item.set(sprite.setAnimate(value))
+              },
+            }
+          },
+          title: { text: "Animate" },
+        },
+        Struct.get(config, "speed"),
+        false
+      )
+    ).forEach(addItem, items)
+    
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "texture-field-ext": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncreaseCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryDoubleCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("double-checkbox"),
+        layout: VELayouts.get("double-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryNumericSliderField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryNumericSliderIncreaseField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIItem}
+    static factoryImage = function(name, layout, config) {
+      return UIImage(
+        name, 
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIItem}
+    static factoryLabel = function(name, layout, config) {
+      return UIText(
+        name,
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryProperty = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title", 
+      layout.nodes.title, 
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_texture",
+      layout.nodes.texture, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+                
+                data.textField.setText(value.texture.name)
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item) || !TextureUtil.exists(value)) {
+                  return
+                }
+
+                var json = item.get().serialize()
+                json.name = value
+                item.set(SpriteUtil.parse(json))
+              },
+            }
+          }
+        }, 
+        Struct.get(config, "texture"),
+        false
+      )
+    ).forEach(addItem, items)
+    
+    items.add(
+      factoryImage(
+        $"{name}_preview", 
+        layout.nodes.preview, 
+        Struct.appendRecursive(
+          { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.image = value
+              },
+              set: function(value) { },
+            },
+            preRender: function() {
+              if (this.image == null) {
+                return
+              }
+
+              Struct.inject(this.image, "_restoreFrame", this.image.getFrame())
+              this.image.setFrame(Struct.inject(this.image, "_frame", this.image.getFrame()))
+            },
+            postRender: function() {
+              if (this.image == null) {
+                return
+              }
+
+              Struct.set(this.image, "_frame", this.image.getFrame())
+              this.image.setFrame(Struct.inject(this.image, "_restoreFrame", this.image.getFrame()))
+            },
+          },
+          Struct.get(config, "preview"),
+          false
+        )
+      )
+    )
+
+    items.add(
+      factoryLabel(
+        $"{name}_resolution", 
+        layout.nodes.resolution, 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              store: { 
+                callback: function(value, data) {
+                  if (!Core.isType(value, Sprite)) {
+                    return
+                  }
+
+                  data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
+                },
+                set: function(value) { },
+              }
+            },
+            VEStyles.get("texture-field-ext").resolution,
+            false
+          ),
+          Struct.get(config, "resolution"),
+          false
+        )
+      )
+    )
+
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_frame",
+      layout.nodes.frame, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite) || !Core.isType(data, UIItem)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                var frame = value.getFrame()
+                Struct.set(value, "_restoreFrame", frame)
+                Struct.set(value, "_frame", frame)
+                data.textField.setText(frame)
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+
+                var frame = sprite.setFrame(NumberUtil.parse(value, sprite.getFrame())).getFrame()
+                Struct.set(value, "_restoreFrame", frame)
+                Struct.set(value, "_frame", frame)
+                item.set(sprite)
+              },
+            }
+          },
+          decrease: { 
+            factor: -1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              var frame = sprite.setFrame(sprite.getFrame() + factor).getFrame()
+              Struct.set(sprite, "_restoreFrame", frame)
+              Struct.set(sprite, "_frame", frame)
+              item.set(sprite)
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+          },
+          increase: { 
+            factor: 1.0,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              var frame = sprite.setFrame(sprite.getFrame() + factor).getFrame()
+              Struct.set(sprite, "_restoreFrame", frame)
+              Struct.set(sprite, "_frame", frame)
+              item.set(sprite)
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                data.value = value.getRandomFrame()
+              },
+              set: function(value) { 
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+
+                item.set(sprite.setRandomFrame(value))
+              },
+            }
+          },
+          title: { text: "Rng frame" }, 
+        },
+        Struct.get(config, "frame"),
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_speed",
+      layout.nodes.speed, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getSpeed())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                sprite.setSpeed(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          decrease: { 
+            factor: -0.5,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setSpeed(sprite.getSpeed() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          increase: { 
+            factor: 0.5,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setSpeed(sprite.getSpeed() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                data.value = value.getAnimate()
+              },
+              set: function(value) { 
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+                
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                
+                item.set(sprite.setAnimate(value))
+              },
+            }
+          },
+          title: { text: "Animate" },
+        },
+        Struct.get(config, "speed"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryNumericSliderIncreaseField(
       $"{name}_alpha",
       layout.nodes.alpha, 
       Struct.appendRecursive(
@@ -1382,9 +3156,60 @@ global.__VEComponents = new Map(String, Callable, {
               },
             }
           },
+          decrease: { 
+            factor: -0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setAlpha(sprite.getAlpha() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          increase: { 
+            factor: 0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setAlpha(sprite.getAlpha() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
           slider: { 
             minValue: 0.0,
             maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
             store: { 
               callback: function(value, data) {
                 if (!Core.isType(value, Sprite)) {
@@ -1413,115 +3238,7 @@ global.__VEComponents = new Map(String, Callable, {
       )
     ).forEach(addItem, items)
 
-    factoryTextFieldCheckbox(
-      $"{name}_speed",
-      layout.nodes.speed, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-
-                if (data.textField.isFocused()) {
-                  return
-                }
-
-                data.textField.setText(value.getSpeed())
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                
-                sprite.setSpeed(abs(NumberUtil.parse(value, sprite.getSpeed())))
-                item.set(sprite)
-              },
-            }
-          },
-          checkbox: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.updateValue(value.getAnimate())
-              },
-              set: function(value) { 
-                var item = this.get()
-                item.get().setAnimate(value)
-              },
-            }
-          },
-        },
-        Struct.get(config, "speed"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextFieldCheckbox(
-      $"{name}_frame",
-      layout.nodes.frame, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-
-                if (data.textField.isFocused()) {
-                  return
-                }
-
-                data.textField.setText(value.getFrame())
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                
-                sprite.setFrame(NumberUtil.parse(value))
-                item.set(sprite)
-              },
-            }
-          },
-          checkbox: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.updateValue(value.getRandomFrame())
-              },
-              set: function(value) { 
-                var item = this.get()
-                item.get().setRandomFrame(value)
-              },
-            }
-          },
-        },
-        Struct.get(config, "frame"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_scale_x",
       layout.nodes.scaleX, 
       Struct.appendRecursive(
@@ -1554,14 +3271,64 @@ global.__VEComponents = new Map(String, Callable, {
                 item.set(sprite)
               },
             }
-          }
+          },
+          decrease: { 
+            factor: -0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setScaleX(sprite.getScaleX() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          increase: { 
+            factor: 0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setScaleX(sprite.getScaleX() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
         },
         Struct.get(config, "scaleX"),
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_scale_y",
       layout.nodes.scaleY, 
       Struct.appendRecursive(
@@ -1594,7 +3361,57 @@ global.__VEComponents = new Map(String, Callable, {
                 item.set(sprite)
               },
             }
-          }
+          },
+          decrease: { 
+            factor: -0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setScaleY(sprite.getScaleY() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          increase: { 
+            factor: 0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setScaleY(sprite.getScaleY() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
         },
         Struct.get(config, "scaleY"),
         false
@@ -1620,6 +3437,22 @@ global.__VEComponents = new Map(String, Callable, {
           {
             layout: layout,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            preRender: function() {
+              if (this.image == null) {
+                return
+              }
+
+              Struct.inject(this.image, "_restoreFrame", this.image.getFrame())
+              this.image.setFrame(Struct.inject(this.image, "_frame2", this.image.getFrame()))
+            },
+            postRender: function() {
+              if (this.image == null) {
+                return
+              }
+
+              Struct.set(this.image, "_frame2", this.image.getFrame())
+              this.image.setFrame(Struct.inject(this.image, "_restoreFrame", this.image.getFrame()))
+            },
           },
           config,
           false
@@ -1694,6 +3527,24 @@ global.__VEComponents = new Map(String, Callable, {
       return uiImage
     }
 
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIItem}
+    static factoryLabel = function(name, layout, config) {
+      return UIText(
+        name,
+        Struct.appendRecursive(
+          {
+            layout: layout,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          config,
+          false
+        )
+      )
+    }
+
     var items = new Array(UIItem)
 
     items.add(
@@ -1713,6 +3564,33 @@ global.__VEComponents = new Map(String, Callable, {
             }
           },
           Struct.get(config, "preview"),
+          false
+        )
+      )
+    )
+
+    items.add(
+      factoryLabel(
+        $"{name}_resolution", 
+        layout.nodes.resolution, 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              store: { 
+                callback: function(value, data) {
+                  if (!Core.isType(value, Sprite)) {
+                    return
+                  }
+
+                  data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
+                },
+                set: function(value) { },
+              }
+            },
+            VEStyles.get("texture-field-ext").resolution,
+            false
+          ),
+          Struct.get(config, "resolution"),
           false
         )
       )
@@ -1754,6 +3632,149 @@ global.__VEComponents = new Map(String, Callable, {
             false
           ),
           Struct.get(config, "field"),
+          false
+        )
+      ),
+      UISliderHorizontal(
+        $"slider_{name}",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.slider,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
+              setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
+            },
+            VEStyles.get("slider-horizontal"),
+            false
+          ),
+          Struct.get(config, "slider"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "numeric-slider-increase-field": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field_label"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UITextField(
+        $"field_{name}",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.field,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
+            },
+            VEStyles.get("text-field"),
+            false
+          ),
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_increase", 
+        Struct.appendRecursive(
+          { 
+            factor: 1.0,
+            label: { 
+              text: "+",
+              font: "font_inter_10_regular",
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            layout: layout.nodes.increase,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "increase"),
           false
         )
       ),
@@ -2361,14 +4382,22 @@ global.__VEComponents = new Map(String, Callable, {
         layout.nodes.previous,
         Struct.appendRecursive(
           Struct.appendRecursive(
-            { 
+            {
               increment: -1,
+              backgroundColor: VETheme.color.primary,
+              backgroundColorSelected: VETheme.color.accent,
+              backgroundColorOut: VETheme.color.primary,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+                if (Optional.is(this.enable) && !this.enable.value) {
+                  this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                  return
+                }
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
               },
               onMouseHoverOut: function(event) {
-                this.sprite.setBlend(c_white)
-              },            
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },
+              label: { text: "<" },        
             },
             Struct.get(config, "previous"), 
             true
@@ -2389,12 +4418,20 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.appendRecursive(
             { 
               increment: 1,
+              backgroundColor: VETheme.color.primary,
+              backgroundColorSelected: VETheme.color.accent,
+              backgroundColorOut: VETheme.color.primary,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+                if (Optional.is(this.enable) && !this.enable.value) {
+                  this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                  return
+                }
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
               },
               onMouseHoverOut: function(event) {
-                this.sprite.setBlend(c_white)
-              },            
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },
+              label: { text: ">" }, 
             },
             Struct.get(config, "next"),
             false
@@ -3708,7 +5745,183 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "vec4-value-checkbox": function(name, layout, config = null) {
+  "vec4-increase": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: Struct.appendRecursive(
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) 
+                    || !Struct.contains(vec4, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(vec4, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(vec4, key, parsedValue))
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "vec4Property")
+                var vec4 = item.get()
+                if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  return 
+                }
+
+                Struct.set(vec4, key, Struct.get(vec4, key) + factor)
+                item.set(vec4)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "vec4Property")
+                var vec4 = item.get()
+                if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  return 
+                }
+
+                Struct.set(vec4, key, Struct.get(vec4, key) + factor)
+                item.set(vec4)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+          },
+          config,
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTextField(
+      $"{name}_x",
+      layout.nodes.x,
+      Struct.appendRecursive(
+        Struct.get(config, "x"),
+        { 
+          field: { vec4Property: "x" },
+          decrease: { vec4Property: "x" },
+          increase: { vec4Property: "x" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_y",
+      layout.nodes.y,
+      Struct.appendRecursive(
+        Struct.get(config, "y"),
+        { 
+          field: { vec4Property: "y" },
+          decrease: { vec4Property: "y" },
+          increase: { vec4Property: "y" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_z",
+      layout.nodes.z,
+      Struct.appendRecursive(
+        Struct.get(config, "z"),
+        { 
+          field: { vec4Property: "z" },
+          decrease: { vec4Property: "z" },
+          increase: { vec4Property: "z" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextField(
+      $"{name}_a",
+      layout.nodes.a,
+      Struct.appendRecursive(
+        Struct.get(config, "a"),
+        { 
+          field: { vec4Property: "a" },
+          decrease: { vec4Property: "a" },
+          increase: { vec4Property: "a" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "number-transformer-increase": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
       items.add(item)
@@ -3719,6 +5932,15 @@ global.__VEComponents = new Map(String, Callable, {
         name: name,
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryDoubleCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("double-checkbox"),
+        layout: VELayouts.get("double-checkbox"),
         config: config,
       }).toUIItems(layout)
     }
@@ -3827,6 +6049,225 @@ global.__VEComponents = new Map(String, Callable, {
       }).toUIItems(layout)
     }
 
+    static factoryTextFieldIncreaseCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: Struct.appendRecursive(
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+          },
+          config, 
+          false
+        )
+      }).toUIItems(layout)
+    }
+    
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: Struct.appendRecursive(
+          config,
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
 
     var items = new Array(UIItem)
 
@@ -3835,43 +6276,478 @@ global.__VEComponents = new Map(String, Callable, {
     //  layout.nodes.title,
     //  Struct.get(config, "title")
     //).forEach(addItem, items)
-
-    factoryTextFieldCheckbox(
+    
+    factoryTextFieldIncrease(
       $"{name}_value",
       layout.nodes.value,
       Struct.appendRecursive(
+        { 
+          field: { transformNumericProperty: "value" },
+          decrease: { transformNumericProperty: "value" },
+          increase: { transformNumericProperty: "value" },
+        },
         Struct.get(config, "value"),
-        { field: { transformNumericProperty: "value" } },
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextFieldCheckbox(
+    factoryTextFieldIncrease(
       $"{name}_target",
       layout.nodes.target,
       Struct.appendRecursive(
         Struct.get(config, "target"),
-        { field: { transformNumericProperty: "target" } },
+        { 
+          field: { transformNumericProperty: "target" },
+          decrease: { transformNumericProperty: "target" },
+          increase: { transformNumericProperty: "target" },
+        },
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_factor",
       layout.nodes.factor,
       Struct.appendRecursive(
         Struct.get(config, "factor"),
-        { field: { transformNumericProperty: "factor" } },
+        {
+          field: { transformNumericProperty: "factor" },
+          decrease: { transformNumericProperty: "factor" },
+          increase: { transformNumericProperty: "factor" },
+        },
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_increase",
       layout.nodes.increase,
       Struct.appendRecursive(
         Struct.get(config, "increase"),
-        { field: { transformNumericProperty: "increase" } },
+        {
+          field: { transformNumericProperty: "increase" },
+          decrease: { transformNumericProperty: "increase" },
+          increase: { transformNumericProperty: "increase" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "number-transformer-increase-checkbox": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryDoubleCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("double-checkbox"),
+        layout: VELayouts.get("double-checkbox"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryTextField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    static factoryTextFieldCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-checkbox"),
+        layout: VELayouts.get("text-field-checkbox"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    static factoryTextFieldIncreaseCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: Struct.appendRecursive(
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+          },
+          config, 
+          false
+        )
+      }).toUIItems(layout)
+    }
+    
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: Struct.appendRecursive(
+          config,
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    //factoryTitle(
+    //  $"{name}_title",
+    //  layout.nodes.title,
+    //  Struct.get(config, "title")
+    //).forEach(addItem, items)
+    
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_value",
+      layout.nodes.value,
+      Struct.appendRecursive(
+        { 
+          field: { transformNumericProperty: "value" },
+          decrease: { transformNumericProperty: "value" },
+          increase: { transformNumericProperty: "value" },
+        },
+        Struct.get(config, "value"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_target",
+      layout.nodes.target,
+      Struct.appendRecursive(
+        Struct.get(config, "target"),
+        { 
+          field: { transformNumericProperty: "target" },
+          decrease: { transformNumericProperty: "target" },
+          increase: { transformNumericProperty: "target" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_factor",
+      layout.nodes.factor,
+      Struct.appendRecursive(
+        Struct.get(config, "factor"),
+        {
+          field: { transformNumericProperty: "factor" },
+          decrease: { transformNumericProperty: "factor" },
+          increase: { transformNumericProperty: "factor" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncreaseCheckbox(
+      $"{name}_increase",
+      layout.nodes.increase,
+      Struct.appendRecursive(
+        Struct.get(config, "increase"),
+        {
+          field: { transformNumericProperty: "increase" },
+          decrease: { transformNumericProperty: "increase" },
+          increase: { transformNumericProperty: "increase" },
+        },
         false
       )
     ).forEach(addItem, items)

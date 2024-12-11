@@ -485,6 +485,10 @@ function brush_grid_old_player(json = null) {
             store: { key: "grid-player_texture" },
             mask: "grid-player_mask",
           },
+          resolution: {
+            enable: { key: "grid-player_use-mask" },
+            store: { key: "grid-player_texture" },
+          },
         },
       },
       {

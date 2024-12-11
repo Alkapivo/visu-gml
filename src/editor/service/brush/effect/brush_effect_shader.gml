@@ -79,34 +79,70 @@ function brush_effect_shader(json = null) {
         },
       },
       {
+        name: "ef-shd_duration-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "ef-shd_duration",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Duration" },
+          label: { text: "Duration (s)" },
           field: { store: { key: "ef-shd_duration" } },
+          decrease: {
+            store: { key: "ef-shd_duration" },
+            factor: -0.5,
+          },
+          increase: {
+            store: { key: "ef-shd_duration" },
+            factor: 0.5,
+          },
         },
       },
       {
         name: "ef-shd_fade-in",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Fade in" },
+          label: { text: "Fade in (s)" },
           field: { store: { key: "ef-shd_fade-in" } },
+          decrease: {
+            store: { key: "ef-shd_fade-in" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "ef-shd_fade-in" },
+            factor: 0.25,
+          },
         },
       },
       {
         name: "ef-shd_fade-out",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Fade out" },
+          label: { text: "Fade out (s)" },
           field: { store: { key: "ef-shd_fade-out" } },
+          decrease: {
+            store: { key: "ef-shd_fade-out" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "ef-shd_fade-out" },
+            factor: 0.25,
+          },
         },
+      },
+      {
+        name: "ef-shd_alpha-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "ef-shd_alpha",  
@@ -123,6 +159,7 @@ function brush_effect_shader(json = null) {
           slider:{
             minValue: 0.0,
             maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
             store: { key: "ef-shd_alpha" },
           },
         },
@@ -142,19 +179,28 @@ function brush_effect_shader(json = null) {
         },
       },
       {
+        name: "ef-shd_use-merge-cfg_line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "ef-shd_use-merge-cfg",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Merge config",
+            text: "Shader config",
             enable: { key: "ef-shd_use-merge-cfg" },
+            backgroundColor: VETheme.color.accentShadow,
           },
+          input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "ef-shd_use-merge-cfg" },
+            backgroundColor: VETheme.color.accentShadow,
           },
         },
       },
@@ -168,7 +214,7 @@ function brush_effect_shader(json = null) {
             v_grow: true,
             w_min: 570,
             store: { key: "ef-shd_merge-cfg" },
-            enable: { key: "shader-spawn_use-merge-properties" },
+            enable: { key: "ef-shd_use-merge-cfg" },
           },
         },
       }

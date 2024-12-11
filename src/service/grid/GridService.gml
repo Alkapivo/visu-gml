@@ -1,5 +1,6 @@
 ///@package io.alkapivo.visu.service.grid
 
+
 ///@type {Number}
 global.__GRID_SERVICE_PIXEL_WIDTH = 2048
 #macro GRID_SERVICE_PIXEL_WIDTH global.__GRID_SERVICE_PIXEL_WIDTH
@@ -322,6 +323,45 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@type {TaskExecutor}
   executor = new TaskExecutor(this)
 
+  avgTime = {
+    value: 0,
+    count: 0,
+    add: function(value) {
+      this.value += value
+      this.count += 1
+      return this
+    },
+    reset: function() {
+      this.value = 0
+      this.count = 0
+      return this
+    },
+    get: function() {
+      return this.value / this.count
+    }
+  }
+
+  textureGroups = {
+    map: new Map(String, Number),
+    getIndex: function(item) {
+      var value = this.map.get(item.sprite.getName())
+      if (value == null) {
+        value = this.map.size()
+        this.map.set(item.sprite.getName(), value)
+      }
+
+      return value
+    },
+    compareItems: function(a, b) {
+      return this.getIndex(a) - this.getIndex(b)
+    },
+    sortItems: function(items) {
+      items.setContainer(GMArray.sort(items.getContainer(), this.compareItems))
+    },
+  }
+
+  
+
   ///@private
   ///@type {DebugTimer}
   moveGridItemsTimer = new DebugTimer("MoveGridItems")
@@ -342,50 +382,56 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@type {DebugTimer}
   updateBulletServiceTimer = new DebugTimer("BulletService")
   
+  ///@param {Bullet} bullet
+  ///@param {Number} key
+  ///@param {Struct} acc
+  moveBullet = function(bullet, key, acc) {
+    bullet.move()
+    if (bullet.producer == Player) {
+      acc.chunkService.update(bullet)
+    }
+    
+    var view = acc.view
+    var length = Math.fetchLength(
+      bullet.x, bullet.y,
+      view.x + (view.width / 2.0), 
+      view.y + (view.height / 2.0)
+    )
+
+    if (length > GRID_ITEM_FRUSTUM_RANGE) {
+      bullet.signal("kill")
+    }
+  }
+
+  ///@param {Shroom} shroom
+  ///@param {Number} key
+  ///@param {Struct} acc
+  moveShroom = function(shroom, key, acc) {
+    shroom.move()
+    acc.chunkService.update(shroom)
+    
+    var view = acc.view
+    var length = Math.fetchLength(
+      shroom.x, shroom.y,
+      view.x + (view.width / 2.0), 
+      view.y + (view.height / 2.0)
+    )
+
+    if (length > GRID_ITEM_FRUSTUM_RANGE) {
+      shroom.signal("kill")
+    }
+  }
+
   ///@private
   ///@return {GridService}
   moveGridItems = function() {
-    static moveBullet = function(bullet, key, acc) {
-      bullet.move()
-      if (bullet.producer == Player) {
-        acc.chunkService.update(bullet)
-      }
-      
-      var view = acc.view
-      var length = Math.fetchLength(
-        bullet.x, bullet.y,
-        view.x + (view.width / 2.0), 
-        view.y + (view.height / 2.0)
-      )
-
-      if (length > GRID_ITEM_FRUSTUM_RANGE) {
-        bullet.signal("kill")
-      }
-    }
-
-    static moveShroom = function(shroom, key, acc) {
-      shroom.move()
-      acc.chunkService.update(shroom)
-      
-      var view = acc.view
-      var length = Math.fetchLength(
-        shroom.x, shroom.y,
-        view.x + (view.width / 2.0), 
-        view.y + (view.height / 2.0)
-      )
-
-      if (length > GRID_ITEM_FRUSTUM_RANGE) {
-        shroom.signal("kill")
-      }
-    }
-
     var view = this.controller.gridService.view
-    this.controller.bulletService.bullets.forEach(moveBullet, {
+    this.controller.bulletService.bullets.forEach(this.moveBullet, {
       view: view,
       chunkService: this.controller.bulletService.chunkService,
     })
 
-    this.controller.shroomService.shrooms.forEach(moveShroom, {
+    this.controller.shroomService.shrooms.forEach(this.moveShroom, {
       view: view,
       chunkService: this.controller.shroomService.chunkService,
     })
@@ -397,65 +443,77 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     return this
   }
 
+  ///@param {Bullet} bullet
+  ///@param {Number} index
+  ///@param {GridService} context
+  bulletCollision = function(bullet, index, context) {
+    static playerBullet = function(shroom, index, bullet) {
+      if (shroom.collide(bullet)) {
+        shroom.signal("bulletCollision", bullet)
+        shroom.signal("damage", true)
+        shroom.healthPoints = clamp(shroom.healthPoints - bullet.damage, 0, 9999.9)
+        bullet.signal("shroomCollision", shroom)
+      }
+    }
+    static shroomBullet = function(player, bullet) {
+      if (player.collide(bullet)) {
+        player.signal("bulletCollision", bullet)
+        bullet.signal("playerCollision", player)
+      }
+    }
+    static playerLambda = function(key, index, acc) {
+      acc.chunkService.get(key).forEach(acc.playerBullet, acc.bullet)
+    }
+
+    switch (bullet.producer) {
+      case Player:
+        bullet.chunkPosition.keys.forEach(playerLambda, {
+          chunkService: context.controller.shroomService.chunkService,
+          playerBullet: playerBullet,
+          bullet: bullet,
+        })
+        //context.controller.shroomService.shrooms.forEach(playerBullet, bullet)
+        break
+      case Shroom:
+        shroomBullet(context.controller.playerService.player, bullet)
+        break
+      default:
+        Logger.warn("GridService", "Found invalid bullet producer")
+        break
+    }
+  }
+
+  ///@param {Shroom} shroom
+  ///@param {Number} index
+  ///@param {Player} player
+  shroomCollision = function(shroom, index, player) {
+    if (shroom.collide(player)) {
+      player.signal("shroomCollision", shroom)
+      shroom.signal("playerCollision", player)
+      shroom.signal("damage", true)
+      shroom.healthPoints = clamp(shroom.healthPoints - 1.0, 0, 9999.9)
+    }
+  }
+
+  ///@param {Shroom} shroom
+  ///@param {Number} index
+  ///@param {Player} player
+  shroomCollisionGodMode = function(shroom, index, player) {
+    if (shroom.collide(player)) {
+      player.signal("shroomCollision", shroom)
+    }
+  }
+
   ///@private
   ///@return {GridService}
   signalGridItemsCollision = function() {
-    static bulletCollision = function(bullet, index, context) {
-      static playerBullet = function(shroom, index, bullet) {
-        if (shroom.collide(bullet)) {
-          shroom.signal("bulletCollision", bullet)
-          shroom.signal("damage", true)
-          shroom.healthPoints = clamp(shroom.healthPoints - bullet.damage, 0, 9999.9)
-          bullet.signal("shroomCollision", shroom)
-        }
-      }
-      static shroomBullet = function(player, bullet) {
-        if (player.collide(bullet)) {
-          player.signal("bulletCollision", bullet)
-          bullet.signal("playerCollision", player)
-        }
-      }
-
-      switch (bullet.producer) {
-        case Player:
-          bullet.chunkPosition.keys.forEach(function(key, index, acc) {
-            acc.chunkService.get(key).forEach(acc.playerBullet, acc.bullet)
-          }, {
-            chunkService: context.controller.shroomService.chunkService,
-            playerBullet: playerBullet,
-            bullet: bullet,
-          })
-          //context.controller.shroomService.shrooms.forEach(playerBullet, bullet)
-          break
-        case Shroom:
-          shroomBullet(context.controller.playerService.player, bullet)
-          break
-        default:
-          Logger.warn("GridService", "Found invalid bullet producer")
-          break
-      }
-    }
-
-    static shroomCollision = function(shroom, index, player) {
-      if (shroom.collide(player)) {
-        player.signal("shroomCollision", shroom)
-        shroom.signal("playerCollision", player)
-        shroom.signal("damage", true)
-        shroom.healthPoints = clamp(shroom.healthPoints - 1.0, 0, 9999.9)
-      }
-    }
-
-    static shroomCollisionGodMode = function(shroom, index, player) {
-      if (shroom.collide(player)) {
-        player.signal("shroomCollision", shroom)
-      }
-    }
-    
     var player = this.controller.playerService.player
     if (Core.isType(player, Player)) {
-      this.controller.bulletService.bullets.forEach(bulletCollision, this) 
-      this.controller.shroomService.shrooms.forEach(player.stats.godModeCooldown > 0.0 
-        ? shroomCollisionGodMode : shroomCollision, player)
+      var shroomCollision = player.stats.godModeCooldown > 0.0 
+        ? this.shroomCollisionGodMode 
+        : this.shroomCollision
+      this.controller.bulletService.bullets.forEach(this.bulletCollision, this) 
+      this.controller.shroomService.shrooms.forEach(shroomCollision, player)
     }
     
     return this
@@ -464,6 +522,14 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@private
   ///@return {GridService}
   updateGridItems = function() {
+    this.moveGridItemsTimer.start()
+    this.moveGridItems()
+    this.moveGridItemsTimer.finish()
+
+    this.signalGridItemsCollisionTimer.start()
+    this.signalGridItemsCollision()
+    this.signalGridItemsCollisionTimer.finish()
+
     this.updatePlayerServiceTimer.start()
     this.controller.playerService.update(this)
     this.updatePlayerServiceTimer.finish()
@@ -475,6 +541,74 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.updateBulletServiceTimer.start()
     this.controller.bulletService.update(this)
     this.updateBulletServiceTimer.finish()
+    return this
+  }
+
+  ///@private
+  ///@param {any} item
+  ///@param {any} index
+  ///@parma {any} acc
+  __dummy = function(item, index, acc) { }
+
+  
+  ///@private
+  ///@return {GridService}
+  updateGridItemsAlternative = function() {
+    static bulletLambda = function(bullet, index, acc) {
+      acc.moveBullet(bullet, index, acc)
+      acc.bulletCollision(bullet, index, acc.gridService)
+      acc.bulletService.updateBullet(bullet, index, acc.bulletService)
+    }
+    static shroomLambda = function(shroom, index, acc) {
+      acc.moveShroom(shroom, index, acc)
+      acc.shroomCollision(shroom, index, acc.player)
+      acc.shroomService.updateShroom(shroom, index, acc.shroomService)
+    }
+    
+    var gridService = this
+    var bulletService = this.controller.bulletService
+    var shroomService = this.controller.shroomService
+    var playerService = this.controller.playerService
+    var player = playerService.player
+    var view = this.controller.gridService.view
+
+    this.updatePlayerServiceTimer.start()
+    if (Core.isType(player, Player)) {
+      player.move()
+    }
+    playerService.update()
+    this.updatePlayerServiceTimer.finish()
+
+    this.updateBulletServiceTimer.start()
+    bulletService.dispatcher.update()
+    bulletService.bullets.forEach(bulletLambda, {
+      moveBullet: this.moveBullet,
+      view: view,
+      chunkService: bulletService.chunkService,
+      bulletCollision: this.bulletCollision,
+      gridService: gridService,
+      bulletService: bulletService,
+    }).runGC() 
+    this.updateBulletServiceTimer.finish()
+
+    this.updateShroomServiceTimer.start()
+    if (this.controller.gameMode != shroomService.gameMode) {
+      shroomService.gameMode = this.controller.gameMode
+      shroomService.shrooms.forEach(shroomService.updateGameMode, shroomService.gameMode)
+    }
+  
+    shroomService.dispatcher.update()
+    shroomService.shrooms.forEach(shroomLambda, {
+      moveShroom: this.moveShroom,
+      view: view,
+      chunkService: shroomService.chunkService,
+      shroomCollision: player != null 
+        ? (player.stats.godModeCooldown > 0.0 ? this.shroomCollisionGodMode : this.shroomCollision) 
+        : this.__dummy,
+      player: player,
+      shroomService: shroomService,
+    }).runGC()
+    this.updateShroomServiceTimer.finish()
     return this
   }
 
@@ -526,19 +660,14 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       player.y = clamp(player.y, 0.0, this.height)
     }
 
-    this.view
-      .setFollowTarget(this.targetLocked)
-      .update()
+    this.view.setFollowTarget(this.targetLocked).update()
     
-    this.moveGridItemsTimer.start()
-    this.moveGridItems()
-    this.moveGridItemsTimer.finish()
-
-    this.signalGridItemsCollisionTimer.start()
-    this.signalGridItemsCollision()
-    this.signalGridItemsCollisionTimer.finish()
-
-    this.updateGridItems()
+    if (Visu.settings.getValue("visu.optimalization.iterate-entities-once")) {
+      this.updateGridItemsAlternative()
+    } else {
+      this.updateGridItems()
+    }
+    
     return this
   }
 

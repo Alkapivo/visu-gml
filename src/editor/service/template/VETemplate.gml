@@ -89,6 +89,12 @@ function VETemplate(json) constructor {
         },
       },
     },
+    {
+      name: "template_start-line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
+    },
   ])
 
   ///@private
@@ -280,10 +286,11 @@ function VETemplate(json) constructor {
     template.color.halfway = this.store.getValue("particle-color-halfway").toHex()
     template.color.finish = this.store.getValue("particle-color-finish").toHex()
     if (this.store.getValue("particle-use-sprite")) {
+      var sprite = this.store.getValue("particle-sprite")
       Struct.set(template, "sprite", {
-        name: this.store.getValue("particle-sprite").getName(),
-        animate: this.store.getValue("particle-sprite-animate"),
-        randomValue: this.store.getValue("particle-sprite-randomValue"),
+        name: sprite.getName(),
+        animate: sprite.getAnimate,
+        randomValue: sprite.getRandomFrame(),
         stretch: this.store.getValue("particle-sprite-stretch"),
       })
     } else {
@@ -323,4 +330,10 @@ function VETemplate(json) constructor {
   data.components.forEach(function(component, index, components) {
     components.add(component)
   }, this.components)
+  this.components.add({
+    name: "template_end-line-h",
+    template: VEComponents.get("line-h"),
+    layout: VELayouts.get("line-h"),
+    config: { layout: { type: UILayoutType.VERTICAL } },
+  })
 }

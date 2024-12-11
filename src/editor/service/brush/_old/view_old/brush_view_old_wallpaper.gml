@@ -1,42 +1,12 @@
 ///@package io.alkapivo.visu.editor.service.brush._old.view_old
 
-///@static
-///@type {Array<String>}
-global.__WALLPAPER_TYPES = [
-  "Background",
-  "Foreground",
-]
-#macro WALLPAPER_TYPES global.__WALLPAPER_TYPES
+///@param {Struct} json
+///@return {Struct}
+function migrateViewOldWallpaperEvent(json) {
+  return {
 
-
-///@static
-///@type {GMArray<String>}
-global.__BLEND_MODES_EXT = [
-  "ONE",
-  "ZERO",
-  "SRC_ALPHA",
-  "INV_SRC_ALPHA",
-  "SRC_COLOUR",
-  "INV_SRC_COLOUR",
-  "SRC_ALPHA_SAT",
-  "DEST_ALPHA",
-  "INV_DEST_ALPHA",
-  "DEST_COLOUR",
-  "INV_DEST_COLOUR"
-]
-#macro BLEND_MODES_EXT global.__BLEND_MODES_EXT
-
-
-///@static
-///@type {GMArray<String>}
-global.__BLEND_EQUATIONS = [
-  "ADD",
-  "SUBTRACT",
-  "REVERSE_SUBTRACT",
-  "MIN",
-  "MAX"
-]
-#macro BLEND_EQUATIONS global.__BLEND_EQUATIONS
+  }
+}
 
 
 ///@param {?Struct} [json]
@@ -364,8 +334,8 @@ function brush_view_old_wallpaper(json = null) {
       },
       {
         name: "view-wallpaper_texture",
-        template: VEComponents.get("texture-field"),
-        layout: VELayouts.get("texture-field"),
+        template: VEComponents.get("__texture-field"),
+        layout: VELayouts.get("__texture-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {

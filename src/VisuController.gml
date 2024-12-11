@@ -638,7 +638,7 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   init = function() {
     this.displayService.setCaption(game_display_name)
-    Core.debugOverlay(Assert.isType(Core.getProperty("visu.debug", false), Boolean))
+    Core.debugOverlay(Assert.isType(Visu.settings.getValue("visu.debug", false), Boolean))
     var fullscreen = Assert.isType(Visu.settings.getValue("visu.fullscreen", false), Boolean)
     this.displayService
       .resize(
@@ -693,7 +693,7 @@ function VisuController(layerName) constructor {
     try {
       if (this.displayService.state == "resized") {
         ///@description reset UI timers after resize to avoid ghost effect
-        this.uiService.containers.forEach(this.resetUIContainerTimer)
+        this.uiService.containers.forEach(this.resetUITimer)
 
         Visu.settings.setValue("visu.fullscreen", this.displayService.getFullscreen()).save()
         if (!this.displayService.getFullscreen()) {
@@ -739,14 +739,14 @@ function VisuController(layerName) constructor {
   }
 
   ///@private
-  ///@param {UIContainer}
-  resetUIContainerTimer = function(container) {
-    if (!Optional.is(container.updateTimer)) {
+  ///@param {UI}
+  resetUITimer = function(ui) {
+    if (!Optional.is(ui.updateTimer)) {
       return
     }
 
-    container.surfaceTick.skip()
-    container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+    ui.surfaceTick.skip()
+    ui.updateTimer.time = ui.updateTimer.duration + random(ui.updateTimer.duration / 2.0)
   }
 
   ///@param {Event}
@@ -814,7 +814,7 @@ function VisuController(layerName) constructor {
       GPU.reset.surface()
       GPU.reset.blendMode()
     }
-    
+
     return this
   }
 

@@ -202,6 +202,12 @@ global.__VEStyles = new Map(String, Struct, {
       offset: { x: 4 },
     },
   },
+  "line-h": {
+    image: {
+      backgroundColor: VETheme.color.primaryShadow,
+      backgroundAlpha: 1.0,
+    },
+  },
   "property": {
     checkbox: {
       backgroundColor: VETheme.color.primaryShadow,
@@ -302,7 +308,7 @@ global.__VEStyles = new Map(String, Struct, {
     checkbox: { },
     title: {
       font: "font_inter_10_regular",
-      color: VETheme.color.textFocus,
+      color: VETheme.color.textShadow,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
     },
   },
@@ -467,6 +473,28 @@ global.__VEStyles = new Map(String, Struct, {
       color: VETheme.color.textShadow,
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
     }
-  }
+  },
+  "double-checkbox": {
+    label: {
+      offset: { x: 0 },
+      font: "font_inter_10_bold",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.CENTER, h: HAlign.RIGHT },
+    },
+    checkbox1: { },
+    label1: {
+      offset: { x: 0 },
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.CENTER, h: HAlign.LEFT },
+    },
+    checkbox2: { },
+    label2: {
+      offset: { x: 0 },
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      align: { v: VAlign.CENTER, h: HAlign.LEFT },
+    }
+  },
 })
 #macro VEStyles global.__VEStyles
