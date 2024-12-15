@@ -24,11 +24,9 @@ function brush_shader_spawn(json = null) {
     store: new Map(String, Struct, {
       "shader-spawn_pipeline": {
         type: String,
-        value: Struct.getIfType(json, "shader-spawn_pipeline", String, "Background"),
-        passthrough: function(value) {
-          return this.data.contains(value) ? value : this.value
-        },
-        data: new Array(String, [ "Grid", "Background", "All" ])
+        value: Struct.get(json, "shader-spawn_pipeline"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, SHADER_PIPELINE_TYPES),
       },
       "shader-spawn_template": {
         type: String,

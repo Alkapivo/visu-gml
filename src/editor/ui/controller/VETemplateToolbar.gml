@@ -2678,7 +2678,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     task.state.context.state.set("previousOffset", task.state.previousOffset)
                     return
                   }
-
                   var component = new UIComponent(task.state.components.get(index))
                   factoryComponent(component, index, task.state.componentsConfig)
                 },

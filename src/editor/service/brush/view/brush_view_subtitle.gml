@@ -1,6 +1,6 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
-///@type {GMArray<String>}
+///@type {String[]}
 global.__VISU_FONT = [
   "font_kodeo_mono_10_regular",
   "font_kodeo_mono_12_regular",
@@ -49,173 +49,150 @@ function brush_view_subtitle(json = null) {
     store: new Map(String, Struct, {
       "vw-sub_template": {
         type: String,
-        value: Struct.getIfType(json, "vw-sub_template", String, "subtitle-default"),
-        passthrough: function(value) {
-          var subtitleService = Beans.get(BeanVisuController).subtitleService
-          return subtitleService.templates.contains(value) 
-              || Visu.assets().subtitleTemplates.contains(value) 
-                  ? value 
-                  : "subtitle-default"
+        value: Struct.get(json, "vw-sub_template"),
+        passthrough: UIUtil.passthrough.getCallbackValue(),
+        data: {
+          callback: Beans.get(BeanVisuController).subtitleTemplateExists,
+          defaultValue: "subtitle-default",
         },
       },
       "vw-sub_font": {
         type: String,
-        value: Struct.getIfType(json, "vw-sub_font", String, VISU_FONT[0]),
-        passthrough: function(value) {
-          return this.data.contains(value) ? value : (this.data.contains(this.value) ? this.value : this.data.get(0))
-        },
-        data: new Array(String, VISU_FONT)
+        value: Struct.get(json, "vw-sub_font"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, VISU_FONT),
       },
       "vw-sub-fh": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub-fh", Number, 12),
-        passthrough: function(value) {
-          return NumberUtil.parse(value, this.value)
-        },
+        value: Struct.get(json, "vw-sub-fh"),
+        passthrough: UIUtil.passthrough.getClampedStringInteger(),
+        data: new Vector2(0, 999),
       },
       "vw-sub_use-timeout": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-sub_use-timeout", Boolean, false),
+        value: Struct.get(json, "vw-sub_use-timeout"),
       },
       "vw-sub_timeout": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub_timeout", Number, 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, 999.9)
-        },
+        value: Struct.get(json, "vw-sub_timeout"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
       },
       "vw-sub_col": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "vw-sub_col"), ColorUtil.fromHex("#ffffff")),
+        value: Struct.get(json, "vw-sub_col"),
       },
       "vw-sub_use-outline": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-sub_use-outline", Boolean, false),
+        value: Struct.get(json, "vw-sub_use-outline"),
       },
       "vw-sub_outline": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "vw-sub_outline"), ColorUtil.fromHex("#000000")),
+        value: Struct.get(json, "vw-sub_outline"),
       },
       "vw-sub_align-v": {
         type: String,
-        value: Struct.getIfType(json, "vw-sub_align-v", String, "TOP"),
-        passthrough: function(value) {
-          return this.data.contains(value) ? value : (this.data.contains(this.value) ? this.value : this.data.get(0))
-        },
+        value: Struct.get(json, "vw-sub_align-v"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
         data: new Array("String", [ "TOP", "BOTTOM" ]),
       },
       "vw-sub_align-h": {
         type: String,
-        value: Struct.getIfType(json, "vw-sub_align-h", String, "LEFT"),
-        passthrough: function(value) {
-          return this.data.contains(value) ? value : (this.data.contains(this.value) ? this.value : this.data.get(0))
-        },
+        value: Struct.get(json, "vw-sub_align-h"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
         data: new Array("String", [ "LEFT", "CENTER", "RIGHT" ]),
       },
       "vw-sub_x": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub_x", Number, 0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, 1)
-        },
+        value: Struct.get(json, "vw-sub_x"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(-5.0, 5.0),
       },
       "vw-sub_y": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub_y", Number, 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0)
-        },
+        value: Struct.get(json, "vw-sub_y"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(-5.0, 5.0),
       },
       "vw-sub_w": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub_w", Number, 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0)
-        },
+        value: Struct.get(json, "vw-sub_w"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 10.0),
       },
       "vw-sub_h": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub_h", Number, 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0)
-        },
+        value: Struct.get(json, "vw-sub_h"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 10.0),
       },
       "vw-sub-char-spd": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub-char-spd", Number, 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 999.9)
-        },
+        value: Struct.get(json, "vw-sub-char-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.00001, 999.9),
       },
       "vw-sub_use-nl-delay": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-sub_use-nl-delay", Boolean, false),
+        value: Struct.get(json, "vw-sub_use-nl-delay"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
       },
       "vw-sub_nl-delay": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub_nl-delay", Number, 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 999.9)
-        },
+        value: Struct.get(json, "vw-sub_nl-delay"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
       },
       "vw-sub_use-end-delay": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-sub_use-end-delay", Boolean, false),
+        value: Struct.get(json, "vw-sub_use-end-delay"),
       },
       "vw-sub_end-delay": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub_end-delay", 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 999.9)
-        },
+        value: Struct.get(json, "vw-sub_end-delay"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
       },
       "vw-sub_use-dir": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-sub_use-dir", Boolean, false),
+        value: Struct.get(json, "vw-sub_use-dir"),
       },
       "vw-sub_dir": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "vw-sub_dir", Struct, {
-          value: 0.0,
-          target: 360,
-          factor: 0.1,
-          increase: 0.0,
-        })),
+        value: Struct.get(json, "vw-sub_dir"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-9999.9, 9999.9),
       },
       "vw-sub_change-dir": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-sub_change-dir", Boolean, false),
+        value: Struct.get(json, "vw-sub_change-dir"),
       },
       "vw-sub_use-spd": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-sub_use-spd", Boolean, false),
+        value: Struct.get(json, "vw-sub_use-spd"),
       },
       "vw-sub_spd": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "vw-sub_spd", Struct, {
-          value: 0.0,
-          target: 8.0,
-          factor: 0.01,
-          increase: 0.0,
-        })),
+        value: Struct.get(json, "vw-sub_spd"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 999.9),
       },
       "vw-sub_change-spd": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-sub_change-spd", Boolean, false),
+        value: Struct.get(json, "vw-sub_change-spd"),
       },
       "vw-sub-fade-in": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub-fade-in", Number, 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.9) 
-        },
+        value: Struct.get(json, "vw-sub-fade-in"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
       },
       "vw-sub-fade-out": {
         type: Number,
-        value: Struct.getIfType(json, "vw-sub-fade-out", Number, 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.9) 
-        },
+        value: Struct.get(json, "vw-sub-fade-out"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
       },
     }),
     components: new Array(Struct, [

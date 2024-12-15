@@ -1,204 +1,120 @@
 ///@package io.alkapivo.visu.editor.service.brush.grid
 
-///@param {?Struct} [json]
+///@param {Struct} json
 ///@return {Struct}
-function brush_grid_area(json = null) {
+function brush_grid_area(json) {
   return {
     name: "brush_grid_area",
     store: new Map(String, Struct, {
       "gr-area_use-h": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-h", Boolean, false),
+        value: Struct.get(json, "gr-area_use-h"),
       },
       "gr-area_h": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-area_h", Struct, {
-          value: 0.0,
-          target: 1.0,
-          factor: 0.01,
-          increase: 0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 10.0)
-          value.target = clamp(value.target, 0.0, 10.0)
-          return value
-        },
+        value: Struct.get(json, "gr-area_h"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 10.0),
       },
       "gr-area_change-h": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_change-h", Boolean, false),
+        value: Struct.get(json, "gr-area_change-h"),
       },
       "gr-area_use-h-col": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-h-col", Boolean, false),
+        value: Struct.get(json, "gr-area_use-h-col"),
       },
       "gr-area_h-col": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.getIfType(json, "gr-area_h-col", String), ColorUtil.fromHex("#ffffff")),
+        value: Struct.get(json, "gr-area_h-col"),
       },
       "gr-area_h-col-spd": {
         type: Number,
-        value: Struct.getIfType(json, "gr-area_h-col-spd", Number, 0.01),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
-        },
-      },
-      "gr-area_use-h-col-spd": {
-        type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-h-col-spd", Boolean, false),
+        value: Struct.get(json, "gr-area_h-col-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.000001, 1.0),
       },
       "gr-area_use-h-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-h-alpha", Boolean, false),
+        value: Struct.get(json, "gr-area_use-h-alpha"),
       },
       "gr-area_h-alpha": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-area_h-alpha", Struct, {
-          value: 0.0,
-          target: 1.0,
-          factor: 0.01,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 1.0)
-          value.target = clamp(value.target, 0.0, 1.0)
-          return value
-        },
+        value: Struct.get(json, "gr-area_h-alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedNumberTransformer(),
       },
       "gr-area_change-h-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_change-h-alpha", Boolean, false),
+        value: Struct.get(json, "gr-area_change-h-alpha"),
       },
       "gr-area_use-h-size": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-h-size", Boolean, false),
+        value: Struct.get(json, "gr-area_use-h-size"),
       },
       "gr-area_h-size": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-area_h-size", Struct, {
-          value: 0.0,
-          target: 5.0,
-          factor: 0.01,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 9999.9)
-          value.target = clamp(value.target, 0.0, 9999.9)
-          return value
-        },
+        value: Struct.get(json, "gr-area_h-size"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 9999.9),
       },
       "gr-area_change-h-size": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_change-h-size", Boolean, false),
+        value: Struct.get(json, "gr-area_change-h-size"),
       },
       "gr-area_use-v": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-v", Boolean, false),
+        value: Struct.get(json, "gr-area_use-v"),
       },
       "gr-area_v": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-area_v", Struct, {
-          value: 0.0,
-          target: 1.0,
-          factor: 0.01,
-          increase: 0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 10.0)
-          value.target = clamp(value.target, 0.0, 10.0)
-          return value
-        },
+        value: Struct.get(json, "gr-area_v"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 10.0),
       },
       "gr-area_change-v": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-v", Boolean, false),
+        value: Struct.get(json, "gr-area_use-v"),
       },
       "gr-area_use-v-col": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-v-col", Boolean, false),
+        value: Struct.get(json, "gr-area_use-v-col"),
       },
       "gr-area_v-col": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "gr-area_v-col"), ColorUtil.fromHex("#ffffff")),
+        value: Struct.get(json, "gr-area_v-col"),
       },
       "gr-area_v-col-spd": {
         type: Number,
-        value: Struct.getIfType(json, "gr-area_v-col-spd", Number, 0.01),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
-        },
-      },
-      "gr-area_use-v-col-spd": {
-        type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-v-col-spd", Boolean, false),
+        value: Struct.get(json, "gr-area_v-col-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.000001, 1.0),
       },
       "gr-area_use-v-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-v-alpha", Boolean, false),
+        value: Struct.get(json, "gr-area_use-v-alpha"),
       },
       "gr-area_v-alpha": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-area_v-alpha", Struct, {
-          value: 0.0,
-          target: 1.0,
-          factor: 0.01,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 1.0)
-          value.target = clamp(value.target, 0.0, 1.0)
-          return value
-        },
+        value: Struct.get(json, "gr-area_v-alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedNumberTransformer(),
       },
       "gr-area_change-v-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_change-v-alpha", Boolean, false),
+        value: Struct.get(json, "gr-area_change-v-alpha"),
       },
       "gr-area_use-v-size": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_use-v-size", Boolean, false),
+        value: Struct.get(json, "gr-area_use-v-size"),
       },
       "gr-area_v-size": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-area_v-size", Struct, {
-          value: 0.0,
-          target: 5.0,
-          factor: 0.01,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 9999.9)
-          value.target = clamp(value.target, 0.0, 9999.9)
-          return value
-        },
+        value: Struct.get(json, "gr-area_v-size"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 9999.9),
       },
       "gr-area_change-v-size": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-area_change-v-size", Boolean, false),
+        value: Struct.get(json, "gr-area_change-v-size"),
       },
     }),
     components: new Array(Struct, [
@@ -635,36 +551,34 @@ function brush_grid_area(json = null) {
       },
       {
         name: "gr-area_h-col-spd",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Speed",
-            enable: { key: "gr-area_use-h-col-spd" },
+            enable: { key: "gr-area_use-h-col" },
           },  
           field: { 
             store: { key: "gr-area_h-col-spd" },
-            enable: { key: "gr-area_use-h-col-spd" },
+            enable: { key: "gr-area_use-h-col" },
+          },
+          slider: {
+            store: { key: "gr-area_h-col-spd" },
+            enable: { key: "gr-area_use-h-col" },
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
           },
           decrease: {
             store: { key: "gr-area_h-col-spd" },
-            enable: { key: "gr-area_use-h-col-spd" },
+            enable: { key: "gr-area_use-h-col" },
             factor: -0.001,
           },
           increase: {
             store: { key: "gr-area_h-col-spd" },
-            enable: { key: "gr-area_use-h-col-spd" },
+            enable: { key: "gr-area_use-h-col" },
             factor: 0.001,
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "gr-area_use-h-col-spd" },
-          },
-          title: { 
-            text: "Enable",
-            enable: { key: "gr-area_use-h-col-spd" },
           },
         },
       },
@@ -1107,36 +1021,34 @@ function brush_grid_area(json = null) {
       },
       {
         name: "gr-area_v-col-spd",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Speed",
-            enable: { key: "gr-area_use-v-col-spd" },
+            enable: { key: "gr-area_use-v-col" },
           },  
           field: { 
             store: { key: "gr-area_v-col-spd" },
-            enable: { key: "gr-area_use-v-col-spd" },
+            enable: { key: "gr-area_use-v-col" },
+          },
+          slider: {
+            store: { key: "gr-area_v-col-spd" },
+            enable: { key: "gr-area_use-v-col" },
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
           },
           decrease: {
             store: { key: "gr-area_v-col-spd" },
-            enable: { key: "gr-area_use-v-col-spd" },
+            enable: { key: "gr-area_use-v-col" },
             factor: -0.001,
           },
           increase: {
             store: { key: "gr-area_v-col-spd" },
-            enable: { key: "gr-area_use-v-col-spd" },
+            enable: { key: "gr-area_use-v-col" },
             factor: 0.001,
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "gr-area_use-v-col-spd" },
-          },
-          title: { 
-            text: "Enable",
-            enable: { key: "gr-area_use-v-col-spd" },
           },
         },
       },

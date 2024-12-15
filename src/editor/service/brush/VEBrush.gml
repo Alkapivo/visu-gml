@@ -261,6 +261,11 @@ function VEBrush(template) constructor {
     }
   ])
 
+  var eventHandler = Assert.isType(Beans.get(BeanVisuController).trackService.handlers.get(this.type), Struct)
+  
+  ///@type {Callable}
+  serializeData = Assert.isType(Struct.get(eventHandler, "serialize"), Callable)
+
   ///@return {VEBrushTemplate}
   toTemplate = function() {
     var json = {
@@ -270,7 +275,7 @@ function VEBrush(template) constructor {
       texture: Assert.isType(this.store.getValue("brush-texture"), String),
     }
 
-    var properties = this.store.container
+    var properties = this.serializeData(this.store.container
       .filter(function(item) {
         return item.name != "brush-name" 
             && item.name != "brush-color" 
@@ -279,6 +284,7 @@ function VEBrush(template) constructor {
       .toStruct(function(item) { 
         return item.serialize()
       })
+    )
     
     if (Struct.size(properties) > 0) {
       Struct.set(json, "properties", properties)
@@ -288,13 +294,22 @@ function VEBrush(template) constructor {
   }
 
   ///@description append data
-  var data = Assert.isType(Callable.run(this.type, template.properties), Struct)
-  data.store.forEach(function(json, name, store) {
+  var uiHandler = Assert.isType(Callable.get(this.type), Callable)
+  var eventParser = Assert.isType(Struct.get(eventHandler, "parse"), Callable)
+  var data = Assert.isType(eventParser(Struct.getIfType(template, "properties", Struct, { })), Struct)
+  var properties = Assert.isType(uiHandler(data), Struct)
+
+  ///@description append StoreItems to default template
+  properties.store.forEach(function(json, name, store) {
     store.add(new StoreItem(name, json))
   }, this.store)
-  data.components.forEach(function(component, index, components) {
+
+  ///@description append components to default template
+  properties.components.forEach(function(component, index, components) {
     components.add(component)
   }, this.components)
+
+  ///@description append ending line
   this.components.add({
     name: "brush_finish-properties-line-h",
     template: VEComponents.get("line-h"),

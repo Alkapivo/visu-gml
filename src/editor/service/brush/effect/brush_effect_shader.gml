@@ -1,70 +1,58 @@
 ///@package io.alkapivo.visu.editor.service.brush.effect
 
-///@param {?Struct} [json]
+///@param {Struct} json
 ///@return {Struct}
-function brush_effect_shader(json = null) {
+function brush_effect_shader(json) {
   return {
     name: "brush_effect_shader",
     store: new Map(String, Struct, {
       "ef-shd_template": {
         type: String,
-        value: Struct.getDefault(json, "ef-shd_template", "shader-default"),
-        passthrough: function(value) {
-          var shaderPipeline = Beans.get(BeanVisuController).shaderPipeline
-          return shaderPipeline.templates.contains(value) || Visu.assets().shaderTemplates.contains(value)
-            ? value
-            : (Core.isType(this.value, String) ? this.value : "shader-default")
+        value: Struct.get(json, "ef-shd_template"),
+        passthrough: UIUtil.passthrough.getCallbackValue(),
+        data: {
+          callback: Beans.get(BeanVisuController).shaderTemplateExists,
+          defaultValue: "shader-default",
         },
       },
       "ef-shd_duration": {
         type: Number,
-        value: Struct.getDefault(json, "ef-shd_duration", 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 9999.9) 
-        },
+        value: Struct.get(json, "ef-shd_duration"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 9999.9),
       },
       "ef-shd_fade-in": {
         type: Number,
-        value: Struct.getDefault(json, "ef-shd_fade-in", 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 9999.9) 
-        },
+        value: Struct.get(json, "ef-shd_fade-in"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 9999.9),
       },
       "ef-shd_fade-out": {
         type: Number,
-        value: Struct.getDefault(json, "ef-shd_fade-out", 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 9999.9) 
-        },
+        value: Struct.get(json, "ef-shd_fade-out"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 9999.9),
       },
       "ef-shd_alpha": {
         type: Number,
-        value: Struct.getDefault(json, "ef-shd_alpha", 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0) 
-        },
+        value: Struct.get(json, "ef-shd_alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedStringNumber(),
       },
       "ef-shd_pipeline": {
         type: String,
-        value: Struct.getDefault(json, "ef-shd_pipeline", "Background"),
-        validate: function(value) {
-          Assert.isTrue(this.data.contains(value))
-        },
-        data: new Array(String, [ "Background", "Grid", "All" ])
+        value: Struct.get(json, "ef-shd_pipeline"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, SHADER_PIPELINE_TYPES),
       },
       "ef-shd_use-merge-cfg": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-shd_use-merge-cfg", Boolean, false),
+        value: Struct.get(json, "ef-shd_use-merge-cfg"),
       },
       "ef-shd_merge-cfg": {
         type: String,
-        value: JSON.stringify(Struct.getIfType(json, "ef-shd_merge-cfg", Struct, {}), { pretty: true }),
-        serialize: function() {
-          return JSON.parse(this.get())
-        },
-        validate: function(value) {
-          Assert.isType(JSON.parse(value), Struct)
-        },
+        value: JSON.stringify(Struct.get(json, "ef-shd_merge-cfg"), { pretty: true }),
+        serialize: UIUtil.serialize.getStringStruct(),
+        validate: UIUtil.validate.getStringStruct(),
       },
     }),
     components: new Array(Struct, [
@@ -79,7 +67,49 @@ function brush_effect_shader(json = null) {
         },
       },
       {
-        name: "ef-shd_duration-line-h",
+        name: "ef-shd_pipeline",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Pipeline" },
+          previous: { store: { key: "ef-shd_pipeline" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "ef-shd_pipeline" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "ef-shd_pipeline" } },
+        },
+      },
+      {
+        name: "ef-shd_alpha",  
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Alpha",
+          },
+          field: { 
+            store: { key: "ef-shd_alpha" },
+          },
+          slider:{
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
+            store: { key: "ef-shd_alpha" },
+          },
+          decrease: {
+            store: { key: "ef-shd_alpha" },
+            factor: -0.001,
+          },
+          increase: {
+            store: { key: "ef-shd_alpha" },
+            factor: 0.001,
+          },
+        },
+      },
+      {
+        name: "ef-shd_alpha-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -139,47 +169,7 @@ function brush_effect_shader(json = null) {
         },
       },
       {
-        name: "ef-shd_alpha-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
-        name: "ef-shd_alpha",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Alpha",
-          },
-          field: { 
-            store: { key: "ef-shd_alpha" },
-          },
-          slider:{
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
-            store: { key: "ef-shd_alpha" },
-          },
-        },
-      },
-      {
-        name: "ef-shd_pipeline",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Pipeline" },
-          previous: { store: { key: "ef-shd_pipeline" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "ef-shd_pipeline" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "ef-shd_pipeline" } },
-        },
-      },
-      {
-        name: "ef-shd_use-merge-cfg_line-h",
+        name: "ef-shd_fade-out-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -215,6 +205,7 @@ function brush_effect_shader(json = null) {
             w_min: 570,
             store: { key: "ef-shd_merge-cfg" },
             enable: { key: "ef-shd_use-merge-cfg" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       }

@@ -946,22 +946,26 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 parse: data.brushToolbar.parseBrushTemplate,
               })
               .whenUpdate(function(executor) {
-                if (this.state.templates.size() == 0) {
-                  this.fullfill()
-                }
-
-                if (this.state.pointer >= this.state.templates.size()) {
-                  return
-                }
-
-                var template = this.state.templates.get(this.state.pointer)
-                if (Core.isType(template, Struct)) {
-                  this.state.collection.add(this.state.parse(template))
-                }
-
-                this.state.pointer = this.state.pointer + 1
-                if (this.state.pointer >= this.state.templates.size()) {
-                  this.fullfill()
+                repeat (1.000) {
+                  if (this.state.templates.size() == 0) {
+                    this.fullfill()
+                    break
+                  }
+  
+                  if (this.state.pointer >= this.state.templates.size()) {
+                    break
+                  }
+  
+                  var template = this.state.templates.get(this.state.pointer)
+                  if (Core.isType(template, Struct)) {
+                    this.state.collection.add(this.state.parse(template))
+                  }
+  
+                  this.state.pointer = this.state.pointer + 1
+                  if (this.state.pointer >= this.state.templates.size()) {
+                    this.fullfill()
+                    break
+                  }
                 }
               })
 
@@ -1177,18 +1181,20 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       .getLast().layout.context
                   }
                   
-                  var index = task.state.componentsQueue.pop()
-                  if (!Optional.is(index)) {
-                    if (Optional.is(task.state.context.updateTimer)) {
-                      task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
+                  repeat (1.000) {
+                    var index = task.state.componentsQueue.pop()
+                    if (!Optional.is(index)) {
+                      if (Optional.is(task.state.context.updateTimer)) {
+                        task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
+                      }
+  
+                      task.fullfill()
+                      break
                     }
-
-                    task.fullfill()
-                    return
+  
+                    var component = new UIComponent(task.state.components.get(index))
+                    factoryComponent(component, index, task.state.componentsConfig)
                   }
-
-                  var component = new UIComponent(task.state.components.get(index))
-                  factoryComponent(component, index, task.state.componentsConfig)
                 },
               })
               .whenUpdate(function() {
@@ -1242,7 +1248,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
                 
                 var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)
-                handler(brush.toTemplate().properties)
+                if (!Optional.is(Struct.getIfType(handler, "run", Callable))) {
+                  return
+                }
+                
+                handler.run(handler.parse(brush.toTemplate().properties))
               },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()

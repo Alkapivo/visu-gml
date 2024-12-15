@@ -385,8 +385,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_alpha-start",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Start" },
@@ -416,6 +416,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.start = clamp(template.alpha.start + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.start = clamp(template.alpha.start + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: {
             store: {
               key: "particle-template",
@@ -441,6 +469,7 @@ function template_particle(json = null) {
                 item.set(template)
               },
             },
+            snapValue: 0.01 / 1.0,
             minValue: 0.0,
             maxValue: 1.0,
           }
@@ -448,8 +477,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_alpha-halfway",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Halfway" },
@@ -479,6 +508,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.halfway = clamp(template.alpha.halfway + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.halfway = clamp(template.alpha.halfway + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: { 
             store: {
               key: "particle-template",
@@ -506,13 +563,14 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
           },
         },
       },
       {
         name: "particle_alpha-finish",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Finish" },
@@ -542,6 +600,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.finish = clamp(template.alpha.finish + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.finish = clamp(template.alpha.finish + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: {
             store: {
               key: "particle-template",
@@ -569,9 +655,9 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
           }
-        },minValue: 0.0,
-            maxValue: 1.0,
+        },
       },
       {
         name: "particle-alpha-line-h",
@@ -595,8 +681,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_angle-wiggle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Wiggle" },
@@ -626,12 +712,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.wiggle = clamp(template.angle.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.wiggle = clamp(template.angle.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_angle-increase",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Inc." },
@@ -661,12 +775,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.increase  = clamp(template.angle.increase  + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.increase = clamp(template.angle.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_angle-minValue",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -696,6 +838,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.minValue = clamp(template.angle.minValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.minValue = clamp(template.angle.minValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: {
             store: {
               key: "particle-template",
@@ -711,8 +881,8 @@ function template_particle(json = null) {
                 var parsed = NumberUtil.parse(value)
                 var item = this.get()
                 if (!Core.isType(parsed, Number)
-                  || !Core.isType(item, StoreItem) 
-                  || !Core.isType(item.get(), ParticleTemplate)) {
+                    || !Core.isType(item, StoreItem) 
+                    || !Core.isType(item.get(), ParticleTemplate)) {
                   return
                 }
 
@@ -722,14 +892,15 @@ function template_particle(json = null) {
               },
             },
             minValue: 0.0,
-            maxValue: 360.0
+            maxValue: 360.0,
+            snapValue: 1.0 / 360.0,
           }
         },
       },
       {
         name: "particle_angle-maxValue",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -759,6 +930,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.maxValue = clamp(template.angle.maxValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.maxValue = clamp(template.angle.maxValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: {
             store: {
               key: "particle-template",
@@ -786,6 +985,7 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 360.0,
+            snapValue: 1.0 / 360.0,
           }
         },
       },
@@ -811,8 +1011,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_size-wiggle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Wiggle" },
@@ -842,12 +1042,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.wiggle = clamp(template.size.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.wiggle = clamp(template.size.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_size-increase",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Inc." },
@@ -877,12 +1105,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.increase = clamp(template.size.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.increase = clamp(template.size.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_size-minValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -912,12 +1168,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.minValue = clamp(template.size.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.minValue = clamp(template.size.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_size-maxValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -947,6 +1231,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.maxValue = clamp(template.size.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.maxValue = clamp(template.size.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
@@ -971,8 +1283,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_speed-wiggle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Wiggle" },
@@ -1002,15 +1314,43 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.wiggle = clamp(template.speed.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.wiggle = clamp(template.speed.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_speed-increase",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Inc." },
+          label: { text: "Increase" },
           field: {
             store: {
               key: "particle-template",
@@ -1037,12 +1377,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.increase = clamp(template.speed.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.increase = clamp(template.speed.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_speed-minValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -1072,12 +1440,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.minValue = clamp(template.speed.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.minValue = clamp(template.speed.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_speed-maxValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -1107,6 +1503,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.maxValue = clamp(template.speed.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.maxValue = clamp(template.speed.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
@@ -1131,8 +1555,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_scale-x",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "X" },
@@ -1162,12 +1586,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.scale.x = clamp(template.scale.x + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.scale.x = clamp(template.scale.x + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_scale-y",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Y" },
@@ -1197,6 +1649,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.scale.y = clamp(template.scale.y + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.scale.y = clamp(template.scale.y + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
@@ -1221,8 +1701,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_gravity-angle",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Angle" },
@@ -1279,13 +1759,42 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 360.0,
-          }
+            snapValue: 1.0 / 360.0,
+          },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.gravity.angle = clamp(template.gravity.angle + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.gravity.angle = clamp(template.gravity.angle + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_gravity-amount",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Amount" },
@@ -1315,6 +1824,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.gravity.amount = clamp(template.gravity.amount + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.gravity.amount = clamp(template.gravity.amount + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
@@ -1339,8 +1876,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_life-minValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -1370,12 +1907,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.life.minValue = clamp(template.life.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.life.minValue = clamp(template.life.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_life-maxValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -1405,6 +1970,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.life.maxValue = clamp(template.life.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.life.maxValue = clamp(template.life.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
@@ -1429,11 +2022,11 @@ function template_particle(json = null) {
       },
       {
         name: "particle_orientation-relative",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Relat." },
+          label: { text: "Relative" },
           field: {
             store: {
               key: "particle-template",
@@ -1460,12 +2053,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.relative = clamp(template.orientation.relative + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.relative = clamp(template.orientation.relative + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_orientation-wiggle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Wiggle" },
@@ -1495,15 +2116,43 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.wiggle = clamp(template.orientation.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.wiggle = clamp(template.orientation.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_orientation-increase",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Inc." },
+          label: { text: "Increase" },
           field: {
             store: {
               key: "particle-template",
@@ -1530,12 +2179,40 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.increase = clamp(template.orientation.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.increase = clamp(template.orientation.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_orientation-minValue",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -1597,8 +2274,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_orientation-maxValue",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -1655,7 +2332,36 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 360.0,
-          }
+            snapValue: 1.0 / 360.0
+          },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.maxValue = clamp(template.orientation.maxValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.maxValue = clamp(template.orientation.maxValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
     ]),

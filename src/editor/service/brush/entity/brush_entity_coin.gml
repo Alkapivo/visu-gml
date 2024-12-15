@@ -1,68 +1,69 @@
 ///@package io.alkapivo.visu.editor.service.brush.entity
 
-///@param {?Struct} [json]
+///@param {Struct} json
 ///@return {Struct}
-function brush_entity_coin(json = null) {
+function brush_entity_coin(json) {
   return {
     name: "brush_entity_coin",
     store: new Map(String, Struct, {
       "en-coin_preview": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-coin_preview", Boolean, true),
+        value: Struct.get(json, "en-coin_preview"),
       },
       "en-coin_template": {
         type: String,
-        value: Struct.getDefault(json, "en-coin_template", "coin-default"),
-        passthrough: function(value) {
-          var coinService = Beans.get(BeanVisuController).coinService
-          return coinService.templates.contains(value) || Visu.assets().coinTemplates.contains(value)
-            ? value
-            : (Core.isType(this.value, String) ? this.value : "coin-default")
+        value: Struct.get(json, "en-coin_template"),
+        passthrough: UIUtil.passthrough.getCallbackValue(),
+        data: {
+          callback: Beans.get(BeanVisuController).coinTemplateExists,
+          defaultValue: "coin-default",
         },
       },
       "en-coin_x": {
         type: Number,
-        value: Struct.getDefault(json, "en-coin_x", 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0), SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0)
-        },        
+        value: Struct.get(json, "en-coin_x"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(
+          -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0),
+          SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0
+        ),
       },
       "en-coin_snap-x": {
         type: Boolean,
-        value: Struct.getDefault(json, "en-coin_snap-x", true),
+        value: Struct.get(json, "en-coin_snap-x"),
       },
       "en-coin_use-rng-x": {
         type: Boolean,
-        value: Struct.getDefault(json, "en-coin_use-rng-x", true),
+        value: Struct.get(json, "en-coin_use-rng-x"),
       },
       "en-coin_rng-x": {
         type: Number,
-        value: Struct.getIfType(json, "en-coin_rng-x", Number, 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, SHROOM_SPAWN_CHANNEL_AMOUNT)
-        },
+        value: Struct.get(json, "en-coin_rng-x"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, SHROOM_SPAWN_CHANNEL_AMOUNT),
       },
       "en-coin_y": {
         type: Number,
-        value: Struct.getDefault(json, "en-coin_y", 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2.0), SHROOM_SPAWN_ROW_AMOUNT / 2.0)
-        },
+        value: Struct.get(json, "en-coin_y"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(
+          -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2.0),
+          SHROOM_SPAWN_ROW_AMOUNT / 2.0
+        ),
       },
       "en-coin_snap-y": {
         type: Boolean,
-        value: Struct.getDefault(json, "en-coin_snap-y", true),
+        value: Struct.get(json, "en-coin_snap-y"),
       },
       "en-coin_use-rng-y": {
         type: Boolean,
-        value: Struct.getDefault(json, "en-coin_use-rng-y", true),
+        value: Struct.get(json, "en-coin_use-rng-y"),
       },
       "en-coin_rng-y": {
         type: Number,
-        value: Struct.getIfType(json, "en-coin_rng-y", Number, 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, SHROOM_SPAWN_ROW_AMOUNT)
-        },
+        value: Struct.get(json, "en-coin_rng-y"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, SHROOM_SPAWN_ROW_AMOUNT),
       },
     }),
     components: new Array(Struct, [

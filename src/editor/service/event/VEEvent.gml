@@ -144,23 +144,18 @@ function VEEvent(_context, json = null) constructor {
         next: { store: { key: "event-texture" } },
       }
     },
+    {
+      name: "event_start-properties-line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
+    }
   ])
 
-  ///@type {???}
-  properties = Optional.is(this.type) 
-    ? Callable.run(this.type, Struct.get(json, "properties")) 
-    : null
-  if (Optional.is(this.properties)) {
-    ///@description append StoreItems to default template
-    this.properties.store.forEach(function(json, name, store) {
-      store.add(new StoreItem(name, json))
-    }, this.store)
-
-    ///@description append components to default template
-    this.properties.components.forEach(function(component, index, components) {
-      components.add(component)
-    }, this.components)
-  }
+  var eventHandler = Assert.isType(Beans.get(BeanVisuController).trackService.handlers.get(this.type), Struct)
+  
+  ///@type {Callable}
+  serializeData = Assert.isType(Struct.get(eventHandler, "serialize"), Callable)
 
   ///@return {Struct}
   toTemplate = function() {
@@ -177,7 +172,7 @@ function VEEvent(_context, json = null) constructor {
               blend: Assert.isType(event.store.getValue("event-color").toHex(), String),
             }
           },
-          event.store.container
+          event.serializeData(event.store.container
             .filter(function(item) {
               return item.name != "event-timestamp"
                   && item.name != "event-channel"
@@ -187,8 +182,33 @@ function VEEvent(_context, json = null) constructor {
             .toStruct(function(item) { 
               return item.serialize()
             })
+          )
         ),
       }
     }
   }
+
+  ///@description append data
+  var uiHandler = Assert.isType(Callable.get(this.type), Callable)
+  var eventParser = Assert.isType(Struct.get(eventHandler, "parse"), Callable)
+  var data = Assert.isType(eventParser(Struct.getIfType(json, "properties", Struct, { })), Struct)
+  var properties = Assert.isType(uiHandler(data), Struct)
+
+  ///@description append StoreItems to default template
+  properties.store.forEach(function(json, name, store) {
+    store.add(new StoreItem(name, json))
+  }, this.store)
+
+  ///@description append components to default template
+  properties.components.forEach(function(component, index, components) {
+    components.add(component)
+  }, this.components)
+
+  ///@description append ending line
+  this.components.add({
+    name: "event_finish-properties-line-h",
+    template: VEComponents.get("line-h"),
+    layout: VELayouts.get("line-h"),
+    config: { layout: { type: UILayoutType.VERTICAL } },
+  })
 }

@@ -355,6 +355,41 @@ function VisuController(layerName) constructor {
     },
   })
 
+  ///@param {String} name
+  ///@return {Boolean}
+  shaderTemplateExists = function(name) {
+    return this.shaderPipeline.templates.contains(name)
+        || Visu.assets().shaderTemplates.contains(name)  
+  }
+
+  ///@param {String} name
+  ///@return {Boolean}
+  particleTemplateExists = function(name) {
+    return this.particleService.templates.contains(name) 
+        || Visu.assets().particleTemplates.contains(name)  
+  }
+
+  ///@param {String} name
+  ///@return {Boolean}
+  shroomTemplateExists = function(name) {
+    return this.shroomService.templates.contains(name) 
+        || Visu.assets().shroomTemplates.contains(name)
+  }
+
+  ///@param {String} name
+  ///@return {Boolean}
+  coinTemplateExists = function(name) {
+    return this.coinService.templates.contains(name) 
+        || Visu.assets().coinTemplates.contains(name)
+  }   
+
+  ///@param {String} name
+  ///@return {Boolean}
+  subtitleTemplateExists = function(name) {
+    return this.subtitleService.templates.contains(name) 
+        || Visu.assets().subtitleTemplates.contains(name)
+  }   
+
   ///@type {ShaderPipeline}
   shaderBackgroundPipeline = new ShaderPipeline({
     templates: this.shaderPipeline.templates,
@@ -397,26 +432,31 @@ function VisuController(layerName) constructor {
 
   ///@type {TrackService}
   trackService = new TrackService(this, {
-    handlers: new Map(String, Callable)
+    handlers: new Map(String, Struct)
       .merge(
         DEFAULT_TRACK_EVENT_HANDLERS,
         #region Old API
-        new Map(String, Callable, grid_old_track_event),
-        new Map(String, Callable, shader_track_event),
-        new Map(String, Callable, shroom_track_event),
-        new Map(String, Callable, view_old_track_event),
+        new Map(String, Struct, grid_old_track_event),
+        new Map(String, Struct, shader_track_event),
+        new Map(String, Struct, shroom_track_event),
+        new Map(String, Struct, view_old_track_event),
         #endregion
-        new Map(String, Callable, effect_track_event),
-        new Map(String, Callable, entity_track_event),
-        new Map(String, Callable, grid_track_event),
-        new Map(String, Callable, view_track_event)
-      ),
+        new Map(String, Struct, effect_track_event),
+        new Map(String, Struct, entity_track_event),
+        new Map(String, Struct, grid_track_event),
+        new Map(String, Struct, view_track_event)
+      )
+      .forEach(function(handler) {
+        Struct.set(handler, "parse", Struct.getIfType(handler, "parse", Callable, Lambda.passthrough))
+        Struct.set(handler, "serialize", Struct.getIfType(handler, "serialize", Callable, Struct.serialize))
+        Struct.set(handler, "run", Struct.getIfType(handler, "run", Callable, Lambda.dummy))
+      }),
     isTrackLoaded: function() {
       var stateName = this.context.fsm.getStateName()
       return Core.isType(this.track, Track) 
-        && (stateName == "play" 
-        || stateName == "pause" 
-        || stateName == "paused") 
+          && (stateName == "play" 
+          || stateName == "pause" 
+          || stateName == "paused") 
     },
   })
 

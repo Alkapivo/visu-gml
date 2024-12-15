@@ -1,11 +1,9 @@
 ///@package io.alkapivo.visu.editor.api.template
 
-
-
 ///@param {Struct} json
 ///@return {Struct}
-function template_shroom(json = null) {
-  var template = {
+function template_shroom(json) {
+  return {
     name: Assert.isType(json.name, String),
     store: new Map(String, Struct, {
       "shroom_use-lifespawn": {
@@ -15,9 +13,8 @@ function template_shroom(json = null) {
       "shroom_lifespawn": {
         type: Number,
         value: Struct.getIfType(json, "lifespawnMax", Number, 15.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, 99.9)
-        },
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
       },
       "shroom_use-health-points": {
         type: Boolean,
@@ -26,9 +23,8 @@ function template_shroom(json = null) {
       "shroom_health-points": {
         type: Number,
         value: Struct.getIfType(json, "healthPoints", Number, 1.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, 9999.9)
-        },
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 9999.9),
       },
       "shroom_texture": {
         type: Sprite,
@@ -419,6 +415,4 @@ function template_shroom(json = null) {
       */
     ]),
   }
-
-  return template
 }

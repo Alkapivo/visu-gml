@@ -1,190 +1,116 @@
 ///@package io.alkapivo.visu.editor.service.brush.grid
 
-///@param {?Struct} [json]
+///@param {Struct} json
 ///@return {Struct}
-function brush_grid_column(json = null) {
+function brush_grid_column(json) {
   return {
     name: "brush_grid_column",
     store: new Map(String, Struct, {
       "gr-c_use-mode": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-mode", Boolean, false),
+        value: Struct.get(json, "gr-c_use-mode"),
       },
       "gr-c_mode": {
         type: String,
-        value: Struct.getIfType(json, "gr-c_mode", String, "DUAL"),
-        passthrough: function(value) {
-          return this.data.contains(value) ? value : this.value
-        },
-        data: new Array(String, [ "SINGLE", "DUAL" ])
+        value: Struct.get(json, "gr-c_mode"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, GRID_MODES)
       },
       "gr-c_use-amount": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-amount", Boolean, false),
+        value: Struct.get(json, "gr-c_use-amount"),
       },
       "gr-c_amount": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-c_amount", Struct, { 
-          value: 0.0, 
-          target: 4.0, 
-          factor: 0.01, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 999.9)
-          value.target = clamp(value.target, 0.0, 999.9)
-          return value
-        },
+        value: Struct.get(json, "gr-c_amount"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 999.9),
       },
       "gr-c_change-amount": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_change-amount", Boolean, false),
+        value: Struct.get(json, "gr-c_change-amount"),
       },
       "gr-c_use-main-col": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-main-col", Boolean, false),
+        value: Struct.get(json, "gr-c_use-main-col"),
       },
       "gr-c_main-col": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "gr-c_main-col"), ColorUtil.fromHex("#ffffff")),
-      },
-      "gr-c_use-main-col-spd": {
-        type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-main-col-spd", Boolean, false),
+        value: Struct.get(json, "gr-c_main-col"),
       },
       "gr-c_main-col-spd": {
         type: Number,
-        value: Struct.getIfType(json, "gr-c_main-col-spd", Number, 0.01),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
-        },
+        value: Struct.get(json, "gr-c_main-col-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.000001, 1.0),
       },
       "gr-c_use-main-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-main-alpha", Boolean, false),
+        value: Struct.get(json, "gr-c_use-main-alpha"),
       },
       "gr-c_main-alpha": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-c_main-alpha", Struct, { 
-          value: 0.0, 
-          target: 1.0, 
-          factor: 0.001, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 1.0)
-          value.target = clamp(value.target, 0.0, 1.0)
-          return value
-        },
+        value: Struct.get(json, "gr-c_main-alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedNumberTransformer(),
       },
       "gr-c_change-main-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_change-main-alpha", Boolean, false),
+        value: Struct.get(json, "gr-c_change-main-alpha"),
       },
       "gr-c_use-main-size": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-main-size", Boolean, false),
+        value: Struct.get(json, "gr-c_use-main-size"),
       },
       "gr-c_main-size": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-c_main-size", Struct, { 
-          value: 0.0, 
-          target: 5.0, 
-          factor: 0.01, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 9999.9)
-          value.target = clamp(value.target, 0.0, 9999.9)
-          return value
-        },
+        value: Struct.get(json, "gr-c_main-size"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 9999.9),
       },
       "gr-c_change-main-size": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_change-main-size", Boolean, false),
+        value: Struct.get(json, "gr-c_change-main-size"),
       },
       "gr-c_use-side-col": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-side-col", Boolean, false),
+        value: Struct.get(json, "gr-c_use-side-col"),
       },
       "gr-c_side-col": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "gr-c_side-col"), ColorUtil.fromHex("#ffffff")),
-      },
-      "gr-c_use-side-col-spd": {
-        type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-side-col-spd", Boolean, false),
+        value: Struct.get(json, "gr-c_side-col"),
       },
       "gr-c_side-col-spd": {
         type: Number,
-        value: Struct.getIfType(json, "gr-c_side-col-spd", Number, 0.01),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
-        },
+        value: Struct.get(json, "gr-c_side-col-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.000001, 1.0),
       },
       "gr-c_use-side-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-side-alpha", Boolean, false),
+        value: Struct.get(json, "gr-c_use-side-alpha"),
       },
       "gr-c_side-alpha": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-c_side-alpha", Struct, { 
-          value: 0.0, 
-          target: 1.0, 
-          factor: 0.001, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 1.0)
-          value.target = clamp(value.target, 0.0, 1.0)
-          return value
-        },
+        value: Struct.get(json, "gr-c_side-alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedNumberTransformer(),
       },
       "gr-c_change-side-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_change-side-alpha", Boolean, false),
+        value: Struct.get(json, "gr-c_change-side-alpha"),
       },
       "gr-c_use-side-size": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_use-side-size", Boolean, false),
+        value: Struct.get(json, "gr-c_use-side-size"),
       },
       "gr-c_side-size": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "gr-c_side-size", Struct, { 
-          value: 0.0, 
-          target: 5.0, 
-          factor: 0.01, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 9999.9)
-          value.target = clamp(value.target, 0.0, 9999.9)
-          return value
-        },
+        value: Struct.get(json, "gr-c_side-size"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 9999.9),
       },
       "gr-c_change-side-size": {
         type: Boolean,
-        value: Struct.getIfType(json, "gr-c_change-side-size", Boolean, false),
+        value: Struct.get(json, "gr-c_change-side-size"),
       },
     }),
     components: new Array(Struct, [
@@ -665,36 +591,34 @@ function brush_grid_column(json = null) {
       },
       {
         name: "gr-c_main-col-spd",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Speed",
-            enable: { key: "gr-c_use-main-col-spd" },
+            enable: { key: "gr-c_use-main-col" },
           },  
           field: { 
             store: { key: "gr-c_main-col-spd" },
-            enable: { key: "gr-c_use-main-col-spd" },
+            enable: { key: "gr-c_use-main-col" },
+          },
+          slider: {
+            store: { key: "gr-c_main-col-spd" },
+            enable: { key: "gr-c_use-main-col" },
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
           },
           decrease: {
             store: { key: "gr-c_main-col-spd" },
-            enable: { key: "gr-c_use-main-col-spd" },
+            enable: { key: "gr-c_use-main-col" },
             factor: -0.001,
           },
           increase: {
             store: { key: "gr-c_main-col-spd" },
-            enable: { key: "gr-c_use-main-col-spd" },
+            enable: { key: "gr-c_use-main-col" },
             factor: 0.001,
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "gr-c_use-main-col-spd" },
-          },
-          title: { 
-            text: "Enable",
-            enable: { key: "gr-c_use-main-col-spd" },
           },
         },
       },
@@ -1017,37 +941,36 @@ function brush_grid_column(json = null) {
       },
       {
         name: "gr-c_side-col-spd",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Speed",
-            enable: { key: "gr-c_use-side-col-spd" },
+            enable: { key: "gr-c_use-side-col" },
           },  
           field: { 
             store: { key: "gr-c_side-col-spd" },
-            enable: { key: "gr-c_use-side-col-spd" },
+            enable: { key: "gr-c_use-side-col" },
+          },
+          slider: {
+            store: { key: "gr-c_side-col-spd" },
+            enable: { key: "gr-c_use-side-col" },
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
           },
           decrease: {
             store: { key: "gr-c_side-col-spd" },
-            enable: { key: "gr-c_use-side-col-spd" },
+            enable: { key: "gr-c_use-side-col" },
             factor: -0.001,
           },
           increase: {
             store: { key: "gr-c_side-col-spd" },
-            enable: { key: "gr-c_use-side-col-spd" },
+            enable: { key: "gr-c_use-side-col" },
             factor: 0.001,
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "gr-c_use-side-col-spd" },
-          },
-          title: { 
-            text: "Enable",
-            enable: { key: "gr-c_use-side-col-spd" },
-          },
+          }
+
         },
       },
     ]),

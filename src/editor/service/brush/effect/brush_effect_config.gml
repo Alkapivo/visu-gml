@@ -1,105 +1,105 @@
 ///@package io.alkapivo.visu.editor.service.brush.effect
 
-///@param {?Struct} [json]
+///@param {Struct} json
 ///@return {Struct}
-function brush_effect_config(json = null) {
+function brush_effect_config(json) {
   return {
     name: "brush_effect_config",
     store: new Map(String, Struct, {
       "ef-cfg_use-render-shd-bkg": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_use-render-shd-bkg", Boolean, false),
+        value: Struct.get(json, "ef-cfg_use-render-shd-bkg"),
       },
       "ef-cfg_render-shd-bkg": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_render-shd-bkg", Boolean, false),
+        value: Struct.get(json, "ef-cfg_render-shd-bkg"),
       },
       "ef-cfg_cls-shd-bkg": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-shd-bkg", Boolean, false),
+        value: Struct.get(json, "ef-cfg_cls-shd-bkg"),
       },
       "ef-cfg_use-render-shd-gr": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_use-render-shd-gr", Boolean, false),
+        value: Struct.get(json, "ef-cfg_use-render-shd-gr"),
       },
       "ef-cfg_render-shd-gr": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_render-shd-gr", Boolean, false),
+        value: Struct.get(json, "ef-cfg_render-shd-gr"),
       },
       "ef-cfg_cls-shd-gr": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-shd-gr", Boolean, false),
+        value: Struct.get(json, "ef-cfg_cls-shd-gr"),
       },
       "ef-cfg_use-render-shd-all": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_use-render-shd-all", Boolean, false),
+        value: Struct.get(json, "ef-cfg_use-render-shd-all"),
       },
       "ef-cfg_render-shd-all": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_render-shd-all", Boolean, false),
+        value: Struct.get(json, "ef-cfg_render-shd-all"),
       },
       "ef-cfg_cls-shd-all": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-shd-all", Boolean, false),
+        value: Struct.get(json, "ef-cfg_cls-shd-all"),
       },
       "ef-cfg_use-render-glt": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_use-render-glt", Boolean, false),
+        value: Struct.get(json, "ef-cfg_use-render-glt"),
       },
       "ef-cfg_render-glt": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_render-glt", Boolean, false),
+        value: Struct.get(json, "ef-cfg_render-glt"),
       },
       "ef-cfg_cls-glt": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-glt", Boolean, false),
+        value: Struct.get(json, "ef-cfg_cls-glt"),
       },
       "ef-cfg_use-render-part": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_use-render-part", Boolean, false),
+        value: Struct.get(json, "ef-cfg_use-render-part"),
       },
       "ef-cfg_render-part": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_render-part", Boolean, false),
+        value: Struct.get(json, "ef-cfg_render-part"),
       },
       "ef-cfg_cls-part": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-part", Boolean, false),
+        value: Struct.get(json, "ef-cfg_cls-part"),
       },
       "ef-cfg_use-cls-frame": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_use-cls-frame", Boolean, false),
+        value: Struct.get(json, "ef-cfg_use-cls-frame"),
       },
       "ef-cfg_cls-frame": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_cls-frame", Boolean, false),
+        value: Struct.get(json, "ef-cfg_cls-frame"),
       },
       "ef-cfg_use-cls-frame-col": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_use-cls-frame-col", Boolean, false),
+        value: Struct.get(json, "ef-cfg_use-cls-frame-col"),
       },
       "ef-cfg_cls-frame-col": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.getIfType(json, "ef-cfg_cls-frame-col", String), ColorUtil.fromHex("#000000")),
+        value: Struct.get(json, "ef-cfg_cls-frame-col"),
       },
       "ef-cfg_cls-frame-col-spd": {
         type: Number,
-        value: Struct.getIfType(json, "ef-cfg_cls-frame-col-spd", Number, 0.01),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
-        },
+        value: Struct.get(json, "ef-cfg_cls-frame-col-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.000001, 1.0),
       },
       "ef-cfg_cls-frame-alpha": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "ef-cfg_cls-frame-alpha", Struct, {})),
+        value: Struct.get(json, "ef-cfg_cls-frame-alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedNumberTransformer(),
       },
       "ef-cfg_use-cls-frame-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_use-cls-frame-alpha", Boolean, false),
+        value: Struct.get(json, "ef-cfg_use-cls-frame-alpha"),
       },
       "ef-cfg_change-cls-frame-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "ef-cfg_change-cls-frame-alpha", Boolean, false),
+        value: Struct.get(json, "ef-cfg_change-cls-frame-alpha"),
       },
     }),
     components: new Array(Struct, [
@@ -389,12 +389,12 @@ function brush_effect_config(json = null) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
-              factor: -1.0,
+              factor: -0.01,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
-              factor: 1.0,
+              factor: 0.01,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -418,12 +418,12 @@ function brush_effect_config(json = null) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha"},
-              factor: -1.0,
+              factor: -0.01,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 1.0,
+              factor: 0.01,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -447,12 +447,12 @@ function brush_effect_config(json = null) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: -1.0,
+              factor: -0.001,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 1.0,
+              factor: 0.001,
             },
           },
           increase: {
@@ -467,12 +467,12 @@ function brush_effect_config(json = null) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.001,
+              factor: 0.0001,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha"} ,
-              factor: 0.001,
+              factor: 0.0001,
             },
           },
         },
@@ -554,17 +554,34 @@ function brush_effect_config(json = null) {
       },
       {
         name: "ef-cfg_cls-frame-col-spd",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Speed",
             enable: { key: "ef-cfg_use-cls-frame-col" },
-          },
+          },  
           field: { 
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
+          },
+          slider: {
+            store: { key: "ef-cfg_cls-frame-col-spd" },
+            enable: { key: "ef-cfg_use-cls-frame-col" },
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
+          },
+          decrease: {
+            store: { key: "ef-cfg_cls-frame-col-spd" },
+            enable: { key: "ef-cfg_use-cls-frame-col" },
+            factor: -0.001,
+          },
+          increase: {
+            store: { key: "ef-cfg_cls-frame-col-spd" },
+            enable: { key: "ef-cfg_use-cls-frame-col" },
+            factor: 0.001,
           },
         },
       },

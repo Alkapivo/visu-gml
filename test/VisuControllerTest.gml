@@ -308,7 +308,7 @@ function TestEvent_VisuController_rewind(json = {}) {
             Logger.test("TestEvent_VisuController_rewind", $"Current delta: {delta}, counter: {task.state.count}")
             task.state.timer.reset()
             task.state.timer.duration = random_range(task.state.minDuration, task.state.maxDuration)
-            task.state.target = random(trackService.duration * 0.9)
+            task.state.target = random(trackService.duration * 0.7500)
             controller.send(new Event("rewind", { 
               timestamp: task.state.target,
             }))

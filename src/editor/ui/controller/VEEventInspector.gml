@@ -326,9 +326,8 @@ function VEEventInspector(_editor) constructor {
                     return
                   }
 
-                  var trackService = Beans.get(BeanVisuController).trackService
-                  var handler = trackService.handlers.get(event.type)
-                  handler(event.toTemplate().event.data)
+                  var handler = Beans.get(BeanVisuController).trackService.handlers.get(event.type)
+                  handler.run(handler.parse(event.toTemplate().event.data))
                 },
                 onMouseHoverOver: function(event) {
                   this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()

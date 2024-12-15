@@ -128,7 +128,7 @@ function VEPopupQueue(_editor) constructor {
         var areaX = this.area.x
         var areaY = this.area.y
         var delta = DeltaTime.deltaTime
-        DeltaTime.deltaTime += this.surfaceTick.delta
+        DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
         this.area.x = this.offset.x
         this.area.y = this.offset.y
         this.items.forEach(this.renderItem, this.area)

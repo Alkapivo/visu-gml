@@ -12,7 +12,7 @@ function brush_shader_clear(json = null) {
         validate: function(value) {
           Assert.isTrue(this.data.contains(value))
         },
-        data: new Array(String, [ "Grid", "Background", "All" ])
+        data: new Array(String, SHADER_PIPELINE_TYPES)
       },
       "shader-clear_use-clear-all-shaders": {
         type: Boolean,

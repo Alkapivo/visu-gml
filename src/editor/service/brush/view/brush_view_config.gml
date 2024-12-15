@@ -8,65 +8,52 @@ function brush_view_config(json = null) {
     store: new Map(String, Struct, {
       "vw-cfg_use-render-hud": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_use-render-hud", Boolean, false),
+        value: Struct.get(json, "vw-cfg_use-render-hud"),
       },
       "vw-cfg_render-hud": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_render-hud", Boolean, false),
+        value: Struct.get(json, "vw-cfg_render-hud"),
       },
       "vw-cfg_use-render-subtitle": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_use-render-subtitle", Boolean, false),
+        value: Struct.get(json, "vw-cfg_use-render-subtitle"),
       },
       "vw-cfg_render-subtitle": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_render-subtitle", Boolean, false),
+        value: Struct.get(json, "vw-cfg_render-subtitle"),
       },
       "vw-cfg_use-render-video": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_use-render-video", Boolean, false),
+        value: Struct.get(json, "vw-cfg_use-render-video"),
       },
       "vw-cfg_render-video": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_render-video", Boolean, false),
+        value: Struct.get(json, "vw-cfg_render-video"),
       },
       "vw-cfg_cls-subtitle": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_cls-subtitle", Boolean, false),
+        value: Struct.get(json, "vw-cfg_cls-subtitle"),
       },    
       "vw-cfg_cls-background": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_cls-background", Boolean, false),
+        value: Struct.get(json, "vw-cfg_cls-background"),
       },    
       "vw-cfg_cls-foreground": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_cls-foreground", Boolean, false),
+        value: Struct.get(json, "vw-cfg_cls-foreground"),
       },
       "vw-cfg_use-video-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_use-video-alpha", Boolean, false),
+        value: Struct.get(json, "vw-cfg_use-video-alpha"),
       },
       "vw-cfg_video-alpha": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "vw-cfg_video-alpha", Struct, {
-          value: 0.0,
-          target: 0.0,
-          factor: 0.0,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 1.0)
-          value.target = clamp(value.target, 0.0, 1.0)
-          return value
-        },
+        value: Struct.get(json, "vw-cfg_video-alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedNumberTransformer(),
       },
       "vw-cfg_change-video-alpha": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cfg_change-video-alpha", Boolean, false),
+        value: Struct.get(json, "vw-cfg_change-video-alpha"),
       },
     }),
     components: new Array(Struct, [

@@ -10,15 +10,12 @@ function migrateGridOldSeparatorEvent(json) {
     "gr-r_amount": Struct.getIfType(json, "grid-separator_transform-amount", Struct),
     "gr-r_use-main-col": Struct.getIfType(json, "grid-separator_use-primary-color", Boolean, false),
     "gr-r_main-col": Struct.getIfType(json, "grid-separator_primary-color", String, "#ffffff"),
-    "gr-r_use-main-col-spd": Struct.getIfType(json, "gr-r_use-main-col-spd", Boolean, true),
-    "gr-r_main-col-spd": Struct.getIfType(json, "grid-separator_primary-color-speed", Number),
     "gr-r_use-main-alpha": Struct.getIfType(json, "grid-separator_use-transform-primary-alpha", Boolean, false),
     "gr-r_main-alpha": Struct.getIfType(json, "grid-separator_transform-primary-alpha", Boolean, false),
     "gr-r_use-main-size": Struct.getIfType(json, "grid-separator_use-transform-primary-size", Boolean, false),
     "gr-r_main-size": Struct.getIfType(json, "grid-separator_transform-primary-size", Boolean, false),
     "gr-r_use-side-col": Struct.getIfType(json, "grid-separator_use-secondary-color", Boolean, false),
     "gr-r_side-col": Struct.getIfType(json, "grid-separator_secondary-color", Boolean, false),
-    "gr-r_use-side-col-spd": Struct.getIfType(json, "gr-r_use-side-col-spd", Boolean, true),
     "gr-r_side-col-spd": Struct.getIfType(json, "grid-separator_secondary-color-speed", Boolean, false),
     "gr-r_use-side-alpha": Struct.getIfType(json, "grid-separator_use-transform-secondary-alpha", Boolean, false),
     "gr-r_use-side-size": Struct.getIfType(json, "grid-separator_use-transform-secondary-size", Boolean, false),
@@ -53,7 +50,7 @@ function brush_grid_old_separator(json = null) {
         passthrough: function(value) {
           return this.data.contains(value) ? value : this.value
         },
-        data: new Array(String, [ "SINGLE", "DUAL" ])
+        data: new Array(String, GRID_MODES)
       },
       "grid-separator_use-transform-z": {
         type: Boolean,

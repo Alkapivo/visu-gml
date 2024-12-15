@@ -245,7 +245,7 @@ global.__VEStyles = new Map(String, Struct, {
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
-    lh: 20,
+    lh: 22.0000,
     padding: { top: 0, bottom: 0, left: 4, right: 0 }
   },
   "text-field-button": { 
@@ -255,7 +255,7 @@ global.__VEStyles = new Map(String, Struct, {
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
-    lh: 20,
+    lh: 22.0000,
     padding: { top: 0, bottom: 0, left: 4, right: 0 },
     label: {
       font: "font_inter_10_regular",
@@ -269,7 +269,7 @@ global.__VEStyles = new Map(String, Struct, {
       colorTextUnfocused: VETheme.color.textShadow,
       colorTextFocused: VETheme.color.textFocus,
       colorSelection: VETheme.color.textSelected,
-      lh: 20,
+      lh: 22.0000,
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
     },
     button: {
@@ -288,7 +288,7 @@ global.__VEStyles = new Map(String, Struct, {
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
-    lh: 20,
+    lh: 22.0000,
     padding: { top: 0, bottom: 0, left: 4, right: 0 },
     label: {
       font: "font_inter_10_regular",
@@ -302,7 +302,7 @@ global.__VEStyles = new Map(String, Struct, {
       colorTextUnfocused: VETheme.color.textShadow,
       colorTextFocused: VETheme.color.textFocus,
       colorSelection: VETheme.color.textSelected,
-      lh: 20,
+      lh: 22.0000,
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
     },
     checkbox: { },
@@ -319,7 +319,7 @@ global.__VEStyles = new Map(String, Struct, {
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
-    lh: 20,
+    lh: 22.0000,
     padding: { top: 0, bottom: 0, left: 4, right: 0 },
     label: {
       font: "font_inter_10_regular",
@@ -333,7 +333,7 @@ global.__VEStyles = new Map(String, Struct, {
       colorTextUnfocused: VETheme.color.textShadow,
       colorTextFocused: VETheme.color.textFocus,
       colorSelection: VETheme.color.textSelected,
-      lh: 20,
+      lh: 22.0000,
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
     },
     button: {
@@ -358,7 +358,7 @@ global.__VEStyles = new Map(String, Struct, {
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
-    lh: 20,
+    lh: 22.0000,
     padding: { top: 0, bottom: 0, left: 4, right: 0 }
   },
   "slider-horizontal": {

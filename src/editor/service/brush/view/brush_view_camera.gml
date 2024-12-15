@@ -1,245 +1,158 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
-///@param {?Struct} [json]
+///@param {Struct} json
 ///@return {Struct}
-function brush_view_camera(json = null) {
+function brush_view_camera(json) {
   return {
     name: "brush_view_camera",
     store: new Map(String, Struct, {
       "vw-cam_use-lock-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-lock-x", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-lock-x"),
       },
       "vw-cam_lock-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_lock-x", Boolean, false),
+        value: Struct.get(json, "vw-cam_lock-x"),
       },
       "vw-cam_use-lock-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-lock-y", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-lock-y"),
       },
       "vw-cam_lock-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_lock-y", Boolean, false),
+        value: Struct.get(json, "vw-cam_lock-y"),
       },
       "vw-cam_follow": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_follow", Boolean, false),
+        value: Struct.get(json, "vw-cam_follow"),
       },
       "vw-cam_use-follow-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-follow-x", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-follow-x"),
       },
       "vw-cam_follow-x": {
         type: Number,
-        value: Struct.getIfType(json, "vw-cam_follow-x", Number, 0.35),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 0.5)
-        },
+        value: Struct.get(json, "vw-cam_follow-x"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 0.5),
       },
       "vw-cam_use-follow-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-follow-y", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-follow-y"),
       },
       "vw-cam_follow-y": {
         type: Number,
-        value: Struct.getIfType(json, "vw-cam_follow-y", Number, 0.40),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 0.5)
-        },
+        value: Struct.get(json, "vw-cam_follow-y"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 0.5),
       },
       "vw-cam_follow-smooth": {
         type: Number,
-        value: Struct.getIfType(json, "vw-cam_follow-smooth", Number, 32),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 1.0, 256.0)
-        },
+        value: Struct.get(json, "vw-cam_follow-smooth"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(1.0, 256.0),
       },
       "vw-cam_use-follow-smooth": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-follow-smooth", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-follow-smooth"),
       },
       "vw-cam_use-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-x", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-x"),
       },
       "vw-cam_x": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, "vw-cam_x", { 
-          value: 0.0, 
-          target: 4096.0, 
-          factor: 1.0, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 99999.9)
-          value.target = clamp(value.target, 0.0, 99999.9)
-          return value
-        },
+        value: Struct.get(json, "vw-cam_x"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99999.9),
       },
       "vw-cam_change-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_change-x", Boolean, false),
+        value: Struct.get(json, "vw-cam_change-x"),
       },
       "vw-cam_use-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-y", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-y"),
       },
       "vw-cam_y": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, "vw-cam_y", {
-          value: 0.0, 
-          target: 5356.0, 
-          factor: 1.0, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 99999.9)
-          value.target = clamp(value.target, 0.0, 99999.9)
-          return value
-        },
+        value: Struct.get(json, "vw-cam_y"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99999.9),
       },
       "vw-cam_change-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_change-y", Boolean, false),
+        value: Struct.get(json, "vw-cam_change-y"),
       },
       "vw-cam_use-z": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-z", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-z"),
       },
       "vw-cam_z": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, "vw-cam_z", {
-          value: 0.0, 
-          target: 5000.0, 
-          factor: 1.0, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 99999.9)
-          value.target = clamp(value.target, 0.0, 99999.9)
-          return value
-        },
+        value: Struct.get(json, "vw-cam_z"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99999.9),
       },
       "vw-cam_change-z": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_change-z", Boolean, false),
+        value: Struct.get(json, "vw-cam_change-z"),
       },
       "vw-cam_use-dir": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-dir", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-dir"),
       },
       "vw-cam_dir": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, "vw-cam_dir", {
-          value: 0.0, 
-          target: 270.0, 
-          factor: 0.1, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, -9999.9, 9999.9)
-          value.target = clamp(value.target, -9999.9, 9999.9)
-          return value
-        },
+        value: Struct.get(json, "vw-cam_dir"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-9999.9, 9999.9),
       },
       "vw-cam_change-dir": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_change-dir", Boolean, false),
+        value: Struct.get(json, "vw-cam_change-dir"),
       },
       "vw-cam_use-pitch": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-pitch", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-pitch"),
       },
       "vw-cam_pitch": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, "vw-cam_pitch", {
-          value: 0.0, 
-          target: -70.0, 
-          factor: 0.1, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, -9999.9, 9999.9)
-          value.target = clamp(value.target, -9999.9, 9999.9)
-          return value
-        },
+        value: Struct.get(json, "vw-cam_pitch"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-9999.9, 9999.9),
       },
       "vw-cam_change-pitch": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_change-pitch", Boolean, false),
+        value: Struct.get(json, "vw-cam_change-pitch"),
       },
       "vw-cam_use-move-speed": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-move-speed", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-move-speed"),
       },
       "vw-cam_move-speed": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, "vw-cam_move-speed", {
-          value: 0.0, 
-          target: 1.0, 
-          factor: 0.01, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, 0.0, 999.9)
-          value.target = clamp(value.target, 0.0, 999.9)
-          return value
-        },
+        value: Struct.get(json, "vw-cam_move-speed"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99.9),
       },
       "vw-cam_change-move-speed": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_change-move-speed", Boolean, false),
+        value: Struct.get(json, "vw-cam_change-move-speed"),
       },
       "vw-cam_use-move-angle": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_use-move-angle", Boolean, false),
+        value: Struct.get(json, "vw-cam_use-move-angle"),
       },
       "vw-cam_move-angle": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getDefault(json, "vw-cam_move-angle", {
-          value: 0.0, 
-          target: 90.0, 
-          factor: 0.1, 
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, -9999.9, 9999.9)
-          value.target = clamp(value.target, -9999.9, 9999.9)
-          return value
-        },
+        value: Struct.get(json, "vw-cam_move-angle"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-9999.9, 9999.9),
       },
       "vw-cam_change-move-angle": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-cam_change-move-angle", Boolean, false),
+        value: Struct.get(json, "vw-cam_change-move-angle"),
       },
     }),
     components: new Array(Struct, [

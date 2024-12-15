@@ -1,7 +1,7 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
 ///@static
-///@type {Array<String>}
+///@type {String[]}
 global.__WALLPAPER_TYPES = [
   "Background",
   "Foreground",
@@ -10,7 +10,7 @@ global.__WALLPAPER_TYPES = [
 
 
 ///@static
-///@type {GMArray<String>}
+///@type {String[]}
 global.__BLEND_MODES_EXT = [
   "ONE",
   "ZERO",
@@ -28,7 +28,7 @@ global.__BLEND_MODES_EXT = [
 
 
 ///@static
-///@type {GMArray<String>}
+///@type {String[]}
 global.__BLEND_EQUATIONS = [
   "ADD",
   "SUBTRACT",
@@ -47,191 +47,131 @@ function brush_view_wallpaper(json = null) {
     store: new Map(String, Struct, {
       "vw-layer_type": {
         type: String,
-        value: Struct.getDefault(json, "vw-layer_type", WALLPAPER_TYPES[0]),
-        validate: function(value) {
-          Assert.areEqual(true, this.data.contains(value))
-        },
+        value: Struct.get(json, "vw-layer_type"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
         data: new Array(String, WALLPAPER_TYPES),
       },
       "vw-layer_fade-in": {
         type: Number,
-        value: Struct.getIfType(json, "vw-layer_fade-in", Number, 0.0),
-        passthrough: function(value) {
-          return NumberUtil.parse(value, this.value)
-        },
+        value: Struct.get(json, "vw-layer_fade-in"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
       },
       "vw-layer_fade-out": {
         type: Number,
-        value: Struct.getIfType(json, "vw-layer_fade-out", Number, 0.0),
-        passthrough: function(value) {
-          return NumberUtil.parse(value, this.value)
-        },
+        value: Struct.get(json, "vw-layer_fade-out"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
       },
       "vw-layer_use-texture": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_use-texture", Boolean, true),
+        value: Struct.get(json, "vw-layer_use-texture"),
       },
       "vw-layer_texture": {
         type: Sprite,
-        value: SpriteUtil.parse(Struct.getIfType(json, "vw-layer_texture", Struct), { 
-          name: "texture_missing"
-        }),
+        value: Struct.get(json, "vw-layer_texture"),
       },
       "vw-layer_use-texture-blend": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_use-texture-blend", Boolean, true),
+        value: Struct.get(json, "vw-layer_use-texture-blend"),
       },
       "vw-layer_texture-blend": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.getIfType(json, "vw-layer_texture-blend", String), ColorUtil.fromHex("#ffffff")),
+        value: Struct.get(json, "vw-layer_texture-blend"),
       },
       "vw-layer_use-col": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_use-col", Boolean, false),
+        value: Struct.get(json, "vw-layer_use-col"),
       },
       "vw-layer_col": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.getIfType(json, "vw-layer_col", String), ColorUtil.fromHex("#ffffffff")),
+        value: Struct.get(json, "vw-layer_col"),
       },
       "vw-layer_cls-texture": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_cls-texture", Boolean, false),
+        value: Struct.get(json, "vw-layer_cls-texture"),
       },
-      "vw-layer_cls-color": {
+      "vw-layer_cls-col": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_cls-color", Boolean, false),
+        value: Struct.get(json, "vw-layer_cls-col"),
       },
       "vw-layer_use-blend": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_use-blend", Boolean, false),
+        value: Struct.get(json, "vw-layer_use-blend"),
       },
       "vw-layer_blend-src": {
         type: String,
-        value: Struct.getDefault(json, "vw-layer_blend-src", "SRC_ALPHA"),
-        validate: function(value) {
-          Assert.areEqual(true, this.data.contains(value))
-        },
+        value: Struct.get(json, "vw-layer_blend-src"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
         data: new Array(String, BLEND_MODES_EXT),
       },
       "vw-layer_blend-dest": {
         type: String,
-        value: Struct.getDefault(json, "vw-layer_blend-dest", Struct.get(json, "vw-layer_type") == "Background" ? "INV_SRC_ALPHA" : "ONE"),
-        validate: function(value) {
-          Assert.areEqual(true, this.data.contains(value))
-        },
+        value: Struct.get(json, "vw-layer_blend-dest"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
         data: new Array(String, BLEND_MODES_EXT),
       },
       "vw-layer_blend-eq": {
         type: String,
-        value: Struct.getDefault(json, "vw-layer_blend-eq", "ADD"),
-        validate: function(value) {
-          Assert.areEqual(true, this.data.contains(value))
-        },
+        value: Struct.get(json, "vw-layer_blend-eq"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
         data: new Array(String, BLEND_EQUATIONS),
       },
       "vw-layer_use-spd": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_use-spd", Boolean, false),
+        value: Struct.get(json, "vw-layer_use-spd"),
       },
       "vw-layer_spd": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "vw-layer_spd", Struct, {
-          value: 0.0,
-          target: 0.0,
-          factor: 0.0,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-  
-          value.value = clamp(value.value, 0.0, 99.9)
-          value.target = clamp(value.target, 0.0, 99.9)
-          return value
-        },
+        value: Struct.get(json, "vw-layer_spd"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99.9),
       },
       "vw-layer_change-spd": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_change-spd", Boolean, false),
+        value: Struct.get(json, "vw-layer_change-spd"),
       },
       "vw-layer_use-dir": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_use-dir", Boolean, false),
+        value: Struct.get(json, "vw-layer_use-dir"),
       },
       "vw-layer_dir": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "vw-layer_dir", Struct, {
-          value: 0.0,
-          target: 0.0,
-          factor: 0.0,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, -999.9, 999.9)
-          value.target = clamp(value.target, -999.9, 999.9)
-          return value
-        },
+        value: Struct.get(json, "vw-layer_dir"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-9999.9, 9999.9),
       },
       "vw-layer_change-dir": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_change-dir", Boolean, false),
+        value: Struct.get(json, "vw-layer_change-dir"),
       },
       "vw-layer_use-scale-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_use-scale-x", Boolean, false),
+        value: Struct.get(json, "vw-layer_use-scale-x"),
       },
       "vw-layer_scale-x": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "vw-layer_scale-x", Struct, {
-          value: 0.0,
-          target: 0.0,
-          factor: 0.0,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, -99.9, 99.9)
-          value.target = clamp(value.target, -99.9, 99.9)
-          return value
-        },
+        value: Struct.get(json, "vw-layer_scale-x"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-99.9, 99.9),
       },
       "vw-layer_change-scale-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_change-scale-x", Boolean, false),
+        value: Struct.get(json, "vw-layer_change-scale-x"),
       },
       "vw-layer_use-scale-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_use-scale-y", Boolean, false),
+        value: Struct.get(json, "vw-layer_use-scale-y"),
       },
       "vw-layer_scale-y": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "vw-layer_scale-y", Struct, {
-          value: 0.0,
-          target: 0.0,
-          factor: 0.0,
-          increase: 0.0,
-        })),
-        passthrough: function(value) {
-          if (!Core.isType(value, NumberTransformer)) {
-            return this.value
-          }
-
-          value.value = clamp(value.value, -99.9, 99.9)
-          value.target = clamp(value.target, -99.9, 99.9)
-          return value
-        },
+        value: Struct.get(json, "vw-layer_scale-y"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-99.9, 99.9),
       },
       "vw-layer_change-scale-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "vw-layer_change-scale-y", Boolean, false),
+        value: Struct.get(json, "vw-layer_change-scale-y"),
       },
     }),
     components: new Array(Struct, [
@@ -492,24 +432,7 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
-        name: "vw-layer_cls-texture",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: {
-            text: "Remove texture",
-            enable: { key: "vw-layer_cls-texture" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-layer_cls-texture" },
-          },
-        },
-      },
-      {
-        name: "vw-layer_cls-texture-line-h",
+        name: "vw-layer_texture-blend-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -607,24 +530,61 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
-        name: "vw-layer_cls-color",
+        name: "vw-layer-col-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-cls-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Remove color",
-            enable: { key: "vw-layer_cls-color" },
+            text: "Clear wallpaper",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
+        },
+      },
+      {
+        name: "vw-layer_cls-texture",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Texture",
+            enable: { key: "vw-layer_cls-texture" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-layer_cls-color" },
+            store: { key: "vw-layer_cls-texture" },
           },
         },
       },
       {
-        name: "vw-layer_cls-color-line-h",
+        name: "vw-layer_cls-col",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Color",
+            enable: { key: "vw-layer_cls-col" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_cls-col" },
+          },
+        },
+      },
+      {
+        name: "vw-layer-cls-col-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -680,7 +640,7 @@ function brush_view_wallpaper(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Destination",
+            text: "Target",
             enable: { key: "vw-layer_use-blend" },
           },
           previous: {

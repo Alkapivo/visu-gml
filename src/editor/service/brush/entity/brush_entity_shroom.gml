@@ -1,104 +1,123 @@
 ///@package io.alkapivo.visu.editor.service.brush.entity
 
-///@param {?Struct} [json]
+///@param {Struct} json
 ///@return {Struct}
-function brush_entity_shroom(json = null) {
+function brush_entity_shroom(json) {
   return {
     name: "brush_entity_shroom",
     store: new Map(String, Struct, {
       "en-shr_preview": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-shr_preview", Boolean, true),
+        value: Struct.get(json, "en-shr_preview"),
       },
       "en-shr_template": {
         type: String,
-        value: Struct.getIfType(json, "en-shr_template", String, "shroom-default"),
-        passthrough: function(value) {
-          var shroomService = Beans.get(BeanVisuController).shroomService
-          return shroomService.templates.contains(value) || Visu.assets().shroomTemplates.contains(value)
-            ? value
-            : (Core.isType(this.value, String) ? this.value : "shroom-default")
+        value: Struct.get(json, "en-shr_template"),
+        passthrough: UIUtil.passthrough.getCallbackValue(),
+        data: {
+          callback: Beans.get(BeanVisuController).shroomTemplateExists,
+          defaultValue: "shroom-default",
         },
       },
       "en-shr_spd": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_spd", Number, 10.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 99.9) 
-        },
+        value: Struct.get(json, "en-shr_spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
       },
       "en-shr_use-spd-rng": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-shr_use-spd-rng", Boolean, false),
+        value: Struct.get(json, "en-shr_use-spd-rng"),
       },
       "en-shr_spd-rng": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_spd-rng", Number, 0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 99.9) 
-        },
+        value: Struct.get(json, "en-shr_spd-rng"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
       },
       "en-shr_dir": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_dir", Number, 270.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, 360.0) 
-        },
+        value: Struct.get(json, "en-shr_dir"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 360.0),
       },
       "en-shr_use-dir-rng": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-shr_use-dir-rng", Boolean, false),
+        value: Struct.get(json, "en-shr_use-dir-rng"),
       },
       "en-shr_dir-rng": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_dir-rng", Number, 0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 360.0) 
-        },
+        value: Struct.get(json, "en-shr_dir-rng"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 360.0),
       },
       "en-shr_x": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_x", Number, 0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0), SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0)
-        },
+        value: Struct.get(json, "en-shr_x", Number, 0),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(
+          -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0), 
+          SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0
+        ),
       },
       "en-shr_snap-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-shr_snap-x", Boolean, true),
+        value: Struct.get(json, "en-shr_snap-x"),
       },
       "en-shr_use-rng-x": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-shr_use-rng-x", Boolean, false),
+        value: Struct.get(json, "en-shr_use-rng-x"),
       },
       "en-shr_rng-x": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_rng-x", Number, 0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, SHROOM_SPAWN_CHANNEL_AMOUNT)
-        },
+        value: Struct.get(json, "en-shr_rng-x", Number, 0),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(
+          0.0, 
+          SHROOM_SPAWN_CHANNEL_AMOUNT / 2.0
+        ),
       },
       "en-shr_y": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_y", Number, 0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2.0), SHROOM_SPAWN_ROW_AMOUNT / 2.0)
-        },
+        value: Struct.get(json, "en-shr_y", Number, 0),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(
+          -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2.0), 
+          SHROOM_SPAWN_ROW_AMOUNT / 2.0
+        ),
       },
       "en-shr_snap-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-shr_snap-y", Boolean, true),
+        value: Struct.get(json, "en-shr_snap-y"),
       },
       "en-shr_use-rng-y": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-shr_use-rng-y", Boolean, false),
+        value: Struct.get(json, "en-shr_use-rng-y"),
       },
       "en-shr_rng-y": {
         type: Number,
-        value: Struct.getIfType(json, "en-shr_rng-y", Number, 0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, SHROOM_SPAWN_ROW_AMOUNT)
-        },
+        value: Struct.get(json, "en-shr_rng-y", Number, 0),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(
+          0.0, 
+          SHROOM_SPAWN_ROW_AMOUNT / 2.0
+        ),
+      },
+      "en-shr_use-texture": {
+        type: Boolean,
+        value: Struct.get(json, "en-shr_use-texture"),
+      },
+      "en-shr_texture": {
+        type: Sprite,
+        value: Struct.get(json, "en-shr_texture"),
+      },
+      "en-shr_use-mask": {
+        type: Boolean,
+        value: Struct.get(json, "en-shr_use-mask"),
+      },
+      "en-shr_mask": {
+        type: Rectangle,
+        value: Struct.get(json, "en-shr_mask"),
       },
     }),
     components: new Array(Struct, [
@@ -225,7 +244,7 @@ function brush_entity_shroom(json = null) {
         },
       },
       {
-        name: "en-spd-line-h",
+        name: "en-shr-template-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -788,6 +807,288 @@ function brush_entity_shroom(json = null) {
           title: { 
             text: "Enable",
             enable: { key: "en-shr_use-rng-y" },
+          },
+        },
+      },
+      {
+        name: "en-shr_rng-y-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "en-shr_texture",
+        template: VEComponents.get("texture-field-ext"),
+        layout: VELayouts.get("texture-field-ext"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Override texture",
+              backgroundColor: VETheme.color.accentShadow,
+              enable: { key: "en-shr_use-texture" },
+            },
+            input: { backgroundColor: VETheme.color.accentShadow },
+            checkbox: { 
+              backgroundColor: VETheme.color.accentShadow,
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "en-shr_use-texture" },
+            },
+          },
+          texture: {
+            label: { 
+              text: "Texture",
+              enable: { key: "en-shr_use-texture" },
+            }, 
+            field: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+          },
+          preview: {
+            image: { name: "texture_empty" },
+            store: { key: "en-shr_texture" },
+            enable: { key: "en-shr_use-texture" },
+          },
+          resolution: {
+            store: { key: "en-shr_texture" },
+            enable: { key: "en-shr_use-texture" },
+          },
+          alpha: {
+            label: { 
+              text: "Alpha",
+              enable: { key: "en-shr_use-texture" },
+            },
+            field: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            decrease: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            increase: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            slider: { 
+              minValue: 0.0,
+              maxValue: 1.0,
+              snapValue: 0.01 / 1.0,
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+          },
+          frame: {
+            label: { 
+              text: "Frame",
+              enable: { key: "en-shr_use-texture" },
+            },
+            field: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            decrease: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            increase: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            checkbox: { 
+              store: { key: "en-shr_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "en-shr_use-texture" },
+            },
+          },
+          speed: {
+            label: { 
+              text: "Speed",
+              enable: { key: "en-shr_use-texture" },
+            },
+            field: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            decrease: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            increase: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            checkbox: { 
+              store: { key: "en-shr_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "en-shr_use-texture" },
+            },
+          },
+          scaleX: {
+            label: { 
+              text: "Scale X",
+              enable: { key: "en-shr_use-texture" },
+            },
+            field: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            decrease: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            increase: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+          },
+          scaleY: {
+            label: { 
+              text: "Scale Y",
+              enable: { key: "en-shr_use-texture" },
+            },
+            field: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            decrease: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            increase: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+          },
+        },
+      },
+      {
+        name: "en-shr_mask-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Override collision mask",
+            enable: { key: "en-shr_use-mask" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "en-shr_use-mask" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+        },
+      },
+      {
+        name: "en-shr_mask-preview",
+        template: VEComponents.get("preview-image-mask"),
+        layout: VELayouts.get("preview-image-mask"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          preview: {
+            enable: { key: "en-shr_use-mask" },
+            image: { name: "texture_empty" },
+            store: { key: "en-shr_texture" },
+            mask: "en-shr_mask",
+          },
+          resolution: {
+            enable: { key: "en-shr_use-mask" },
+            store: { key: "en-shr_texture" },
+          },
+        },
+      },
+      {
+        name: "en-shr_mask",
+        template: VEComponents.get("vec4-increase"),
+        layout: VELayouts.get("vec4"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          x: {
+            label: {
+              text: "X",
+              enable: { key: "en-shr_use-mask" },
+            },
+            field: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+            },
+            decrease: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: 1.0,
+            },
+          },
+          y: {
+            label: {
+              text: "Y",
+              enable: { key: "en-shr_use-mask" },
+            },
+            field: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+            },
+            decrease: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: 1.0,
+            },
+          },
+          z: {
+            label: {
+              text: "Width",
+              enable: { key: "en-shr_use-mask" },
+            },
+            field: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+            },
+            decrease: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: 1.0,
+            },
+          },
+          a: {
+            label: {
+              text: "Height",
+              enable: { key: "en-shr_use-mask" },
+            },
+            field: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+            },
+            decrease: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: 1.0,
+            },
           },
         },
       },

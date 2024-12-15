@@ -8,126 +8,59 @@ function brush_entity_player(json = null) {
     store: new Map(String, Struct, {
       "en-pl_texture": {
         type: Sprite,
-        value: SpriteUtil.parse(Struct.get(json, "en-pl_texture"), { 
-          name: "texture_player", 
-          animate: true 
-        }),
+        value: Struct.get(json, "en-pl_texture"),
       },
       "en-pl_use-mask": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-pl_use-mask", Boolean, false),
+        value: Struct.get(json, "en-pl_use-mask"),
       },
       "en-pl_mask": {
         type: Rectangle,
-        value: new Rectangle(Struct.getIfType(json, "en-pl_mask", Struct, null)),
+        value: Struct.get(json, "en-pl_mask"),
       },
       "en-pl_reset-pos": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-pl_reset-pos", Boolean, false),
+        value: Struct.get(json, "en-pl_reset-pos"),
       },
       "en-pl_use-stats": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-pl_use-stats", Boolean, false),
+        value: Struct.get(json, "en-pl_use-stats"),
       },
       "en-pl_stats": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json, "en-pl_stats", {
-          "force": {
-            "value": 0
-          },
-          "point": {
-            "value": 0
-          },
-          "bomb": {
-            "value": 5
-          },
-          "life": {
-            "value": 4
-          }
-        }), { pretty: true }),
-        serialize: function() {
-          return JSON.parse(this.get())
-        },
-        validate: function(value) {
-          Assert.isType(JSON.parse(value), Struct)
-        },
+        value: JSON.stringify(Struct.get(json, "en-pl_stats"), { pretty: true }),
+        serialize: UIUtil.serialize.getStringStruct(),
+        validate: UIUtil.validate.getStringStruct(),
       },
       "en-pl_use-bullethell": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-pl_use-bullethell", Boolean, true),
+        value: Struct.get(json, "en-pl_use-bullethell"),
       },
       "en-pl_bullethell": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json, "en-pl_bullethell", {
-          "x":{
-            "friction":9.3,
-            "acceleration":1.92,
-            "speedMax":2.1
-          },
-          "y":{
-            "friction":9.3,
-            "acceleration":1.92,
-            "speedMax":2.1
-          },
-          "guns":[
-            {
-              "angle": 90,
-              "bullet":"bullet_default",
-              "cooldown":8.0,
-              "offsetX": 0.0,
-              "offsetY": 0.0,
-              "speed": 10.0
-            }
-          ]
-        }), { pretty: true }),
-        serialize: function() {
-          return JSON.parse(this.get())
-        },
-        validate: function(value) {
-          Assert.isType(JSON.parse(value), Struct)
-        },
+        value: JSON.stringify(Struct.get(json, "en-pl_bullethell"), { pretty: true }),
+        serialize: UIUtil.serialize.getStringStruct(),
+        validate: UIUtil.validate.getStringStruct(),
       },
       "en-pl_use-platformer": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-pl_use-platformer", Boolean, true),
+        value: Struct.get(json, "en-pl_use-platformer"),
       },
       "en-pl_platformer": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json, "en-pl_platformer", {
-          "x":{
-            "friction":9.3,
-            "acceleration":1.92,
-            "speedMax":2.1
-          },
-          "y":{
-            "friction":0.0,
-            "acceleration":1.92,
-            "speedMax":25.0
-          },
-          "jump": {
-            "size": 3.5
-          }
-        }), { pretty: true }),
-        serialize: function() {
-          return JSON.parse(this.get())
-        },
-        validate: function(value) {
-          Assert.isType(JSON.parse(value), Struct)
-        },
+        value: JSON.stringify(Struct.get(json, "en-pl_platformer"), { pretty: true }),
+        serialize: UIUtil.serialize.getStringStruct(),
+        validate: UIUtil.validate.getStringStruct(),
       },
       "en-pl_use-racing": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-pl_use-racing", Boolean, true),
+        value: Struct.get(json, "en-pl_use-racing"),
       },
       "en-pl_racing": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json, "en-pl_racing", {}), { pretty: true }),
-        serialize: function() {
-          return JSON.parse(this.get())
-        },
-        validate: function(value) {
-          Assert.isType(JSON.parse(value), Struct)
-        },
+        value: JSON.stringify(Struct.get(json, "en-pl_racing"), { pretty: true }),
+        serialize: UIUtil.serialize.getStringStruct(),
+        validate: UIUtil.validate.getStringStruct(),
       },
     }),
     components: new Array(Struct, [
@@ -396,6 +329,7 @@ function brush_entity_player(json = null) {
             w_min: 570,
             store: { key: "en-pl_stats" },
             enable: { key: "en-pl_use-stats" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       },
@@ -436,6 +370,7 @@ function brush_entity_player(json = null) {
             w_min: 570,
             store: { key: "en-pl_bullethell" },
             enable: { key: "en-pl_use-bullethell" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       },
@@ -468,6 +403,7 @@ function brush_entity_player(json = null) {
             w_min: 570,
             store: { key: "en-pl_platformer" },
             enable: { key: "en-pl_use-platformer" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       },
@@ -499,6 +435,7 @@ function brush_entity_player(json = null) {
             w_min: 570,
             store: { key: "en-pl_racing" },
             enable: { key: "en-pl_use-racing" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       },
