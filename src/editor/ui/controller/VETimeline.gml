@@ -908,9 +908,8 @@ function VETimeline(_editor) constructor {
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
           var store = Beans.get(BeanVisuEditorController).store
-          if (mouse_check_button(mb_right) 
-            || (mouse_check_button(mb_left) 
-            && store.getValue("tool") == ToolType.ERASE)) {
+          if ((mouse_check_button(mb_right) && !keyboard_check(vk_control))
+              || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
             var mouseX = device_mouse_x_to_gui(0)
             var mouseY = device_mouse_y_to_gui(0)
             var areaX = this.area.getX()
@@ -928,6 +927,19 @@ function VETimeline(_editor) constructor {
               })
             }
           }
+
+          //if (mouse_check_button(mb_right) && keyboard_check(vk_control)) {
+          //  var mouseX = device_mouse_x_to_gui(0)
+          //  var mouseY = device_mouse_y_to_gui(0)
+          //  var areaX = this.area.getX()
+          //  var areaY = this.area.getY()
+          //  var areaWidth = this.area.getWidth()
+          //  var areaHeight = this.area.getHeight()
+          //  if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+          //    this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+          //    this.items.forEach(this.itemMouseDeselectEvent, { data: { x: mouseX, y: mouseY } })
+          //  }
+          //}
 
           var trackService = Beans.get(BeanVisuController).trackService
           if (!trackService.isTrackLoaded()) {
@@ -1732,7 +1744,9 @@ function VETimeline(_editor) constructor {
             case ToolType.CLONE:
             case ToolType.ERASE:
               ///@description deselect
-              this.deselect()
+              if (!keyboard_check(vk_control)) {
+                this.deselect() 
+              }
               break
           }
         },
@@ -1780,6 +1794,18 @@ function VETimeline(_editor) constructor {
           if (Optional.is(selected) && selected.name == item.name) {
             event.data.store.get("selected-event").set(null)
           }
+        }),
+
+        ///@param {UIItem} item
+        ///@param {String} key
+        ///@param {Event} event
+        itemMouseDeselectEvent: new BindIntent(function(item, key, event) {
+          if (!item.collide(event)) {
+            return
+          }
+
+          ///@description deselect
+          item.context.deselect({ name: item.name })
         }),
     
         ///@param {Number} timestamp
@@ -1971,16 +1997,12 @@ function VETimeline(_editor) constructor {
               },
               onMousePressedRight: function(event) {
                 var channelName = this.context.getChannelNameFromMouseY(event.data.y)
-                if (Optional.is(channelName)) {
+                if (Optional.is(channelName) && !keyboard_check(vk_control)) {
                   this.context.removeEvent(channelName, this.name)
                 }
 
-                var store = Beans.get(BeanVisuEditorController).store
-                var selected = store.getValue("selected-event")
-                if (Optional.is(selected) && selected.name == this.name) {
-                  store.get("selected-event").set(null)
-                }
-          },
+                this.context.deselect({ name: this.name })
+              },
             }
           )
         }),
@@ -2210,8 +2232,14 @@ function VETimeline(_editor) constructor {
               && selectedEvent.name == contextEvent.name) {
               store.get("selected-event").set(null)
             }
-
-            store.getValue("selected-events").remove(contextEvent.name)
+            
+            var selectedEvents = store.getValue("selected-events")
+            if (Optional.is(selectedEvents)) {
+              selectedEvents.remove(contextEvent.name)
+              if (selectedEvents.size() > 0) {
+                store.get("selected-event").set(selectedEvents.getFirst())
+              }
+            }
           } else {
             if (Optional.is(store.getValue("selected-event"))) {
               store.get("selected-event").set(null)
