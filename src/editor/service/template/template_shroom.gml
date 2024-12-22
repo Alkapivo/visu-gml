@@ -260,6 +260,7 @@ function template_shroom(json) {
             field: {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "shroom_mask" },
@@ -280,6 +281,7 @@ function template_shroom(json) {
             field: {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "shroom_mask" },
@@ -300,6 +302,7 @@ function template_shroom(json) {
             field: {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "shroom_mask" },
@@ -320,6 +323,7 @@ function template_shroom(json) {
             field: {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "shroom_mask" },

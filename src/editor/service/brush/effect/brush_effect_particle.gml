@@ -246,7 +246,10 @@ function brush_effect_particle(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Amount" },
-          field: { store: { key: "ef-part_amount" } },
+          field: {
+            store: { key: "ef-part_amount" },
+            GMTF_DECIMAL: 0,
+          },
           decrease: { store: { key: "ef-part_amount" } },
           increase: { store: { key: "ef-part_amount" } },
         },

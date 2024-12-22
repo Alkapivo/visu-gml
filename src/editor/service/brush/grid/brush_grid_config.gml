@@ -6,109 +6,155 @@ function brush_grid_config(json) {
   return {
     name: "brush_grid_config",
     store: new Map(String, Struct, {
-      "en-cfg_use-render-shr": {
+      "gr-cfg_use-render": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_use-render-shr"),
+        value: Struct.get(json, "gr-cfg_use-render"),
       },
-      "en-cfg_render-shr": {
+      "gr-cfg_render": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_render-shr"),
+        value: Struct.get(json, "gr-cfg_render"),
       },
-      "en-cfg_use-render-player": {
+      "gr-cfg_use-spd": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_use-render-player"),
+        value: Struct.get(json, "gr-cfg_use-spd"),
       },
-      "en-cfg_render-player": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_render-player"),
-      },
-      "en-cfg_use-render-coin": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_use-render-coin"),
-      },
-      "en-cfg_render-coin": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_render-coin"),
-      },
-      "en-cfg_use-render-bullet": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_use-render-bullet"),
-      },
-      "en-cfg_render-bullet": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_render-bullet"),
-      },
-      "en-cfg_cls-shr": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_cls-shr"),
-      },
-      "en-cfg_cls-player": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_cls-player"),
-      },
-      "en-cfg_cls-coin": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_cls-coin"),
-      },
-      "en-cfg_cls-bullet": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_cls-bullet"),
-      },
-      "en-cfg_use-z-shr": {
-        type: Boolean,
-        value: Struct.get(json, "en-cfg_use-z-shr"),
-      },
-      "en-cfg_z-shr": {
+      "gr-cfg_spd": {
         type: NumberTransformer,
-        value: Struct.get(json, "en-cfg_z-shr"),
+        value: Struct.get(json, "gr-cfg_spd"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 999.9),
+      },
+      "gr-cfg_change-spd": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_change-spd"),
+      },
+      "gr-cfg_use-z": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_use-z"),
+      },
+      "gr-cfg_z": {
+        type: NumberTransformer,
+        value: Struct.get(json, "gr-cfg_z"),
         passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
         data: new Vector2(0.0, 99999.9),
       },
-      "en-cfg_change-z-shr": {
+      "gr-cfg_change-z": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_change-z-shr"),
+        value: Struct.get(json, "gr-cfg_change-z"),
       },
-      "en-cfg_use-z-player": {
+      "gr-cfg_use-cls-frame": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_use-z-player"),
+        value: Struct.get(json, "gr-cfg_use-cls-frame"),
       },
-      "en-cfg_z-player": {
+      "gr-cfg_cls-frame": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_cls-frame"),
+      },
+      "gr-cfg_use-cls-frame-col": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_use-cls-frame-col"),
+      },
+      "gr-cfg_cls-frame-col": {
+        type: Color,
+        value: Struct.get(json, "gr-cfg_cls-frame-col"),
+      },
+      "gr-cfg_cls-frame-col-spd": {
+        type: Number,
+        value: Struct.get(json, "gr-cfg_cls-frame-col-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.000001, 1.0),
+      },
+      "gr-cfg_use-cls-frame-alpha": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_use-cls-frame-alpha"),
+      },
+      "gr-cfg_cls-frame-alpha": {
         type: NumberTransformer,
-        value: Struct.get(json, "en-cfg_z-player"),
-        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
-        data: new Vector2(0.0, 99999.9),
+        value: Struct.get(json, "gr-cfg_cls-frame-alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedNumberTransformer(),
       },
-      "en-cfg_change-z-player": {
+      "gr-cfg_change-cls-frame-alpha": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_change-z-player"),
+        value: Struct.get(json, "gr-cfg_change-cls-frame-alpha"),
       },
-      "en-cfg_use-z-coin": {
+      "gr-cfg_use-render-focus-grid": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_use-z-coin"),
+        value: Struct.get(json, "gr-cfg_use-render-focus-grid"),
       },
-      "en-cfg_z-coin": {
+      "gr-cfg_render-focus-grid": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_render-focus-grid"),
+      },
+      "gr-cfg_use-focus-grid-alpha": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_use-focus-grid-alpha"),
+      },
+      "gr-cfg_focus-grid-alpha": {
         type: NumberTransformer,
-        value: Struct.get(json, "en-cfg_z-coin"),
-        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
-        data: new Vector2(0.0, 99999.9),
+        value: Struct.get(json, "gr-cfg_focus-grid-alpha"),
+        passthrough: UIUtil.passthrough.getNormalizedNumberTransformer(),
       },
-      "en-cfg_change-z-coin": {
+      "gr-cfg_change-focus-grid-alpha": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_change-z-coin"),
+        value: Struct.get(json, "gr-cfg_change-focus-grid-alpha"),
       },
-      "en-cfg_use-z-bullet": {
+      "gr-cfg_use-focus-grid-treshold": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_use-z-bullet"),
+        value: Struct.get(json, "gr-cfg_use-focus-grid-treshold"),
       },
-      "en-cfg_z-bullet": {
+      "gr-cfg_focus-grid-treshold": {
         type: NumberTransformer,
-        value: Struct.get(json, "en-cfg_z-bullet"),
+        value: Struct.get(json, "gr-cfg_focus-grid-treshold"),
         passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
-        data: new Vector2(0.0, 99999.9),
+        data: new Vector2(0.0, 32.0),
       },
-      "en-cfg_change-z-bullet": {
+      "gr-cfg_change-focus-grid-treshold": {
         type: Boolean,
-        value: Struct.get(json, "en-cfg_use-render-shr"),
+        value: Struct.get(json, "gr-cfg_change-focus-grid-treshold"),
+      },
+      "gr-cfg_grid-use-blend": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_grid-use-blend"),
+      },
+      "gr-cfg_grid-blend-src": {
+        type: String,
+        value: Struct.get(json, "gr-cfg_grid-blend-src"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, BLEND_MODES_EXT),
+      },
+      "gr-cfg_grid-blend-dest": {
+        type: String,
+        value: Struct.get(json, "gr-cfg_grid-blend-dest"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, BLEND_MODES_EXT),
+      },
+      "gr-cfg_grid-blend-eq": {
+        type: String,
+        value: Struct.get(json, "gr-cfg_grid-blend-eq"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, BLEND_EQUATIONS),
+      },
+      "gr-cfg_focus-grid-use-blend": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_focus-grid-use-blend"),
+      },
+      "gr-cfg_focus-grid-blend-src": {
+        type: String,
+        value: Struct.get(json, "gr-cfg_focus-grid-blend-src"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, BLEND_MODES_EXT),
+      },
+      "gr-cfg_focus-grid-blend-dest": {
+        type: String,
+        value: Struct.get(json, "gr-cfg_focus-grid-blend-dest"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, BLEND_MODES_EXT),
+      },
+      "gr-cfg_focus-grid-blend-eq": {
+        type: String,
+        value: Struct.get(json, "gr-cfg_focus-grid-blend-eq"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: new Array(String, BLEND_EQUATIONS),
       },
     }),
     components: new Array(Struct, [

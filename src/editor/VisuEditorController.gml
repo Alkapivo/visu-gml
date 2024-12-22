@@ -416,11 +416,8 @@ function VisuEditorController() constructor {
           minWidth: 1,
           maxWidth: 1,
           percentageWidth: 0.2,
-          width: function() { 
-            return clamp(this.percentageWidth * this.context.width(), this.minWidth, this.maxWidth)
-          },
-          width: function() { return clamp(max(this.percentageWidth * this.context.width(), 
-            this.minWidth), this.minWidth, this.maxWidth) },
+          width: function() { return round(clamp(max(this.percentageWidth * this.context.width(), 
+            this.minWidth), this.minWidth, this.maxWidth)) },
           height: function() { return Struct.get(this.context.nodes, "timeline").top()
             - Struct.get(this.context.nodes, "title-bar").bottom() },
           y: function() { return Struct.get(this.context.nodes, "title-bar").bottom() },
@@ -449,7 +446,7 @@ function VisuEditorController() constructor {
           name: "visu-editor.track-control",
           percentageHeight: 1.0,
           width: function() { return Struct.get(this.context.nodes, "preview").width() },
-          height: function() { return 76.0 * this.percentageHeight },
+          height: function() { return round(76.0 * this.percentageHeight) },
           x: function() { return this.context.nodes.preview.x() },
           y: function() { return this.context.nodes.preview.bottom()
             - this.height() },
@@ -460,7 +457,7 @@ function VisuEditorController() constructor {
           maxWidth: 1,
           percentageWidth: 0.2,
           width: function() { 
-            return clamp(this.percentageWidth * this.context.width(), this.minWidth, this.maxWidth)
+            return round(clamp(this.percentageWidth * this.context.width(), this.minWidth, this.maxWidth))
           },
           height: function() { return this.context.height()
             - Struct.get(this.context.nodes, "title-bar").height()
@@ -476,7 +473,7 @@ function VisuEditorController() constructor {
           width: function() { return this.context.width()
             - Struct.get(this.context.nodes, "brush-toolbar").width() },
           height: function() { 
-            return clamp(this.percentageHeight * this.context.height(), this.minHeight, this.maxHeight)
+            return floor(clamp(this.percentageHeight * this.context.height(), this.minHeight, this.maxHeight))
           },
           y: function() { return this.context.height() - this.height()
             - Struct.get(this.context.nodes, "status-bar").height() },
@@ -505,7 +502,7 @@ function VisuEditorController() constructor {
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
     brushNode.minWidth = renderBrush ? 288 : 0
-    brushNode.maxWidth = renderBrush ? GuiWidth() * 0.37 : 0
+    brushNode.maxWidth = renderBrush ? round(GuiWidth() * 0.37) : 0
     this.brushToolbar.containers.forEach(function(container, key, enable) {
       container.enable = enable
     }, renderBrush)
@@ -513,7 +510,7 @@ function VisuEditorController() constructor {
     var renderTimeline = this.store.getValue("render-timeline")
     var timelineNode = Struct.get(this.layout.nodes, "timeline")
     timelineNode.minHeight = renderTimeline ? 96 : 0
-    timelineNode.maxHeight = renderTimeline ? GuiHeight() * 0.58 : 0
+    timelineNode.maxHeight = renderTimeline ? round(GuiHeight() * 0.58) : 0
     switch (this.timeline.channelsMode) {
       case "list":
         this.timeline.containers.forEach(function(container, key, enable) {
@@ -531,7 +528,7 @@ function VisuEditorController() constructor {
     var renderEvent = this.store.getValue("render-event")
     var accordionNode = Struct.get(this.layout.nodes, "accordion")
     accordionNode.minWidth = renderEvent ? 288 : 0
-    accordionNode.maxWidth = renderEvent ? GuiWidth() * 0.37 : 0
+    accordionNode.maxWidth = renderEvent ? round(GuiWidth() * 0.37) : 0
     this.accordion.containers.forEach(updateAccordion, renderEvent)
     this.accordion.eventInspector.containers.forEach(updateAccordion, renderEvent)
     this.accordion.templateToolbar.containers.forEach(updateAccordion, renderEvent)
@@ -638,6 +635,8 @@ function VisuEditorController() constructor {
     }
 
     ui.surfaceTick.skip()
+    
+    ///@updateTimerNow
     ui.updateTimer.time = ui.updateTimer.duration + random(ui.updateTimer.duration / 2.0)
   }
 

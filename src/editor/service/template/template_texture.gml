@@ -69,6 +69,7 @@ function template_texture(json = null) {
                 data.textField.setText(value.originX)
               },
             },
+            GMTF_DECIMAL: 0,
           },
           decrease: {
             factor: -1.0,
@@ -156,7 +157,8 @@ function template_texture(json = null) {
                 
                 data.textField.setText(value.originY)
               },
-            }
+            },
+            GMTF_DECIMAL: 0,
           },
           decrease: {
             factor: -1.0,

@@ -160,12 +160,38 @@ function VETrackControl(_editor) constructor {
             scaleY: 0.125,
           },
           progress: { 
-            thickness: 1.5, 
-            blend: "#ff0000",
+            thickness: 1.75, 
+            alpha: 1.0,
+            blend: VETheme.color.accent,
+            line: { name: "texture_grid_line_bold" },
             cornerFrom: { name: "texture_empty" },
             cornerTo: { name: "texture_empty" },
           },
-          background: { thickness: 1.0, blend: "#000000", alpha: 0.0 },
+          background: {
+            thickness: 0.0, 
+            blend: VETheme.color.dark,
+            alpha: 0.0,
+          },
+          preRender: function() {
+            var background = Struct.get(this, "_background")
+            if (!Core.isType(background, TexturedLine)) {
+              background = new TexturedLine({
+                thickness: 2.0, 
+                blend: VETheme.color.dark,
+                alpha: 0.75,
+                line: { name: "texture_grid_line_default" },
+                cornerFrom: { name: "texture_empty" },
+                cornerTo: { name: "texture_empty" },
+              })
+              Struct.set(this, "_background", background)
+            }
+
+            var fromX = this.context.area.getX() + this.area.getX()
+            var fromY = this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+            var widthMax = this.area.getWidth() + (this.pointer.getWidth() * this.pointer.scaleX())
+            var width = ((this.value - this.minValue) / abs(this.minValue - this.maxValue)) * widthMax
+            background.render(fromX, fromY, fromX + widthMax, fromY)
+          },
           state: new Map(String, any),
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
@@ -232,6 +258,18 @@ function VETrackControl(_editor) constructor {
           },
           onMouseDragLeft: function(event) {
             var context = this
+            var mouse = Beans.get(BeanVisuEditorIO).mouse
+            var name = Struct.get(mouse.getClipboard(), "name")
+            if (name == "resize_accordion"
+                || name == "resize_brush_toolbar"
+                || name == "resize_brush_inspector"
+                || name == "resize_template_inspector"
+                || name == "resize_timeline"
+                || name == "resize_event_title"
+                || !Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
+              return
+            }
+
             Beans.get(BeanVisuEditorIO).mouse.setClipboard(new Promise()
               .setState({
                 context: context,
@@ -565,7 +603,7 @@ function VETrackControl(_editor) constructor {
                 item.set(clamp(item.get() - 1, 5, 20))
               },
               backgroundColor: VETheme.color.primary,
-              backgroundColorSelected: VETheme.color.accent,
+              backgroundColorSelected: VETheme.color.primaryLight,
               backgroundColorOut: VETheme.color.primary,
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
@@ -632,7 +670,7 @@ function VETrackControl(_editor) constructor {
                 item.set(clamp(item.get() + 1, 5, 20))
               },
               backgroundColor: VETheme.color.primary,
-              backgroundColorSelected: VETheme.color.accent,
+              backgroundColorSelected: VETheme.color.primaryLight,
               backgroundColorOut: VETheme.color.primary,
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
@@ -708,7 +746,7 @@ function VETrackControl(_editor) constructor {
     },
     "close": function(event) {
       var context = this
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,

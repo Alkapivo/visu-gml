@@ -15,6 +15,7 @@ global.__grid_track_event = {
   "brush_grid_area": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "gr-area_use-h": Struct.parse.boolean(data, "gr-area_use-h"),
         "gr-area_h": Struct.parse.numberTransformer(data, "gr-area_h", {
           clampValue: { from: 0.0, to: 10.0 },
@@ -60,6 +61,7 @@ global.__grid_track_event = {
   "brush_grid_column": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "gr-c_use-mode": Struct.parse.boolean(data, "gr-c_use-mode"),
         "gr-c_mode": Struct.parse.gmArrayValue(data, "gr-c_mode", GRID_MODES, GRID_MODES[0]),
         "gr-c_use-amount": Struct.parse.boolean(data, "gr-c_use-amount"),
@@ -225,6 +227,7 @@ global.__grid_track_event = {
   "brush_grid_row": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "gr-r_use-mode": Struct.parse.boolean(data, "gr-r_use-mode"),
         "gr-r_mode": Struct.parse.gmArrayValue(data, "gr-r_mode", GRID_MODES, GRID_MODES[0]),
         "gr-r_use-amount": Struct.parse.boolean(data, "gr-r_use-amount"),
@@ -390,6 +393,7 @@ global.__grid_track_event = {
   "brush_grid_config": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "gr-cfg_use-render": Struct.parse.boolean(data, "gr-cfg_use-render"),
         "gr-cfg_render": Struct.parse.boolean(data, "gr-cfg_render"),
         "gr-cfg_use-spd": Struct.parse.boolean(data, "gr-cfg_use-spd"),

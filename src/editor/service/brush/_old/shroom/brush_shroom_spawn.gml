@@ -86,7 +86,7 @@ function migrateShroomSpawnEvent(json) {
   Struct.remove(json, "shroom-spawn_use-spawn-x")
   Struct.remove(json, "shroom-spawn_use-spawn-y")
 
-  var result = {
+  return {
     "en-shr_preview": Struct.getIfType(json, "shroom-spawn_use-preview", Boolean, false),
     "en-shr_template": Struct.getIfType(json, "shroom-spawn_template", String, "shroom-default"),
     "en-shr_spd": Struct.getIfType(json, "shroom-spawn_speed", Number, 10.0),
@@ -104,8 +104,6 @@ function migrateShroomSpawnEvent(json) {
     "en-shr_use-rng-y": Struct.getIfType(json, "shroom-spawn_use-row-rng", Boolean, false),
     "en-shr_rng-y": Struct.getIfType(json, "shroom-spawn_row-rng", Number, 0.0),
   }
-
-  return result
 }
 
 
@@ -459,10 +457,10 @@ function brush_shroom_spawn(json = null) {
             store: { key: "shroom-spawn_angle" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -488,10 +486,10 @@ function brush_shroom_spawn(json = null) {
             store: { key: "shroom-spawn_angle" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -564,10 +562,10 @@ function brush_shroom_spawn(json = null) {
             store: { key: "shroom-spawn_channel" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -593,10 +591,10 @@ function brush_shroom_spawn(json = null) {
             store: { key: "shroom-spawn_channel" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -669,10 +667,10 @@ function brush_shroom_spawn(json = null) {
             store: { key: "shroom-spawn_row" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -698,10 +696,10 @@ function brush_shroom_spawn(json = null) {
             store: { key: "shroom-spawn_row" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }

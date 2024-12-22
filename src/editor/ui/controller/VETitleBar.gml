@@ -153,7 +153,7 @@ function VETitleBar(_editor) constructor {
       "ve-title-bar": new UI({
         name: "ve-title-bar",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
         controller: controller,
@@ -370,7 +370,7 @@ function VETitleBar(_editor) constructor {
     },
     "close": function(event) {
       var context = this
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,

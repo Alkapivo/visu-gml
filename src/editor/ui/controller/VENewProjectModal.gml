@@ -147,7 +147,7 @@ function VisuNewProjectForm(json = null) constructor {
           colorHoverOver: VETheme.color.accent,
           colorHoverOut: VETheme.color.accentShadow,
           onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
+            if (Struct.get(this.enable, "value") == false) {
               return 
             }
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -1341,7 +1341,7 @@ function VENewProjectModal(_config = null) constructor {
     },
     "close": function(event) {
       var context = this
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,

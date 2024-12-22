@@ -89,6 +89,7 @@ function brush_shader_clear(json = null) {
           field: { 
             store: { key: "shader-clear_clear-amount" },
             enable: { key: "shader-clear_use-clear-amount" },
+            GMTF_DECIMAL: 0,
           },
         },
       },

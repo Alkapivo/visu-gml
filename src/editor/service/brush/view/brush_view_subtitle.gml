@@ -207,12 +207,329 @@ function brush_view_subtitle(json = null) {
         },
       },
       {
+        name: "vw-sub-char-spd",  
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Speed",
+            font: "font_inter_10_regular",
+          },
+          field: { store: { key: "vw-sub-char-spd" } },
+          decrease: { 
+            store: { key: "vw-sub-char-spd" },
+            factor: -0.1,
+          },
+          increase: { 
+            store: { key: "vw-sub-char-spd" },
+            factor: 0.1,
+          },
+        },
+      },
+      {
+        name: "vw-sub_char-spd-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+
+      {
+        name: "vw-sub-fade-in",  
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Fade in (s)",
+            font: "font_inter_10_regular",
+          },
+          field: { store: { key: "vw-sub-fade-in" } },
+          decrease: { 
+            store: { key: "vw-sub-fade-in" },
+            factor: -0.25,
+          },
+          increase: { 
+            store: { key: "vw-sub-fade-in" },
+            factor: 0.25,
+          },
+        },
+      },
+      {
+        name: "vw-sub-fade-out",  
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Fade out (s)",
+            font: "font_inter_10_regular",
+          },
+          field: { store: { key: "vw-sub-fade-out" } },
+          decrease: { 
+            store: { key: "vw-sub-fade-out" },
+            factor: -0.25,
+          },
+          increase: { 
+            store: { key: "vw-sub-fade-out" },
+            factor: 0.25,
+          },
+        },
+      },
+      {
+        name: "vw-sub_fade-out-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-sub_nl-delay",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Line (s)",
+            enable: { key: "vw-sub_use-nl-delay" },
+          },  
+          field: { 
+            store: { key: "vw-sub_nl-delay" },
+            enable: { key: "vw-sub_use-nl-delay" },
+          },
+          decrease: {
+            store: { key: "vw-sub_nl-delay" },
+            enable: { key: "vw-sub_use-nl-delay" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "vw-sub_nl-delay" },
+            enable: { key: "vw-sub_use-nl-delay" },
+            factor: 0.25,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-sub_use-nl-delay" },
+          },
+          title: { 
+            text: "Enable",
+            enable: { key: "vw-sub_use-nl-delay" },
+          },
+        },
+      },
+      {
+        name: "vw-sub_end-delay",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "End (s)",
+            enable: { key: "vw-sub_use-end-delay" },
+          },  
+          field: { 
+            store: { key: "vw-sub_end-delay" },
+            enable: { key: "vw-sub_use-end-delay" },
+          },
+          decrease: {
+            store: { key: "vw-sub_end-delay" },
+            enable: { key: "vw-sub_use-end-delay" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "vw-sub_end-delay" },
+            enable: { key: "vw-sub_use-end-delay" },
+            factor: 0.25,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-sub_use-end-delay" },
+          },
+          title: { 
+            text: "Enable",
+            enable: { key: "vw-sub_use-end-delay" },
+          },
+        },
+      },
+      {
+        name: "vw-sub_timeout",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Timeout (s)",
+            enable: { key: "vw-sub_use-timeout" },
+          },  
+          field: { 
+            store: { key: "vw-sub_timeout" },
+            enable: { key: "vw-sub_use-timeout" },
+          },
+          decrease: {
+            store: { key: "vw-sub_timeout" },
+            enable: { key: "vw-sub_use-timeout" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "vw-sub_timeout" },
+            enable: { key: "vw-sub_use-timeout" },
+            factor: 0.25,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-sub_use-timeout" },
+          },
+          title: { 
+            text: "Enable",
+            enable: { key: "vw-sub_use-timeout" },
+          },
+        },
+      },
+      {
+        name: "vw-sub_timeout-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-sub_area-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Subtitle area",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
+        },
+      },
+      {
+        name: "vw-sub_x",  
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "X (%)" },
+          field: { store: { key: "vw-sub_x" } },
+          slider: { 
+            minValue: -1.0,
+            maxValue: 2.0,
+            snapValue: 0.1 / 3.0,
+            store: { key: "vw-sub_x" },
+          },
+          decrease: {
+            store: { key: "vw-sub_x" },
+            factor: -0.01,
+          },
+          increase: {
+            store: { key: "vw-sub_x" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
+        name: "vw-sub_y",  
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Y (%)" },
+          field: { store: { key: "vw-sub_y" } },
+          slider: { 
+            minValue: -1.0,
+            maxValue: 2.0,
+            snapValue: 0.1 / 3.0,
+            store: { key: "vw-sub_y" },
+          },
+          decrease: {
+            store: { key: "vw-sub_y" },
+            factor: -0.01,
+          },
+          increase: {
+            store: { key: "vw-sub_y" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
+        name: "vw-sub_w",  
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Width (%)" },
+          field: { store: { key: "vw-sub_y" } },
+          slider: { 
+            minValue: -1.0,
+            maxValue: 2.0,
+            snapValue: 0.1 / 3.0,
+            store: { key: "vw-sub_w" },
+          },
+          decrease: {
+            store: { key: "vw-sub_w" },
+            factor: -0.01,
+          },
+          increase: {
+            store: { key: "vw-sub_w" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
+        name: "vw-sub_h",  
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Height (%)" },
+          field: { store: { key: "vw-sub_y" } },
+          slider: { 
+            minValue: -1.0,
+            maxValue: 2.0,
+            snapValue: 0.1 / 3.0,
+            store: { key: "vw-sub_h" },
+          },
+          decrease: {
+            store: { key: "vw-sub_h" },
+            factor: -0.01,
+          },
+          increase: {
+            store: { key: "vw-sub_h" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
+        name: "vw-sub_h-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-sub_typography-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Typography",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
+        },
+      },
+      {
         name: "vw-sub_font",
         template: VEComponents.get("spin-select"),
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Font" },
+          label: { text: "Font family" },
           previous: { store: { key: "vw-sub_font" } },
           preview: Struct.appendRecursive({ 
             store: { key: "vw-sub_font" },
@@ -222,142 +539,64 @@ function brush_view_subtitle(json = null) {
       },
       {
         name: "vw-sub-fh",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Height" },
+          label: {
+            text: "Leading",
+            font: "font_inter_10_regular",
+          },
           field: { store: { key: "vw-sub-fh" } },
-        },
-      },
-      {
-        name: "vw-sub-char-spd",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Speed" },
-          field: { store: { key: "vw-sub-char-spd" } },
-        },
-      },
-      {
-        name: "vw-sub-fade-in",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Fade in" },
-          field: { store: { key: "vw-sub-fade-in" } },
-        },
-      },
-      {
-        name: "vw-sub-fade-out",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Fade out" },
-          field: { store: { key: "vw-sub-fade-out" } },
-        },
-      },
-      {
-        name: "vw-sub_use-nl-delay",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Set new line delay",
-            enable: { key: "vw-sub_use-nl-delay" },
-          },  
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-sub_use-nl-delay" },
+          decrease: { 
+            store: { key: "vw-sub-fh" },
+            factor: -1.0,
+          },
+          increase: { 
+            store: { key: "vw-sub-fh" },
+            factor: 1.0,
           },
         },
       },
       {
-        name: "vw-sub_nl-delay",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        name: "vw-sub_fh-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-sub_align-v",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Time",
-            enable: { key: "vw-sub_use-nl-delay" },
-          },  
-          field: { 
-            store: { key: "vw-sub_nl-delay" },
-            enable: { key: "vw-sub_use-nl-delay" },
-          },
+          label: { text: "Align X" },
+          previous: { store: { key: "vw-sub_align-v" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-sub_align-v" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "vw-sub_align-v" } },
         },
       },
       {
-        name: "vw-sub_use-end-delay",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
+        name: "vw-sub_align-h",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Set ending delay",
-            enable: { key: "vw-sub_use-end-delay" },
-          },  
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-sub_use-end-delay" },
-          },
+          label: { text: "Align Y" },
+          previous: { store: { key: "vw-sub_align-h" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-sub_align-h" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "vw-sub_align-h" } },
         },
       },
       {
-        name: "vw-sub_end-delay",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Time",
-            enable: { key: "vw-sub_use-end-delay" },
-          },  
-          field: { 
-            store: { key: "vw-sub_end-delay" },
-            enable: { key: "vw-sub_use-end-delay" },
-          },
-        },
-      },
-      {
-        name: "vw-sub_use-timeout",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Set timeout",
-            enable: { key: "vw-sub_use-timeout" },
-          },  
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-sub_use-timeout" },
-          },
-        },
-      },
-      {
-        name: "vw-sub_timeout",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Timeout",
-            enable: { key: "vw-sub_use-timeout" },
-          },  
-          field: { 
-            store: { key: "vw-sub_timeout" },
-            enable: { key: "vw-sub_use-timeout" },
-          },
-        },
+        name: "vw-sub_align-h-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "vw-sub_col",
@@ -366,7 +605,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
-            label: { text: "Font color" },  
+            label: { text: "Color" },  
             input: { store: { key: "vw-sub_col" } }
           },
           red: {
@@ -398,7 +637,7 @@ function brush_view_subtitle(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Font outline",
+              text: "Outline color",
               enable: { key: "vw-sub_use-outline" },
             },  
             checkbox: { 
@@ -466,229 +705,233 @@ function brush_view_subtitle(json = null) {
         },
       },
       {
-        name: "view-lyrics_align",
+        name: "vw-sub_movement-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Align" },
-        },
-      },
-      {
-        name: "vw-sub_align-v",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Vertical" },
-          previous: { store: { key: "vw-sub_align-v" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "vw-sub_align-v" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "vw-sub_align-v" } },
-        },
-      },
-      {
-        name: "vw-sub_align-h",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Horizontal" },
-          previous: { store: { key: "vw-sub_align-h" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "vw-sub_align-h" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "vw-sub_align-h" } },
-        },
-      },
-      {
-        name: "view-lyrics_area",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Area" },
-        },
-      },
-      {
-        name: "vw-sub_x",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "X" },
-          field: { store: { key: "vw-sub_x" } },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 1.0,
-            store: { key: "vw-sub_x" },
+          label: {
+            text: "Subtitle movement",
+            backgroundColor: VETheme.color.accentShadow,
           },
-        },
-      },
-      {
-        name: "vw-sub_y",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Y" },
-          field: { store: { key: "vw-sub_y" } },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 1.0,
-            store: { key: "vw-sub_y" },
-          },
-        },
-      },
-      {
-        name: "vw-sub_w",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Width" },
-          field: { store: { key: "vw-sub_w" } },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 1.0,
-            store: { key: "vw-sub_w" },
-          },
-        },
-      },
-      {
-        name: "vw-sub_h",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Height" },
-          field: { store: { key: "vw-sub_h" } },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 1.0,
-            store: { key: "vw-sub_h" },
-          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
         name: "vw-sub_spd",
-        template: VEComponents.get("transform-numeric-uniform"),
-        layout: VELayouts.get("transform-numeric-uniform"),
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          title: {
+          value: {
             label: {
-              text: "Transform speed",
-              enable: { key: "vw-sub_use-spd" },
+              text: "Speed",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textFocus,
+            },
+            field: {
+              store: { key: "vw-sub_spd" },
+            },
+            decrease: { 
+              store: { key: "vw-sub_spd" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "vw-sub_spd" },
+              factor: 1.0,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "vw-sub_use-spd" },
             },
-          },
-          value: {
-            label: {
-              text: "Value",
-              enable: { key: "vw-sub_use-spd" },
-            },
-            field: {
-              store: { key: "vw-sub_spd" },
+            title: { 
+              text: "Enable",
               enable: { key: "vw-sub_use-spd" },
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "vw-sub_use-spd" },
+              enable: { key: "vw-sub_change-spd" },
             },
             field: {
               store: { key: "vw-sub_spd" },
-              enable: { key: "vw-sub_use-spd" },
+              enable: { key: "vw-sub_change-spd" },
+            },
+            decrease: { 
+              store: { key: "vw-sub_spd" },
+              enable: { key: "vw-sub_change-spd" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "vw-sub_spd" },
+              enable: { key: "vw-sub_change-spd" },
+              factor: 1.0,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-sub_change-spd" },
+            },
+            title: { 
+              text: "Change",
+              enable: { key: "vw-sub_change-spd" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "vw-sub_use-spd" },
+              enable: { key: "vw-sub_change-spd" },
             },
             field: {
               store: { key: "vw-sub_spd" },
-              enable: { key: "vw-sub_use-spd" },
+              enable: { key: "vw-sub_change-spd" },
+            },
+            decrease: { 
+              store: { key: "vw-sub_spd" },
+              enable: { key: "vw-sub_change-spd" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "vw-sub_spd" },
+              enable: { key: "vw-sub_change-spd" },
+              factor: 1.0,
             },
           },
           increase: {
             label: {
               text: "Increase",
-              enable: { key: "vw-sub_use-spd" },
+              enable: { key: "vw-sub_change-spd" },
             },
             field: {
               store: { key: "vw-sub_spd" },
-              enable: { key: "vw-sub_use-spd" },
+              enable: { key: "vw-sub_change-spd" },
+            },
+            decrease: { 
+              store: { key: "vw-sub_spd" },
+              enable: { key: "vw-sub_change-spd" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "vw-sub_spd" },
+              enable: { key: "vw-sub_change-spd" },
+              factor: 1.0,
             },
           },
         },
       },
       {
+        name: "vw-sub_spd-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "vw-sub_dir",
-        template: VEComponents.get("transform-numeric-uniform"),
-        layout: VELayouts.get("transform-numeric-uniform"),
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          title: {
+          value: {
             label: {
-              text: "Transform angle",
-              enable: { key: "vw-sub_use-dir" },
+              text: "Angle",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textFocus,
+            },
+            field: {
+              store: { key: "vw-sub_dir" },
+            },
+            decrease: { 
+              store: { key: "vw-sub_dir" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "vw-sub_dir" },
+              factor: 1.0,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "vw-sub_use-dir" },
             },
-          },
-          value: {
-            label: {
-              text: "Value",
-              enable: { key: "vw-sub_use-dir" },
-            },
-            field: {
-              store: { key: "vw-sub_dir" },
+            title: { 
+              text: "Enable",
               enable: { key: "vw-sub_use-dir" },
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "vw-sub_use-dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
             },
             field: {
               store: { key: "vw-sub_dir" },
-              enable: { key: "vw-sub_use-dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+            },
+            decrease: { 
+              store: { key: "vw-sub_dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "vw-sub_dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+              factor: 1.0,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "en-cfg_change-z-bullet" },
+            },
+            title: { 
+              text: "Change",
+              enable: { key: "en-cfg_change-z-bullet" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "vw-sub_use-dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
             },
             field: {
               store: { key: "vw-sub_dir" },
-              enable: { key: "vw-sub_use-dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+            },
+            decrease: { 
+              store: { key: "vw-sub_dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "vw-sub_dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+              factor: 1.0,
             },
           },
           increase: {
             label: {
               text: "Increase",
-              enable: { key: "vw-sub_use-dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
             },
             field: {
               store: { key: "vw-sub_dir" },
-              enable: { key: "vw-sub_use-dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+            },
+            decrease: { 
+              store: { key: "vw-sub_dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "vw-sub_dir" },
+              enable: { key: "en-cfg_change-z-bullet" },
+              factor: 1.0,
             },
           },
         },
-      }, 
+      },
     ]),
   }
 }

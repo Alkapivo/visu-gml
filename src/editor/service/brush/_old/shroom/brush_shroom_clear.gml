@@ -70,6 +70,7 @@ function brush_shroom_clear(json = null) {
           field: { 
             store: { key: "shroom-clear_clear-amount" },
             enable: { key: "shroom-clear_use-clear-amount" },
+            GMTF_DECIMAL: 0,
           },
         },
       },

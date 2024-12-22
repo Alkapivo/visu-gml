@@ -505,6 +505,7 @@ function brush_grid_old_player(json = null) {
             field: {
               store: { key: "grid-player_mask" },
               enable: { key: "grid-player_use-mask" },
+              GMTF_DECIMAL: 0,
             },
           },
           y: {
@@ -515,6 +516,7 @@ function brush_grid_old_player(json = null) {
             field: {
               store: { key: "grid-player_mask" },
               enable: { key: "grid-player_use-mask" },
+              GMTF_DECIMAL: 0,
             },
           },
           z: {
@@ -525,6 +527,7 @@ function brush_grid_old_player(json = null) {
             field: {
               store: { key: "grid-player_mask" },
               enable: { key: "grid-player_use-mask" },
+              GMTF_DECIMAL: 0,
             },
           },
           a: {
@@ -535,6 +538,7 @@ function brush_grid_old_player(json = null) {
             field: {
               store: { key: "grid-player_mask" },
               enable: { key: "grid-player_use-mask" },
+              GMTF_DECIMAL: 0,
             },
           },
         },

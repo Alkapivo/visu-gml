@@ -330,10 +330,10 @@ function VETemplate(json) constructor {
   data.components.forEach(function(component, index, components) {
     components.add(component)
   }, this.components)
-  this.components.add({
-    name: "template_end-line-h",
-    template: VEComponents.get("line-h"),
-    layout: VELayouts.get("line-h"),
-    config: { layout: { type: UILayoutType.VERTICAL } },
-  })
+  //this.components.add({
+  //  name: "template_end-line-h",
+  //  template: VEComponents.get("line-h"),
+  //  layout: VELayouts.get("line-h"),
+  //  config: { layout: { type: UILayoutType.VERTICAL } },
+  //})
 }

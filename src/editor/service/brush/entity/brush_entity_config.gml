@@ -8,119 +8,107 @@ function brush_entity_config(json = null) {
     store: new Map(String, Struct, {
       "en-cfg_use-render-shr": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-render-shr", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-render-shr"),
       },
       "en-cfg_render-shr": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_render-shr", Boolean, false),
+        value: Struct.get(json, "en-cfg_render-shr"),
       },
       "en-cfg_use-render-player": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-render-player", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-render-player"),
       },
       "en-cfg_render-player": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_render-player", Boolean, false),
+        value: Struct.get(json, "en-cfg_render-player"),
       },
       "en-cfg_use-render-coin": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-render-coin", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-render-coin"),
       },
       "en-cfg_render-coin": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_render-coin", Boolean, false),
+        value: Struct.get(json, "en-cfg_render-coin"),
       },
       "en-cfg_use-render-bullet": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-render-bullet", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-render-bullet"),
       },
       "en-cfg_render-bullet": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_render-bullet", Boolean, false),
+        value: Struct.get(json, "en-cfg_render-bullet"),
       },
       "en-cfg_cls-shr": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_cls-shr", Boolean, false),
+        value: Struct.get(json, "en-cfg_cls-shr"),
       },
       "en-cfg_cls-player": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_cls-player", Boolean, false),
+        value: Struct.get(json, "en-cfg_cls-player"),
       },
       "en-cfg_cls-coin": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_cls-coin", Boolean, false),
+        value: Struct.get(json, "en-cfg_cls-coin"),
       },
       "en-cfg_cls-bullet": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_cls-bullet", Boolean, false),
+        value: Struct.get(json, "en-cfg_cls-bullet"),
       },
       "en-cfg_use-z-shr": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-z-shr", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-z-shr"),
       },
       "en-cfg_z-shr": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "en-cfg_z-shr", Struct, {
-          value: 0,
-          target: 1,
-          factor: 1,
-          increase: 0,
-        })),
+        value: Struct.get(json, "en-cfg_z-shr"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99999.9),
       },
       "en-cfg_change-z-shr": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_change-z-shr", Boolean, false),
+        value: Struct.get(json, "en-cfg_change-z-shr"),
       },
       "en-cfg_use-z-player": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-z-player", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-z-player"),
       },
       "en-cfg_z-player": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "en-cfg_z-player", Struct, {
-          value: 0,
-          target: 1,
-          factor: 1,
-          increase: 0,
-        })),
+        value: Struct.get(json, "en-cfg_z-player"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99999.9),
       },
       "en-cfg_change-z-player": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_change-z-player", Boolean, false),
+        value: Struct.get(json, "en-cfg_change-z-player"),
       },
       "en-cfg_use-z-coin": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-z-coin", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-z-coin"),
       },
       "en-cfg_z-coin": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "en-cfg_z-coin", Struct, {
-          value: 0,
-          target: 1,
-          factor: 1,
-          increase: 0,
-        })),
+        value: Struct.get(json, "en-cfg_z-coin", Struct),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99999.9),
       },
       "en-cfg_change-z-coin": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_change-z-coin", Boolean, false),
+        value: Struct.get(json, "en-cfg_change-z-coin"),
       },
       "en-cfg_use-z-bullet": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-z-bullet", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-z-bullet"),
       },
       "en-cfg_z-bullet": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.getIfType(json, "en-cfg_z-bullet", Struct, {
-          value: 0,
-          target: 1,
-          factor: 1,
-          increase: 0,
-        })),
+        value: Struct.get(json, "en-cfg_z-bullet"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99999.9),
       },
       "en-cfg_change-z-bullet": {
         type: Boolean,
-        value: Struct.getIfType(json, "en-cfg_use-render-shr", Boolean, false),
+        value: Struct.get(json, "en-cfg_use-render-shr"),
       },
     }),
     components: new Array(Struct, [

@@ -240,7 +240,10 @@ function brush_grid_old_particle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Amount" },
-          field: { store: { key: "grid-particle_amount" } },
+          field: { 
+            store: { key: "grid-particle_amount" },
+            GMTF_DECIMAL: 0,
+          },
         },
       },
       {

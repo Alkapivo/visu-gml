@@ -210,8 +210,17 @@ function VisuRenderer() constructor {
     return this
   }
 
+  updateBegin = function() {
+    if (global.____uiLayoutCounter.timer.update().finished) {
+      global.____uiLayoutCounter.print()
+      global.____uiLayoutCounter.reset()
+    }
+    global.____uiLayoutCounter.resetAcc()
+  }
+  
   ///@return {VisuRenderer}
   render = function() {
+
     var editor = Beans.get(BeanVisuEditorController)
     var _layout = editor == null ? this.layout : editor.layout.nodes.preview
     

@@ -6,6 +6,7 @@ global.__view_track_event = {
   "brush_view_camera": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "vw-cam_use-lock-x": Struct.parse.boolean(data, "vw-cam_use-lock-x"),
         "vw-cam_lock-x": Struct.parse.boolean(data, "vw-cam_lock-x"),
         "vw-cam_use-lock-y": Struct.parse.boolean(data, "vw-cam_use-lock-y"),
@@ -200,6 +201,7 @@ global.__view_track_event = {
   "brush_view_wallpaper": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "vw-layer_type": Struct.parse.gmArrayValue(data, "vw-layer_type", WALLPAPER_TYPES, WALLPAPER_TYPES[0]),
         "vw-layer_fade-in": Struct.parse.number(data, "vw-layer_fade-in", 0.0, 0.0, 999.9),
         "vw-layer_fade-out": Struct.parse.number(data, "vw-layer_fade-out", 0.0, 0.0, 999.9),
@@ -321,6 +323,7 @@ global.__view_track_event = {
   "brush_view_subtitle": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "vw-sub_template": Struct.parse.text(data, "vw-sub_template"),
         "vw-sub_font": Struct.parse.text(data, "vw-sub_font", VISU_FONT[0]),
         "vw-sub-fh": Struct.parse.number(data, "vw-sub-fh", 12, 0, 999),
@@ -363,6 +366,7 @@ global.__view_track_event = {
   "brush_view_config": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "vw-cfg_use-render-hud": Struct.parse.boolean(data, "vw-cfg_use-render-hud"),
         "vw-cfg_render-hud": Struct.parse.boolean(data, "vw-cfg_render-hud"),
         "vw-cfg_use-render-subtitle": Struct.parse.boolean(data, "vw-cfg_use-render-subtitle"),

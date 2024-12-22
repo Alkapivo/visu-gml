@@ -189,37 +189,6 @@ function VEBrush(template) constructor {
       },
     },
     {
-      name: "brush_color",
-      template: VEComponents.get("color-picker"),
-      layout: VELayouts.get("color-picker"),
-      config: {
-        layout: { type: UILayoutType.VERTICAL },
-        title: { 
-          label: { text: "Icon" },
-          input: { store: { key: "brush-color" } }
-        },
-        red: {
-          label: { text: "Red" },
-          field: { store: { key: "brush-color" } },
-          slider: { store: { key: "brush-color" } },
-        },
-        green: {
-          label: { text: "Green" },
-          field: { store: { key: "brush-color" } },
-          slider: { store: { key: "brush-color" } },
-        },
-        blue: {
-          label: { text: "Blue" },
-          field: { store: { key: "brush-color" } },
-          slider: { store: { key: "brush-color" } },
-        },
-        hex: { 
-          label: { text: "Hex" },
-          field: { store: { key: "brush-color" } },
-        },
-      },
-    },
-    {
       name: "brush_texture",
       template: VEComponents.get("spin-select"),
       layout: VELayouts.get("spin-select"),
@@ -252,6 +221,37 @@ function VEBrush(template) constructor {
         }, Struct.get(VEStyles.get("spin-select-image"), "preview"), false),
         next: { store: { key: "brush-texture" } },
       }
+    },
+    {
+      name: "brush_color",
+      template: VEComponents.get("color-picker"),
+      layout: VELayouts.get("color-picker"),
+      config: {
+        layout: { type: UILayoutType.VERTICAL },
+        //title: { 
+        //  label: { text: "Icon" },
+        //  input: { store: { key: "brush-color" } }
+        //},
+        red: {
+          label: { text: "Red" },
+          field: { store: { key: "brush-color" } },
+          slider: { store: { key: "brush-color" } },
+        },
+        green: {
+          label: { text: "Green" },
+          field: { store: { key: "brush-color" } },
+          slider: { store: { key: "brush-color" } },
+        },
+        blue: {
+          label: { text: "Blue" },
+          field: { store: { key: "brush-color" } },
+          slider: { store: { key: "brush-color" } },
+        },
+        hex: { 
+          label: { text: "Hex" },
+          field: { store: { key: "brush-color" } },
+        },
+      },
     },
     {
       name: "brush_start-properties-line-h",

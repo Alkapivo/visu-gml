@@ -213,10 +213,10 @@ function brush_entity_coin(json) {
             store: { key: "en-coin_x" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -242,10 +242,10 @@ function brush_entity_coin(json) {
             store: { key: "en-coin_x" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -350,10 +350,10 @@ function brush_entity_coin(json) {
             store: { key: "en-coin_y" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -379,10 +379,10 @@ function brush_entity_coin(json) {
             store: { key: "en-coin_y" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }

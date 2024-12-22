@@ -16,6 +16,7 @@ global.__effect_track_event = {
   "brush_effect_shader": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "ef-shd_template": Struct.parse.text(data, "ef-shd_template", "shader-default"),
         "ef-shd_duration": Struct.parse.number(data, "ef-shd_duration", 0.0, 0.0, 9999.9),
         "ef-shd_fade-in": Struct.parse.number(data, "ef-shd_fade-in", 0.0, 0.0, 9999.9),
@@ -77,6 +78,7 @@ global.__effect_track_event = {
   "brush_effect_glitch": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "ef-glt_use-fade-out": Struct.parse.boolean(data, "ef-glt_use-fade-out"),
         "ef-glt_fade-out": Struct.parse.number(data, "ef-glt_fade-out", 0.01, 0.0, 1.0),
         "ef-glt_use-config": Struct.parse.boolean(data, "ef-glt_use-config"),
@@ -192,6 +194,7 @@ global.__effect_track_event = {
   "brush_effect_particle": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "ef-part_preview": Struct.parse.boolean(data, "ef-part_preview"),
         "ef-part_template": Struct.parse.text(data, "ef-part_template", "particle-default"),
         "ef-part_area": Struct.parse.rectangle(data, "ef-part_area", { width: 1.0, height: 1.0 }),
@@ -225,6 +228,7 @@ global.__effect_track_event = {
   "brush_effect_config": {
     parse: function(data) {
       return {
+        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
         "ef-cfg_use-render-shd-bkg": Struct.parse.boolean(data, "ef-cfg_use-render-shd-bkg"),
         "ef-cfg_render-shd-bkg": Struct.parse.boolean(data, "ef-cfg_render-shd-bkg"),
         "ef-cfg_cls-shd-bkg": Struct.parse.boolean(data, "ef-cfg_cls-shd-bkg"),

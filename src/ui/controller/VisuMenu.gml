@@ -1968,6 +1968,16 @@ function VisuMenu(_config = null) constructor {
           "uiAlpha": 0.0,
           "uiAlphaFactor": 0.1,
           "breath": new Timer(2 * pi, { loop: Infinity, amount: FRAME_MS * 8 }),
+          "keyboard": new Keyboard({
+            up: KeyboardKeyType.ARROW_UP,
+            down: KeyboardKeyType.ARROW_DOWN,
+            left: KeyboardKeyType.ARROW_LEFT,
+            right: KeyboardKeyType.ARROW_RIGHT,
+            space: KeyboardKeyType.SPACE,
+            enter: KeyboardKeyType.ENTER,
+          }),
+          "keyUpdater": new PrioritizedPressedKeyUpdater(),
+          "playerKeyUpdater": new PrioritizedPressedKeyUpdater(),
         }),
         scrollbarY: { align: HAlign.RIGHT },
         updateArea: Callable
@@ -2013,8 +2023,15 @@ function VisuMenu(_config = null) constructor {
             }, pointer)
           }
 
-          var keyboard = Beans.get(BeanVisuIO).keyboards.get("player").update()
-          if (keyboard_check_released(vk_up) || keyboard.keys.up.released) {
+          var keyboard = this.state.get("keyboard")
+          var playerKeyboard = Beans.get(BeanVisuIO).keyboards.get("player")
+          //this.state.get("keyUpdater")
+          //  .updateKeyboard(keyboard.update())
+          keyboard.update()
+          this.state.get("playerKeyUpdater")
+            .bindKeyboardKeys(playerKeyboard)
+            .updateKeyboard(playerKeyboard.update())
+          if (playerKeyboard.keys.up.pressed || keyboard.keys.up.pressed) {
             var pointer = Struct.inject(this, "selectedIndex", 0)
             if (!Core.isType(pointer, Number)) {
               pointer = 0
@@ -2046,7 +2063,7 @@ function VisuMenu(_config = null) constructor {
             }, pointer)
           }
 
-          if (keyboard_check_released(vk_down) || keyboard.keys.down.released) {
+          if (playerKeyboard.keys.down.pressed || keyboard.keys.down.pressed) {
             var pointer = Struct.inject(this, "selectedIndex", 0)
             if (!Core.isType(pointer, Number)) {
               pointer = 0
@@ -2078,7 +2095,7 @@ function VisuMenu(_config = null) constructor {
             }, pointer)
           }
 
-          if (keyboard_check_released(vk_left) || keyboard.keys.left.released) {
+          if (playerKeyboard.keys.left.pressed || keyboard.keys.left.pressed) {
             var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               var type = null
@@ -2115,7 +2132,7 @@ function VisuMenu(_config = null) constructor {
             }
           }
 
-          if (keyboard_check_released(vk_right) || keyboard.keys.right.released) {
+          if (playerKeyboard.keys.right.pressed || keyboard.keys.right.pressed) {
             var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               var type = null
@@ -2152,9 +2169,9 @@ function VisuMenu(_config = null) constructor {
             }
           }
           
-          if (keyboard_check_released(vk_enter) 
-            || keyboard_check_released(vk_space) 
-            || keyboard.keys.action.released) {
+          if (playerKeyboard.keys.action.pressed
+            || keyboard.keys.space.pressed
+            || keyboard.keys.enter.pressed) {
             var component = this.collection.findByIndex(Struct.inject(this, "selectedIndex", 0))
             if (Optional.is(component)) {
               var type = null
@@ -2261,14 +2278,14 @@ function VisuMenu(_config = null) constructor {
     
           var areaX = this.area.x
           var areaY = this.area.y
-          var delta = DeltaTime.deltaTime
-          DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
+          //var delta = DeltaTime.deltaTime
+          //DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
           this.area.x = this.offset.x
           this.area.y = this.offset.y
           this.items.forEach(this.renderItem, this.area)
           this.area.x = areaX
           this.area.y = areaY
-          DeltaTime.deltaTime = delta
+          //DeltaTime.deltaTime = delta
         },
         render: function() {
           var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(this.state.get("uiAlphaFactor")), 0.0, 1.0)
@@ -2280,13 +2297,13 @@ function VisuMenu(_config = null) constructor {
           }
   
           this.surface.update(this.area.getWidth(), this.area.getHeight())
-          if (!this.surfaceTick.get() && !this.surface.updated) {
-            this.surface.render(this.area.getX(), this.area.getY(), uiAlpha)
-            if (this.enableScrollbarY) {
-              this.scrollbarY.render(this)
-            }
-            return
-          }
+          //if (!this.surfaceTick.get() && !this.surface.updated) {
+          //  this.surface.render(this.area.getX(), this.area.getY(), uiAlpha)
+          //  if (this.enableScrollbarY) {
+          //    this.scrollbarY.render(this)
+          //  }
+          //  return
+          //}
   
           this.surface.renderOn(this.renderSurface)
           this.surface.render(this.area.getX(), this.area.getY(), uiAlpha)

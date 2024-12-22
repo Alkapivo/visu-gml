@@ -53,7 +53,7 @@ function VEAccordion(_editor, config = null) constructor {
         nodes: {
           "view_event-inspector": {
             name: "ve-accordion.view_event-inspector",
-            margin: { top: 0, bottom: 0, right: 0, left: 1 },
+            margin: { top: 0, bottom: 0, right: 0, left: 0 },
             y: function() { return this.context.y() + this.margin.top },
             width: function() { return this.context.width() 
               - this.context.nodes.resize.width()
@@ -65,7 +65,7 @@ function VEAccordion(_editor, config = null) constructor {
               }
               var height = this.context.height() - this.margin.top - this.margin.bottom
               if (Struct.get(this.context.store, "render-template-toolbar")) {
-                height = height * (1.0 - Struct.get(this.context.store, "templates-percentage"))
+                height = round(height * (1.0 - Struct.get(this.context.store, "templates-percentage")))
               }
 
               return height
@@ -73,10 +73,14 @@ function VEAccordion(_editor, config = null) constructor {
           },
           "view_template-toolbar": {
             name: "ve-accordion.view_template-toolbar",
-            margin: { top: 0, bottom: 0, right: 0, left: 1 },
-            y: function() { return Struct.get(this.context.nodes, "view_event-inspector").bottom() + this.margin.top },
+            margin: { top: 0, bottom: 0, right: 0, left: 0 },
+            y: function() {
+              return Struct.get(this.context.store, "render-event-inspector")
+                ? (Struct.get(this.context.nodes, "view_event-inspector").bottom() + this.margin.top)
+                : (this.context.y() + this.margin.top)
+            },
             width: function() { return this.context.width() 
-              - this.context.nodes.resize.width()
+              - this.context.nodes.resize.width() - 1
               - this.margin.left
               - this.margin.right },
             height: function() { 
@@ -86,7 +90,7 @@ function VEAccordion(_editor, config = null) constructor {
 
               var height = this.context.height() - this.margin.top - this.margin.bottom
               if (Struct.get(this.context.store, "render-event-inspector")) {
-                height = height * Struct.get(this.context.store, "templates-percentage")
+                height = round(height * Struct.get(this.context.store, "templates-percentage"))
               }
 
               return height
@@ -161,7 +165,7 @@ function VEAccordion(_editor, config = null) constructor {
           "resize_accordion": {
             type: UIButton,
             layout: layout.nodes.resize,
-            backgroundColor: VETheme.color.primary, //resize
+            backgroundColor: VETheme.color.primaryShadow, //resize
             clipboard: {
               name: "resize_accordion",
               drag: function() {
@@ -225,10 +229,10 @@ function VEAccordion(_editor, config = null) constructor {
               template: VEComponents.get("category-button"),
               layout: VELayouts.get("vertical-item"),
               config: {
-                backgroundColor: VETheme.color.primary,
+                backgroundColor: VETheme.color.primaryShadow,
                 backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
                 backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-                backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+                backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
                 backgroundMargin: { top: 0, bottom: 1, left: 1, right: 0 },
                 callback: function() { 
                   var store = this.context.state.get("store")
@@ -255,10 +259,10 @@ function VEAccordion(_editor, config = null) constructor {
               template: VEComponents.get("category-button"),
               layout: VELayouts.get("vertical-item"),
               config: {
-                backgroundColor: VETheme.color.primary,
+                backgroundColor: VETheme.color.primaryShadow,
                 backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
                 backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-                backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+                backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
                 backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
                 callback: function() { 
                   var store = this.context.state.get("store")

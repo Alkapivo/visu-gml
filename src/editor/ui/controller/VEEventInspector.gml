@@ -26,22 +26,28 @@ function VEEventInspector(_editor) constructor {
   factoryLayout = function(parent) {
     return new UILayout({ 
       name: "event-inspector",
-      staticHeight: new BindIntent(function() { return this.nodes.title.height() + this.nodes.control.height() }),
+      staticHeight: new BindIntent(function() { 
+        return this.nodes.title.height() 
+            + this.nodes.control.height() 
+            + this.nodes.view.margin.top 
+            + this.nodes.view.margin.bottom
+      }),
       nodes: {
         "title": {
           name: "event-inspector.title",
           height: function() { return 16 },
+          margin: { left: 1, right: 1, },
         },
         "view": {
           name: "event-inspector.view",
-          margin: { left: 10 },
-          height: function() { return this.context.height() - this.context.staticHeight() },
-          y: function() { return this.context.nodes.title.bottom() },
+          margin: { top: 1, bottom: 1, left: 10, right: 1, },
+          height: function() { return this.context.height() - this.context.staticHeight() - this.margin.top - this.margin.bottom },
+          y: function() { return this.margin.top + this.context.nodes.title.bottom() },
         },
         "control": {
           name: "event-inspector.control",
-          height: function() { return 24 },
-          margin: { left: 0, right: 1 },
+          height: function() { return 26 },
+          margin: { left: 1, right: 1, },
           y: function() { return this.context.nodes.view.bottom() },
         }
       }
@@ -60,7 +66,7 @@ function VEEventInspector(_editor) constructor {
         name: "ve-event-inspector-title",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         layout: layout.nodes.title,
@@ -71,9 +77,9 @@ function VEEventInspector(_editor) constructor {
             type: UIText,
             text: "Event inspector",
             update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
-            backgroundColor: VETheme.color.accentShadow,
+            backgroundColor: VETheme.color.darkShadow,
             font: "font_inter_8_regular",
-            color: VETheme.color.textFocus,
+            color: VETheme.color.textShadow,
             align: { v: VAlign.CENTER, h: HAlign.LEFT },
             offset: { x: 4 },
           }, 
@@ -314,7 +320,7 @@ function VEEventInspector(_editor) constructor {
                 colorHoverOver: VETheme.color.accentShadow,
                 colorHoverOut: VETheme.color.primaryShadow,
                 backgroundColor: VETheme.color.primaryShadow,
-                backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+                backgroundMargin: { top: 0, bottom: 0, left: 0, right: 1 },
                 label: { 
                   font: "font_inter_10_bold",
                   text: "Preview",

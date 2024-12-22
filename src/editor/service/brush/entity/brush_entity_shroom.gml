@@ -267,10 +267,10 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_spd" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -296,10 +296,10 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_spd" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -394,10 +394,10 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_dir" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -423,10 +423,10 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_dir" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -562,10 +562,10 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_x" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -591,10 +591,10 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_x" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -698,10 +698,10 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_y" },
             label: { text: "-" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -727,10 +727,10 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_y" },
             label: { text: "+" },
             backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorSelected: VETheme.color.primaryLight,
             backgroundColorOut: VETheme.color.primary,
             onMouseHoverOver: function(event) {
-              if (Optional.is(this.enable) && !this.enable.value) {
+              if (Struct.get(this.enable, "value") == false) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
                 return
               }
@@ -967,6 +967,12 @@ function brush_entity_shroom(json) {
         },
       },
       {
+        name: "en-shr_texture-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "en-shr_mask-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -1018,6 +1024,7 @@ function brush_entity_shroom(json) {
             field: {
               store: { key: "en-shr_mask" },
               enable: { key: "en-shr_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "en-shr_mask" },
@@ -1038,6 +1045,7 @@ function brush_entity_shroom(json) {
             field: {
               store: { key: "en-shr_mask" },
               enable: { key: "en-shr_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "en-shr_mask" },
@@ -1058,6 +1066,7 @@ function brush_entity_shroom(json) {
             field: {
               store: { key: "en-shr_mask" },
               enable: { key: "en-shr_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "en-shr_mask" },
@@ -1078,6 +1087,7 @@ function brush_entity_shroom(json) {
             field: {
               store: { key: "en-shr_mask" },
               enable: { key: "en-shr_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "en-shr_mask" },

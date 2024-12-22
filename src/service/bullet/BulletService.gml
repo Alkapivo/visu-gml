@@ -56,7 +56,7 @@ function BulletService(_controller, config = {}): Service() constructor {
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
-    "spawn-bullet": function (event, dispatcher) {
+    "spawn-bullet": function(event, dispatcher) {
       var template = new BulletTemplate(event.data.template, this
         .getTemplate(event.data.template)
         /*.serialize()*/)
@@ -103,7 +103,7 @@ function BulletService(_controller, config = {}): Service() constructor {
     bullet.updateGameMode(gameMode)
   }
 
-  updateBullet = function (bullet, index, context) {
+  updateBullet = function(bullet, index, context) {
     bullet.update(context.controller)
     if (!bullet.signals.kill) {
       return

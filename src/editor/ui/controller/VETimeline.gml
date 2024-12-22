@@ -184,27 +184,28 @@ function VETimeline(_editor) constructor {
             minWidth: 200,
             maxWidth: 320,
             percentageWidth: 0.2,
-            width: function() { return clamp(
+            margin: { top: 2, bottom: 1, left: 3, right: 1 },
+            width: function() { return ceil(clamp(
               max(this.percentageWidth * this.context.context.context.width(), 
-              this.minWidth), this.minWidth, this.maxWidth) },
-            height: function() { return 32 },
+              this.minWidth), this.minWidth, this.maxWidth)) },
+            height: function() { return 29 - this.margin.bottom },
             x: function() { return 0 },
-            y: function() { return this.context.y() + this.context.nodes.resize.height() },
+            y: function() { return this.context.y() + this.context.nodes.resize.height() + this.margin.top },
           },
           settings: {
             name: "timeline.settings",
             minWidth: 200,
             maxWidth: 320,
             percentageWidth: 0.2,
-            margin: { left: 10, right: 0 },
-            width: function() { return clamp(
+            margin: { top: 3, bottom: 4, left: 10, right: 0 },
+            width: function() { return ceil(clamp(
               max(this.percentageWidth * this.context.context.context.width(), this.minWidth), 
               this.minWidth, 
-              this.maxWidth) - this.margin.left },
+              this.maxWidth)) - this.margin.left },
             height: function() { return this.context.height()
-              - this.context.nodes.resize.height() },
+              - this.context.nodes.resize.height() - this.margin.top },
             x: function() { return this.context.x() + this.margin.left },
-            y: function() { return this.context.y() + this.context.nodes.resize.height() },
+            y: function() { return this.context.y() + this.context.nodes.resize.height() + this.margin.top },
           },
           ruler: {
             name: "timeline.ruler",
@@ -215,7 +216,7 @@ function VETimeline(_editor) constructor {
             height: function() { return this.context.nodes.form.height() 
               - this.margin.top
               - this.margin.bottom },
-            margin: { top: 8, bottom: 2, left: 8, right: 8 },
+            margin: { top: 8, bottom: 0, left: 8, right: 8 },
             x: function() { return this.context.nodes.form.width() + this.margin.left },
             y: function() { return this.context.y() + this.margin.top + this.context.nodes.resize.height() },
           },
@@ -228,7 +229,7 @@ function VETimeline(_editor) constructor {
               - this.context.nodes.form.height()
               - this.context.nodes.resize.height() },
             x: function() { return this.context.x() + this.margin.left },
-            y: function() { return this.context.nodes.ruler.bottom() },
+            y: function() { return this.context.nodes.form.bottom() },
           },
           events: {
             name: "timeline.events",
@@ -244,7 +245,7 @@ function VETimeline(_editor) constructor {
             margin: { top: 0, bottom: 0, left: 8, right: 8 },
             x: function() { return this.context.nodes.channels.right() 
               + this.margin.left},
-            y: function() { return this.context.nodes.ruler.bottom() },
+            y: function() { return this.context.nodes.form.bottom() },
           }
         }
       }, 
@@ -267,7 +268,8 @@ function VETimeline(_editor) constructor {
 
         }),
         controller: controller,
-        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.timeline.background.updateTimer", 10.0), { loop: Infinity, shuffle: true }),
+        updateTimerCooldown: Core.getProperty("visu.editor.ui.timeline.background.updateTimer.cooldown", 4.0),
         layout: layout.nodes.background,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -275,7 +277,7 @@ function VETimeline(_editor) constructor {
           "resize_timeline": {
             type: UIButton,
             layout: layout.nodes.resize,
-            backgroundColor: VETheme.color.primary,
+            backgroundColor: VETheme.color.primaryShadow,
             clipboard: {
               name: "resize_timeline",
               drag: function() {
@@ -292,27 +294,23 @@ function VETimeline(_editor) constructor {
                   return
                 }
 
-                container.surfaceTick.skip()
-                container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+                //container.surfaceTick.skip()
+                //container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+                container.updateTimer.time = clamp(container.updateTimer.time, container.updateTimer.duration * 0.9500, container.updateTimer.duration * 2.0)
               }
 
-              if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
+              var editorIO = Beans.get(BeanVisuEditorIO)
+              var mouse = editorIO.mouse
+              if (mouse.hasMoved() && mouse.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
-                this.context.controller.containers.forEach(function(container) {
-                  if (!Optional.is(container.updateTimer)) {
-                    return
-                  }
-
-                  container.surfaceTick.skip()
-                  container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
-                })
+                this.context.controller.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
 
                 // reset accordion timer to avoid ghost effect,
                 // because timeline height is affecting accordion height
                 var accordion = Beans.get(BeanVisuEditorController).accordion
-                accordion.containers.forEach(resetContainerTimer)
-                accordion.eventInspector.containers.forEach(resetContainerTimer)
-                accordion.templateToolbar.containers.forEach(resetContainerTimer)
+                accordion.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+                accordion.eventInspector.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+                accordion.templateToolbar.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
 
                 if (!mouse_check_button(mb_left)) {
                   Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
@@ -328,7 +326,8 @@ function VETimeline(_editor) constructor {
 
               var events = editor.uiService.find("ve-timeline-events")
               if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
-                events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
+                UIUtil.clampUpdateTimerToCooldown(events, "ve-timeline-events", this.context.updateTimerCooldown)
+                //events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
               }
             }),
             onMousePressedLeft: function(event) {
@@ -350,7 +349,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-form": {
         name: "ve-timeline-form",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
@@ -365,13 +364,22 @@ function VETimeline(_editor) constructor {
               new UIComponent({
                 name: "ve-timeline-form",  
                 template: VEComponents.get("text-field-button"),
-                layout: VELayouts.get("text-field-button"),
+                layout: VELayouts.get("text-field-button-channel"),
                 config: { 
                   layout: { type: UILayoutType.VERTICAL },
                   label: { text: "Name" },
                   field: { store: { key: "new-channel-name" } },
                   button: { 
                     label: { text: "Add" },
+                    colorHoverOver: VETheme.color.accentShadow,
+                    colorHoverOut: VETheme.color.primaryShadow,
+                    backgroundColor: VETheme.color.primaryShadow,
+                    onMouseHoverOver: function(event) {
+                      this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                    },
+                    onMouseHoverOut: function(event) {
+                      this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                    },
                     callback: function() {
                       var initialized = this.context.controller.containers
                         .get("ve-timeline-events").state
@@ -446,28 +454,33 @@ function VETimeline(_editor) constructor {
         onMousePressedLeft: function(event) {
           this._onMousePressedLeft(event)
           if (Optional.is(this.updateTimer)) {
+            ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
 
           var events = this.controller.containers.get("ve-timeline-events")
           events.offset.y = this.offset.y
           if (Optional.is(events.updateTimer)) {
+            ///@updateTimerNow
             events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
           }
         },
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
           if (Optional.is(this.updateTimer)) {
+            ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
 
           var events = this.controller.containers.get("ve-timeline-events")
           events.offset.y = this.offset.y
+          ///@updateTimerNow
           events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
           if (Optional.is(this.updateTimer)) {
+            ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
 
@@ -475,13 +488,19 @@ function VETimeline(_editor) constructor {
           events.offset.y = this.offset.y
           
           if (Optional.is(events.updateTimer)) {
+            ///@updateTimerNow
             events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
           }
         },
         onMouseDragLeft: function(event) {
           var mouse = Beans.get(BeanVisuEditorIO).mouse
           var name = Struct.get(mouse.getClipboard(), "name")
-          if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+          if (name == "resize_accordion"
+              || name == "resize_brush_toolbar"
+              || name == "resize_brush_inspector"
+              || name == "resize_template_inspector"
+              || name == "resize_timeline"
+              || name == "resize_template_title") {
             return
           }
 
@@ -552,6 +571,7 @@ function VETimeline(_editor) constructor {
 
               this.onInit()
               if (Optional.is(this.updateTimer)) {
+                ///@updateTimerNow
                 this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
               }
 
@@ -559,6 +579,7 @@ function VETimeline(_editor) constructor {
               events.onInit()
 
               if (Optional.is(events.updateTimer)) {
+                ///@updateTimerNow
                 events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
               }
             }
@@ -603,7 +624,9 @@ function VETimeline(_editor) constructor {
                 colorHoverOver: VETheme.color.accentShadow,
                 colorHoverOut: VETheme.color.primaryShadow,
               },
-              settings: { 
+              settings: {
+                colorHoverOver: VETheme.color.accentShadow,
+                colorHoverOut: VETheme.color.primaryShadow, 
                 sprite: {
                   name: "texture_ve_icon_settings",
                   blend: VETheme.color.textShadow,
@@ -641,6 +664,8 @@ function VETimeline(_editor) constructor {
                 callbackData: name,
               },
               remove: {
+                colorHoverOver: VETheme.color.accentShadow,
+                colorHoverOut: VETheme.color.primaryShadow,
                 sprite: {
                   name: "texture_ve_icon_trash",
                   blend: VETheme.color.textShadow,
@@ -650,6 +675,8 @@ function VETimeline(_editor) constructor {
                 },
               },
               mute: {
+                colorHoverOver: VETheme.color.accentShadow,
+                colorHoverOut: VETheme.color.primaryShadow,
                 channelIndex: channel.index,
                 spriteOn: { name: "visu_texture_checkbox_muted_on" },
                 spriteOff: { name: "visu_texture_checkbox_muted_off" },
@@ -710,7 +737,16 @@ function VETimeline(_editor) constructor {
                 layout: VELayouts.get("property"),
                 config: { 
                   layout: { type: UILayoutType.VERTICAL },
-                  label: { text: "Edit channel" },
+                  label: {
+                    text: "Edit channel",
+                    backgroundColor: VETheme.color.accentShadow,
+                  },
+                  checkbox: {
+                    backgroundColor: VETheme.color.accentShadow,
+                  },
+                  input: {
+                    backgroundColor: VETheme.color.accentShadow,
+                  },
                 },
               }),
               new UIComponent({
@@ -730,15 +766,15 @@ function VETimeline(_editor) constructor {
                 config: { 
                   layout: { type: UILayoutType.VERTICAL },
                   label: { 
-                    text: "Config",
-                    //backgroundColor: VETheme.color.dark,
+                    text: "Channel config",
+                    backgroundColor: VETheme.color.dark,
                   },
-                  //checkbox: {
-                  //  backgroundColor: VETheme.color.dark,
-                  //},
-                  //input: {
-                  //  backgroundColor: VETheme.color.dark,
-                  //},
+                  checkbox: {
+                    backgroundColor: VETheme.color.dark,
+                  },
+                  input: {
+                    backgroundColor: VETheme.color.dark,
+                  },
                 },
               }),
               new UIComponent({
@@ -755,9 +791,15 @@ function VETimeline(_editor) constructor {
                 },
               }),
               new UIComponent({
+                name: "ve-timeline-channel-settings-config-line-h",
+                template: VEComponents.get("line-h"),
+                layout: VELayouts.get("line-h"),
+                config: { layout: { type: UILayoutType.VERTICAL } },
+              }),
+              new UIComponent({
                 name: "ve-timeline-channel-settings-apply",
                 template: VEComponents.get("button"),
-                layout: VELayouts.get("button"),
+                layout: VELayouts.get("button2"),
                 config: {
                   label: {
                     font: "font_inter_10_bold",
@@ -810,11 +852,11 @@ function VETimeline(_editor) constructor {
                       eventsContainer.onInit()
                     }
                   },
-                  layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+                  layout: { type: UILayoutType.VERTICAL, height: function() { return 28 } },
                   colorHoverOver: VETheme.color.accentShadow,
                   colorHoverOut: VETheme.color.primaryShadow,
                   backgroundColor: VETheme.color.primaryShadow,
-                  backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+                  backgroundMargin: { top: 3, bottom: 2, left: 4, right: 5 },
                   onMouseHoverOver: function(event) {
                     this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
                   },
@@ -826,7 +868,7 @@ function VETimeline(_editor) constructor {
               new UIComponent({
                 name: "ve-timeline-channel-settings-discard",
                 template: VEComponents.get("button"),
-                layout: VELayouts.get("button"),
+                layout: VELayouts.get("button2"),
                 config: {
                   label: {
                     font: "font_inter_10_bold",
@@ -855,11 +897,11 @@ function VETimeline(_editor) constructor {
                     name.set("")
                     config.set("{}")
                   },
-                  layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
-                  colorHoverOver: VETheme.color.accentShadow,
-                  colorHoverOut: VETheme.color.primaryShadow,
-                  backgroundColor: VETheme.color.primaryShadow,
-                  backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+                  layout: { type: UILayoutType.VERTICAL, height: function() { return 28 } },
+                  colorHoverOver: VETheme.color.deny,
+                  colorHoverOut: VETheme.color.denyShadow,
+                  backgroundColor: VETheme.color.denyShadow,
+                  backgroundMargin: { top: 2, bottom: 3, left: 4, right: 5 },
                   onMouseHoverOver: function(event) {
                     this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
                   },
@@ -889,8 +931,9 @@ function VETimeline(_editor) constructor {
           "time": null,
           "lines-alpha": 1.0,
           "lines-thickness": 0.2,
-          "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-          "bkg-color": ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+          "lines-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "lines-color-accent": ColorUtil.parse("#525280").toGMColor(),
+          "bkg-color": ColorUtil.parse("#212129").toGMColor(),//ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
           "initialized": false,
           "initializeChannels": false,
         }),
@@ -917,6 +960,7 @@ function VETimeline(_editor) constructor {
             var areaWidth = this.area.getWidth()
             var areaHeight = this.area.getHeight()
             if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+              ///@updateTimerNow
               this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
               this.items.forEach(this.itemMouseEraseEvent, { 
                 data: {
@@ -998,6 +1042,7 @@ function VETimeline(_editor) constructor {
                 var uiItem = acc.container.factoryEventUIItem(acc.channel.name, event)
                 acc.container.add(uiItem, uiItem.name)
               }, { channel: channel, container: container })
+              ///@updateTimerNow
               this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
               return
             }
@@ -1135,6 +1180,7 @@ function VETimeline(_editor) constructor {
           var thickness = this.state.get("lines-thickness")
           var alpha = this.state.get("lines-alpha")
           var color = this.state.get("lines-color")
+          var colorAccent = this.state.get("lines-color-accent")
           var bkgColor = this.state.get("bkg-color")
           var editor = Beans.get(BeanVisuEditorController)
           var bpm = editor.store.getValue("bpm")
@@ -1153,10 +1199,18 @@ function VETimeline(_editor) constructor {
 
           // lines
           var linesSize = this.state.get("amount") + 1
+          if (linesSize <= 1.0) {
+            return this
+          }
+
+          var _alpha = draw_get_alpha()
+          draw_set_alpha(alpha)
           for (var linesIndex = 0; linesIndex < linesSize; linesIndex++) {
             var linesY = (offsetY mod 32) + (linesIndex * 32)
-            GPU.render.texturedLine(0, linesY, areaWidth, linesY, thickness, alpha, color)
+            draw_line_color(0, linesY, areaWidth, linesY, color, color)
+            //GPU.render.texturedLine(0, linesY, areaWidth, linesY, thickness, alpha, color)
           }
+          draw_set_alpha(_alpha)
 
           // items
           var areaX = this.area.x
@@ -1175,33 +1229,74 @@ function VETimeline(_editor) constructor {
           var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
           var _thickness = thickness
           var bpmCountIndex = floor(abs(this.offset.x) / bpmWidth)
+          _alpha = draw_get_alpha()
+          var isMain = false
+          draw_set_alpha(alpha * 0.66)
           if (bpmSub > 1) {
             var bpmSubLength = round(bpmWidth / bpmSub)
-            for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
-              bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
+            for (var bpmIndex = 0; bpmIndex <= bpmSize; bpmIndex++) {
+              bpmX = floor((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
               _thickness = bpmCount > 0 && bpmCountIndex mod bpmCount == 0 ? thickness * 4 : thickness
+              isMain = bpmCount > 0 && bpmCountIndex mod bpmCount == 0
               bpmCountIndex++
-              GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
-              for (var bpmSubIndex = 1; bpmSubIndex <= bpmSub; bpmSubIndex++) {
-                GPU.render.texturedLine(
+              if (isMain) {
+                draw_set_alpha(alpha)
+                draw_line_color(bpmX, 0, bpmX, bpmY, colorAccent, colorAccent)
+                draw_set_alpha(alpha * 0.66)
+              } else {
+                draw_line_color(bpmX, 0, bpmX, bpmY, color, color)
+              }
+            }
+
+            draw_set_alpha(alpha * 0.25)
+            for (var bpmIndex = 0; bpmIndex <= bpmSize; bpmIndex++) {
+              bpmX = floor((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
+              for (var bpmSubIndex = 1; bpmSubIndex < bpmSub; bpmSubIndex++) {
+                draw_line_color(
                   bpmX + (bpmSubIndex * bpmSubLength), 
                   0, 
                   bpmX + (bpmSubIndex * bpmSubLength), 
-                  bpmY, 
-                  thickness, 
-                  alpha * 0.5, 
+                  bpmY,
+                  color, 
                   color
                 )
               }
             }
+            
+
+            //for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
+            //  bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
+            //  _thickness = bpmCount > 0 && bpmCountIndex mod bpmCount == 0 ? thickness * 4 : thickness
+            //  bpmCountIndex++
+            //  GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
+            //  for (var bpmSubIndex = 1; bpmSubIndex <= bpmSub; bpmSubIndex++) {
+            //    GPU.render.texturedLine(
+            //      bpmX + (bpmSubIndex * bpmSubLength), 
+            //      0, 
+            //      bpmX + (bpmSubIndex * bpmSubLength), 
+            //      bpmY, 
+            //      thickness, 
+            //      alpha * 0.5, 
+            //      color
+            //    )
+            //  }
+            //}
           } else {
-            for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
+            for (var bpmIndex = 0; bpmIndex <= bpmSize; bpmIndex++) {
               bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
               _thickness = bpmCount > 0 && bpmCountIndex mod bpmCount == 0 ? thickness * 4 : thickness
               bpmCountIndex++
-              GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
+              //GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
+              if (isMain) {
+                draw_set_alpha(alpha)
+                draw_line_color(bpmX, 0, bpmX, bpmY, colorAccent, colorAccent)
+                draw_set_alpha(alpha * 0.66)
+              } else {
+                draw_line_color(bpmX, 0, bpmX, bpmY, color, color)
+              }
             }
           }
+          draw_set_alpha(_alpha)
 
           this.renderClipboard()
 
@@ -1255,6 +1350,7 @@ function VETimeline(_editor) constructor {
           this._onMouseWheelUp(event)
           this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
           if (Optional.is(this.updateTimer)) {
+            ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
 
@@ -1262,12 +1358,14 @@ function VETimeline(_editor) constructor {
           channels.offset.y = this.offset.y
           
           if (Optional.is(channels.updateTimer)) {
+            ///@updateTimerNow
             channels.updateTimer.time = channels.updateTimer.duration + random(channels.updateTimer.duration / 2.0)
           }
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
           if (Optional.is(this.updateTimer)) {
+            ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
 
@@ -1275,6 +1373,7 @@ function VETimeline(_editor) constructor {
           channels.offset.y = this.offset.y
           
           if (Optional.is(channels.updateTimer)) {
+            ///@updateTimerNow
             channels.updateTimer.time = channels.updateTimer.duration + random(channels.updateTimer.duration / 2.0)
           }
         },
@@ -1320,7 +1419,6 @@ function VETimeline(_editor) constructor {
               return
             }
 
-            Core.print("select", key, "timestamp", timestamp)
             acc.select({
               name: item.name,
               channel: channel,
@@ -1495,11 +1593,13 @@ function VETimeline(_editor) constructor {
           var inspector = Beans.get(BeanVisuEditorController).uiService
             .find("ve-event-inspector-properties")
           if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+            ///@updateTimerNow
             inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
           }
         }),
         onMouseDropLeft: function(event) {
           if (Optional.is(this.updateTimer)) {
+            ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
 
@@ -1515,16 +1615,19 @@ function VETimeline(_editor) constructor {
         },
 
         onMousePressedLeft: function(event) {
+          ///@updateTimerNow
           this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
         },
 
         onMousePressedRight: function(event) {
+          ///@updateTimerNow
           this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
         },
         
         onMouseReleasedLeft: function(event) {
           try {
             if (Optional.is(this.updateTimer)) {
+              ///@updateTimerNow
               this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
             }
 
@@ -1565,6 +1668,7 @@ function VETimeline(_editor) constructor {
                 var inspector = Beans.get(BeanVisuEditorController).uiService
                   .find("ve-event-inspector-properties")
                 if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+                  ///@updateTimerNow
                   inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
                 }
                 break
@@ -1712,6 +1816,7 @@ function VETimeline(_editor) constructor {
                 var inspector = Beans.get(BeanVisuEditorController).uiService
                   .find("ve-event-inspector-properties")
                 if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+                  ///@updateTimerNow
                   inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
                 }
             
@@ -1726,6 +1831,7 @@ function VETimeline(_editor) constructor {
 
         onMouseReleasedRight: function(event) {
           if (Optional.is(this.updateTimer)) {
+            ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
           
@@ -1754,7 +1860,12 @@ function VETimeline(_editor) constructor {
         onMouseDragLeft: function(event) {
           var mouse = Beans.get(BeanVisuEditorIO).mouse
           var name = Struct.get(mouse.getClipboard(), "name")
-          if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+          if (name == "resize_accordion"
+              || name == "resize_brush_toolbar"
+              || name == "resize_brush_inspector"
+              || name == "resize_template_inspector"
+              || name == "resize_timeline"
+              || name == "resize_template_title") {
             return
           }
 
@@ -1914,7 +2025,12 @@ function VETimeline(_editor) constructor {
               onMouseDragLeft: function(event) {
                 var mouse = Beans.get(BeanVisuEditorIO).mouse
                 var name = Struct.get(mouse.getClipboard(), "name")
-                if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+                if (name == "resize_accordion"
+                    || name == "resize_brush_toolbar"
+                    || name == "resize_brush_inspector"
+                    || name == "resize_template_inspector"
+                    || name == "resize_timeline"
+                    || name == "resize_template_title") {
                   return
                 }
                 
@@ -1990,6 +2106,7 @@ function VETimeline(_editor) constructor {
                     var inspector = Beans.get(BeanVisuEditorController).uiService
                       .find("ve-event-inspector-properties")
                     if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+                      ///@updateTimerNow
                       inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
                     }
                     break
@@ -2046,6 +2163,7 @@ function VETimeline(_editor) constructor {
               this.data.name = uiItem.name
               this.data.uiItem = uiItem
               this.data.event = trackEvent
+              ///@updateTimerNow
               this.data.context.updateTimer.time = this.data.context.updateTimer.duration + random(this.data.context.updateTimer.duration / 2.0)
 
               ///@description select
@@ -2070,6 +2188,7 @@ function VETimeline(_editor) constructor {
                 data: this.data.event,
               })
 
+              ///@updateTimerNow
               this.data.context.updateTimer.time = this.data.context.updateTimer.duration + random(this.data.context.updateTimer.duration / 2.0)
 
               return this
@@ -2114,6 +2233,7 @@ function VETimeline(_editor) constructor {
                 data: this.data.event,
               })
 
+              ///@updateTimerNow
               this.data.context.updateTimer.time = this.data.context.updateTimer.duration + random(this.data.context.updateTimer.duration / 2.0)
 
               return this
@@ -2134,6 +2254,7 @@ function VETimeline(_editor) constructor {
               this.data.name = uiItem.name
               this.data.uiItem = uiItem
               this.data.event = trackEvent
+              ///@updateTimerNow
               this.data.context.updateTimer.time = this.data.context.updateTimer.duration + random(this.data.context.updateTimer.duration / 2.0)
 
               ///@description select
@@ -2161,9 +2282,9 @@ function VETimeline(_editor) constructor {
           
           uiItem = this.factoryEventUIItem(channelName, event, name)
           this.add(uiItem, uiItem.name)
-          if (Optional.is(uiItem.updateArea)) {
-            uiItem.updateArea()
-          }
+          //if (Optional.is(uiItem.updateArea)) {
+          //  uiItem.updateArea()
+          //}
           return uiItem
         }),
 
@@ -2267,7 +2388,9 @@ function VETimeline(_editor) constructor {
           "cameraPrevious": null,
           "time": null,
           "mouseX": null,
-          "mouseXSensitivity": 30,
+          "mouseXSensitivity": 48,
+          "color": ColorUtil.fromHex(VETheme.color.textShadow).toGMColor(),
+          "textColor": ColorUtil.fromHex(VETheme.color.textShadow).toGMColor(),
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         controller: controller,
@@ -2313,6 +2436,7 @@ function VETimeline(_editor) constructor {
           var events = this.controller.containers.get("ve-timeline-events")
           if (Core.isType(events, UI)) {
             if (camera != cameraPrevious && Core.isType(events.updateTimer, Timer)) {
+              ///@updateTimerNow
               events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
             }
           }
@@ -2352,8 +2476,8 @@ function VETimeline(_editor) constructor {
           var timestamp = camera div spd
           var beginX = (timestamp * spd) - camera
           var beginY = 0
-          var color = ColorUtil.fromHex(VETheme.color.accent).toGMColor()
-          var textColor = ColorUtil.fromHex(VETheme.color.textShadow).toGMColor()
+          var color = this.state.get("color")
+          var textColor = this.state.get("textColor")
           var height = this.area.getHeight()
           draw_set_font(font_inter_10_regular)
           draw_set_halign(HAlign.LEFT)
@@ -2405,6 +2529,11 @@ function VETimeline(_editor) constructor {
           }
 
           this.renderDefaultScrollable()
+
+          if (!Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
+            return
+          }
+          
           var position = this.state.get("position")
           var camera = this.state.get("camera")
           var rulerX = this.area.getX() + (position - camera)
@@ -2422,12 +2551,22 @@ function VETimeline(_editor) constructor {
           )
         },
         onMouseDragLeft: function(event) {
+          if (!Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
+            return
+          }
+          
           var context = this
           var mouse = Beans.get(BeanVisuEditorIO).mouse
           var name = Struct.get(mouse.getClipboard(), "name")
-          if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+          if (name == "resize_accordion"
+              || name == "resize_brush_toolbar"
+              || name == "resize_brush_inspector"
+              || name == "resize_template_inspector"
+              || name == "resize_timeline"
+              || name == "resize_template_title") {
             return
           }
+          
           this.state.set("mouseX", event.data.x)
           
           mouse.setClipboard(new Promise()
@@ -2494,7 +2633,7 @@ function VETimeline(_editor) constructor {
     "close": function(event) {
       var context = this
       this.transactionService.clear()
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,

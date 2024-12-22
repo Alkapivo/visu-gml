@@ -743,6 +743,7 @@ function template_bullet(json = null) {
             field: {
               store: { key: "bullet_mask" },
               enable: { key: "use_bullet_mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "bullet_mask" },
@@ -763,6 +764,7 @@ function template_bullet(json = null) {
             field: {
               store: { key: "bullet_mask" },
               enable: { key: "use_bullet_mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "bullet_mask" },
@@ -783,6 +785,7 @@ function template_bullet(json = null) {
             field: {
               store: { key: "bullet_mask" },
               enable: { key: "use_bullet_mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "bullet_mask" },
@@ -803,6 +806,7 @@ function template_bullet(json = null) {
             field: {
               store: { key: "bullet_mask" },
               enable: { key: "use_bullet_mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "bullet_mask" },
@@ -872,6 +876,7 @@ function template_bullet(json = null) {
           field: { 
             store: { key: "bullet_on-death-amount" },
             enable: { key: "bullet_use-on-death" },
+            GMTF_DECIMAL: 0,
           },
           decrease: {
             store: { key: "bullet_on-death-amount" },

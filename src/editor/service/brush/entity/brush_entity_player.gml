@@ -192,6 +192,7 @@ function brush_entity_player(json = null) {
             field: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "en-pl_mask" },
@@ -212,6 +213,7 @@ function brush_entity_player(json = null) {
             field: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "en-pl_mask" },
@@ -232,6 +234,7 @@ function brush_entity_player(json = null) {
             field: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "en-pl_mask" },
@@ -252,6 +255,7 @@ function brush_entity_player(json = null) {
             field: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "en-pl_mask" },

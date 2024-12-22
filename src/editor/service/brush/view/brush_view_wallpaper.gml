@@ -361,12 +361,18 @@ function brush_view_wallpaper(json = null) {
         layout: VELayouts.get("color-picker"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
-          title: { 
+          booleanField: { 
             label: { 
-              text: "Texture blend",
-              enable: { key: "vw-layer_use-texture-blend" },
+              text: "Blend",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
-            checkbox: { 
+            field: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               enable: { key: "vw-layer_use-texture" },
@@ -374,59 +380,131 @@ function brush_view_wallpaper(json = null) {
             },
             input: { 
               store: { key: "vw-layer_texture-blend" },
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             }
           },
           red: {
             label: {
               text: "Red",
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
             field: {
               store: { key: "vw-layer_texture-blend" },
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
             slider: {
               store: { key: "vw-layer_texture-blend" },
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
           },
           green: {
             label: {
               text: "Green",
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
             field: {
               store: { key: "vw-layer_texture-blend" },
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
             slider: {
               store: { key: "vw-layer_texture-blend" },
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
           },
           blue: {
             label: {
               text: "Blue",
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
             field: {
               store: { key: "vw-layer_texture-blend" },
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
             slider: {
               store: { key: "vw-layer_texture-blend" },
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
           },
           hex: { 
             label: {
               text: "Hex",
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
             field: {
               store: { key: "vw-layer_texture-blend" },
-              enable: { key: "vw-layer_use-texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
             },
           },
         },

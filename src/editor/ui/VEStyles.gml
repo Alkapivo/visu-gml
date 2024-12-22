@@ -3,13 +3,44 @@
 ///@static
 ///@type {Struct}
 global.__VETheme = {
-  color: {
+  color: null,
+  ///@theme purple
+  purple: {
+    primary: "#3B3B53",
+    primaryLight: "#455f82",
+    primaryShadow: "#2B2B35",
+    primaryDark: "#222227",
+    dark: "#1B1B20",
+    darkBetween: "#141418",
+    darkShadow: "#0D0D0F",
+    accent: "#7742b8",
+    accentBetween: "#5f398e",
+    accentShadow: "#462f63",
+    accentDark: "#231832",
+    text: "#D9D9D9",
+    textShadow: "#878787",
+    textFocus: "#ededed",
+    textSelected: "#462f63",
+    accept: "#74a892",
+    acceptShadow: "#008585",
+    deny: "#e35972",
+    denyShadow: "#bf445d",
+    ruler: "#E64B3D",
+    header: "#963271",
+  },
+  ///@theme vscode
+  vscode: {
     primary: "#464646",
+    primaryLight: "#615b5b",
     primaryShadow: "#333333",
+    primaryDark: "#1a1a1e",
     dark: "#282828",
+    darkBetween: "#1A1A1A",
     darkShadow: "#131313",
     accent: "#436995",
-    accentShadow: "#3A587B",
+    accentBetween: "#395b82",
+    accentShadow: "#2f4c6e",
+    accentDark: "#1b334f",
     text: "#D9D9D9",
     textShadow: "#9B9B9B",
     textFocus: "#FFFFFF",
@@ -20,9 +51,12 @@ global.__VETheme = {
     denyShadow: "#823d3d",
     ruler: "#E64B3D",
     header: "#963271",
-  }
+  },
 }
 #macro VETheme global.__VETheme
+
+///@description Set theme
+VETheme.color = VETheme.purple
 
 
 ///@static
@@ -53,9 +87,9 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "ve-title-bar": {
     menu: {
-      backgroundColorSelected: VETheme.color.accent,
-      backgroundColorOut: VETheme.color.primary,  
-      backgroundColor: VETheme.color.primary,  
+      backgroundColorSelected: VETheme.color.primaryLight,
+      backgroundColorOut: VETheme.color.darkShadow,  
+      backgroundColor: VETheme.color.darkShadow,  
       label: {
         font: "font_inter_10_regular",
         color: VETheme.color.text,
@@ -79,9 +113,9 @@ global.__VEStyles = new Map(String, Struct, {
     },
     value: {
       font: "font_inter_10_regular",
-      color: VETheme.color.textFocus,
+      color: VETheme.color.textShadow,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
-    }
+    },
   },
   "ve-track-control": {
     slider: {},
@@ -106,9 +140,13 @@ global.__VEStyles = new Map(String, Struct, {
       color: VETheme.color.textShadow,
     }
   },
+  "checkbox": {
+    spriteOn: { name: "visu_texture_checkbox_on" },
+    spriteOff: { name: "visu_texture_checkbox_off" },
+  },
   "category-button": {
     label: {
-      backgroundColorSelected: VETheme.color.accent,
+      backgroundColorSelected: VETheme.color.primaryLight,
       backgroundColor: VETheme.color.dark,
       font: "font_inter_8_regular",
       color: VETheme.color.textFocus,
@@ -208,6 +246,12 @@ global.__VEStyles = new Map(String, Struct, {
       backgroundAlpha: 1.0,
     },
   },
+  "line-w": {
+    image: {
+      backgroundColor: VETheme.color.primaryShadow,
+      backgroundAlpha: 1.0,
+    },
+  },
   "property": {
     checkbox: {
       backgroundColor: VETheme.color.primaryShadow,
@@ -240,18 +284,28 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "text-field": { 
     font: "font_inter_10_regular",
-    colorBackgroundUnfocused: VETheme.color.primaryShadow,
-    colorBackgroundFocused: VETheme.color.accentShadow,
+    colorBackgroundUnfocused: VETheme.color.primaryDark,
+    colorBackgroundFocused: VETheme.color.primaryShadow,
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
     lh: 22.0000,
     padding: { top: 0, bottom: 0, left: 4, right: 0 }
   },
+  "text-field-simple": { 
+    font: "font_inter_10_regular",
+    colorBackgroundUnfocused: VETheme.color.primaryDark,
+    colorBackgroundFocused: VETheme.color.primaryShadow,
+    colorTextUnfocused: VETheme.color.textShadow,
+    colorTextFocused: VETheme.color.textFocus,
+    colorSelection: VETheme.color.textSelected,
+    lh: 20.0000,
+    padding: { top: 0, bottom: 0, left: 4, right: 0 }
+  },
   "text-field-button": { 
     font: "font_inter_10_regular",
-    colorBackgroundUnfocused: VETheme.color.primaryShadow,
-    colorBackgroundFocused: VETheme.color.accentShadow,
+    colorBackgroundUnfocused: VETheme.color.primaryDark,
+    colorBackgroundFocused: VETheme.color.primaryShadow,
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
@@ -264,8 +318,8 @@ global.__VEStyles = new Map(String, Struct, {
     },
     field: {
       font: "font_inter_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryShadow,
-      colorBackgroundFocused: VETheme.color.accentShadow,
+      colorBackgroundUnfocused: VETheme.color.primaryDark,
+      colorBackgroundFocused: VETheme.color.primaryShadow,
       colorTextUnfocused: VETheme.color.textShadow,
       colorTextFocused: VETheme.color.textFocus,
       colorSelection: VETheme.color.textSelected,
@@ -283,8 +337,8 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "text-field-checkbox": { 
     font: "font_inter_10_regular",
-    colorBackgroundUnfocused: VETheme.color.primaryShadow,
-    colorBackgroundFocused: VETheme.color.accentShadow,
+    colorBackgroundUnfocused: VETheme.color.primaryDark,
+    colorBackgroundFocused: VETheme.color.primaryShadow,
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
@@ -297,8 +351,8 @@ global.__VEStyles = new Map(String, Struct, {
     },
     field: {
       font: "font_inter_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryShadow,
-      colorBackgroundFocused: VETheme.color.accentShadow,
+      colorBackgroundUnfocused: VETheme.color.primaryDark,
+      colorBackgroundFocused: VETheme.color.primaryShadow,
       colorTextUnfocused: VETheme.color.textShadow,
       colorTextFocused: VETheme.color.textFocus,
       colorSelection: VETheme.color.textSelected,
@@ -314,8 +368,8 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "text-field-button-checkbox": { 
     font: "font_inter_10_regular",
-    colorBackgroundUnfocused: VETheme.color.primaryShadow,
-    colorBackgroundFocused: VETheme.color.accentShadow,
+    colorBackgroundUnfocused: VETheme.color.primaryDark,
+    colorBackgroundFocused: VETheme.color.primaryShadow,
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
@@ -328,8 +382,8 @@ global.__VEStyles = new Map(String, Struct, {
     },
     field: {
       font: "font_inter_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryShadow,
-      colorBackgroundFocused: VETheme.color.accentShadow,
+      colorBackgroundUnfocused: VETheme.color.primaryDark,
+      colorBackgroundFocused: VETheme.color.primaryShadow,
       colorTextUnfocused: VETheme.color.textShadow,
       colorTextFocused: VETheme.color.textFocus,
       colorSelection: VETheme.color.textSelected,
@@ -353,41 +407,53 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "text-area": { 
     font: "font_consolas_10_regular",
-    colorBackgroundUnfocused: VETheme.color.primaryShadow,
-    colorBackgroundFocused: VETheme.color.accentShadow,
+    colorBackgroundUnfocused: VETheme.color.primaryDark,
+    colorBackgroundFocused: VETheme.color.primaryShadow,
     colorTextUnfocused: VETheme.color.textShadow,
     colorTextFocused: VETheme.color.textFocus,
     colorSelection: VETheme.color.textSelected,
     lh: 22.0000,
-    padding: { top: 0, bottom: 0, left: 4, right: 0 }
+    padding: { top: 0, bottom: 0, left: 4, right: 0 },
+    field: {
+      font: "font_consolas_10_regular",
+      colorBackgroundUnfocused: VETheme.color.primaryDark,
+      colorBackgroundFocused: VETheme.color.primaryShadow,
+      colorTextUnfocused: VETheme.color.textShadow,
+      colorTextFocused: VETheme.color.textFocus,
+      colorSelection: VETheme.color.textSelected,
+      lh: 22.0000,
+      padding: { top: 0, bottom: 0, left: 4, right: 0 }
+    }
   },
   "slider-horizontal": {
     pointer: {
       name: "texture_slider_pointer_simple",
       scaleX: 0.125,
       scaleY: 0.125,
-      blend: VETheme.color.accent,
+      blend: VETheme.color.primary,
     },
     progress: {
-      thickness: 1.0,
-      blend: VETheme.color.accent,
+      thickness: 0.9,
+      blend: VETheme.color.accentBetween,
+      line: { name: "texture_grid_line_bold" },
     },
     background: {
-      thickness: 1.33,
-      blend: VETheme.color.dark,
+      thickness: 1.1,
+      blend: VETheme.color.darkBetween,
+      line: { name: "texture_grid_line_bold" },
     },
   },
   "spin-select": {
     previous: {
       label: {
-        font: "font_inter_10_regular",
+        font: "font_inter_8_bold",
         color: VETheme.color.textFocus,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
     },
     next: {
       label: {
-        font: "font_inter_10_regular",
+        font: "font_inter_8_bold",        
         color: VETheme.color.textFocus,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
@@ -412,7 +478,9 @@ global.__VEStyles = new Map(String, Struct, {
       label: { 
         text: "",
         color: VETheme.color.textFocus,
-        font: "font_inter_10_regular",
+        outline: true,
+        outlineColor: VETheme.color.darkShadow,
+        font: "font_inter_8_bold",
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
       store: { 

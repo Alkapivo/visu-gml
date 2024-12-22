@@ -111,7 +111,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -123,11 +123,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           type: UIText,
           text: "Template toolbar",
           font: "font_inter_8_regular",
-          color: VETheme.color.textFocus,
+          color: VETheme.color.textShadow,
           align: { v: VAlign.CENTER, h: HAlign.LEFT },
           offset: { x: 4 },
           margin: { right: 96 },
-          backgroundColor: VETheme.color.accentShadow,
+          backgroundColor: VETheme.color.darkBetween,
           clipboard: {
             name: "label_template-title",
             drag: function() {
@@ -211,9 +211,9 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             align: { v: VAlign.CENTER, h: HAlign.RIGHT },
             group: { index: 1, size: 2, width: 48 },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
-            backgroundColor: VETheme.color.accentShadow,
-            colorHoverOver: VETheme.color.primary,
-            colorHoverOut: VETheme.color.accentShadow,
+            backgroundColor: VETheme.color.darkBetween,
+            colorHoverOver: VETheme.color.primaryShadow,
+            colorHoverOut: VETheme.color.darkBetween,
             onMouseHoverOver: function(event) {
               var type = this.context.templateToolbar.store.getValue("type")
               if (type == this.enable.key) {
@@ -473,9 +473,9 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               font: "font_inter_8_regular",
               text: "Export",
             },
-            backgroundColor: VETheme.color.accentShadow,
-            colorHoverOver: VETheme.color.primary,
-            colorHoverOut: VETheme.color.accentShadow,
+            backgroundColor: VETheme.color.darkBetween,
+            colorHoverOver: VETheme.color.primaryShadow,
+            colorHoverOut: VETheme.color.darkBetween,
             onMouseHoverOver: function(event) {
               this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
             },
@@ -886,7 +886,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               colorHoverOver: VETheme.color.accentShadow,
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
-              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -934,7 +934,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               colorHoverOver: VETheme.color.accentShadow,
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
-              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -982,7 +982,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               colorHoverOver: VETheme.color.accentShadow,
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
-              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -1030,7 +1030,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               colorHoverOver: VETheme.color.accentShadow,
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
-              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -1078,7 +1078,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               colorHoverOver: VETheme.color.accentShadow,
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
-              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -1126,7 +1126,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               colorHoverOver: VETheme.color.accentShadow,
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
-              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -1252,7 +1252,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               colorHoverOver: VETheme.color.accentShadow,
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
-              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -1378,6 +1378,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_settings",
                                 blend: VETheme.color.textShadow,
@@ -1397,6 +1399,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_trash",
                                 blend: VETheme.color.textShadow,
@@ -1446,6 +1450,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_settings",
@@ -1465,6 +1471,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_lock",
@@ -1500,6 +1508,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
+                        ///@updateTimerNow
                         task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
@@ -1534,6 +1543,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_settings",
                                 blend: VETheme.color.textShadow,
@@ -1553,6 +1564,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_trash",
                                 blend: VETheme.color.textShadow,
@@ -1602,6 +1615,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_settings",
@@ -1621,6 +1636,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_lock",
@@ -1655,6 +1672,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
+                        ///@updateTimerNow
                         task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
@@ -1689,6 +1707,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_settings",
                                 blend: VETheme.color.textShadow,
@@ -1708,6 +1728,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_trash",
                                 blend: VETheme.color.textShadow,
@@ -1757,6 +1779,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_settings",
@@ -1776,6 +1800,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_lock",
@@ -1810,6 +1836,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
+                        ///@updateTimerNow
                         task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
@@ -1844,6 +1871,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_settings",
                                 blend: VETheme.color.textShadow,
@@ -1863,6 +1892,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_trash",
                                 blend: VETheme.color.textShadow,
@@ -1912,6 +1943,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_settings",
@@ -1931,6 +1964,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_lock",
@@ -1965,6 +2000,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
+                        ///@updateTimerNow
                         task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
@@ -1999,6 +2035,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_settings",
                                 blend: VETheme.color.textShadow,
@@ -2018,6 +2056,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_trash",
                                 blend: VETheme.color.textShadow,
@@ -2067,6 +2107,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_settings",
@@ -2086,6 +2128,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_lock",
@@ -2120,6 +2164,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
+                        ///@updateTimerNow
                         task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
@@ -2154,6 +2199,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_settings",
                                 blend: VETheme.color.textShadow,
@@ -2173,6 +2220,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_trash",
                                 blend: VETheme.color.textShadow,
@@ -2222,6 +2271,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_settings",
@@ -2241,6 +2292,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_lock",
@@ -2275,6 +2328,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
+                        ///@updateTimerNow
                         task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
@@ -2308,6 +2362,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_settings",
                                 blend: VETheme.color.textShadow,
@@ -2327,6 +2383,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
                               sprite: {
                                 name: "texture_ve_icon_trash",
                                 blend: VETheme.color.textShadow,
@@ -2376,6 +2434,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           layout: VELayouts.get("template-entry"),
                           config: {
                             settings: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_settings",
@@ -2395,6 +2455,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                               templateName: template.name,
                             },
                             remove: { 
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
                               backgroundColor: VETheme.color.dark,
                               sprite: {
                                 name: "texture_ve_icon_lock",
@@ -2429,6 +2491,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       task.fullfill()
                       if (Optional.is(task.state.inspector) 
                           && Optional.is(task.state.inspector.updateTimer)) {
+                        ///@updateTimerNow
                         task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
                       }
                     },
@@ -2466,7 +2529,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -2749,11 +2812,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   inspector.updateCustom()
                 }
               },
-              layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
+              //layout: { type: UILayoutType.VERTICAL, height: function() { return 24 } },
               colorHoverOver: VETheme.color.accentShadow,
               colorHoverOut: VETheme.color.primaryShadow,
               backgroundColor: VETheme.color.primaryShadow,
-              backgroundMargin: { top: 1, bottom: 0, left: 0, right: 1 },
+              backgroundMargin: { top: 0, bottom: 0, left: 1, right: 1 },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
@@ -2888,7 +2951,17 @@ function VETemplateToolbar(_editor) constructor {
           var add = Struct.get(this.nodes, "add")
           var inspectorBar = Struct.get(this.nodes, "inspector-bar")
           var control = Struct.get(this.nodes, "control")
-          return title.height() + type.height() + add.height() + inspectorBar.height() + control.height()
+          var templateView = Struct.get(this.nodes, "template-view")
+          var inspectorView = Struct.get(this.nodes, "inspector-view")
+          return title.height() 
+              + type.height()
+              + add.height()
+              + inspectorBar.height()
+              + control.height()
+              + templateView.margin.top
+              + templateView.margin.bottom
+              + inspectorView.margin.top
+              + inspectorView.margin.bottom
         }),
         nodes: {
           "title": {
@@ -2930,12 +3003,14 @@ function VETemplateToolbar(_editor) constructor {
             y: function() { return this.margin.top + Struct.get(this.context.nodes, "inspector-bar").bottom() },
             height: function() { return ceil((this.context.height() 
               - this.context.staticHeight()) * this.percentageHeight) 
-              - this.margin.top - this.margin.bottom },
+               },
           },
           "control": {
             name: "template-toolbar.control",
-            y: function() { return Struct.get(this.context.nodes, "inspector-view").bottom() },
-            height: function() { return 24 },
+            y: function() {
+              return Struct.get(this.context.nodes, "inspector-view").bottom()
+            },
+            height: function() { return 26 },
           }
         }
       },

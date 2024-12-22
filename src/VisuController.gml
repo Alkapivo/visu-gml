@@ -624,7 +624,6 @@ function VisuController(layerName) constructor {
       }
     },
     "spawn-track-event": function(event) {
-      Core.print("event.data.callable", event.data.callable)
       var callable = Assert.isType(this.trackService.handlers
         .get(event.data.callable), Callable)
       callable(event.data.data)
@@ -719,7 +718,7 @@ function VisuController(layerName) constructor {
     try {
       service.struct.update()
     } catch (exception) {
-      var message = $"'update-service-{service.name}' fatal error: {exception.message}"
+      var message = $"'updateService({service.name})' fatal error: {exception.message}"
       Logger.error("VisuController", message)
       Core.printStackTrace()
       controller.send(new Event("spawn-popup", { message: message }))
@@ -786,6 +785,8 @@ function VisuController(layerName) constructor {
     }
 
     ui.surfaceTick.skip()
+
+    ///@updateTimerNow
     ui.updateTimer.time = ui.updateTimer.duration + random(ui.updateTimer.duration / 2.0)
   }
 

@@ -2,17 +2,17 @@
 
 ///@param {Struct} config
 ///@return {Struct}
-function factoryVEBrushToolbarTypeItem(config) {
+function factoryVEBrushToolbarTypeItem(config, index) {
   return {
     name: config.name,
     template: VEComponents.get("category-button"),
     layout: VELayouts.get("horizontal-item"),
     config: {
       backgroundColor: VETheme.color.primary,
-      backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-      backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-      backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-      backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+      backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+      backgroundColorHover: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+      backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+      backgroundMargin: { top: 1, bottom: 2, left: (index == 0 ? 0 : 1), right: 1 },
       callback: function() {
         this.context.brushToolbar.store.get("type").set(this.brushType)
         this.context.brushToolbar.store.get("template").set(null)
@@ -33,7 +33,7 @@ function factoryVEBrushToolbarTypeItem(config) {
       },
       onMouseHoverOver: function(event) { },
       onMouseHoverOut: function(event) { },
-      label: { text: config.text },
+      label: {text: config.text },
       brushType: config.brushType,
     },
   }
@@ -52,7 +52,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
       }),
       brushToolbar: brushToolbar,
-      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.accordion.updateTimer", 10.0), { loop: Infinity, shuffle: true }),
+      updateTimerCooldown: Core.getProperty("visu.editor.ui.brush-toolbar.accordion.updateTimer.cooldown", 4.0),
       layout: brushToolbar.layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -60,7 +61,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "resize_brush_toolbar": {
           type: UIButton,
           layout: brushToolbar.layout.nodes.resize,
-          backgroundColor: VETheme.color.primary, //resize
+          backgroundColor: VETheme.color.primaryShadow, //resize
           clipboard: {
             name: "resize_brush_toolbar",
             drag: function() {
@@ -72,27 +73,15 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
-            if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
+            var editorIO = Beans.get(BeanVisuEditorIO)
+            var mouse = editorIO.mouse
+            if (mouse.hasMoved() && mouse.getClipboard() == this.clipboard) {
               this.updateLayout(MouseUtil.getMouseX())
-              this.context.brushToolbar.containers.forEach(function(container) {
-                if (!Optional.is(container.updateTimer)) {
-                  return
-                }
-
-                container.surfaceTick.skip()
-                container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
-              })
+              this.context.brushToolbar.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
 
               // reset timeline timer to avoid ghost effect,
               // because brushtoolbar height is affecting timeline height
-              Beans.get(BeanVisuEditorController).timeline.containers.forEach(function(container) {
-                if (!Optional.is(container.updateTimer)) {
-                  return
-                }
-
-                container.surfaceTick.skip()
-                container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
-              })
+              Beans.get(BeanVisuEditorController).timeline.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
 
               if (!mouse_check_button(mb_left)) {
                 Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
@@ -107,7 +96,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
             var events = editor.uiService.find("ve-timeline-events")
             if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
-              events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
+              ///@updateTimerAlmost
+              UIUtil.clampUpdateTimerToCooldown(events, "ve-timeline-events", this.context.updateTimerCooldown)
+              //events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
             }
           }),
           onMousePressedLeft: function(event) {
@@ -135,6 +126,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
         "components": new Array(Struct, [
           #region Old API
+          /* 
           {
             name: "button_category-shader",
             template: VEComponents.get("category-button"),
@@ -255,17 +247,18 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               category: "view_old",
             },
           },
+          */
           #endregion
           {
             name: "button_category-effect",
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("vertical-item"),
             config: {
-              backgroundColor: VETheme.color.primary,
+              backgroundColor: VETheme.color.primaryShadow,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
               backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               callback: function() { 
                 var category = this.context.brushToolbar.store.get("category")
                 if (category.get() != this.category) {
@@ -281,7 +274,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: { 
                 font: "font_inter_8_bold",
-                text: String.toArray("E").join("\n"),
+                text: String.toArray("EFFECT").join("\n"),
               },
               category: "effect",
             },
@@ -291,11 +284,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("vertical-item"),
             config: {
-              backgroundColor: VETheme.color.primary,
+              backgroundColor: VETheme.color.primaryShadow,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
               backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               callback: function() { 
                 var category = this.context.brushToolbar.store.get("category")
                 if (category.get() != this.category) {
@@ -311,7 +304,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("E").join("\n"),
+                text: String.toArray("ENTITY").join("\n"),
               },
               category: "entity",
             },
@@ -321,11 +314,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("vertical-item"),
             config: {
-              backgroundColor: VETheme.color.primary,
+              backgroundColor: VETheme.color.primaryShadow,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
               backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               callback: function() { 
                 var category = this.context.brushToolbar.store.get("category")
                 if (category.get() != this.category) {
@@ -341,7 +334,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("G").join("\n"),
+                text: String.toArray("GRID").join("\n"),
               },
               category: "grid",
             },
@@ -351,11 +344,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("vertical-item"),
             config: {
-              backgroundColor: VETheme.color.primary,
+              backgroundColor: VETheme.color.primaryShadow,
               backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
               backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+              backgroundMargin: { top: 1, bottom: 0, left: 1, right: 1 },
               callback: function() { 
                 var category = this.context.brushToolbar.store.get("category")
                 if (category.get() != this.category) {
@@ -371,7 +364,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("V").join("\n"),
+                text: String.toArray("VIEW").join("\n"),
               },
               category: "view",
             },
@@ -397,7 +390,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex("#282828").toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
         "category": null,
         "type": null,
         "shader": new Array(Struct, [
@@ -646,7 +639,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
@@ -671,9 +664,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               font: "font_inter_8_regular",
               text: "Import",
             },
-            backgroundColor: VETheme.color.primary,
-            colorHoverOver: VETheme.color.accentShadow,
-            colorHoverOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.darkBetween,
+            colorHoverOver: VETheme.color.primaryShadow,
+            colorHoverOut: VETheme.color.darkBetween,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
             callback: function(event) {
               var type = this.context.brushToolbar.store.getValue("type")
@@ -731,9 +724,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               text: "Export",
             },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
-            backgroundColor: VETheme.color.primary,
-            colorHoverOver: VETheme.color.accentShadow,
-            colorHoverOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.darkBetween,
+            colorHoverOver: VETheme.color.primaryShadow,
+            colorHoverOut: VETheme.color.darkBetween,
             callback: function(event) {
               var path = FileUtil.getPathToSaveWithDialog({ 
                 description: "JSON file",
@@ -840,7 +833,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       onMouseDragLeft: function(event) {
         var mouse = Beans.get(BeanVisuEditorIO).mouse
         var name = Struct.get(mouse.getClipboard(), "name")
-        if (name == "resize_timeline" || name == "resize_brush_inspector" || name == "resize_accordion") {
+        if (name == "resize_accordion"
+            || name == "resize_brush_toolbar"
+            || name == "resize_brush_inspector"
+            || name == "resize_template_inspector"
+            || name == "resize_timeline"
+            || name == "resize_event_title") {
           return
         }
         
@@ -917,6 +915,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               item.backgroundColor = ColorUtil.fromHex(item.colorHoverOut).toGMColor()
             })
 
+            ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
           }
         }
@@ -1000,9 +999,10 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
       }),
-      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.inspector-bar.updateTimer", 10.0), { loop: Infinity, shuffle: true }),
+      updateTimerCooldown: Core.getProperty("visu.editor.ui.brush-toolbar.inspector-bar.updateTimer.cooldown", 4.0),
       brushToolbar: brushToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -1024,19 +1024,14 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
             updateCustom: function() {
               this.__update()
-              if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
+              var editorIO = Beans.get(BeanVisuEditorIO)
+              var mouse = editorIO.mouse
+              if (mouse.hasMoved() && mouse.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
-                this.context.brushToolbar.containers.forEach(function(container) {
-                  if (!Optional.is(container.updateTimer)) {
-                    return
-                  }
-
-                  container.surfaceTick.skip()
-                  container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
-                })
-
+                this.context.brushToolbar.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+                 
                 if (!mouse_check_button(mb_left)) {
-                  Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
+                  mouse.clearClipboard()
                   Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
                 }
               }
@@ -1170,9 +1165,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       }
               
                       acc.context.add(item, item.name)
-                      if (Optional.is(item.updateArea())) {
-                        item.updateArea()
-                      }
+                      //if (Optional.is(item.updateArea)) {
+                      //  item.updateArea()
+                      //}
                     }
               
                     acc.layout = component
@@ -1185,6 +1180,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                     var index = task.state.componentsQueue.pop()
                     if (!Optional.is(index)) {
                       if (Optional.is(task.state.context.updateTimer)) {
+
+                        ///@updateTimerNow
                         task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
                       }
   
@@ -1289,6 +1286,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
                 if (Core.isType(inspector, UI) 
                   && Optional.is(inspector.updateTimer)) {
+                  ///@updateTimerNow
                   inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
                 }
 
@@ -1383,11 +1381,11 @@ function VEBrushToolbar(_editor) constructor {
   store = new Store({
     "category": {
       type: String,
-      value: "shader",
+      value: "effect",
     },
     "type": {
       type: String,
-      value: VEBrushType.SHADER_SPAWN,
+      value: VEBrushType.EFFECT_SHADER,
     },
     "template": {
       type: Optional.of(VEBrushTemplate),
@@ -1478,7 +1476,7 @@ function VEBrushToolbar(_editor) constructor {
           },
           "category": {
             name: "brush-toolbar.category",
-            x: function() { return this.context.x() - this.width() },
+            x: function() { return this.context.x() - this.width() - 1 },
             width: function() { return 24 },
             height: function() { return 420 },
           },
@@ -1553,7 +1551,7 @@ function VEBrushToolbar(_editor) constructor {
           },
           "resize": {
             name: "brush-toolbar.resize",
-            x: function() { return 0 },
+            x: function() { return -2 },
             y: function() { return 0 },
             width: function() { return 7 },
             height: function() { return this.context.height() },
@@ -1618,10 +1616,11 @@ function VEBrushToolbar(_editor) constructor {
             name: template.texture,
             blend: template.color,
           },
+          backgroundMargin: { bottom: 2, right: 0, left: 0, top: 0 },
         },
         label: { 
           text: template.name,
-          colorHoverOver: VETheme.color.accentShadow,
+          colorHoverOver: VETheme.color.primary,
           colorHoverOut: VETheme.color.primaryShadow,
           onMouseReleasedLeft: function() {
             var template = this.context.brushToolbar.store.get("template")
@@ -1649,6 +1648,7 @@ function VEBrushToolbar(_editor) constructor {
 
               if (Core.isType(inspector, UI) 
                 && Optional.is(inspector.updateTimer)) {
+                ///@updateTimerNow
                 inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
               }
             }
@@ -1664,6 +1664,8 @@ function VEBrushToolbar(_editor) constructor {
             Beans.get(BeanVisuController).brushService.removeTemplate(this.brushTemplate)
             this.context.collection.remove(this.component.index)
           },
+          colorHoverOver: VETheme.color.denyShadow,
+          colorHoverOut: VETheme.color.primaryShadow,
           brushTemplate: template,
         },
         settings: { 
@@ -1697,10 +1699,13 @@ function VEBrushToolbar(_editor) constructor {
 
               if (Core.isType(inspector, UI) 
                 && Optional.is(inspector.updateTimer)) {
+                ///@updateTimerNow
                 inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
               }
             }
           },
+          colorHoverOver: VETheme.color.accentShadow,
+          colorHoverOut: VETheme.color.primary,
           brushTemplate: template,
         },
       },
@@ -1717,7 +1722,7 @@ function VEBrushToolbar(_editor) constructor {
     "close": function(event) {
       var context = this
       this.templatesCache.clear()
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,

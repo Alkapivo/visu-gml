@@ -65,8 +65,8 @@ function template_coin(json = null) {
     components: new Array(Struct, [
       {
         name: "coin_amount",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -76,6 +76,17 @@ function template_coin(json = null) {
           field: { 
             store: { key: "coin_amount" },
             enable: { key: "coin_use-amount" },
+            GMTF_DECIMAL: 0,
+          },
+          decrease: {
+            store: { key: "en-shr_spd-rng" },
+            enable: { key: "en-shr_use-spd-rng" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "en-shr_spd-rng" },
+            enable: { key: "en-shr_use-spd-rng" },
+            factor: 0.25,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -361,6 +372,7 @@ function template_coin(json = null) {
             field: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "coin_mask" },
@@ -381,6 +393,7 @@ function template_coin(json = null) {
             field: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "coin_mask" },
@@ -401,6 +414,7 @@ function template_coin(json = null) {
             field: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "coin_mask" },
@@ -421,6 +435,7 @@ function template_coin(json = null) {
             field: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
+              GMTF_DECIMAL: 0,
             },
             decrease: {
               store: { key: "coin_mask" },

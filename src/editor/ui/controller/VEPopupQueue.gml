@@ -127,16 +127,36 @@ function VEPopupQueue(_editor) constructor {
 
         var areaX = this.area.x
         var areaY = this.area.y
-        var delta = DeltaTime.deltaTime
-        DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
+        //var delta = DeltaTime.deltaTime
+        //DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
         this.area.x = this.offset.x
         this.area.y = this.offset.y
         this.items.forEach(this.renderItem, this.area)
         this.area.x = areaX
         this.area.y = areaY
-        DeltaTime.deltaTime = delta
+        //DeltaTime.deltaTime = delta
       },
-      render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollableBlend")),
+      render: function() {
+        if (!Optional.is(this.surface)) {
+          this.surface = new Surface()
+        }
+
+        this.surface.update(this.area.getWidth(), this.area.getHeight())
+        //if (!this.surfaceTick.get() && !this.surface.updated) {
+        //  this.surface.render(this.area.getX(), this.area.getY())
+        //  if (this.enableScrollbarY) {
+        //    this.scrollbarY.render(this)
+        //  }
+        //  return
+        //}
+
+        this.surface.renderOn(this.renderSurface)
+        this.surface.render(this.area.getX(), this.area.getY())
+
+        if (this.enableScrollbarY) {
+          this.scrollbarY.render(this)
+        }
+      },
       onMouseHoverOver: function() {
         this.timeout = null
       },

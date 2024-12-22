@@ -56,6 +56,12 @@ function VisuEditorIO() constructor {
     wheelDown: MouseButtonType.WHEEL_DOWN,
   })
   
+  ///@type {Boolean}
+  mouseMoved = false
+
+  ///@type {Number}
+  mouseMovedCooldown = Core.getProperty("visu.editor.io.mouse-moved.cooldown", 4.0)
+  
   ///@private
   ///@param {VisuController} controller
   ///@param {VisuEditorController} editor
@@ -518,8 +524,11 @@ function VisuEditorIO() constructor {
       editor.uiService.send(generateMouseEvent("MouseWheelDown"))
     }
 
-    if (MouseUtil.hasMoved()) {  
+    if (MouseUtil.hasMoved() && this.mouseMoved == 0) {  
+      this.mouseMoved = this.mouseMovedCooldown
       editor.uiService.send(generateMouseEvent("MouseHoverOver"))
+    } else if (this.mouseMoved > 0) {
+      this.mouseMoved = clamp(this.mouseMoved - 1, 0, this.mouseMovedCooldown)
     }
 
     return this
