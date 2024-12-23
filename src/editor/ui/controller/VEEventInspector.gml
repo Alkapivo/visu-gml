@@ -27,7 +27,7 @@ function VEEventInspector(_editor) constructor {
     return new UILayout({ 
       name: "event-inspector",
       staticHeight: new BindIntent(function() { 
-        return this.nodes.title.height() 
+        return this.nodes.title.height() + this.nodes.title.margin.top
             + this.nodes.control.height() 
             + this.nodes.view.margin.top 
             + this.nodes.view.margin.bottom
@@ -35,20 +35,21 @@ function VEEventInspector(_editor) constructor {
       nodes: {
         "title": {
           name: "event-inspector.title",
+          y: function() { return this.context.y() + this.margin.top },
           height: function() { return 16 },
-          margin: { left: 1, right: 1, },
+          margin: { left: 1, right: 1, top: 0 },
         },
         "view": {
           name: "event-inspector.view",
-          margin: { top: 1, bottom: 1, left: 10, right: 1, },
+          margin: { top: 1, bottom: 0, left: 10, right: 1, },
           height: function() { return this.context.height() - this.context.staticHeight() - this.margin.top - this.margin.bottom },
           y: function() { return this.margin.top + this.context.nodes.title.bottom() },
         },
         "control": {
           name: "event-inspector.control",
-          height: function() { return 26 },
+          height: function() { return 28 },
           margin: { left: 1, right: 1, },
-          y: function() { return this.context.nodes.view.bottom() },
+          y: function() { return this.context.nodes.view.bottom() + this.context.nodes.view.margin.bottom },
         }
       }
     }, parent)
@@ -70,18 +71,122 @@ function VEEventInspector(_editor) constructor {
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         layout: layout.nodes.title,
+        eventInspector: eventInspector,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefaultNoSurface")),
         items: {
           "label_ve-event-inspector-title": {
             type: UIText,
             text: "Event inspector",
-            update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
-            backgroundColor: VETheme.color.darkShadow,
             font: "font_inter_8_regular",
             color: VETheme.color.textShadow,
             align: { v: VAlign.CENTER, h: HAlign.LEFT },
             offset: { x: 4 },
+            backgroundColor: VETheme.color.darkBetween,
+            clipboard: {
+              name: "label_ve-event-inspector-title",
+              drag: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_VERTICAL)
+              },
+              drop: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            },
+            __height: 0.0,
+            __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
+            updateCustom: function() {
+              this.__update()
+              if (Beans.get(BeanVisuEditorIO).mouse.getClipboard() == this.clipboard) {
+                this.updateLayout(MouseUtil.getMouseY())
+                this.context.eventInspector.containers.forEach(function(container) {
+                  if (!Optional.is(container.updateTimer)) {
+                    return
+                  }
+                  
+                  container.surfaceTick.skip()
+                  container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+                })
+  
+                if (!mouse_check_button(mb_left)) {
+                  Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
+                  Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+                }
+              } else {
+                var editor = Beans.get(BeanVisuEditorController)
+                var accordion = editor.accordion
+                var accordionNode = editor.layout.nodes.accordion
+                var store = accordion.layout.store
+                var height = accordionNode.height()
+                var eventInspectorMinHeight = editor.accordion.eventInspector.layout.nodes.title.height()
+                  + editor.accordion.eventInspector.layout.nodes.control.height()
+                  + 16.0 + 32.0 + 28.0
+                var templateToolbarMinHeight = Struct.get(editor.accordion.templateToolbar.layout.nodes, "type").height()
+                  + Struct.get(editor.accordion.templateToolbar.layout.nodes, "add").height()
+                  + Struct.get(editor.accordion.templateToolbar.layout.nodes, "title").height()
+                  + Struct.get(editor.accordion.templateToolbar.layout.nodes, "inspector-bar").height()
+                  + Struct.get(editor.accordion.templateToolbar.layout.nodes, "control").height()
+                  + 16.0
+
+                var current = Struct.get(store, "events-percentage")
+                var percentage = clamp(current, eventInspectorMinHeight / height, 1.0 - (templateToolbarMinHeight / height))
+                if (percentage == current) {
+                  return
+                }
+    
+                Struct.set(store, "events-percentage", percentage)
+                accordion.containers.forEach(accordion.resetUpdateTimer)
+                accordion.templateToolbar.containers.forEach(accordion.resetUpdateTimer)
+                accordion.eventInspector.containers.forEach(accordion.resetUpdateTimer)
+
+                //var editor = Beans.get(BeanVisuEditorController)
+                //var height = editor.layout.nodes.accordion.height()
+                //if (this.__height != height) {
+                //  this.__height = height
+                //  this.updateLayout(this.context.area.getY() + this.area.getY())
+                //}
+              }
+            },
+            updateLayout: new BindIntent(function(position) {
+              var editor = Beans.get(BeanVisuEditorController)
+              var accordion = editor.accordion
+              var accordionNode = editor.layout.nodes.accordion
+              var store = accordion.layout.store
+              var height = accordionNode.height()
+              var eventInspectorMinHeight = editor.accordion.eventInspector.layout.nodes.title.height()
+                + editor.accordion.eventInspector.layout.nodes.control.height()
+                + 16.0 + 32.0 + 28.0
+              var templateToolbarMinHeight = Struct.get(editor.accordion.templateToolbar.layout.nodes, "type").height()
+                + Struct.get(editor.accordion.templateToolbar.layout.nodes, "add").height()
+                + Struct.get(editor.accordion.templateToolbar.layout.nodes, "title").height()
+                + Struct.get(editor.accordion.templateToolbar.layout.nodes, "inspector-bar").height()
+                + Struct.get(editor.accordion.templateToolbar.layout.nodes, "control").height()
+                + 16.0
+
+              var pos = ((position - accordionNode.y()) / height)
+              var percentage = clamp(1.0 - pos, eventInspectorMinHeight / height, 1.0 - (templateToolbarMinHeight / height))
+              var current = Struct.get(store, "events-percentage")
+              if (percentage == current) {
+                return
+              }
+  
+              Struct.set(store, "events-percentage", percentage)
+              accordion.containers.forEach(accordion.resetUpdateTimer)
+              accordion.templateToolbar.containers.forEach(accordion.resetUpdateTimer)
+              accordion.eventInspector.containers.forEach(accordion.resetUpdateTimer)
+            }),
+            onMousePressedLeft: function(event) {
+              Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
+            },
+            onMouseHoverOver: function(event) {
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drag()
+              }
+            },
+            onMouseHoverOut: function(event) {
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drop()
+              }
+            },
           }, 
         }
       },
@@ -314,16 +419,13 @@ function VEEventInspector(_editor) constructor {
           "components": new Array(Struct, [
             {
               name: "button_control-preview",
-              template: VEComponents.get("category-button"),
+              template: VEComponents.get("collection-button"),
               layout: VELayouts.get("horizontal-item"),
               config: {
-                colorHoverOver: VETheme.color.accentShadow,
-                colorHoverOut: VETheme.color.primaryShadow,
-                backgroundColor: VETheme.color.primaryShadow,
-                backgroundMargin: { top: 0, bottom: 0, left: 0, right: 1 },
-                label: { 
-                  font: "font_inter_10_bold",
-                  text: "Preview",
+                label: { text: "Preview" },
+                layout: {
+                  height: function() { return 28 },
+                  margin: { top: 0 },
                 },
                 callback: function() { 
                   var eventInspector = this.context.eventInspector
@@ -335,37 +437,8 @@ function VEEventInspector(_editor) constructor {
                   var handler = Beans.get(BeanVisuController).trackService.handlers.get(event.type)
                   handler.run(handler.parse(event.toTemplate().event.data))
                 },
-                onMouseHoverOver: function(event) {
-                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-                },
-                onMouseHoverOut: function(event) {
-                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-                },
               },
             },
-            /* 
-            {
-              name: "button_control-to-brush",
-              template: VEComponents.get("category-button"),
-              layout: VELayouts.get("horizontal-item"),
-              config: {
-                colorHoverOver: VETheme.color.accentShadow,
-                colorHoverOut: VETheme.color.primaryShadow,
-                backgroundColor: VETheme.color.primaryShadow,
-                backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-                label: { text: "To brush" },
-                callback: function() { 
-                  Core.print("callback to brush")
-                },
-                onMouseHoverOver: function(event) {
-                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-                },
-                onMouseHoverOut: function(event) {
-                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-                },
-              },
-            }
-            */
           ]),
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),

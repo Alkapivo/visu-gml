@@ -275,46 +275,61 @@ function VisuEditorController() constructor {
   factoryInitUITask = function() {
     return new Task("open-editor-ui")
       .setTimeout(10.0)
-      .setState(new Queue(Struct, [
-        {
-          handler: this.titleBar,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "title-bar")
-          }),
-        },
-        {
-          handler: this.statusBar,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "status-bar")
-          }),
-        },
-        {
-          handler: this.accordion,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "accordion")
-          }),
-        },
-        {
-          handler: this.trackControl,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "track-control")
-          }),
-        },
-        {
-          handler: this.brushToolbar,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "brush-toolbar")
-          }),
-        },
-        {
-          handler: this.timeline,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "timeline")
-          }),
-        }
-      ]))
+      .setState({
+        cooldown: new Timer(0.1, { loop: Infinity }),
+        primary: new Queue(Struct, [
+          {
+            handler: this.titleBar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "title-bar")
+            }),
+          },
+          {
+            handler: this.statusBar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "status-bar")
+            }),
+          },
+          {
+            handler: this.trackControl,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "track-control")
+            }),
+          }
+        ]),
+        events: new Queue(Struct, [
+          {
+            handler: this.accordion,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "accordion")
+            }),
+          },
+          {
+            handler: this.brushToolbar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "brush-toolbar")
+            }),
+          },
+          {
+            handler: this.timeline,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "timeline")
+            }),
+          }
+        ]),
+      })
       .whenUpdate(function() {
-        var entry = this.state.pop()
+        if (this.state.primary.size() > 0) {
+          this.state.primary.forEach(function(entry) {
+            entry.handler.send(entry.event)
+          })
+        }
+
+        if (!this.state.cooldown.update().finished) {
+          return
+        }
+
+        var entry = this.state.events.pop()
         if (!Optional.is(entry)) {
           this.fullfill()
           return
@@ -530,8 +545,8 @@ function VisuEditorController() constructor {
     accordionNode.minWidth = renderEvent ? 288 : 0
     accordionNode.maxWidth = renderEvent ? round(GuiWidth() * 0.37) : 0
     this.accordion.containers.forEach(updateAccordion, renderEvent)
-    this.accordion.eventInspector.containers.forEach(updateAccordion, renderEvent)
     this.accordion.templateToolbar.containers.forEach(updateAccordion, renderEvent)
+    this.accordion.eventInspector.containers.forEach(updateAccordion, renderEvent)
 
     var renderTrackControl = this.store.getValue("render-trackControl")
     var trackControlNode = Struct.get(this.layout.nodes, "track-control")

@@ -32,6 +32,82 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
+  "bar-title": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"{name}_bar-title", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("bar-title"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+    ])
+  },
+
+    ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "template-add-button": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIButton(
+        $"{name}_template-add-button", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.button,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              onMouseHoverOver: Callable.run(UIUtil.mouseEventTemplates.get("onMouseHoverOverBackground")),
+              onMouseHoverOut: Callable.run(UIUtil.mouseEventTemplates.get("onMouseHoverOutBackground")),
+            }, 
+            VEStyles.get("template-add-button"),
+            false
+          ),
+          config,
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "collection-button": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIButton(
+        $"{name}_type-button", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+              onMouseHoverOver: Callable.run(UIUtil.mouseEventTemplates.get("onMouseHoverOverBackground")),
+              onMouseHoverOut: Callable.run(UIUtil.mouseEventTemplates.get("onMouseHoverOutBackground")),
+            }, 
+            VEStyles.get("collection-button"),
+            false
+          ),
+          config,
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "image": function(name, layout, config = null) {
     var items = new Array(UIItem, [
       UIImage(
@@ -262,6 +338,30 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
+  "type-button": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIButton(
+        $"{name}_type-button", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("type-button"),
+            false
+          ),
+          config,
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "channel-entry": function(name, layout, config = null) {
     return new Array(UIItem, [
       UIButton(
@@ -406,7 +506,7 @@ global.__VEComponents = new Map(String, Callable, {
   "template-entry": function(name, layout, config = null) {
     return new Array(UIItem, [
       UIButton(
-        $"{name}_brush-entry_settings", 
+        $"{name}_template-entry_settings", 
         Struct.appendRecursive(
           Struct.appendRecursive(
             { 
@@ -421,7 +521,7 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIButton(
-        $"{name}_brush-entry_remove", 
+        $"{name}_template-entry_remove", 
         Struct.appendRecursive(
           Struct.appendRecursive(
             { 
@@ -436,7 +536,7 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIText(
-        $"{name}_brush-entry_label",
+        $"{name}_template-entry_label",
         Struct.appendRecursive(
           Struct.appendRecursive(
             { 
@@ -444,6 +544,60 @@ global.__VEComponents = new Map(String, Callable, {
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
             }, 
             VEStyles.get("template-entry").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "template-entry-lock": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIButton(
+        $"{name}_template-entry-lock-entry_settings", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.settings,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("template-entry-lock").settings,
+            false
+          ),
+          Struct.get(config, "settings"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_template-entry-lock-entry_remove", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.remove,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("template-entry-lock").remove,
+            false
+          ),
+          Struct.get(config, "remove"),
+          false
+        )
+      ),
+      UIText(
+        $"{name}_template-entry-lock-entry_label",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
+            }, 
+            VEStyles.get("template-entry-lock").label,
             false
           ),
           Struct.get(config, "label"),
@@ -816,9 +970,9 @@ global.__VEComponents = new Map(String, Callable, {
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
             layout: layout.nodes.decrease,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             callback: function() {
@@ -859,9 +1013,9 @@ global.__VEComponents = new Map(String, Callable, {
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
             layout: layout.nodes.increase,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             callback: function() {
@@ -895,7 +1049,7 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
-///@param {String} name
+  ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
@@ -942,9 +1096,9 @@ global.__VEComponents = new Map(String, Callable, {
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
             layout: layout.nodes.decrease,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             callback: function() {
@@ -986,9 +1140,9 @@ global.__VEComponents = new Map(String, Callable, {
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
             layout: layout.nodes.increase,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             callback: function() {
@@ -1016,6 +1170,176 @@ global.__VEComponents = new Map(String, Callable, {
             },
           },
           Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UICheckbox(
+        $"{name}_checkbox", 
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.checkbox,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          Struct.get(config, "checkbox"),
+          false
+        )
+      ),
+      UIText(
+        $"{name}_title", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.title,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field-checkbox").title,
+            false
+          ),
+          Struct.get(config, "title"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "text-field-increase-stick-checkbox": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field-button").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UITextField(
+        $"field_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.field,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
+            },
+            VEStyles.get("text-field-button").field,
+            false
+          ),
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              
+              if (Struct.get(this.enable, "value") == false) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_increase", 
+        Struct.appendRecursive(
+          { 
+            factor: 1.0,
+            label: { 
+              text: "+",
+              font: "font_inter_10_regular",
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
+            layout: layout.nodes.increase,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Struct.get(this.enable, "value") == false) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UISliderHorizontal(
+        $"stick_{name}",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.stick,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
+              setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
+            },
+            VEStyles.get("slider-horizontal"),
+            false
+          ),
+          Struct.get(config, "stick"),
           false
         )
       ),
@@ -3799,9 +4123,9 @@ global.__VEComponents = new Map(String, Callable, {
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
             layout: layout.nodes.decrease,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             callback: function() {
@@ -3842,9 +4166,9 @@ global.__VEComponents = new Map(String, Callable, {
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.accent,
-            backgroundColorOut: VETheme.color.primary,
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
             layout: layout.nodes.increase,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             callback: function() {
@@ -4776,9 +5100,9 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.appendRecursive(
             { 
               increment: -1,
-              backgroundColor: VETheme.color.primary,
-              backgroundColorSelected: VETheme.color.accent,
-              backgroundColorOut: VETheme.color.primary,
+              backgroundColor: VETheme.color.button,
+              backgroundColorSelected: VETheme.color.buttonHover,
+              backgroundColorOut: VETheme.color.button,
               onMouseHoverOver: function(event) {
                 if (Struct.get(this.enable, "value") == false) {
                   this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
@@ -4810,9 +5134,9 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.appendRecursive(
             { 
               increment: 1,
-              backgroundColor: VETheme.color.primary,
-              backgroundColorSelected: VETheme.color.accent,
-              backgroundColorOut: VETheme.color.primary,
+              backgroundColor: VETheme.color.button,
+              backgroundColorSelected: VETheme.color.buttonHover,
+              backgroundColorOut: VETheme.color.button,
               onMouseHoverOver: function(event) {
                 if (Struct.get(this.enable, "value") == false) {
                   this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
@@ -4925,9 +5249,9 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.appendRecursive(
             {
               increment: -1,
-              backgroundColor: VETheme.color.primary,
-              backgroundColorSelected: VETheme.color.accent,
-              backgroundColorOut: VETheme.color.primary,
+              backgroundColor: VETheme.color.button,
+              backgroundColorSelected: VETheme.color.buttonHover,
+              backgroundColorOut: VETheme.color.button,
               onMouseHoverOver: function(event) {
                 if (Struct.get(this.enable, "value") == false) {
                   this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
@@ -4959,9 +5283,9 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.appendRecursive(
             { 
               increment: 1,
-              backgroundColor: VETheme.color.primary,
-              backgroundColorSelected: VETheme.color.accent,
-              backgroundColorOut: VETheme.color.primary,
+              backgroundColor: VETheme.color.button,
+              backgroundColorSelected: VETheme.color.buttonHover,
+              backgroundColorOut: VETheme.color.button,
               onMouseHoverOver: function(event) {
                 if (Struct.get(this.enable, "value") == false) {
                   this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
@@ -5408,7 +5732,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(Struct.set(transformer, key, parsedValue))
                 },
               },
-              factor: 0.01,
+              factor: 0.0001,
               base: null,
               _value: 0.0,
               value: 0.5,
@@ -5418,7 +5742,7 @@ global.__VEComponents = new Map(String, Callable, {
                 name: "texture_slider_pointer_simple",
                 scaleX: 0.15,
                 scaleY: 0.15,
-                blend: VETheme.color.primary,
+                blend: VETheme.color.button,
               },
               progress: { thickness: 0.0 },
               background: {
@@ -5428,13 +5752,14 @@ global.__VEComponents = new Map(String, Callable, {
               },
               updateValue: function(mouseX) {
                 var isUIStore = Core.isType(this.store, UIStore)
+                var key = Struct.get(this, "transformNumericProperty")
                 this.base = !Core.isType(this.base, Number) 
-                  ? (isUIStore ? this.store.getValue().get() : this.value)
+                  ? (isUIStore ? Struct.get(this.store.getValue(), key) : this.value)
                   : this.base 
-
+ 
                 var distance = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
                 this.value = this.base + (distance * this.factor)
-                if (isUIStore && this.value != this.store.getValue().get()) {
+                if (isUIStore && this.value != Struct.get(this.store.getValue(), key)) {
                   this.store.set(this.value)
                 }
               },
@@ -5459,11 +5784,11 @@ global.__VEComponents = new Map(String, Callable, {
               },
               preRender: function() {
                 this._value = this.value
-                var base = this.base != null ? this.base : this.value
-                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000000))))
-                //this.value = clamp(0.5 - (((base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
-                orderOfMagnitude = GuiWidth()
-                this.value = clamp(0.5 - (((base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.5 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
               },
               postRender: function() {
                 this.value = this._value
@@ -5500,7 +5825,6 @@ global.__VEComponents = new Map(String, Callable, {
       )
     ).forEach(addItem, items)
 
-    
     factoryTextFieldIncrease(
       $"{name}_target",
       layout.nodes.target,
@@ -5639,6 +5963,255 @@ global.__VEComponents = new Map(String, Callable, {
       }).toUIItems(layout)
     }
 
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncrease = function(name, layout, config) { //factoryNumericSliderIncreaseField
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec2 = Struct.get(data, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec2 = Struct.get(this.context, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec2Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = item.get()
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec2Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = item.get()
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec2Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec2 = Struct.get(this.context, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec2Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.5,
+              minValue: 0.0,
+              maxValue: 1.0,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.15,
+                scaleY: 0.15,
+                blend: VETheme.color.button,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 1.75,
+                blend: VETheme.color.darkBetween,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+ 
+                var distance = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              onMouseDragLeft: function(event) {
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.5 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          config,
+          false
+        )
+      }).toUIItems(layout)
+    }
+
     var items = new Array(UIItem)
 
     factoryTitle(
@@ -5648,62 +6221,110 @@ global.__VEComponents = new Map(String, Callable, {
     ).forEach(addItem, items)
 
     #region X
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_valueX",
       layout.nodes.valueX,
       Struct.appendRecursive(
-        Struct.get(config, "valueX"), 
-        { 
-          field: { 
+        Struct.get(config, "valueX"),
+        {
+          field: {
             transformNumericProperty: "value",
             transformVector2Property: "x",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector2Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector2Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector2Property: "x",
+          },
         },
         false
       )
     ).forEach(addItem, items)
     
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_targetX",
       layout.nodes.targetX,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "targetX"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector2Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector2Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector2Property: "x",
+          },
+          slider: {
             transformNumericProperty: "target",
             transformVector2Property: "x",
           },
         },
-        Struct.get(config, "targetX"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_factorX", 
-      layout.nodes.factorX, 
+    factoryTextFieldIncrease(
+      $"{name}_factorX",
+      layout.nodes.factorX,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "factorX"),
+        {
+          field: {
             transformNumericProperty: "factor",
             transformVector2Property: "x",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "x",
+          },
         },
-        Struct.get(config, "factorX"), 
         false
       )
     ).forEach(addItem, items)
  
-    factoryTextField(
-      $"{name}_incrementX",
-      layout.nodes.incrementX, 
+    factoryTextFieldIncrease(
+      $"{name}_increaseX",
+      layout.nodes.increaseX,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "increaseX"),
+        {
+          field: {
             transformNumericProperty: "increase",
             transformVector2Property: "x",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "x",
+          },
         },
-        Struct.get(config, "incrementX"), 
         false
       )
     ).forEach(addItem, items)
@@ -5724,62 +6345,110 @@ global.__VEComponents = new Map(String, Callable, {
     #endregion
 
     #region Y
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_valueY",
       layout.nodes.valueY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "valueY"),
+        {
+          field: {
             transformNumericProperty: "value",
             transformVector2Property: "y",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          },
         },
-        Struct.get(config, "valueY"), 
         false
       )
     ).forEach(addItem, items)
-
-    factoryTextField(
+    
+    factoryTextFieldIncrease(
       $"{name}_targetY",
       layout.nodes.targetY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "targetY"),
+        {
+          field: {
             transformNumericProperty: "target",
             transformVector2Property: "y",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector2Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector2Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector2Property: "y",
+          },
         },
-        Struct.get(config, "targetY"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_factorY", 
-      layout.nodes.factorY, 
+    factoryTextFieldIncrease(
+      $"{name}_factorY",
+      layout.nodes.factorY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "valueY"),
+        {
+          field: {
             transformNumericProperty: "factor",
             transformVector2Property: "y",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "y",
+          },
         },
-        Struct.get(config, "factorY"), 
         false
       )
     ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_incrementY",
-      layout.nodes.incrementY, 
+ 
+    factoryTextFieldIncrease(
+      $"{name}_increaseY",
+      layout.nodes.increaseY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "increaseY"),
+        {
+          field: {
             transformNumericProperty: "increase",
             transformVector2Property: "y",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "y",
+          },
         },
-        Struct.get(config, "incrementY"), 
         false
       )
     ).forEach(addItem, items)
@@ -5876,6 +6545,251 @@ global.__VEComponents = new Map(String, Callable, {
       }).toUIItems(layout)
     }
 
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec3 = Struct.get(data, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = item.get()
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec3Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = item.get()
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec3Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.5,
+              minValue: 0.0,
+              maxValue: 1.0,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.15,
+                scaleY: 0.15,
+                blend: VETheme.color.button,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 1.75,
+                blend: VETheme.color.darkBetween,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+ 
+                var distance = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              onMouseDragLeft: function(event) {
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.5 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
     var items = new Array(UIItem)
 
     factoryTitle(
@@ -5885,62 +6799,110 @@ global.__VEComponents = new Map(String, Callable, {
     ).forEach(addItem, items)
 
     #region X
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_valueX",
       layout.nodes.valueX,
       Struct.appendRecursive(
-        Struct.get(config, "valueX"), 
-        { 
-          field: { 
+        Struct.get(config, "valueX"),
+        {
+          field: {
             transformNumericProperty: "value",
             transformVector3Property: "x",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector3Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector3Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector3Property: "x",
+          },
         },
         false
       )
     ).forEach(addItem, items)
     
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_targetX",
       layout.nodes.targetX,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "targetX"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector3Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector3Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector3Property: "x",
+          },
+          slider: {
             transformNumericProperty: "target",
             transformVector3Property: "x",
           },
         },
-        Struct.get(config, "targetX"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_factorX", 
-      layout.nodes.factorX, 
+    factoryTextFieldIncrease(
+      $"{name}_factorX",
+      layout.nodes.factorX,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "factorX"),
+        {
+          field: {
             transformNumericProperty: "factor",
             transformVector3Property: "x",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "x",
+          },
         },
-        Struct.get(config, "factorX"), 
         false
       )
     ).forEach(addItem, items)
  
-    factoryTextField(
-      $"{name}_incrementX",
-      layout.nodes.incrementX, 
+    factoryTextFieldIncrease(
+      $"{name}_increaseX",
+      layout.nodes.increaseX,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "increaseX"),
+        {
+          field: {
             transformNumericProperty: "increase",
             transformVector3Property: "x",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "x",
+          },
         },
-        Struct.get(config, "incrementX"), 
         false
       )
     ).forEach(addItem, items)
@@ -5961,143 +6923,225 @@ global.__VEComponents = new Map(String, Callable, {
     #endregion
 
     #region Y
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_valueY",
       layout.nodes.valueY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "valueY"),
+        {
+          field: {
             transformNumericProperty: "value",
             transformVector3Property: "y",
-          }
-        },
-        Struct.get(config, "valueY"), 
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_targetY",
-      layout.nodes.targetY,
-      Struct.appendRecursive(
-        { 
-          field: { 
-            transformNumericProperty: "target",
-            transformVector3Property: "y",
-          }
-        },
-        Struct.get(config, "targetY"), 
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_factorY", 
-      layout.nodes.factorY, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            transformNumericProperty: "factor",
-            transformVector3Property: "y",
-          }
-        },
-        Struct.get(config, "factorY"), 
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_incrementY",
-      layout.nodes.incrementY, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            transformNumericProperty: "increase",
-            transformVector3Property: "y",
-          }
-        },
-        Struct.get(config, "incrementY"), 
-        false
-      )
-    ).forEach(addItem, items)
-
-    items.add(
-      UIImage(
-        $"{name}_y-line-h",
-        Struct.appendRecursive(
-          { 
-            layout: layout.nodes.lineX,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          }, 
-          VEStyles.get("line-h").image,
-          false
-        )
-      )
-    )
-    #endregion
-
-    #region Z
-    factoryTextField(
-      $"{name}_valueZ",
-      layout.nodes.valueZ,
-      Struct.appendRecursive(
-        Struct.get(config, "valueZ"), 
-        { 
-          field: { 
+          },
+          decrease: {
             transformNumericProperty: "value",
-            transformVector3Property: "z",
-          }
+            transformVector3Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector3Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector3Property: "y",
+          },
         },
         false
       )
     ).forEach(addItem, items)
     
-    factoryTextField(
+    factoryTextFieldIncrease(
+      $"{name}_targetY",
+      layout.nodes.targetY,
+      Struct.appendRecursive(
+        Struct.get(config, "targetY"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorY",
+      layout.nodes.factorY,
+      Struct.appendRecursive(
+        Struct.get(config, "valueY"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextFieldIncrease(
+      $"{name}_increaseY",
+      layout.nodes.increaseY,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseY"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    #region Z
+    factoryTextFieldIncrease(
+      $"{name}_valueZ",
+      layout.nodes.valueZ,
+      Struct.appendRecursive(
+        Struct.get(config, "valueZ"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncrease(
       $"{name}_targetZ",
       layout.nodes.targetZ,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "targetZ"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector3Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector3Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector3Property: "z",
+          },
+          slider: {
             transformNumericProperty: "target",
             transformVector3Property: "z",
           },
         },
-        Struct.get(config, "targetZ"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_factorZ", 
-      layout.nodes.factorZ, 
+    factoryTextFieldIncrease(
+      $"{name}_factorZ",
+      layout.nodes.factorZ,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "valueZ"),
+        {
+          field: {
             transformNumericProperty: "factor",
             transformVector3Property: "z",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "z",
+          },
         },
-        Struct.get(config, "factorZ"), 
         false
       )
     ).forEach(addItem, items)
-  
-    factoryTextField(
-      $"{name}_incrementZ",
-      layout.nodes.incrementZ, 
+ 
+    factoryTextFieldIncrease(
+      $"{name}_increaseZ",
+      layout.nodes.increaseZ,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "increaseZ"),
+        {
+          field: {
             transformNumericProperty: "increase",
             transformVector3Property: "z",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "z",
+          },
         },
-        Struct.get(config, "incrementZ"), 
         false
       )
     ).forEach(addItem, items)
     #endregion
-    
+
     return items
   },
 
@@ -6189,6 +7233,251 @@ global.__VEComponents = new Map(String, Callable, {
       }).toUIItems(layout)
     }
 
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec4 = Struct.get(data, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.5,
+              minValue: 0.0,
+              maxValue: 1.0,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.15,
+                scaleY: 0.15,
+                blend: VETheme.color.button,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 1.75,
+                blend: VETheme.color.darkBetween,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+ 
+                var distance = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              onMouseDragLeft: function(event) {
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.5 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
     var items = new Array(UIItem)
 
     factoryTitle(
@@ -6198,62 +7487,110 @@ global.__VEComponents = new Map(String, Callable, {
     ).forEach(addItem, items)
 
     #region X
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_valueX",
       layout.nodes.valueX,
       Struct.appendRecursive(
-        Struct.get(config, "valueX"), 
-        { 
-          field: { 
+        Struct.get(config, "valueX"),
+        {
+          field: {
             transformNumericProperty: "value",
             transformVector4Property: "x",
-          }
-        },
-        false
-      )
-    ).forEach(addItem, items)
-    
-    factoryTextField(
-      $"{name}_targetX",
-      layout.nodes.targetX,
-      Struct.appendRecursive(
-        { 
-          field: { 
-            transformNumericProperty: "target",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector4Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector4Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "value",
             transformVector4Property: "x",
           },
         },
-        Struct.get(config, "targetX"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_factorX", 
-      layout.nodes.factorX, 
+    factoryTextFieldIncrease(
+      $"{name}_targetX",
+      layout.nodes.targetX,
       Struct.appendRecursive(
-        { 
-          field: { 
-            transformNumericProperty: "factor",
+        Struct.get(config, "targetX"),
+        {
+          field: {
+            transformNumericProperty: "target",
             transformVector4Property: "x",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector4Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector4Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector4Property: "x",
+          },
         },
-        Struct.get(config, "factorX"), 
         false
       )
     ).forEach(addItem, items)
- 
-    factoryTextField(
-      $"{name}_incrementX",
-      layout.nodes.incrementX, 
+
+    factoryTextFieldIncrease(
+      $"{name}_factorX",
+      layout.nodes.factorX,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "factorX"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_increaseX",
+      layout.nodes.increaseX,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseX"),
+        {
+          field: {
             transformNumericProperty: "increase",
             transformVector4Property: "x",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "x",
+          },
         },
-        Struct.get(config, "incrementX"), 
         false
       )
     ).forEach(addItem, items)
@@ -6274,219 +7611,334 @@ global.__VEComponents = new Map(String, Callable, {
     #endregion
 
     #region Y
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_valueY",
       layout.nodes.valueY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "valueY"),
+        {
+          field: {
             transformNumericProperty: "value",
             transformVector4Property: "y",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector4Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector4Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector4Property: "y",
+          },
         },
-        Struct.get(config, "valueY"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_targetY",
       layout.nodes.targetY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "targetY"),
+        {
+          field: {
             transformNumericProperty: "target",
             transformVector4Property: "y",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector4Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector4Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector4Property: "y",
+          },
         },
-        Struct.get(config, "targetY"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_factorY", 
-      layout.nodes.factorY, 
+    factoryTextFieldIncrease(
+      $"{name}_factorY",
+      layout.nodes.factorY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "valueY"),
+        {
+          field: {
             transformNumericProperty: "factor",
             transformVector4Property: "y",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "y",
+          },
         },
-        Struct.get(config, "factorY"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_incrementY",
-      layout.nodes.incrementY, 
+    factoryTextFieldIncrease(
+      $"{name}_increaseY",
+      layout.nodes.increaseY,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "increaseY"),
+        {
+          field: {
             transformNumericProperty: "increase",
             transformVector4Property: "y",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "y",
+          },
         },
-        Struct.get(config, "incrementY"), 
         false
       )
     ).forEach(addItem, items)
-
-    items.add(
-      UIImage(
-        $"{name}_y-line-h",
-        Struct.appendRecursive(
-          { 
-            layout: layout.nodes.lineX,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          }, 
-          VEStyles.get("line-h").image,
-          false
-        )
-      )
-    )
     #endregion
 
     #region Z
-    factoryTextField(
+    factoryTextFieldIncrease(
       $"{name}_valueZ",
       layout.nodes.valueZ,
       Struct.appendRecursive(
-        Struct.get(config, "valueZ"), 
-        { 
-          field: { 
+        Struct.get(config, "valueZ"),
+        {
+          field: {
             transformNumericProperty: "value",
             transformVector4Property: "z",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector4Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector4Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector4Property: "z",
+          },
         },
         false
       )
     ).forEach(addItem, items)
-    
-    factoryTextField(
+
+    factoryTextFieldIncrease(
       $"{name}_targetZ",
       layout.nodes.targetZ,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "targetZ"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector4Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector4Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector4Property: "z",
+          },
+          slider: {
             transformNumericProperty: "target",
             transformVector4Property: "z",
           },
         },
-        Struct.get(config, "targetZ"), 
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextField(
-      $"{name}_factorZ", 
-      layout.nodes.factorZ, 
+    factoryTextFieldIncrease(
+      $"{name}_factorZ",
+      layout.nodes.factorZ,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "valueZ"),
+        {
+          field: {
             transformNumericProperty: "factor",
             transformVector4Property: "z",
-          }
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "z",
+          },
         },
-        Struct.get(config, "factorZ"), 
         false
       )
     ).forEach(addItem, items)
-  
-    factoryTextField(
-      $"{name}_incrementZ",
-      layout.nodes.incrementZ, 
+
+    factoryTextFieldIncrease(
+      $"{name}_increaseZ",
+      layout.nodes.increaseZ,
       Struct.appendRecursive(
-        { 
-          field: { 
+        Struct.get(config, "increaseZ"),
+        {
+          field: {
             transformNumericProperty: "increase",
             transformVector4Property: "z",
-          }
-        },
-        Struct.get(config, "incrementZ"), 
-        false
-      )
-    ).forEach(addItem, items)
-
-    items.add(
-      UIImage(
-        $"{name}_z-line-h",
-        Struct.appendRecursive(
-          { 
-            layout: layout.nodes.lineX,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          }, 
-          VEStyles.get("line-h").image,
-          false
-        )
-      )
-    )
-    #endregion
-
-    #region A
-    factoryTextField(
-      $"{name}_valueA",
-      layout.nodes.valueA,
-      Struct.appendRecursive(
-        { 
-          field: { 
-            transformNumericProperty: "value",
-            transformVector4Property: "a",
-          }
-        },
-        Struct.get(config, "valueA"), 
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_targetA",
-      layout.nodes.targetA,
-      Struct.appendRecursive(
-        { 
-          field: { 
-            transformNumericProperty: "target",
-            transformVector4Property: "a",
-          }
-        },
-        Struct.get(config, "targetA"), 
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_factorA", 
-      layout.nodes.factorA, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            transformNumericProperty: "factor",
-            transformVector4Property: "a",
-          }
-        },
-        Struct.get(config, "factorA"), 
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_incrementA",
-      layout.nodes.incrementA, 
-      Struct.appendRecursive(
-        { 
-          field: { 
+          },
+          decrease: {
             transformNumericProperty: "increase",
-            transformVector4Property: "a",
-          }
+            transformVector4Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "z",
+          },
         },
-        Struct.get(config, "incrementA"), 
         false
       )
     ).forEach(addItem, items)
     #endregion
     
+    #region A
+    factoryTextFieldIncrease(
+      $"{name}_valueA",
+      layout.nodes.valueA,
+      Struct.appendRecursive(
+        Struct.get(config, "valueA"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncrease(
+      $"{name}_targetA",
+      layout.nodes.targetA,
+      Struct.appendRecursive(
+        Struct.get(config, "targetA"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorA",
+      layout.nodes.factorA,
+      Struct.appendRecursive(
+        Struct.get(config, "factorA"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+  
+    factoryTextFieldIncrease(
+      $"{name}_increaseA",
+      layout.nodes.increaseA,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseA"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
     return items
   },
 
@@ -7528,6 +8980,199 @@ global.__VEComponents = new Map(String, Callable, {
         )
       }).toUIItems(layout)
     }
+
+    static factoryTextFieldIncreaseStickCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase-stick-checkbox"),
+        layout: VELayouts.get("text-field-increase-stick-checkbox"),
+        config: Struct.appendRecursive(
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = item.get()
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            stick: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = item.get()
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(transformer, key, parsedValue))
+                },
+              },
+              factor: 0.01,
+              base: null,
+              _value: 0.0,
+              value: 0.5,
+              minValue: 0.0,
+              maxValue: 1.0,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.15,
+                scaleY: 0.15,
+                blend: VETheme.color.button,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 1.75,
+                blend: VETheme.color.darkBetween,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var key = Struct.get(this, "transformNumericProperty")
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(this.store.getValue(), key) : this.value)
+                  : this.base 
+
+                var distance = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(this.store.getValue(), key)) {
+                  this.store.set(this.value)
+                }
+              },
+              onMouseDragLeft: function(event) {
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.5 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          config, 
+          false
+        )
+      }).toUIItems(layout)
+    }
     
     ///@param {String} name
     ///@param {UILayout} layout
@@ -7648,8 +9293,8 @@ global.__VEComponents = new Map(String, Callable, {
     //  layout.nodes.title,
     //  Struct.get(config, "title")
     //).forEach(addItem, items)
-    
-    factoryTextFieldIncreaseCheckbox(
+
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_value",
       layout.nodes.value,
       Struct.appendRecursive(
@@ -7657,13 +9302,19 @@ global.__VEComponents = new Map(String, Callable, {
           field: { transformNumericProperty: "value" },
           decrease: { transformNumericProperty: "value" },
           increase: { transformNumericProperty: "value" },
+          stick: {
+            transformNumericProperty: "value",
+            factor: Struct.getIfType(Struct.get(Struct.get(config, "value"), "increase"), "factor", Number, 0.1) * 0.1,
+            enable: JSON.clone(Struct.getIfType(Struct.get(Struct.get(config, "value"), "field"), "enable", Struct, { })),
+            store: JSON.clone(Struct.getIfType(Struct.get(Struct.get(config, "value"), "field"), "store", Struct, { })),
+          },
         },
         Struct.get(config, "value"),
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextFieldIncreaseCheckbox(
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_target",
       layout.nodes.target,
       Struct.appendRecursive(
@@ -7672,12 +9323,18 @@ global.__VEComponents = new Map(String, Callable, {
           field: { transformNumericProperty: "target" },
           decrease: { transformNumericProperty: "target" },
           increase: { transformNumericProperty: "target" },
+          stick: {
+            transformNumericProperty: "target",
+            factor: Struct.getIfType(Struct.get(Struct.get(config, "target"), "increase"), "factor", Number, 0.1) * 0.1,
+            enable: JSON.clone(Struct.getIfType(Struct.get(Struct.get(config, "target"), "field"), "enable", Struct, { })),
+            store: JSON.clone(Struct.getIfType(Struct.get(Struct.get(config, "target"), "field"), "store", Struct, { })),
+          },
         },
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextFieldIncreaseCheckbox(
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_factor",
       layout.nodes.factor,
       Struct.appendRecursive(
@@ -7686,12 +9343,18 @@ global.__VEComponents = new Map(String, Callable, {
           field: { transformNumericProperty: "factor" },
           decrease: { transformNumericProperty: "factor" },
           increase: { transformNumericProperty: "factor" },
+          stick: {
+            transformNumericProperty: "factor",
+            factor: Struct.getIfType(Struct.get(Struct.get(config, "factor"), "increase"), "factor", Number, 0.1) * 0.1,
+            enable: JSON.clone(Struct.getIfType(Struct.get(Struct.get(config, "factor"), "field"), "enable", Struct, { })),
+            store: JSON.clone(Struct.getIfType(Struct.get(Struct.get(config, "factor"), "field"), "store", Struct, { })),
+          },
         },
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextFieldIncreaseCheckbox(
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_increase",
       layout.nodes.increase,
       Struct.appendRecursive(
@@ -7700,6 +9363,12 @@ global.__VEComponents = new Map(String, Callable, {
           field: { transformNumericProperty: "increase" },
           decrease: { transformNumericProperty: "increase" },
           increase: { transformNumericProperty: "increase" },
+          stick: {
+            transformNumericProperty: "increase",
+            factor: Struct.getIfType(Struct.get(Struct.get(config, "increase"), "increase"), "factor", Number, 0.1) * 0.1,
+            enable: JSON.clone(Struct.getIfType(Struct.get(Struct.get(config, "increase"), "field"), "enable", Struct, { })),
+            store: JSON.clone(Struct.getIfType(Struct.get(Struct.get(config, "increase"), "field"), "store", Struct, { })),
+          },
         },
         false
       )

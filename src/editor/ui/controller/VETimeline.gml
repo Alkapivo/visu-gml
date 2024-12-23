@@ -371,9 +371,6 @@ function VETimeline(_editor) constructor {
                   field: { store: { key: "new-channel-name" } },
                   button: { 
                     label: { text: "Add" },
-                    colorHoverOver: VETheme.color.accentShadow,
-                    colorHoverOut: VETheme.color.primaryShadow,
-                    backgroundColor: VETheme.color.primaryShadow,
                     onMouseHoverOver: function(event) {
                       this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
                     },
@@ -615,22 +612,13 @@ function VETimeline(_editor) constructor {
           var channel = Assert.isType(trackService.track
             .addChannel(name).channels.get(name), TrackChannel)
           this.collection.add(new UIComponent({
-            name: name,//this.collection.components.generateKey(),
+            name: name,
             template: VEComponents.get("channel-entry"),
             layout: VELayouts.get("channel-entry"),
             config: {
-              label: { 
-                text: name,
-                colorHoverOver: VETheme.color.accentShadow,
-                colorHoverOut: VETheme.color.primaryShadow,
-              },
+              label: { text: name },
               settings: {
-                colorHoverOver: VETheme.color.accentShadow,
-                colorHoverOut: VETheme.color.primaryShadow, 
-                sprite: {
-                  name: "texture_ve_icon_settings",
-                  blend: VETheme.color.textShadow,
-                },
+                sprite: { name: "texture_ve_icon_settings" },
                 callback: function() {
                   if (!Core.isType(Struct.get(this, "callbackData"), String)) {
                     return
@@ -664,19 +652,12 @@ function VETimeline(_editor) constructor {
                 callbackData: name,
               },
               remove: {
-                colorHoverOver: VETheme.color.accentShadow,
-                colorHoverOut: VETheme.color.primaryShadow,
-                sprite: {
-                  name: "texture_ve_icon_trash",
-                  blend: VETheme.color.textShadow,
-                },
+                sprite: { name: "texture_ve_icon_trash" },
                 callback: function() {
                   this.context.removeChannel(this.component.name)
                 },
               },
               mute: {
-                colorHoverOver: VETheme.color.accentShadow,
-                colorHoverOut: VETheme.color.primaryShadow,
                 channelIndex: channel.index,
                 spriteOn: { name: "visu_texture_checkbox_muted_on" },
                 spriteOff: { name: "visu_texture_checkbox_muted_off" },
@@ -799,7 +780,7 @@ function VETimeline(_editor) constructor {
               new UIComponent({
                 name: "ve-timeline-channel-settings-apply",
                 template: VEComponents.get("button"),
-                layout: VELayouts.get("button2"),
+                layout: VELayouts.get("button"),
                 config: {
                   label: {
                     font: "font_inter_10_bold",
@@ -868,7 +849,7 @@ function VETimeline(_editor) constructor {
               new UIComponent({
                 name: "ve-timeline-channel-settings-discard",
                 template: VEComponents.get("button"),
-                layout: VELayouts.get("button2"),
+                layout: VELayouts.get("button"),
                 config: {
                   label: {
                     font: "font_inter_10_bold",
@@ -1263,7 +1244,6 @@ function VETimeline(_editor) constructor {
               }
             }
             
-
             //for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
             //  bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
             //  _thickness = bpmCount > 0 && bpmCountIndex mod bpmCount == 0 ? thickness * 4 : thickness

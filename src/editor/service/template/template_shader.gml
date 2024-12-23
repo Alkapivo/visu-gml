@@ -422,18 +422,30 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetX: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorX: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementX: {
+          increaseX: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           valueY: {
             label:{
@@ -441,18 +453,30 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetY: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorY: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementY: {
+          increaseY: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
         }, config, false),
       }
@@ -500,18 +524,30 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetX: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorX: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementX: {
+          increaseX: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           valueY: {
             label: {
@@ -519,18 +555,30 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetY: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorY: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementY: {
+          increaseY: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           valueZ: {
             label: {
@@ -538,18 +586,30 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetZ: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorZ: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementZ: {
+          increaseZ: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
         }, config, false),
       }
@@ -595,26 +655,39 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
         layout: VELayouts.get("transform-vec4-uniform"),
         config: Struct.appendRecursive({
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: $"[VEC4]  {uniform.name}" },
-          title: { label: { text: uniform.name } },
+          label: { text: uniform.name },
+          title: { label: { text: $"[VEC4]  {uniform.name}" } 
+          },
           valueX: {
             label: {
               text: "X",
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetX: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorX: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementX: {
+          increaseX: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           valueY: {
             label: {
@@ -622,18 +695,30 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetY: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorY: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementY: {
+          increaseY: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           valueZ: {
             label: {
@@ -641,37 +726,61 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetZ: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorZ: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementZ: {
+          increaseZ: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           valueA: {
             label: {
-              text: "Z",
+              text: "A",
               font: "font_inter_10_bold",
             },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           targetA: {
             label: { text: "Target" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
           factorA: {
             label: { text: "Factor" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
-          incrementA: {
+          increaseA: {
             label: { text: "Increase" },
             field: { store: { key: uniform.name } },
+            increase: { store: { key: uniform.name } },
+            decrease: { store: { key: uniform.name } },
+            slider: { store: { key: uniform.name } },
           },
         }, config, false),
       }

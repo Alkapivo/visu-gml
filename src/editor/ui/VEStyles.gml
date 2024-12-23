@@ -8,6 +8,8 @@ global.__VETheme = {
   purple: {
     primary: "#3B3B53",
     primaryLight: "#455f82",
+    button: "#3B3B53",
+    buttonHover: "#3c4e66",
     primaryShadow: "#2B2B35",
     primaryDark: "#222227",
     dark: "#1B1B20",
@@ -21,10 +23,10 @@ global.__VETheme = {
     textShadow: "#878787",
     textFocus: "#ededed",
     textSelected: "#462f63",
-    accept: "#74a892",
-    acceptShadow: "#008585",
-    deny: "#e35972",
-    denyShadow: "#bf445d",
+    accept: "#3d9e87",
+    acceptShadow: "#368b77",
+    deny: "#9e3d54",
+    denyShadow: "#6d3c54",
     ruler: "#E64B3D",
     header: "#963271",
   },
@@ -127,13 +129,16 @@ global.__VEStyles = new Map(String, Struct, {
     },
   },
   "bar-title": {
+    backgroundColor: VETheme.color.darkBetween,
     align: { v: VAlign.CENTER, h: HAlign.LEFT },
     font: "font_inter_8_regular",
     color: VETheme.color.textShadow,
     offset: { x: 4 },
   },
   "bar-button": {
-    backgroundColor: "#000000",
+    backgroundColor: VETheme.color.darkBetween,
+    colorHoverOver: VETheme.color.primaryShadow,
+    colorHoverOut: VETheme.color.darkBetween,
     label: {
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
       font: "font_inter_8_regular",
@@ -145,95 +150,211 @@ global.__VEStyles = new Map(String, Struct, {
     spriteOff: { name: "visu_texture_checkbox_off" },
   },
   "category-button": {
+    backgroundColorSelected: VETheme.color.accentBetween,
+    backgroundColor: VETheme.color.accentDark,
+    backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+    backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentBetween).toGMColor(),
+    backgroundColorOff: ColorUtil.fromHex(VETheme.color.accentDark).toGMColor(),
+    colorHoverOver: VETheme.color.accentShadow,
+    colorHoverOut: VETheme.color.accentDark,
     label: {
-      backgroundColorSelected: VETheme.color.primaryLight,
-      backgroundColor: VETheme.color.dark,
       font: "font_inter_8_regular",
+      color: VETheme.color.textFocus,
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    },
+  },
+  "type-button": {
+    backgroundColorSelected: VETheme.color.accentShadow,
+    backgroundColor: VETheme.color.primaryShadow,
+    backgroundColorHover: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+    backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+    backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+    colorHoverOver: VETheme.color.primary,
+    colorHoverOut: VETheme.color.primaryShadow,
+    label: {
+      font: "font_inter_8_regular",
+      color: VETheme.color.textFocus,
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    },
+  },
+  "template-add-button": {
+    backgroundColor: VETheme.color.button,
+    backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+    colorHoverOver: VETheme.color.buttonHover,
+    colorHoverOut: VETheme.color.button,
+    label: {
+      font: "font_inter_10_bold",
+      color: VETheme.color.textFocus,
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    },
+  },
+  "collection-button": {
+    backgroundColor: VETheme.color.button,
+    backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+    colorHoverOver: VETheme.color.buttonHover,
+    colorHoverOut: VETheme.color.button,
+    label: {
+      font: "font_inter_10_bold",
       color: VETheme.color.textFocus,
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
     },
   },
   "channel-entry": {
     label: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut:VETheme.color.primaryDark,
       align: { v: VAlign.CENTER, h: HAlign.RIGHT },
       font: "font_inter_10_regular",
       color: VETheme.color.textShadow,
       offset: { x: -5 },
     },
     settings: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.primary,
+      colorHoverOut:VETheme.color.primaryDark,
       label: {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
-        backgroundColor: VETheme.color.primaryShadow,
-      }
+      },
+      sprite: {
+        blend: VETheme.color.textShadow,
+      },
     },
     remove: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.deny,
+      colorHoverOut:VETheme.color.primaryDark,
       label: {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
-        backgroundColor: VETheme.color.primaryShadow,
-      }
+      },
+      sprite: {
+        blend: VETheme.color.textShadow,
+      },
     },
     mute: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.primary,
+      colorHoverOut:VETheme.color.primaryDark,
     },
   },
   "brush-entry": {
     image: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.primaryDark,
     },
     label: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.primaryDark,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
       font: "font_inter_10_regular",
       color: VETheme.color.textShadow,
       offset: { x: 4 },
     },
     remove: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.deny,
+      colorHoverOut: VETheme.color.primaryDark,
       label: {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
-        backgroundColor: VETheme.color.primaryShadow,
-      }
+      },
+      sprite: {
+        blend: VETheme.color.textShadow,
+      },
     },
     settings: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.primary,
+      colorHoverOut: VETheme.color.primaryDark,
       label: {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
-        backgroundColor: VETheme.color.primaryShadow,
-      }
+      },
+      sprite: {
+        blend: VETheme.color.textShadow,
+      },
     },
   },
   "template-entry": {
     settings: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.primary,
+      colorHoverOut: VETheme.color.primaryDark,
       label: {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
-        backgroundColor: VETheme.color.primaryShadow,
-      }
+      },
+      sprite: {
+        name: "texture_ve_icon_settings",
+        blend: VETheme.color.textShadow,
+      },
     },
     remove: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.deny,
+      colorHoverOut: VETheme.color.primaryDark,
       label: {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
-        backgroundColor: VETheme.color.primaryShadow,
-      }
+      },
+      sprite: {
+        name: "texture_ve_icon_trash",
+        blend: VETheme.color.textShadow,
+      },
     },
     label: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.primaryDark,
+      align: { v: VAlign.CENTER, h: HAlign.LEFT },
+      font: "font_inter_10_regular",
+      color: VETheme.color.textShadow,
+      offset: { x: 4 },
+    },
+  },
+  "template-entry-lock": {
+    settings: {
+      backgroundColor: VETheme.color.dark,
+      colorHoverOver: VETheme.color.primary,
+      colorHoverOut: VETheme.color.dark,
+      label: {
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+        font: "font_inter_10_regular",
+        color: VETheme.color.textShadow,
+      },
+      sprite: {
+        name: "texture_ve_icon_settings",
+        blend: VETheme.color.textShadow,
+      },
+    },
+    remove: {
+      backgroundColor: VETheme.color.dark,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.dark,
+      label: {
+        align: { v: VAlign.CENTER, h: HAlign.CENTER },
+        font: "font_inter_10_regular",
+        color: VETheme.color.textShadow,
+      },
+      sprite: {
+        name: "texture_ve_icon_lock",
+        blend: VETheme.color.textShadow,
+      },
+    },
+    label: {
+      backgroundColor: VETheme.color.dark,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.dark,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
       font: "font_inter_10_regular",
       color: VETheme.color.textShadow,
@@ -242,13 +363,13 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "line-h": {
     image: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
       backgroundAlpha: 1.0,
     },
   },
   "line-w": {
     image: {
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
       backgroundAlpha: 1.0,
     },
   },
@@ -327,12 +448,14 @@ global.__VEStyles = new Map(String, Struct, {
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
     },
     button: {
+      backgroundColor: VETheme.color.button,
+      colorHoverOver: VETheme.color.buttonHover,
+      colorHoverOut: VETheme.color.button,
       label: {
         font: "font_inter_8_regular",
         color: VETheme.color.textFocus,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
-      backgroundColor: VETheme.color.accentShadow,
     },
   },
   "text-field-checkbox": { 
@@ -391,12 +514,14 @@ global.__VEStyles = new Map(String, Struct, {
       padding: { top: 0, bottom: 0, left: 4, right: 0 },
     },
     button: {
+      backgroundColor: VETheme.color.button,
+      colorHoverOver: VETheme.color.buttonHover,
+      colorHoverOut: VETheme.color.button,
       label: {
         font: "font_inter_10_regular",
         color: VETheme.color.textFocus,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
-      backgroundColor: VETheme.color.accentShadow,
     },
     checkbox: { }
   },
