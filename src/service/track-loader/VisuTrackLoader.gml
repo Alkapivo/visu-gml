@@ -272,7 +272,6 @@ function VisuTrackLoader(_controller): Service() constructor {
                             channelsToMigrate: acc.channelsToMigrate,
                           }))
 
-                          return true;
                           Logger.debug("VisuTrackLoader", $"Apply support migration channels '{name}'")
                           acc.channelsToMigrate.forEach(function(events, channelName, acc) {
                             Logger.debug("VisuTrackLoader", $"Migrate support channel '{channelName}'")

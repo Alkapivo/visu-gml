@@ -120,238 +120,348 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
-        "components": new Array(Struct, [
-          #region Old API
-          {
-            name: "button_category-shader",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("vertical-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 0, bottom: 1, left: 1, right: 0 },
-              callback: function() { 
-                var category = this.context.brushToolbar.store.get("category")
-                if (category.get() != this.category) {
-                  category.set(this.category)
-                }
+        "components": new Array(Struct, Core.getProperty("visu.editor.migrate", false) 
+          ?
+            [
+              #region Old API
+              {
+                name: "button_category-shader",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundColor: VETheme.color.primary,
+                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                  backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+                  backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+                  backgroundMargin: { top: 0, bottom: 1, left: 1, right: 0 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: { 
+                    font: "font_inter_8_bold",
+                    text: String.toArray("@SH").join("\n"),
+                  },
+                  category: "shader",
+                },
               },
-              updateCustom: function() {
-                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              {
+                name: "button_category-shroom",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundColor: VETheme.color.primary,
+                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                  backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+                  backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+                  backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    text: String.toArray("@SR").join("\n"),
+                  },
+                  category: "shroom",
+                },
               },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { 
-                font: "font_inter_8_bold",
-                text: String.toArray("@SH").join("\n"),
+              {
+                name: "button_category-grid_old",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundColor: VETheme.color.primary,
+                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                  backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+                  backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+                  backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    text: String.toArray("@GR").join("\n"),
+                  },
+                  category: "grid_old",
+                },
               },
-              category: "shader",
-            },
-          },
-          {
-            name: "button_category-shroom",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("vertical-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
-              callback: function() { 
-                var category = this.context.brushToolbar.store.get("category")
-                if (category.get() != this.category) {
-                  category.set(this.category)
-                }
+              {
+                name: "button_category-view_old",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundColor: VETheme.color.primary,
+                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                  backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+                  backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+                  backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    text: String.toArray("@VW").join("\n"),
+                  },
+                  category: "view_old",
+                },
               },
-              updateCustom: function() {
-                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              #endregion
+              {
+                name: "button_category-effect",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: { 
+                    font: "font_inter_8_bold",
+                    //text: String.toArray("EFFECT").join("\n"),
+                    text: String.toArray("EFF").join("\n"),
+                  },
+                  category: "effect",
+                },
               },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: {
-                font: "font_inter_8_bold",
-                text: String.toArray("@SR").join("\n"),
+              {
+                name: "button_category-entity",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    //text: String.toArray("ENTITY").join("\n"),
+                    text: String.toArray("ENT").join("\n"),
+                  },
+                  category: "entity",
+                },
               },
-              category: "shroom",
-            },
-          },
-          {
-            name: "button_category-grid_old",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("vertical-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
-              callback: function() { 
-                var category = this.context.brushToolbar.store.get("category")
-                if (category.get() != this.category) {
-                  category.set(this.category)
-                }
+              {
+                name: "button_category-grid",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    //text: String.toArray("GRID").join("\n"),
+                    text: String.toArray("GRD").join("\n"),
+                  },
+                  category: "grid",
+                },
               },
-              updateCustom: function() {
-                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              {
+                name: "button_category-view",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundMargin: { top: 1, bottom: 0, left: 1, right: 1 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    //text: String.toArray("VIEW").join("\n"),
+                    text: String.toArray("VW").join("\n"),
+                  },
+                  category: "view",
+                },
+              }
+            ] 
+          :
+            [
+              {
+                name: "button_category-effect",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: { 
+                    font: "font_inter_8_bold",
+                    text: String.toArray("EFFECT").join("\n"),
+                  },
+                  category: "effect",
+                },
               },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: {
-                font: "font_inter_8_bold",
-                text: String.toArray("@GR").join("\n"),
+              {
+                name: "button_category-entity",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    text: String.toArray("ENTITY").join("\n"),
+                  },
+                  category: "entity",
+                },
               },
-              category: "grid_old",
-            },
-          },
-          {
-            name: "button_category-view_old",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("vertical-item"),
-            config: {
-              backgroundColor: VETheme.color.primary,
-              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-              backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
-              callback: function() { 
-                var category = this.context.brushToolbar.store.get("category")
-                if (category.get() != this.category) {
-                  category.set(this.category)
-                }
+              {
+                name: "button_category-grid",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    text: String.toArray("GRID").join("\n"),
+                  },
+                  category: "grid",
+                },
               },
-              updateCustom: function() {
-                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: {
-                font: "font_inter_8_bold",
-                text: String.toArray("@VW").join("\n"),
-              },
-              category: "view_old",
-            },
-          },
-          #endregion
-          {
-            name: "button_category-effect",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("vertical-item"),
-            config: {
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var category = this.context.brushToolbar.store.get("category")
-                if (category.get() != this.category) {
-                  category.set(this.category)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: { 
-                font: "font_inter_8_bold",
-                //text: String.toArray("EFFECT").join("\n"),
-                text: String.toArray("EFF").join("\n"),
-              },
-              category: "effect",
-            },
-          },
-          {
-            name: "button_category-entity",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("vertical-item"),
-            config: {
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var category = this.context.brushToolbar.store.get("category")
-                if (category.get() != this.category) {
-                  category.set(this.category)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: {
-                font: "font_inter_8_bold",
-                //text: String.toArray("ENTITY").join("\n"),
-                text: String.toArray("ENT").join("\n"),
-              },
-              category: "entity",
-            },
-          },
-          {
-            name: "button_category-grid",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("vertical-item"),
-            config: {
-              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              callback: function() { 
-                var category = this.context.brushToolbar.store.get("category")
-                if (category.get() != this.category) {
-                  category.set(this.category)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: {
-                font: "font_inter_8_bold",
-                //text: String.toArray("GRID").join("\n"),
-                text: String.toArray("GRD").join("\n"),
-              },
-              category: "grid",
-            },
-          },
-          {
-            name: "button_category-view",
-            template: VEComponents.get("category-button"),
-            layout: VELayouts.get("vertical-item"),
-            config: {
-              backgroundMargin: { top: 1, bottom: 0, left: 1, right: 1 },
-              callback: function() { 
-                var category = this.context.brushToolbar.store.get("category")
-                if (category.get() != this.category) {
-                  category.set(this.category)
-                }
-              },
-              updateCustom: function() {
-                this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
-                  ? this.backgroundColorOn
-                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
-              },
-              onMouseHoverOver: function(event) { },
-              onMouseHoverOut: function(event) { },
-              label: {
-                font: "font_inter_8_bold",
-                //text: String.toArray("VIEW").join("\n"),
-                text: String.toArray("VW").join("\n"),
-              },
-              category: "view",
-            },
-          }
-        ]),
+              {
+                name: "button_category-view",
+                template: VEComponents.get("category-button"),
+                layout: VELayouts.get("vertical-item"),
+                config: {
+                  backgroundMargin: { top: 1, bottom: 0, left: 1, right: 1 },
+                  callback: function() { 
+                    var category = this.context.brushToolbar.store.get("category")
+                    if (category.get() != this.category) {
+                      category.set(this.category)
+                    }
+                  },
+                  updateCustom: function() {
+                    this.backgroundColor = this.category == this.context.brushToolbar.store.getValue("category")
+                      ? this.backgroundColorOn
+                      : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+                  },
+                  onMouseHoverOver: function(event) { },
+                  onMouseHoverOut: function(event) { },
+                  label: {
+                    font: "font_inter_8_bold",
+                    text: String.toArray("VIEW").join("\n"),
+                  },
+                  category: "view",
+                },
+              }
+            ]
+          ),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
