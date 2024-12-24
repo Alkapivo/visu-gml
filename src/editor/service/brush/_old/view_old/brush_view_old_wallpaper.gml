@@ -3,8 +3,9 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateViewOldWallpaperEvent(json) {
+  Logger.debug("Track", "migrateViewOldWallpaperEvent is not implemented")
   return {
-
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
   }
 }
 

@@ -4,6 +4,9 @@
 ///@type {Struct}
 global.__shroom_track_event = {
   "brush_shroom_spawn": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
       var shroom = {
@@ -65,6 +68,9 @@ global.__shroom_track_event = {
     },
   },
   "brush_shroom_clear": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var shroomService = Beans.get(BeanVisuController).shroomService
       var shrooms = shroomService.shrooms
@@ -88,6 +94,9 @@ global.__shroom_track_event = {
     },
   },
   "brush_shroom_config": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var gridService = Beans.get(BeanVisuController).gridService
       if (Struct.get(data, "shroom-config_use-render-shrooms")) {

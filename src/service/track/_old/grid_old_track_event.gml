@@ -4,7 +4,11 @@
 ///@type {Struct}
 global.__grid_old_track_event = {
   "brush_grid_old_channel": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },   
     run: function(data) {
+      //Core.print("Dispatch track event:", "brush_grid_old_channel")
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "grid-channel_use-transform-amount") == true) {
         var transformer = Struct.get(data, "grid-channel_transform-amount")
@@ -128,7 +132,11 @@ global.__grid_old_track_event = {
     },
   },
   "brush_grid_old_coin": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
+      //Core.print("Dispatch track event:", "brush_grid_old_coin")
       var controller = Beans.get(BeanVisuController)
       var view = controller.gridService.view
       var viewX = Struct.getDefault(data, "grid-coin_use-snap-h", false)
@@ -152,202 +160,210 @@ global.__grid_old_track_event = {
     },
   },
   "brush_grid_old_config": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
-    var controller = Beans.get(BeanVisuController)
-    if (Struct.get(data, "grid-config_use-render-grid")) {
-      controller.gridService.properties.renderGrid = Struct
-        .get(data, "grid-config_render-grid")
-    }
+      //Core.print("Dispatch track event:", "brush_grid_old_config")
+      var controller = Beans.get(BeanVisuController)
+      if (Struct.get(data, "grid-config_use-render-grid")) {
+        controller.gridService.properties.renderGrid = Struct
+          .get(data, "grid-config_render-grid")
+      }
 
-    if (Struct.get(data, "grid-config_use-render-grid-elements")) {
-      controller.gridService.properties.renderElements = Struct
-        .get(data, "grid-config_render-grid-elements")
-    }
-    
-    if (Struct.get(data, "grid-config_use-speed")) {
-      var transformer = Struct.get(data, "grid-config_speed")
-      controller.gridService.send(new Event("transform-property", {
-        key: "speed",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.speed,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
-    
-    if (Struct.get(data, "grid-config_use-clear-frame")) {
-      controller.gridService.properties.gridClearFrame = Struct
-        .get(data, "grid-config_clear-frame")
-    }
+      if (Struct.get(data, "grid-config_use-render-grid-elements")) {
+        controller.gridService.properties.renderElements = Struct
+          .get(data, "grid-config_render-grid-elements")
+      }
+      
+      if (Struct.get(data, "grid-config_use-speed")) {
+        var transformer = Struct.get(data, "grid-config_speed")
+        controller.gridService.send(new Event("transform-property", {
+          key: "speed",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new NumberTransformer({
+            value: controller.gridService.properties.speed,
+            target: transformer.target,
+            factor: transformer.factor,
+            increase: transformer.increase,
+          })
+        }))
+      }
+      
+      if (Struct.get(data, "grid-config_use-clear-frame")) {
+        controller.gridService.properties.gridClearFrame = Struct
+          .get(data, "grid-config_clear-frame")
+      }
 
-    if (Struct.get(data, "grid-config_use-clear-color") == true) {
-      controller.gridService.send(new Event("transform-property", {
-        key: "gridClearColor",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new ColorTransformer({
-          value: controller.gridService.properties.gridClearColor.toHex(true),
-          target: Struct.get(data, "grid-config_clear-color"),
-          factor: 0.01,
-        })
-      }))
-    }
-    
-    if (Struct.get(data, "grid-config_use-clear-frame-alpha") == true) {
-      var transformer = Struct.get(data, "grid-config_clear-frame-alpha")
-      controller.gridService.send(new Event("transform-property", {
-        key: "gridClearFrameAlpha",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.gridClearFrameAlpha,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-clear-color") == true) {
+        controller.gridService.send(new Event("transform-property", {
+          key: "gridClearColor",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new ColorTransformer({
+            value: controller.gridService.properties.gridClearColor.toHex(true),
+            target: Struct.get(data, "grid-config_clear-color"),
+            factor: 0.01,
+          })
+        }))
+      }
+      
+      if (Struct.get(data, "grid-config_use-clear-frame-alpha") == true) {
+        var transformer = Struct.get(data, "grid-config_clear-frame-alpha")
+        controller.gridService.send(new Event("transform-property", {
+          key: "gridClearFrameAlpha",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new NumberTransformer({
+            value: controller.gridService.properties.gridClearFrameAlpha,
+            target: transformer.target,
+            factor: transformer.factor,
+            increase: transformer.increase,
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_use-gamemode") == true) {
-      controller.send(new Event("change-gamemode")
-        .setData(GameMode.get(Struct.get(data, "grid-config_gamemode"))))
-    }
+      if (Struct.get(data, "grid-config_use-gamemode") == true) {
+        controller.send(new Event("change-gamemode")
+          .setData(GameMode.get(Struct.get(data, "grid-config_gamemode"))))
+      }
 
-    if (Struct.get(data, "grid-config_use-border-bottom-color")) {
-      controller.gridService.send(new Event("transform-property", {
-        key: "borderVerticalColor",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new ColorTransformer({
-          value: controller.gridService.properties.borderVerticalColor.toHex(true),
-          target: Struct.get(data, "grid-config_border-bottom-color"),
-          factor: Struct.getDefault(data, "grid-config_border-bottom-color-speed", 0.01),
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-border-bottom-color")) {
+        controller.gridService.send(new Event("transform-property", {
+          key: "borderVerticalColor",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new ColorTransformer({
+            value: controller.gridService.properties.borderVerticalColor.toHex(true),
+            target: Struct.get(data, "grid-config_border-bottom-color"),
+            factor: Struct.getDefault(data, "grid-config_border-bottom-color-speed", 0.01),
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_use-border-bottom-alpha")) {
-      var transformer = Struct.get(data, "grid-config_border-bottom-alpha")
-      controller.gridService.send(new Event("transform-property", {
-        key: "borderVerticalAlpha",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.borderVerticalAlpha,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-border-bottom-alpha")) {
+        var transformer = Struct.get(data, "grid-config_border-bottom-alpha")
+        controller.gridService.send(new Event("transform-property", {
+          key: "borderVerticalAlpha",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new NumberTransformer({
+            value: controller.gridService.properties.borderVerticalAlpha,
+            target: transformer.target,
+            factor: transformer.factor,
+            increase: transformer.increase,
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_use-border-bottom-size")) {
-      var transformer = Struct.get(data, "grid-config_border-bottom-size")
-      controller.gridService.send(new Event("transform-property", {
-        key: "borderVerticalThickness",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.borderVerticalThickness,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-border-bottom-size")) {
+        var transformer = Struct.get(data, "grid-config_border-bottom-size")
+        controller.gridService.send(new Event("transform-property", {
+          key: "borderVerticalThickness",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new NumberTransformer({
+            value: controller.gridService.properties.borderVerticalThickness,
+            target: transformer.target,
+            factor: transformer.factor,
+            increase: transformer.increase,
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_use-border-horizontal-color")) {
-      controller.gridService.send(new Event("transform-property", {
-        key: "borderHorizontalColor",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new ColorTransformer({
-          value: controller.gridService.properties.borderHorizontalColor.toHex(true),
-          target: Struct.get(data, "grid-config_border-horizontal-color"),
-          factor: Struct.getDefault(data, "grid-config_border-horizontal-color-speed", 0.01),
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-border-horizontal-color")) {
+        controller.gridService.send(new Event("transform-property", {
+          key: "borderHorizontalColor",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new ColorTransformer({
+            value: controller.gridService.properties.borderHorizontalColor.toHex(true),
+            target: Struct.get(data, "grid-config_border-horizontal-color"),
+            factor: Struct.getDefault(data, "grid-config_border-horizontal-color-speed", 0.01),
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_use-border-horizontal-alpha")) {
-      var transformer = Struct.get(data, "grid-config_border-horizontal-alpha")
-      controller.gridService.send(new Event("transform-property", {
-        key: "borderHorizontalAlpha",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.borderHorizontalAlpha,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-border-horizontal-alpha")) {
+        var transformer = Struct.get(data, "grid-config_border-horizontal-alpha")
+        controller.gridService.send(new Event("transform-property", {
+          key: "borderHorizontalAlpha",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new NumberTransformer({
+            value: controller.gridService.properties.borderHorizontalAlpha,
+            target: transformer.target,
+            factor: transformer.factor,
+            increase: transformer.increase,
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_use-border-horizontal-size")) {
-      var transformer = Struct.get(data, "grid-config_border-horizontal-size")
-      controller.gridService.send(new Event("transform-property", {
-        key: "borderHorizontalThickness",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.borderHorizontalThickness,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-border-horizontal-size")) {
+        var transformer = Struct.get(data, "grid-config_border-horizontal-size")
+        controller.gridService.send(new Event("transform-property", {
+          key: "borderHorizontalThickness",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new NumberTransformer({
+            value: controller.gridService.properties.borderHorizontalThickness,
+            target: transformer.target,
+            factor: transformer.factor,
+            increase: transformer.increase,
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_use-border-horizontal-width")) {
-      var transformer = Struct.get(data, "grid-config_border-horizontal-width")
-      controller.gridService.send(new Event("transform-property", {
-        key: "borderHorizontalLength",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.borderHorizontalLength,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-border-horizontal-width")) {
+        var transformer = Struct.get(data, "grid-config_border-horizontal-width")
+        controller.gridService.send(new Event("transform-property", {
+          key: "borderHorizontalLength",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new NumberTransformer({
+            value: controller.gridService.properties.borderHorizontalLength,
+            target: transformer.target,
+            factor: transformer.factor,
+            increase: transformer.increase,
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_use-border-horizontal-height")) {
-      var transformer = Struct.get(data, "grid-config_border-horizontal-height")
-      controller.gridService.send(new Event("transform-property", {
-        key: "borderVerticalLength",
-        container: controller.gridService.properties,
-        executor: controller.gridService.executor,
-        transformer: new NumberTransformer({
-          value: controller.gridService.properties.borderVerticalLength,
-          target: transformer.target,
-          factor: transformer.factor,
-          increase: transformer.increase,
-        })
-      }))
-    }
+      if (Struct.get(data, "grid-config_use-border-horizontal-height")) {
+        var transformer = Struct.get(data, "grid-config_border-horizontal-height")
+        controller.gridService.send(new Event("transform-property", {
+          key: "borderVerticalLength",
+          container: controller.gridService.properties,
+          executor: controller.gridService.executor,
+          transformer: new NumberTransformer({
+            value: controller.gridService.properties.borderVerticalLength,
+            target: transformer.target,
+            factor: transformer.factor,
+            increase: transformer.increase,
+          })
+        }))
+      }
 
-    if (Struct.get(data, "grid-config_clear-player")) {
-      controller.playerService.send(new Event("clear-player"))
-    }
+      if (Struct.get(data, "grid-config_clear-player")) {
+        controller.playerService.send(new Event("clear-player"))
+      }
 
-    if (Struct.get(data, "grid-config_clear-bullets")) {
-      controller.bulletService.send(new Event("clear-bullets"))
-    }
+      if (Struct.get(data, "grid-config_clear-bullets")) {
+        controller.bulletService.send(new Event("clear-bullets"))
+      }
 
-    if (Struct.get(data, "grid-config_clear-coins")) {
-      controller.coinService.send(new Event("clear-coins"))
-    }
+      if (Struct.get(data, "grid-config_clear-coins")) {
+        controller.coinService.send(new Event("clear-coins"))
+      }
     },
   },
   "brush_grid_old_particle": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
+      //Core.print("Dispatch track event:", "brush_grid_old_particle")
       var particleService = Beans.get(BeanVisuController).particleService
       var event = particleService.factoryEventSpawnParticleEmitter({
         particleName: Struct.get(data, "grid-particle_template"),
@@ -365,7 +381,11 @@ global.__grid_old_track_event = {
     },
   },
   "brush_grid_old_player": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
+      //Core.print("Dispatch track event:", "brush_grid_old_player")
       var controller = Beans.get(BeanVisuController)
       var json = {
         sprite: Struct.get(data, "grid-player_texture")
@@ -429,7 +449,11 @@ global.__grid_old_track_event = {
     },
   },
   "brush_grid_old_separator": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
+      //Core.print("Dispatch track event:", "brush_grid_old_separator")
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "grid-separator_use-transform-amount") == true) {
         var transformer = Struct.get(data, "grid-separator_transform-amount")

@@ -4,6 +4,7 @@
 ///@return {Struct}
 function migrateViewOldGlitchEvent(json) {
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "ef-glt_use-fade-out": Struct.getIfType(json, "view-glitch_use-factor", Boolean, false),
     "ef-glt_fade-out": Struct.getIfType(json, "view-glitch_factor", Number, 1.0),
     "ef-glt_use-config": Struct.getIfType(json, "view-glitch_use-config", Boolean, false),

@@ -3,11 +3,11 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateViewOldCameraEvent(json) {
+  Logger.debug("Track", "migrateViewOldCameraEvent is not implemented")
   return {
-
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
   }
 }
-
 
 ///@param {?Struct} [json]
 ///@return {Struct}

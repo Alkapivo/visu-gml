@@ -16,6 +16,7 @@ function migrateGridOldCoinEvent(json) {
   }
 
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "en-coin_preview": Struct.getIfType(json, "grid-coin_use-preview", Boolean, false),
     "en-coin_template": Struct.getIfType(json, "grid-coin_template", String, "coin-default"),
     "en-coin_x": Struct.getIfType(json, "grid-coin_spawn-x", Number, 0.0),

@@ -4,6 +4,9 @@
 ///@type {Struct}
 global.__shader_track_event = {
   "brush_shader_spawn": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var eventData = {
         template: Struct.get(data, "shader-spawn_template"),
@@ -57,6 +60,9 @@ global.__shader_track_event = {
     },
   },
   "brush_shader_overlay": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "shader-overlay_use-render-support-grid")) {
@@ -95,6 +101,9 @@ global.__shader_track_event = {
     },
   },
   "brush_shader_clear": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       static fadeOutTask = function(task, iterator, _fadeOut) {
         var fadeOut = Core.isType(_fadeOut, Number) 
@@ -177,6 +186,9 @@ global.__shader_track_event = {
     },
   },
   "brush_shader_config": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
       var properties = controller.gridService.properties

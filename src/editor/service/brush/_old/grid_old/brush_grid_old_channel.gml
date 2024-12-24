@@ -4,6 +4,7 @@
 ///@return {Struct}
 function migrateGridOldChannelEvent(json) {
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "gr-c_use-mode": Struct.getIfType(json, "grid-channel_use-mode", Boolean, false),
     "gr-c_mode": Struct.getIfType(json, "grid-channel_mode", String, "DUAL"),
     "gr-c_use-amount": Struct.getIfType(json, "grid-channel_use-transform-amount", Boolean, false),

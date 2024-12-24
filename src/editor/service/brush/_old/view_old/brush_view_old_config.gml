@@ -3,8 +3,19 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateViewOldConfigEvent(json) {
+  Logger.debug("Track", "migrateViewOldConfigEvent is not implemented")
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+  }
+}
 
+
+///@param {Struct} json
+///@return {Struct}
+function migrateViewOldConfigToEntityConfigEvent(json) {
+  Logger.debug("Track", "migrateViewOldConfigToEntityConfigEvent is not implemented")
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
   }
 }
 

@@ -1,5 +1,15 @@
 ///@package io.alkapivo.visu.editor.service.brush._old.shader
 
+///@param {Struct} json
+///@return {Struct}
+function migrateShaderOverlayEvent(json) {
+  Logger.debug("Track", "migrateShaderOverlayEvent is not implemented")
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+  }
+}
+
+
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_shader_overlay(json = null) {

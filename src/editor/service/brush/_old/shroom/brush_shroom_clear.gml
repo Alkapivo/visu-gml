@@ -1,5 +1,15 @@
 ///@package io.alkapivo.visu.editor.service.brush._old.shroom
 
+///@param {Struct} json
+///@return {Struct}
+function migrateShroomClearEvent(json) {
+  Logger.debug("Track", "migrateShroomClearEvent is not implemented")
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+  }
+}
+
+
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_shroom_clear(json = null) {

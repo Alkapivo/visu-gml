@@ -4,6 +4,9 @@
 ///@type {Struct}
 global.__view_old_track_event = {
   "brush_view_old_wallpaper": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "view-wallpaper_clear-color") == true) {
@@ -80,6 +83,9 @@ global.__view_old_track_event = {
     },
   },
   "brush_view_old_camera": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
 
@@ -214,6 +220,9 @@ global.__view_old_track_event = {
     },
   },
   "brush_view_old_lyrics": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
 
@@ -267,6 +276,9 @@ global.__view_old_track_event = {
     },
   },
   "brush_view_old_glitch": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var bktGlitchService = Beans.get(BeanVisuController).visuRenderer.gridRenderer.glitchService
       var config = {
@@ -360,6 +372,9 @@ global.__view_old_track_event = {
     },
   },
   "brush_view_old_config": {
+    parse: function(data) {
+      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+    },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
       var gridService = controller.gridService

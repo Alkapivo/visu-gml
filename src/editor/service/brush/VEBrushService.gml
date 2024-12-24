@@ -26,64 +26,6 @@ function VEBrushService() constructor {
       return this
     }
 
-    ///@description migration
-    if (Core.getProperty("visu.editor.migrate", false)) {
-      switch (template.type) {
-        case VEBrushType.SHADER_SPAWN:
-          template.type = VEBrushType.EFFECT_SHADER
-          template.properties = migrateShaderSpawnEvent(template.properties)
-          break
-        case VEBrushType.VIEW_OLD_GLITCH:
-          template.type = VEBrushType.EFFECT_GLITCH
-          template.properties = migrateViewOldGlitchEvent(template.properties)
-          break
-        case VEBrushType.GRID_OLD_PARTICLE:
-          template.type = VEBrushType.EFFECT_PARTICLE
-          template.properties = migrateGridOldParticleEvent(template.properties)
-          break
-        case VEBrushType.SHADER_CONFIG:
-          template.type = VEBrushType.EFFECT_CONFIG
-          template.properties = migrateShaderConfigEvent(template.properties)
-          break
-        case VEBrushType.SHROOM_SPAWN:
-          template.type = VEBrushType.ENTITY_SHROOM
-          template.properties = migrateShroomSpawnEvent(template.properties)
-          break
-        case VEBrushType.GRID_OLD_COIN:
-          template.type = VEBrushType.ENTITY_COIN
-          template.properties = migrateGridOldCoinEvent(template.properties)
-          break
-        case VEBrushType.GRID_OLD_PLAYER:
-          template.type = VEBrushType.ENTITY_PLAYER
-          template.properties = migrateGridOldPlayerEvent(template.properties)
-          break
-        case VEBrushType.GRID_OLD_CHANNEL:
-          template.type = VEBrushType.GRID_COLUMN
-          template.properties = migrateGridOldChannelEvent(template.properties)
-          break
-        case VEBrushType.GRID_OLD_SEPARATOR:
-          template.type = VEBrushType.GRID_ROW
-          template.properties = migrateGridOldSeparatorEvent(template.properties)
-          break
-        case VEBrushType.VIEW_OLD_CAMERA:
-          template.type = VEBrushType.VIEW_CAMERA
-          template.properties = migrateViewOldCameraEvent(template.properties)
-          break
-        case VEBrushType.VIEW_OLD_LYRICS:
-          template.type = VEBrushType.VIEW_SUBTITLE
-          template.properties = migrateViewOldLyricsEvent(template.properties)
-          break
-        case VEBrushType.VIEW_OLD_WALLPAPER:
-          template.type = VEBrushType.VIEW_WALLPAPER
-          template.properties = migrateViewOldWallpaperEvent(template.properties)
-          break
-        case VEBrushType.VIEW_OLD_CONFIG:
-          template.type = VEBrushType.VIEW_CONFIG
-          template.properties = migrateViewOldConfigEvent(template.properties)
-          break
-      }
-    }
-
     var templates = this.templates.get(template.type)
     if (!Core.isType(templates, Array)) {
       Logger.warn("VEBrushService", $"Unable to find template for type '{template.type}'")
@@ -104,6 +46,154 @@ function VEBrushService() constructor {
       } else {
         templates.add(template)
       }
+    }
+
+    ///@description migration
+    if (!Core.getProperty("visu.editor.migrate", false)) {
+      return this
+    }
+
+    switch (template.type) {
+      case VEBrushType.SHADER_SPAWN:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.EFFECT_SHADER
+        parsedTemplate.properties = migrateShaderSpawnEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.SHADER_OVERLAY:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.GRID_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateShaderOverlayEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.SHADER_CLEAR:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.EFFECT_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateShaderClearEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.SHADER_CONFIG:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.EFFECT_CONFIG
+        parsedTemplate.properties = migrateShaderConfigEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.SHROOM_SPAWN:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.ENTITY_SHROOM
+        parsedTemplate.properties = migrateShroomSpawnEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.SHROOM_CLEAR:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.ENTITY_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateShroomClearEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.SHROOM_CONFIG:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.ENTITY_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateShroomConfigEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.GRID_OLD_CHANNEL:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.GRID_COLUMN
+        parsedTemplate.properties = migrateGridOldChannelEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.GRID_OLD_COIN:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.ENTITY_COIN
+        parsedTemplate.properties = migrateGridOldCoinEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.GRID_OLD_CONFIG:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.GRID_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateGridOldConfigEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+
+        parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.GRID_AREA
+        ///@todo
+        parsedTemplate.properties = migrateGridOldConfigToGridAreaEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+
+        parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.ENTITY_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateGridOldConfigToEntityConfigEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.GRID_OLD_PARTICLE:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.EFFECT_PARTICLE
+        parsedTemplate.properties = migrateGridOldParticleEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.GRID_OLD_PLAYER:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.ENTITY_PLAYER
+        parsedTemplate.properties = migrateGridOldPlayerEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+
+        parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.ENTITY_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateGridOldPlayerToEntityConfigEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.GRID_OLD_SEPARATOR:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.GRID_ROW
+        parsedTemplate.properties = migrateGridOldSeparatorEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.VIEW_OLD_WALLPAPER:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.VIEW_WALLPAPER
+        ///@todo
+        parsedTemplate.properties = migrateViewOldWallpaperEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.VIEW_OLD_CAMERA:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.VIEW_CAMERA
+        ///@todo
+        parsedTemplate.properties = migrateViewOldCameraEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.VIEW_OLD_LYRICS:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.VIEW_SUBTITLE
+        parsedTemplate.properties = migrateViewOldLyricsEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.VIEW_OLD_GLITCH:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.EFFECT_GLITCH
+        parsedTemplate.properties = migrateViewOldGlitchEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
+      case VEBrushType.VIEW_OLD_CONFIG:
+        var parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.VIEW_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateViewOldConfigEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+
+        parsedTemplate = new VEBrushTemplate(JSON.clone(template.toStruct()))
+        parsedTemplate.type = VEBrushType.ENTITY_CONFIG
+        ///@todo
+        parsedTemplate.properties = migrateViewOldConfigToEntityConfigEvent(parsedTemplate)
+        this.saveTemplate(parsedTemplate)
+        break
     }
 
     return this

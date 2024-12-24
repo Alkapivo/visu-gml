@@ -4,7 +4,7 @@ global.__entity_track_event = {
   "brush_entity_shroom": {
     parse: function(data) {
       return {
-        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
+        "icon": Struct.parse.sprite(data, "icon"),
         "en-shr_preview": Struct.parse.boolean(data, "en-shr_preview"),
         "en-shr_template": Struct.parse.text(data, "en-shr_template", "shroom-default"),
         "en-shr_spd": Struct.parse.number(data, "en-shr_spd", 10.0, 0.0, 99.9),
@@ -98,7 +98,7 @@ global.__entity_track_event = {
   "brush_entity_coin": {
     parse: function(data) {
       return {
-        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
+        "icon": Struct.parse.sprite(data, "icon"),
         "en-coin_preview": Struct.parse.boolean(data, "en-coin_preview"),
         "en-coin_template": Struct.parse.text(data, "en-coin_template", "coin-default"),
         "en-coin_x": Struct.parse.number(data, "en-coin_x", 0.0,
@@ -155,7 +155,7 @@ global.__entity_track_event = {
   "brush_entity_player": {
     parse: function(data) {
       return {
-        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
+        "icon": Struct.parse.sprite(data, "icon"),
         "en-pl_texture": Struct.parse.sprite(data, "en-pl_texture", {
           name: "texture_player"
         }),
@@ -251,7 +251,7 @@ global.__entity_track_event = {
   "brush_entity_config": {
     parse: function(data) {
       return {
-        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
+        "icon": Struct.parse.sprite(data, "icon"),
         "en-cfg_use-render-shr": Struct.parse.boolean(data, "en-cfg_use-render-shr"),
         "en-cfg_render-shr": Struct.parse.boolean(data, "en-cfg_render-shr"),
         "en-cfg_use-render-player": Struct.parse.boolean(data, "en-cfg_use-render-player"),

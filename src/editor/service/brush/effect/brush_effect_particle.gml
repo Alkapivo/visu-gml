@@ -2,29 +2,6 @@
 
 ///@param {Struct} json
 ///@return {Struct}
-function migrateGridOldParticleEvent(json) {
-  return {
-    "ef-part_preview": Struct.getIfType(json, "grid-particle_use-preview", Boolean, false),
-    "ef-part_template": Struct.getIfType(json, "grid-particle_template", String, "particle-default"),
-    "ef-part_duration": Struct.getIfType(json, "grid-particle_duration", Number, 1.0),
-    "ef-part_interval": Struct.getIfType(json, "grid-particle_interval", Number, 1.0),
-    "ef-part_amount": Struct.getIfType(json, "grid-particle_amount", Number, 1.0),
-    "ef-part_shape": Struct.get(json, "grid-particle_shape"),
-    "ef-part_distribution": Struct.get(json, "grid-particle_distribution"),
-    "ef-part_area": {
-      "x": Struct.getIfType(json, "grid-particle_beginX", Number, 0.0),
-      "y": Struct.getIfType(json, "grid-particle_beginY", Number, 0.0),
-      "width": abs(Struct.getIfType(json, "grid-particle_endX", Number, 0.0)
-        - Struct.getIfType(json, "grid-particle_beginX", Number, 0.0)),
-      "height": abs(Struct.getIfType(json, "grid-particle_endY", Number, 0.0)
-        - Struct.getIfType(json, "grid-particle_beginY", Number, 0.0)),
-    }
-  }
-}
-
-
-///@param {Struct} json
-///@return {Struct}
 function brush_effect_particle(json) {
   return {
     name: "brush_effect_particle",

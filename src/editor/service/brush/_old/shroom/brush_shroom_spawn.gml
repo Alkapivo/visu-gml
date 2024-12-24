@@ -72,21 +72,8 @@ function migrateShroomSpawnEvent(json) {
     }
   }
 
-  Struct.remove(json, "shroom-spawn_channels-spawn-x")
-  Struct.remove(json, "shroom-spawn_channels-spawn-y")
-  Struct.remove(json, "shroom-spawn_spawn-x")
-  Struct.remove(json, "shroom-spawn_spawn-x-random-from")
-  Struct.remove(json, "shroom-spawn_spawn-x-random-size")
-  Struct.remove(json, "shroom-spawn_spawn-y")
-  Struct.remove(json, "shroom-spawn_spawn-y-random-from")
-  Struct.remove(json, "shroom-spawn_spawn-y-random-size")
-  Struct.remove(json, "shroom-spawn_use-angle")
-  Struct.remove(json, "shroom-spawn_use-snap-h")
-  Struct.remove(json, "shroom-spawn_use-snap-v")
-  Struct.remove(json, "shroom-spawn_use-spawn-x")
-  Struct.remove(json, "shroom-spawn_use-spawn-y")
-
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "en-shr_preview": Struct.getIfType(json, "shroom-spawn_use-preview", Boolean, false),
     "en-shr_template": Struct.getIfType(json, "shroom-spawn_template", String, "shroom-default"),
     "en-shr_spd": Struct.getIfType(json, "shroom-spawn_speed", Number, 10.0),

@@ -1,5 +1,35 @@
 ///@package io.alkapivo.visu.editor.service.brush._old.grid_old
 
+///@param {Struct} json
+///@return {Struct}
+function migrateGridOldConfigEvent(json) {
+  Logger.debug("Track", "migrateGridOldConfigEvent is not implemented")
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+  }
+}
+
+
+///@param {Struct} json
+///@return {Struct}
+function migrateGridOldConfigToGridAreaEvent(json) {
+  Logger.debug("Track", "migrateGridOldConfigToGridAreaEvent is not implemented")
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+  }
+}
+
+
+///@param {Struct} json
+///@return {Struct}
+function migrateGridOldConfigToEntityConfigEvent(json) {
+  Logger.debug("Track", "migrateGridOldConfigToEntityConfigEvent is not implemented")
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+  }
+}
+
+
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_grid_old_config(json = null) {

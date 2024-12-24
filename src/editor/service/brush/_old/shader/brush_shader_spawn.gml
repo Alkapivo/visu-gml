@@ -4,6 +4,7 @@
 ///@return {Struct}
 function migrateShaderSpawnEvent(json) {
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "ef-shd_template": Struct.getIfType(json, "shader-spawn_template", String, "shader-default"),
     "ef-shd_duration": Struct.getIfType(json, "shader-spawn_duration", Number, 5.0),
     "ef-shd_fade-in": Struct.getIfType(json, "shader-spawn_fade-in", Number, 1.0),

@@ -260,7 +260,7 @@ function VisuEditorController() constructor {
   layout = null
 
   ///@type {Boolean}
-  renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", true), Boolean)
+  renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", false), Boolean)
 
   ///@private
   ///@type {Boolean}

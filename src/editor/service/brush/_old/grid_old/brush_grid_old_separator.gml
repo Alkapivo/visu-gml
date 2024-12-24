@@ -4,6 +4,7 @@
 ///@return {Struct}
 function migrateGridOldSeparatorEvent(json) {
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "gr-r_use-mode": Struct.getIfType(json, "grid-separator_use-mode", Boolean, false),
     "gr-r_mode": Struct.getIfType(json, "grid-separator_mode", String, "SINGLE"),
     "gr-r_use-amount": Struct.getIfType(json, "grid-separator_use-transform-amount", Boolean, false),
@@ -22,6 +23,7 @@ function migrateGridOldSeparatorEvent(json) {
     "gr-r_side-size": Struct.getIfType(json, "grid-separator_transform-secondary-size", Boolean, false),
   }
 }
+
 
 ///@param {?Struct} [json]
 ///@return {Struct}

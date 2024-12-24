@@ -3,8 +3,9 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateViewOldLyricsEvent(json) {
+  Logger.debug("Track", "migrateViewOldLyricsEvent is not implemented")
   return {
-
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
   }
 }
 

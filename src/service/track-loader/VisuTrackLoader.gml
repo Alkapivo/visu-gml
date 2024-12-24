@@ -261,32 +261,56 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setData({ path: $"{data.path}{data.manifest.track}" })
                   .setPromise(new Promise()
                     .setState({ 
-                      callback: function(prototype, json, key, acc) {
-                        var name = Struct.get(json, "name")
-                        //Logger.debug("VisuTrackLoader", $"Load track '{name}'")
-                        acc.trackService.openTrack(new prototype(json, { 
-                          handlers: acc.trackService.handlers,
-                          parseEvent: acc.parseEvent,
-                        }))
-                      },
-                      acc: {
-                        trackService: controller.trackService,
-                        parseEvent: function(event, index, config = null) {
-                          ///@description migration
-                          if (Core.getProperty("visu.editor.migrate", false)) {
-                            var icon = Struct.get(event.data, "icon")
+                      callback: (Core.getProperty("visu.editor.migrate", false)
+                        ///@description migration
+                        ? function(prototype, json, key, acc) {
+                          var name = Struct.get(json, "name")
+                          Logger.debug("VisuTrackLoader", $"Migrate track '{name}'")
+                          acc.trackService.openTrack(new prototype(json, { 
+                            handlers: acc.trackService.handlers,
+                            parseEvent: acc.parseEvent,
+                            channelsToMigrate: acc.channelsToMigrate,
+                          }))
+
+                          return true;
+                          Logger.debug("VisuTrackLoader", $"Apply support migration channels '{name}'")
+                          acc.channelsToMigrate.forEach(function(events, channelName, acc) {
+                            Logger.debug("VisuTrackLoader", $"Migrate support channel '{channelName}'")
+                            events.forEach(function(event, index, acc) {
+                              acc.track.addEvent(acc.channelName, new TrackEvent(event, acc.config))
+                            }, Struct.set(acc, "channelName", channelName))
+                          }, { 
+                            track: acc.trackService.track,
+                            config: { handlers: acc.trackService.handlers },
+                          })
+                        }
+                        : function(prototype, json, key, acc) {
+                          var name = Struct.get(json, "name")
+                          //Logger.debug("VisuTrackLoader", $"Load track '{name}'")
+                          acc.trackService.openTrack(new prototype(json, { 
+                            handlers: acc.trackService.handlers,
+                          }))
+                        }),
+                      acc: (Core.getProperty("visu.editor.migrate", false)
+                        ///@description migration
+                        ? {
+                          trackService: controller.trackService,
+                          channelsToMigrate: new Map(String, Array),
+                          parseEvent: function(event, index, config) {
                             switch (Struct.get(event, "callable")) {
                               case VEBrushType.SHADER_SPAWN:
                                 event.callable = VEBrushType.EFFECT_SHADER
                                 event.data = migrateShaderSpawnEvent(event.data)
                                 break
-                              case VEBrushType.VIEW_OLD_GLITCH:
-                                event.callable = VEBrushType.EFFECT_GLITCH
-                                event.data = migrateViewOldGlitchEvent(event.data)
+                              case VEBrushType.SHADER_OVERLAY:
+                                event.callable = VEBrushType.GRID_CONFIG
+                                ///@todo
+                                event.data = migrateShaderOverlayEvent(event.data)
                                 break
-                              case VEBrushType.GRID_OLD_PARTICLE:
-                                event.callable = VEBrushType.EFFECT_PARTICLE
-                                event.data = migrateGridOldParticleEvent(event.data)
+                              case VEBrushType.SHADER_CLEAR:
+                                event.callable = VEBrushType.EFFECT_CONFIG
+                                ///@todo
+                                event.data = migrateShaderClearEvent(event.data)
                                 break
                               case VEBrushType.SHADER_CONFIG:
                                 event.callable = VEBrushType.EFFECT_CONFIG
@@ -296,45 +320,106 @@ function VisuTrackLoader(_controller): Service() constructor {
                                 event.callable = VEBrushType.ENTITY_SHROOM
                                 event.data = migrateShroomSpawnEvent(event.data)
                                 break
-                              case VEBrushType.GRID_OLD_COIN:
-                                event.callable = VEBrushType.ENTITY_COIN
-                                event.data = migrateGridOldCoinEvent(event.data)
+                              case VEBrushType.SHROOM_CLEAR:
+                                event.callable = VEBrushType.ENTITY_CONFIG
+                                ///@todo
+                                event.data = migrateShroomClearEvent(event.data)
                                 break
-                              case VEBrushType.GRID_OLD_PLAYER:
-                                event.callable = VEBrushType.ENTITY_PLAYER
-                                event.data = migrateGridOldPlayerEvent(event.data)
+                              case VEBrushType.SHROOM_CONFIG:
+                                event.callable = VEBrushType.ENTITY_CONFIG
+                                ///@todo
+                                event.data = migrateShroomConfigEvent(event.data)
                                 break
                               case VEBrushType.GRID_OLD_CHANNEL:
                                 event.callable = VEBrushType.GRID_COLUMN
                                 event.data = migrateGridOldChannelEvent(event.data)
                                 break
+                              case VEBrushType.GRID_OLD_COIN:
+                                event.callable = VEBrushType.ENTITY_COIN
+                                event.data = migrateGridOldCoinEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_CONFIG:
+                                event.callable = VEBrushType.GRID_CONFIG
+                                ///@todo
+                                event.data = migrateGridOldConfigEvent(event.data)
+                            
+                                var parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.GRID_AREA
+                                ///@todo
+                                parsedEvent.data = migrateGridOldConfigToGridAreaEvent(parsedEvent.data)
+                                var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 1 {config.__channelName}", eventsToMigrate)
+                            
+                                parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.ENTITY_CONFIG
+                                ///@todo
+                                parsedEvent.data = migrateGridOldConfigToEntityConfigEvent(parsedEvent.data)
+                                eventsToMigrate = config.channelsToMigrate.get($"migrated 2 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 2 {config.__channelName}", eventsToMigrate)
+                                break
+                              case VEBrushType.GRID_OLD_PARTICLE:
+                                event.callable = VEBrushType.EFFECT_PARTICLE
+                                event.data = migrateGridOldParticleEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_PLAYER:
+                                event.callable = VEBrushType.ENTITY_PLAYER
+                                event.data = migrateGridOldPlayerEvent(event.data)
+                            
+                                var parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.ENTITY_CONFIG
+                                ///@todo
+                                parsedEvent.data = migrateGridOldPlayerToEntityConfigEvent(parsedEvent.data)
+                                var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 1 {config.__channelName}", eventsToMigrate)
+                                break
                               case VEBrushType.GRID_OLD_SEPARATOR:
                                 event.callable = VEBrushType.GRID_ROW
                                 event.data = migrateGridOldSeparatorEvent(event.data)
                                 break
+                              case VEBrushType.VIEW_OLD_WALLPAPER:
+                                event.callable = VEBrushType.VIEW_WALLPAPER
+                                ///@todo
+                                event.data = migrateViewOldWallpaperEvent(event.data)
+                                break
                               case VEBrushType.VIEW_OLD_CAMERA:
                                 event.callable = VEBrushType.VIEW_CAMERA
+                                ///@todo
                                 event.data = migrateViewOldCameraEvent(event.data)
                                 break
                               case VEBrushType.VIEW_OLD_LYRICS:
                                 event.callable = VEBrushType.VIEW_SUBTITLE
                                 event.data = migrateViewOldLyricsEvent(event.data)
                                 break
-                              case VEBrushType.VIEW_OLD_WALLPAPER:
-                                event.callable = VEBrushType.VIEW_WALLPAPER
-                                event.data = migrateViewOldWallpaperEvent(event.data)
+                              case VEBrushType.VIEW_OLD_GLITCH:
+                                event.callable = VEBrushType.EFFECT_GLITCH
+                                event.data = migrateViewOldGlitchEvent(event.data)
                                 break
                               case VEBrushType.VIEW_OLD_CONFIG:
                                 event.callable = VEBrushType.VIEW_CONFIG
+                                ///@todo
                                 event.data = migrateViewOldConfigEvent(event.data)
+                            
+                                var parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.ENTITY_CONFIG
+                                ///@todo
+                                parsedEvent.data = migrateViewOldConfigToEntityConfigEvent(parsedEvent.data)
+                                var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 1 {config.__channelName}", eventsToMigrate)
                                 break
                             }
-                            Struct.set(event.data, "icon", icon)
-                          }
-                          
-                          return new TrackEvent(event, config)
-                        },
-                      }
+                            
+                            return new TrackEvent(event, config)
+                          },
+                        }
+                        : { trackService: controller.trackService }),
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)

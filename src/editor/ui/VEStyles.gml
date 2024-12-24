@@ -123,8 +123,8 @@ global.__VEStyles = new Map(String, Struct, {
     slider: {},
     button: {},
     label: {
-      font: "font_inter_10_regular",
-      color: VETheme.color.textFocus,
+      font: "font_inter_10_bold",
+      color: VETheme.color.textShadow,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
     },
   },
@@ -148,6 +148,20 @@ global.__VEStyles = new Map(String, Struct, {
   "checkbox": {
     spriteOn: { name: "visu_texture_checkbox_on" },
     spriteOff: { name: "visu_texture_checkbox_off" },
+  },
+  "category-button": {
+    backgroundColorSelected: VETheme.color.accentBetween,
+    backgroundColor: VETheme.color.accentDark,
+    backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+    backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentBetween).toGMColor(),
+    backgroundColorOff: ColorUtil.fromHex(VETheme.color.accentDark).toGMColor(),
+    colorHoverOver: VETheme.color.accentShadow,
+    colorHoverOut: VETheme.color.accentDark,
+    label: {
+      font: "font_inter_8_regular",
+      color: VETheme.color.textFocus,
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+    },
   },
   "category-button": {
     backgroundColorSelected: VETheme.color.accentBetween,

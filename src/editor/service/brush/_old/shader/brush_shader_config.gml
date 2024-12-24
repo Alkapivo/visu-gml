@@ -4,6 +4,7 @@
 ///@return {Struct}
 function migrateShaderConfigEvent(json) {
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "ef-cfg_use-render-shd-bkg": Struct.getIfType(json, "shader-config_use-background-grid-shaders", Boolean, false),
     "ef-cfg_render-shd-bkg": Struct.getIfType(json, "shader-config_background-grid-shaders", Boolean, false),
     "ef-cfg_use-render-shd-gr": Struct.getIfType(json, "shader-config_use-render-grid-shaders", Boolean, false),

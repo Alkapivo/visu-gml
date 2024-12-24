@@ -122,7 +122,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
         "components": new Array(Struct, [
           #region Old API
-          /* 
           {
             name: "button_category-shader",
             template: VEComponents.get("category-button"),
@@ -148,7 +147,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: { 
                 font: "font_inter_8_bold",
-                text: String.toArray("s").join("\n"),
+                text: String.toArray("@SH").join("\n"),
               },
               category: "shader",
             },
@@ -178,7 +177,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("e").join("\n"),
+                text: String.toArray("@SR").join("\n"),
               },
               category: "shroom",
             },
@@ -208,7 +207,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("g").join("\n"),
+                text: String.toArray("@GR").join("\n"),
               },
               category: "grid_old",
             },
@@ -238,12 +237,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("v").join("\n"),
+                text: String.toArray("@VW").join("\n"),
               },
               category: "view_old",
             },
           },
-          */
           #endregion
           {
             name: "button_category-effect",
@@ -266,7 +264,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: { 
                 font: "font_inter_8_bold",
-                text: String.toArray("EFFECT").join("\n"),
+                //text: String.toArray("EFFECT").join("\n"),
+                text: String.toArray("EFF").join("\n"),
               },
               category: "effect",
             },
@@ -292,7 +291,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("ENTITY").join("\n"),
+                //text: String.toArray("ENTITY").join("\n"),
+                text: String.toArray("ENT").join("\n"),
               },
               category: "entity",
             },
@@ -318,7 +318,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("GRID").join("\n"),
+                //text: String.toArray("GRID").join("\n"),
+                text: String.toArray("GRD").join("\n"),
               },
               category: "grid",
             },
@@ -344,7 +345,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               onMouseHoverOut: function(event) { },
               label: {
                 font: "font_inter_8_bold",
-                text: String.toArray("VIEW").join("\n"),
+                //text: String.toArray("VIEW").join("\n"),
+                text: String.toArray("VW").join("\n"),
               },
               category: "view",
             },

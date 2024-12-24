@@ -4,6 +4,7 @@
 ///@return {Struct}
 function migrateGridOldPlayerEvent(json) {
   return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "en-pl_texture": Struct.getIfType(json, "grid-player_texture", Struct, { name: "texture_missing" }),
     "en-pl_use-mask": Struct.getIfType(json, "grid-player_use-mask", Boolean, false),
     "en-pl_mask": Struct.getIfType(json, "grid-player_mask", Struct),
@@ -16,6 +17,16 @@ function migrateGridOldPlayerEvent(json) {
     "en-pl_platformer": Struct.getIfType(json, "grid-player_platformer", Struct),
     "en-pl_use-racing": Struct.getIfType(json, "grid-player_use-racing", Boolean, false),
     "en-pl_racing": Struct.getIfType(json, "grid-player_racing", Struct),
+  }
+}
+
+
+///@param {Struct} json
+///@return {Struct}
+function migrateGridOldPlayerToEntityConfigEvent(json) {
+  Logger.debug("Track", "migrateGridOldPlayerToEntityConfigEvent is not implemented")
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
   }
 }
 
@@ -420,6 +431,8 @@ function brush_grid_old_player(json = null) {
           alpha: {
             label: { text: "Alpha" },
             field: { store: { key: "grid-player_texture" } },
+            decrease: { store: { key: "grid-player_texture" } },
+            increase: { store: { key: "grid-player_texture" } },
             slider: { 
               minValue: 0.0,
               maxValue: 1.0,
@@ -429,6 +442,8 @@ function brush_grid_old_player(json = null) {
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "grid-player_texture" } },
+            decrease: { store: { key: "grid-player_texture" } },
+            increase: { store: { key: "grid-player_texture" } },
             checkbox: { 
               store: { key: "grid-player_texture" },
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -439,6 +454,8 @@ function brush_grid_old_player(json = null) {
           speed: {
             label: { text: "Speed" },
             field: { store: { key: "grid-player_texture" } },
+            decrease: { store: { key: "grid-player_texture" } },
+            increase: { store: { key: "grid-player_texture" } },
             checkbox: { 
               store: { key: "grid-player_texture" },
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -449,10 +466,14 @@ function brush_grid_old_player(json = null) {
           scaleX: {
             label: { text: "Scale X" },
             field: { store: { key: "grid-player_texture" } },
+            decrease: { store: { key: "grid-player_texture" } },
+            increase: { store: { key: "grid-player_texture" } },
           },
           scaleY: {
             label: { text: "Scale Y" },
             field: { store: { key: "grid-player_texture" } },
+            decrease: { store: { key: "grid-player_texture" } },
+            increase: { store: { key: "grid-player_texture" } },
           },
         },
       },
@@ -507,6 +528,16 @@ function brush_grid_old_player(json = null) {
               enable: { key: "grid-player_use-mask" },
               GMTF_DECIMAL: 0,
             },
+            decrease: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: 1.0,
+            },
           },
           y: {
             label: {
@@ -517,6 +548,16 @@ function brush_grid_old_player(json = null) {
               store: { key: "grid-player_mask" },
               enable: { key: "grid-player_use-mask" },
               GMTF_DECIMAL: 0,
+            },
+            decrease: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: 1.0,
             },
           },
           z: {
@@ -529,6 +570,16 @@ function brush_grid_old_player(json = null) {
               enable: { key: "grid-player_use-mask" },
               GMTF_DECIMAL: 0,
             },
+            decrease: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: 1.0,
+            },
           },
           a: {
             label: {
@@ -539,6 +590,16 @@ function brush_grid_old_player(json = null) {
               store: { key: "grid-player_mask" },
               enable: { key: "grid-player_use-mask" },
               GMTF_DECIMAL: 0,
+            },
+            decrease: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: 1.0,
             },
           },
         },

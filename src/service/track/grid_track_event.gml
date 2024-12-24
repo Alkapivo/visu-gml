@@ -15,7 +15,7 @@ global.__grid_track_event = {
   "brush_grid_area": {
     parse: function(data) {
       return {
-        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
+        "icon": Struct.parse.sprite(data, "icon"),
         "gr-area_use-h": Struct.parse.boolean(data, "gr-area_use-h"),
         "gr-area_h": Struct.parse.numberTransformer(data, "gr-area_h", {
           clampValue: { from: 0.0, to: 10.0 },
@@ -61,7 +61,7 @@ global.__grid_track_event = {
   "brush_grid_column": {
     parse: function(data) {
       return {
-        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
+        "icon": Struct.parse.sprite(data, "icon"),
         "gr-c_use-mode": Struct.parse.boolean(data, "gr-c_use-mode"),
         "gr-c_mode": Struct.parse.gmArrayValue(data, "gr-c_mode", GRID_MODES, GRID_MODES[0]),
         "gr-c_use-amount": Struct.parse.boolean(data, "gr-c_use-amount"),
@@ -97,6 +97,7 @@ global.__grid_track_event = {
       }
     },
     run: function(data) {
+      Core.print("Dispatch track event:", "brush_grid_column")
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "grid-channel_use-mode")) {
         controller.gridService.properties.channelsMode = Struct.get(data, "grid-channel_mode")
@@ -227,7 +228,7 @@ global.__grid_track_event = {
   "brush_grid_row": {
     parse: function(data) {
       return {
-        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
+        "icon": Struct.parse.sprite(data, "icon"),
         "gr-r_use-mode": Struct.parse.boolean(data, "gr-r_use-mode"),
         "gr-r_mode": Struct.parse.gmArrayValue(data, "gr-r_mode", GRID_MODES, GRID_MODES[0]),
         "gr-r_use-amount": Struct.parse.boolean(data, "gr-r_use-amount"),
@@ -263,6 +264,7 @@ global.__grid_track_event = {
       }
     },
     run: function(data, channel) {
+      //Core.print("Dispatch track event:", "brush_grid_row")
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "gr-r_use-mode")) {
         controller.gridService.properties.separatorsMode = Struct.get(data, "gr-r_mode")
@@ -345,7 +347,7 @@ global.__grid_track_event = {
           executor: controller.gridService.executor,
           transformer: new ColorTransformer({
             value: controller.gridService.properties.gridClearColor.toHex(true),
-            target: Struct.get(data, "gr-c_side-col").toHex(true),
+            target: Struct.get(data, "gr-r_side-col").toHex(true),
             factor: Struct.get(data, "gr-r_side-col-spd"),
           })
         }))
@@ -393,7 +395,7 @@ global.__grid_track_event = {
   "brush_grid_config": {
     parse: function(data) {
       return {
-        "icon": Struct.getIfType(data, "icon", Struct, { name: "texture_baron" }),
+        "icon": Struct.parse.sprite(data, "icon"),
         "gr-cfg_use-render": Struct.parse.boolean(data, "gr-cfg_use-render"),
         "gr-cfg_render": Struct.parse.boolean(data, "gr-cfg_render"),
         "gr-cfg_use-spd": Struct.parse.boolean(data, "gr-cfg_use-spd"),
