@@ -143,6 +143,9 @@ function GridProperties(config = {}) constructor {
     .getDefault(config, "properties.renderCoins", true), Boolean)
 
   ///@type {Boolean}
+  renderPlayer = Struct.getIfType(config, "properties.renderPlayer", Boolean, true)
+
+  ///@type {Boolean}
   renderBackground = Assert.isType(Struct
     .getDefault(config, "properties.renderBackground", true), Boolean)
 
@@ -169,6 +172,10 @@ function GridProperties(config = {}) constructor {
   ///@type {Boolean}
   renderParticles = Assert.isType(Struct
     .getDefault(config, "properties.renderParticles", true), Boolean)
+
+      ///@type {Boolean}
+  renderSubtitles = Assert.isType(Struct
+    .getDefault(config, "properties.renderSubtitles", true), Boolean)
   #endregion
 
   #region support-grid
@@ -183,6 +190,10 @@ function GridProperties(config = {}) constructor {
   ///@type {Number}
   renderSupportGridAlpha = Assert.isType(Struct
     .getDefault(config, "properties.renderSupportGridAlpha", 0.33), Number)
+
+  ///@type {BlendConfig}
+  supportGridBlendConfig = new BlendConfig(Struct
+    .getIfType(config, "properties.supportGridBlendConfig", Struct))
   #endregion
 
   ///@type {Color}
@@ -197,6 +208,10 @@ function GridProperties(config = {}) constructor {
   gridClearFrameAlpha = Assert.isType(Struct
     .getDefault(config, "properties.gridClearFrameAlpha", 0.0), Number)
 
+  ///@type {BlendConfig}
+  gridBlendConfig = new BlendConfig(Struct
+    .getIfType(config, "properties.gridBlendConfig", Struct))
+
   ///@type {Color}
   shaderClearColor = Assert.isType(ColorUtil.fromHex(Struct
     .getDefault(config, "properties.shaderClearColor", "#00000000")), Color)
@@ -209,11 +224,19 @@ function GridProperties(config = {}) constructor {
   shaderClearFrameAlpha = Assert.isType(Struct
     .getDefault(config, "properties.shaderClearFrameAlpha", 0.0), Number)
   
+  ///@type {Number}
+  videoAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.videoAlpha", 1.0), Number)
+
+  ///@type {BlendConfig}
+  videoBlendConfig = new BlendConfig(Struct
+    .getIfType(config, "properties.videoBlendConfig", Struct))
 
   ///@type {Struct}
   depths = {
     channelZ: 1,
     separatorZ: 2,
+    gridZ: 1,
     bulletZ: 2048,
     shroomZ: 2049,
     coinZ: 2047,

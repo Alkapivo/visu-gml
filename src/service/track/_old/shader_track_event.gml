@@ -5,7 +5,10 @@
 global.__shader_track_event = {
   "brush_shader_spawn": {
     parse: function(data) {
-      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+      return Struct.appendUnique({ 
+        "icon": Struct.parse.sprite(data, "icon"),
+        "shader-spawn_pipeline": migrateShaderPipelineType(Struct.get(data, "shader-spawn_pipeline")),
+      }, data, false)
     },
     run: function(data) {
       var eventData = {
@@ -42,18 +45,16 @@ global.__shader_track_event = {
 
       var event = new Event("spawn-shader", JSON.clone(eventData))
       var controller = Beans.get(BeanVisuController)
-      var pipeline = Struct.getDefault(data, "shader-spawn_pipeline", "Grid")
+      var pipeline = Struct.getDefault(data, "shader-spawn_pipeline", ShaderPipelineType.BACKGROUND)
       switch (pipeline) {
-        case "Grid":
+        case ShaderPipelineType.GRID:
           controller.shaderPipeline.send(event)
           break
-        case "Background":
+        case ShaderPipelineType.BACKGROUND:
           controller.shaderBackgroundPipeline.send(event)
           break
-        case "All":
-          controller.shaderPipeline.send(event)
-          controller.shaderBackgroundPipeline
-            .send(new Event("spawn-shader", JSON.clone(eventData)))
+        case ShaderPipelineType.COMBINED:
+          controller.shaderCombinedPipeline.send(event)
           break
         default: throw new Exception($"Found unsupported pipeline: {pipeline}")
       }
@@ -102,7 +103,10 @@ global.__shader_track_event = {
   },
   "brush_shader_clear": {
     parse: function(data) {
-      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+      return Struct.appendUnique({ 
+        "icon": Struct.parse.sprite(data, "icon"),
+        "shader-spawn_pipeline": migrateShaderPipelineType(Struct.get(data, "shader-spawn_pipeline")),
+      }, data, false)
     },
     run: function(data) {
       static fadeOutTask = function(task, iterator, _fadeOut) {
@@ -136,18 +140,17 @@ global.__shader_track_event = {
       }
 
       var controller = Beans.get(BeanVisuController)
-      var pipeline = Struct.getDefault(data, "shader-spawn_pipeline", "All")    
+      var pipeline = Struct.getDefault(data, "shader-spawn_pipeline", ShaderPipelineType.BACKGROUND)    
       if (Struct.get(data, "shader-clear_use-clear-all-shaders") == true) {
         switch (pipeline) {
-          case "Grid":
+          case ShaderPipelineType.GRID:
             controller.shaderPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
             break
-          case "Background":
+          case ShaderPipelineType.BACKGROUND:
             controller.shaderBackgroundPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
             break
-          case "All":
-            controller.shaderPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
-            controller.shaderBackgroundPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
+          case ShaderPipelineType.COMBINED:
+            controller.shaderCombinedPipeline.executor.tasks.forEach(fadeOutTask, fadeOut)
             break
         }
       }
@@ -155,27 +158,22 @@ global.__shader_track_event = {
       if (Struct.get(data, "shader-clear_use-clear-amount") == true) {
         var amount = Struct.getDefault(data, "shader-clear_clear-amount", 1)
         switch (pipeline) {
-          case "Grid":
+          case ShaderPipelineType.GRID:
             controller.shaderPipeline.executor.tasks.forEach(amountTask, {
               amount: amount,
               handler: fadeOutTask,
               fadeOut: fadeOut,
             })
             break
-          case "Background":
+          case ShaderPipelineType.BACKGROUND:
             controller.shaderBackgroundPipeline.executor.tasks.forEach(amountTask, {
               amount: amount,
               handler: fadeOutTask,
               fadeOut: fadeOut,
             })
             break
-          case "All":
-            controller.shaderPipeline.executor.tasks.forEach(amountTask, {
-              amount: amount,
-              handler: fadeOutTask,
-              fadeOut: fadeOut,
-            })
-            controller.shaderBackgroundPipeline.executor.tasks.forEach(amountTask, {
+          case ShaderPipelineType.COMBINED:
+            controller.shaderCombinedPipeline.executor.tasks.forEach(amountTask, {
               amount: amount,
               handler: fadeOutTask,
               fadeOut: fadeOut,

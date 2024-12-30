@@ -1003,6 +1003,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
             ///@updateTimerNow
             this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+            this.areaWatchdog.signal()
           }
         }
       },

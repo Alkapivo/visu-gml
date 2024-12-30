@@ -318,7 +318,7 @@ function brush_entity_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Z",
+            text: "Entity Z position",
             backgroundColor: VETheme.color.accentShadow,
           },
           checkbox: { backgroundColor: VETheme.color.accentShadow },
@@ -330,13 +330,16 @@ function brush_entity_config(json = null) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
-              text: "Shroom Z",
+              text: "Shroom",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "en-cfg_use-z-shr" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "en-cfg_use-z-shr" },
             },
             field: {
               store: { key: "en-cfg_z-shr" },
@@ -447,10 +450,10 @@ function brush_entity_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Player Z",
+              text: "Player",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "en-cfg_use-z-player" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "en-cfg_use-z-player" },
             },
             field: {
               store: { key: "en-cfg_z-player" },
@@ -561,10 +564,10 @@ function brush_entity_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Coin Z",
+              text: "Coin",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "en-cfg_use-z-coin" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "en-cfg_use-z-coin" },
             },
             field: {
               store: { key: "en-cfg_z-coin" },
@@ -675,10 +678,10 @@ function brush_entity_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Bullet Z",
+              text: "Bullet",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "en-cfg_use-z-bullet" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "en-cfg_use-z-bullet" },
             },
             field: {
               store: { key: "en-cfg_z-bullet" },

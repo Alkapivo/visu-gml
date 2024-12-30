@@ -14,7 +14,7 @@ function brush_grid_row(json) {
         type: String,
         value: Struct.get(json, "gr-r_mode"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, GRID_MODES)
+        data: GridMode.keys(),
       },
       "gr-r_use-amount": {
         type: Boolean,
@@ -42,7 +42,7 @@ function brush_grid_row(json) {
         type: Number,
         value: Struct.get(json, "gr-r_main-col-spd"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.000001, 1.0),
+        data: new Vector2(0.0, 999.9),
       },
       "gr-r_use-main-alpha": {
         type: Boolean,
@@ -83,7 +83,7 @@ function brush_grid_row(json) {
         type: Number,
         value: Struct.get(json, "gr-r_side-col-spd"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.000001, 1.0),
+        data: new Vector2(0.0, 999.9),
       },
       "gr-r_use-side-alpha": {
         type: Boolean,
@@ -121,16 +121,16 @@ function brush_grid_row(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Row render mode",
+            text: "Column render mode",
             enable: { key: "gr-r_use-mode" },
-            backgroundColor: VETheme.color.accentShadow,
+            backgroundColor: VETheme.color.dark,
           },
-          input: { backgroundColor: VETheme.color.accentShadow },
+          input: { backgroundColor: VETheme.color.dark },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "gr-r_use-mode" },
-            backgroundColor: VETheme.color.accentShadow,
+            backgroundColor: VETheme.color.dark,
           },
         },
       },
@@ -141,7 +141,7 @@ function brush_grid_row(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Mode",
+            text: "",
             enable: { key: "gr-r_use-mode" },
           },
           previous: { 
@@ -174,8 +174,8 @@ function brush_grid_row(json) {
             label: {
               text: "Amount",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-r_use-amount" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-r_use-amount" },
             },
             field: {
               store: { key: "gr-r_amount" },
@@ -246,7 +246,7 @@ function brush_grid_row(json) {
             },
             increase: {
               store: { key: "gr-r_amount" },
-              enable: { key: "gr-r_change-amount" },
+              enable: { key: "gr-r_change-amount" },            
               factor: 0.01,
             },
           },
@@ -266,7 +266,7 @@ function brush_grid_row(json) {
             },
             increase: {
               store: { key: "gr-r_amount" },
-              enable: { key: "gr-r_change-amount" },
+              enable: { key: "gr-r_change-amount" },            
               factor: 0.001,
             },
           },
@@ -297,13 +297,16 @@ function brush_grid_row(json) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
               text: "Thickness",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-r_use-main-size" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-r_use-main-size" },
             },
             field: {
               store: { key: "gr-r_main-size" },
@@ -312,12 +315,12 @@ function brush_grid_row(json) {
             decrease: {
               store: { key: "gr-r_main-size" },
               enable: { key: "gr-r_use-main-size" },
-              factor: -0.25,
+              value: -0.25,
             },
             increase: {
               store: { key: "gr-r_main-size" },
               enable: { key: "gr-r_use-main-size" },
-              factor: 0.25,
+              value: 0.25,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -341,12 +344,12 @@ function brush_grid_row(json) {
             decrease: {
               store: { key: "gr-r_main-size" },
               enable: { key: "gr-r_change-main-size" },
-              factor: -0.25,
+              value: -0.25,
             },
             increase: {
               store: { key: "gr-r_main-size" },
               enable: { key: "gr-r_change-main-size" },
-              factor: 0.25,
+              value: 0.25,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -370,12 +373,12 @@ function brush_grid_row(json) {
             decrease: {
               store: { key: "gr-r_main-size" },
               enable: { key: "gr-r_change-main-size" },
-              factor: -0.01,
+              value: -0.01,
             },
             increase: {
               store: { key: "gr-r_main-size" },
               enable: { key: "gr-r_change-main-size" },
-              factor: 0.01,
+              value: 0.01,
             },
           },
           increase: {
@@ -390,12 +393,12 @@ function brush_grid_row(json) {
             decrease: {
               store: { key: "gr-r_main-size" },
               enable: { key: "gr-r_change-main-size" },
-              factor: -0.001,
+              value: -0.001,
             },
             increase: {
               store: { key: "gr-r_main-size" },
               enable: { key: "gr-r_change-main-size" },
-              factor: 0.001,
+              value: 0.001,
             },
           },
         },
@@ -416,8 +419,8 @@ function brush_grid_row(json) {
             label: {
               text: "Alpha",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-r_use-main-alpha" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-r_use-main-alpha" },
             },
             field: {
               store: { key: "gr-r_main-alpha" },
@@ -524,15 +527,18 @@ function brush_grid_row(json) {
             label: {
               text: "Color",
               enable: { key: "gr-r_use-main-col" },
+              backgroundColor: VETheme.color.dark,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-r_use-main-col" },
+              backgroundColor: VETheme.color.dark,
             },
             input: { 
               store: { key: "gr-r_main-col" },
               enable: { key: "gr-r_use-main-col" },
+              backgroundColor: VETheme.color.dark,
             }
           },
           red: {
@@ -591,12 +597,12 @@ function brush_grid_row(json) {
       },
       {
         name: "gr-r_main-col-spd",
-        template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("numeric-slider-increase-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Speed",
+            text: "Duration",
             enable: { key: "gr-r_use-main-col" },
           },  
           field: { 
@@ -606,19 +612,16 @@ function brush_grid_row(json) {
           slider: {
             store: { key: "gr-r_main-col-spd" },
             enable: { key: "gr-r_use-main-col" },
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
           },
           decrease: {
             store: { key: "gr-r_main-col-spd" },
             enable: { key: "gr-r_use-main-col" },
-            factor: -0.001,
+            factor: -0.1,
           },
           increase: {
             store: { key: "gr-r_main-col-spd" },
             enable: { key: "gr-r_use-main-col" },
-            factor: 0.001,
+            factor: 0.1,
           },
         },
       },
@@ -647,13 +650,16 @@ function brush_grid_row(json) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
               text: "Thickness",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-r_use-side-size" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-r_use-side-size" },
             },
             field: {
               store: { key: "gr-r_side-size" },
@@ -766,8 +772,8 @@ function brush_grid_row(json) {
             label: {
               text: "Alpha",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-r_use-side-alpha" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-r_use-side-alpha" },
             },
             field: {
               store: { key: "gr-r_side-alpha" },
@@ -809,7 +815,7 @@ function brush_grid_row(json) {
             },
             increase: {
               store: { key: "gr-r_side-alpha" },
-              enable: { key: "gr-r_change-side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" }, 
               factor: 0.01,
             },
             checkbox: { 
@@ -838,7 +844,7 @@ function brush_grid_row(json) {
             },
             increase: {
               store: { key: "gr-r_side-alpha" },
-              enable: { key: "gr-r_change-side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" }, 
               factor: 0.001,
             },
           },
@@ -858,7 +864,7 @@ function brush_grid_row(json) {
             },
             increase: {
               store: { key: "gr-r_side-alpha" },
-              enable: { key: "gr-r_change-side-alpha" },
+              enable: { key: "gr-r_change-side-alpha" }, 
               factor: 0.0001,
             },
           },
@@ -869,20 +875,26 @@ function brush_grid_row(json) {
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
         config: {
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            hex: { margin: { top: 0 } },
+          },
           title: { 
             label: {
               text: "Color",
               enable: { key: "gr-r_use-side-col" },
+              backgroundColor: VETheme.color.dark,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-r_use-side-col" },
+              backgroundColor: VETheme.color.dark,
             },
             input: {
               store: { key: "gr-r_side-col" },
               enable: { key: "gr-r_use-side-col" },
+              backgroundColor: VETheme.color.dark,
             }
           },
           red: {
@@ -941,34 +953,32 @@ function brush_grid_row(json) {
       },
       {
         name: "gr-r_side-col-spd",
-        template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("numeric-slider-increase-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Speed",
+            text: "Duration",
             enable: { key: "gr-r_use-side-col" },
           },  
           field: { 
             store: { key: "gr-r_side-col-spd" },
             enable: { key: "gr-r_use-side-col" },
           },
-          slider: {
-            store: { key: "gr-r_side-col-spd" },
-            enable: { key: "gr-r_use-side-col" },
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
-          },
           decrease: {
             store: { key: "gr-r_side-col-spd" },
             enable: { key: "gr-r_use-side-col" },
-            factor: -0.001,
+            factor: -0.1,
           },
           increase: {
             store: { key: "gr-r_side-col-spd" },
             enable: { key: "gr-r_use-side-col" },
-            factor: 0.001,
+            factor: 0.1,
+          },
+          slider: {
+            store: { key: "gr-r_side-col-spd" },
+            enable: { key: "gr-r_use-side-col" },
+            factor: 0.01,
           },
         },
       },

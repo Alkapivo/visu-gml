@@ -271,7 +271,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               layout: { 
                 type: UILayoutType.VERTICAL,
-                margin: { top: 4, bottom: 0 },
+                margin: { top: 4, bottom: 4 },
               },
               label: { text: "Name" },
               field: { store: { key: "template_shader_name" } },
@@ -318,13 +318,22 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         ]),
         "template_shroom": new Array(Struct, [
           {
+            name: "button_new-shroom-template-title",
+            template: VEComponents.get("bar-title"),
+            layout: VELayouts.get("bar-title"),
+            config: {
+              label: { text: "New shroom template" },
+              layout: { type: UILayoutType.VERTICAL },
+            },
+          },
+          {
             name: "text-field_new-shroom-template_name",
             template: VEComponents.get("text-field"),
             layout: VELayouts.get("text-field"),
             config: {
               layout: { 
                 type: UILayoutType.VERTICAL,
-                margin: { top: 4, bottom: 0 },
+                margin: { top: 4, bottom: 4 },
               },
               label: { text: "Name" },
               field: { store: { key: "template_shroom_name" } },
@@ -357,13 +366,22 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         ]),
         "template_bullet": new Array(Struct, [
           {
+            name: "button_new-bullet-template-title",
+            template: VEComponents.get("bar-title"),
+            layout: VELayouts.get("bar-title"),
+            config: {
+              label: { text: "New bullet template" },
+              layout: { type: UILayoutType.VERTICAL },
+            },
+          },
+          {
             name: "text-field_new-bullet-template_name",
             template: VEComponents.get("text-field"),
             layout: VELayouts.get("text-field"),
             config: {
               layout: { 
                 type: UILayoutType.VERTICAL,
-                margin: { top: 4, bottom: 0 },
+                margin: { top: 4, bottom: 4 },
               },
               label: { text: "Name" },
               field: { store: { key: "template_bullet_name" } },
@@ -396,13 +414,22 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         ]),
         "template_coin": new Array(Struct, [
           {
+            name: "button_new-coin-template-title",
+            template: VEComponents.get("bar-title"),
+            layout: VELayouts.get("bar-title"),
+            config: {
+              label: { text: "New coin template" },
+              layout: { type: UILayoutType.VERTICAL },
+            },
+          },
+          {
             name: "text-field_new-coin-template_name",
             template: VEComponents.get("text-field"),
             layout: VELayouts.get("text-field"),
             config: {
               layout: { 
                 type: UILayoutType.VERTICAL,
-                margin: { top: 4, bottom: 0 },
+                margin: { top: 4, bottom: 4 },
               },
               label: { text: "Name" },
               field: { store: { key: "template_coin_name" } },
@@ -435,13 +462,22 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         ]),
         "template_subtitle": new Array(Struct, [
           {
+            name: "button_new-subtitle-title",
+            template: VEComponents.get("bar-title"),
+            layout: VELayouts.get("bar-title"),
+            config: {
+              label: { text: "New subtitle asset" },
+              layout: { type: UILayoutType.VERTICAL },
+            },
+          },
+          {
             name: "text-field_new-lyrics-template_name",
             template: VEComponents.get("text-field"),
             layout: VELayouts.get("text-field"),
             config: {
               layout: { 
                 type: UILayoutType.VERTICAL,
-                margin: { top: 4, bottom: 0 },
+                margin: { top: 4, bottom: 4 },
               },
               label: { text: "Name" },
               field: { store: { key: "template_subtitle_name" } },
@@ -475,13 +511,22 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         ]),
         "template_particle": new Array(Struct, [
           {
+            name: "button_new-particle-template-title",
+            template: VEComponents.get("bar-title"),
+            layout: VELayouts.get("bar-title"),
+            config: {
+              label: { text: "New particle template" },
+              layout: { type: UILayoutType.VERTICAL },
+            },
+          },
+          {
             name: "text-field_new-particle-template_name",
             template: VEComponents.get("text-field"),
             layout: VELayouts.get("text-field"),
             config: {
               layout: { 
                 type: UILayoutType.VERTICAL,
-                margin: { top: 4, bottom: 0 },
+                margin: { top: 4, bottom: 4 },
               },
               label: { text: "Name" },
               field: { store: { key: "template_particle_name" } },
@@ -513,6 +558,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           },
         ]),
         "template_texture": new Array(Struct, [
+          {
+            name: "button_new-texture-title",
+            template: VEComponents.get("bar-title"),
+            layout: VELayouts.get("bar-title"),
+            config: {
+              label: { text: "New texture asset" },
+              layout: { type: UILayoutType.VERTICAL },
+            },
+          },
           {
             name: "text-field_new-texture-template_name",
             template: VEComponents.get("text-field"),
@@ -572,7 +626,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("text-field"),
             layout: VELayouts.get("text-field"),
             config: {
-              layout: { type: UILayoutType.VERTICAL },
+              layout: { 
+                type: UILayoutType.VERTICAL,
+                margin: { bottom: 2 },
+              },
               label: { text: "Frames" },
               field: { 
                 store: { 

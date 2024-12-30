@@ -183,7 +183,10 @@ function VEBrush(template) constructor {
       template: VEComponents.get("text-field"),
       layout: VELayouts.get("text-field"),
       config: { 
-        layout: { type: UILayoutType.VERTICAL },
+        layout: { 
+          type: UILayoutType.VERTICAL,
+          margin: { top: 4 }
+        },
         label: { text: "Name" },
         field: { store: { key: "brush-name" } },
       },
@@ -193,8 +196,12 @@ function VEBrush(template) constructor {
       template: VEComponents.get("spin-select"),
       layout: VELayouts.get("spin-select"),
       config: {
-        layout: { type: UILayoutType.VERTICAL },
-        label: { text: "Texture" },
+        layout: { 
+          type: UILayoutType.VERTICAL,
+          height: function() { return 32 },
+          margin: { top: 2, bottom: 2 },
+        },
+        label: { text: "Icon" },
         previous: { store: { key: "brush-texture" } },
         preview: Struct.appendRecursive({ 
           store: { key: "brush-texture" },
@@ -227,7 +234,10 @@ function VEBrush(template) constructor {
       template: VEComponents.get("color-picker"),
       layout: VELayouts.get("color-picker"),
       config: {
-        layout: { type: UILayoutType.VERTICAL },
+        layout: { 
+          type: UILayoutType.VERTICAL,
+          hex: { margin: { top: 0 } },
+        },
         //title: { 
         //  label: { text: "Icon" },
         //  input: { store: { key: "brush-color" } }

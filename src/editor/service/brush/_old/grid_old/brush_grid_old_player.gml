@@ -24,9 +24,16 @@ function migrateGridOldPlayerEvent(json) {
 ///@param {Struct} json
 ///@return {Struct}
 function migrateGridOldPlayerToEntityConfigEvent(json) {
-  Logger.debug("Track", "migrateGridOldPlayerToEntityConfigEvent is not implemented")
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "en-cfg_use-z-player": false,
+    "en-cfg_z-player": Struct.getIfType(json, "grid-player_transform-player-z", Struct, {
+      value: 2048.0,
+      target: 2048.0,
+      factor: 2048.0,
+      increase: 0.0,
+    }),
+    "en-cfg_change-z-player": Struct.getIfType(json, "grid-player_use-transform-player-z", Boolean, false),
   }
 }
 

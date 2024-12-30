@@ -5,7 +5,10 @@
 global.__view_old_track_event = {
   "brush_view_old_wallpaper": {
     parse: function(data) {
-      return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
+      return Struct.appendUnique({ 
+        "icon": Struct.parse.sprite(data, "icon"),
+        "view-wallpaper_type": migrateShaderPipelineType(Struct.get(data, "view-wallpaper_type")),
+      }, data, false)
     },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
@@ -20,7 +23,7 @@ global.__view_old_track_event = {
       if (Struct.get(data, "view-wallpaper_use-color") == true) {
         controller.gridService.send(new Event("fade-color", {
           color: ColorUtil.fromHex(Struct.get(data, "view-wallpaper_color")),
-          collection: Struct.get(data, "view-wallpaper_type") == "Background" 
+          collection: Struct.get(data, "view-wallpaper_type") == WallpaperType.BACKGROUND
             ? controller.visuRenderer.gridRenderer.overlayRenderer.backgroundColors
             : controller.visuRenderer.gridRenderer.overlayRenderer.foregroundColors,
           type: Struct.get(data, "view-wallpaper_type"),
@@ -28,7 +31,7 @@ global.__view_old_track_event = {
           fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
           executor: controller.gridService.executor,
           blendModeSource: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-source", "SRC_ALPHA")),
-          blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE")),
+          blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == WallpaperType.BACKGROUND ? "INV_SRC_ALPHA" : "ONE")),
           blendEquation: BlendEquation.get(Struct.getDefault(data, "view-wallpaper_blend-equation", "ADD")),
         }))
       }
@@ -52,12 +55,12 @@ global.__view_old_track_event = {
 
         controller.gridService.send(new Event("fade-sprite", {
           sprite: SpriteUtil.parse(sprite),
-          collection: Struct.get(data, "view-wallpaper_type") == "Background" 
+          collection: Struct.get(data, "view-wallpaper_type") == WallpaperType.BACKGROUND
             ? controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds
             : controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
           type: Struct.get(data, "view-wallpaper_type"),
           blendModeSource: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-source", "SRC_ALPHA")),
-          blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE")),
+          blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == WallpaperType.BACKGROUND ? "INV_SRC_ALPHA" : "ONE")),
           blendEquation: BlendEquation.get(Struct.getDefault(data, "view-wallpaper_blend-equation", "ADD")),
           fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
           fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),

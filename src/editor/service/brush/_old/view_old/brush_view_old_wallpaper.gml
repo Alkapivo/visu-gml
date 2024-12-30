@@ -3,9 +3,61 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateViewOldWallpaperEvent(json) {
-  Logger.debug("Track", "migrateViewOldWallpaperEvent is not implemented")
+  var textureSpeed = Struct.get(json, "view-wallpaper_texture-speed")
+  if (Core.isType(textureSpeed, Number)
+      && Struct.getIfType(json, "view-wallpaper_use-texture-speed", Boolean, false)) {
+    Struct.set(Struct.get(json, "view-wallpaper_texture"), "speed", textureSpeed)
+  }
+
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "vw-layer_type": migrateWallpaperType(Struct.getIfType(json, "view-wallpaper_type", String, WallpaperType.BACKGROUND)),
+    "vw-layer_fade-in": Struct.getIfType(json, "view-wallpaper_fade-in-duration", Number, 0.0),
+    "vw-layer_fade-out": Struct.getIfType(json, "view-wallpaper_fade-out-duration", Number, 0.0),
+    "vw-layer_use-texture": Struct.getIfType(json, "view-wallpaper_use-texture", Boolean, false),
+    "vw-layer_texture": Struct.getIfType(json, "view-wallpaper_texture", Struct, { name: "texture_missing" }),
+    "vw-layer_use-texture-blend": Struct.getIfType(json, "view-wallpaper_use-texture-blend", Boolean, false),
+    "vw-layer_texture-blend": Struct.getIfType(json, "view-wallpaper_texture-blend", String, "#ffffff"),
+    "vw-layer_use-col": Struct.getIfType(json, "view-wallpaper_use-color", Boolean, false),
+    "vw-layer_col": Struct.getIfType(json, "view-wallpaper_color", String, "#000000"),
+    "vw-layer_cls-texture": Struct.getIfType(json, "view-wallpaper_clear-texture", Boolean, false),
+    "vw-layer_cls-col": Struct.getIfType(json, "view-wallpaper_clear-color", Boolean, false),
+    "vw-layer_use-blend": true,
+    "vw-layer_blend-src": Struct.getIfType(json, "view-wallpaper_blend-mode-source", String, BlendModeExt.getKey(BlendModeExt.SRC_ALPHA)),
+    "vw-layer_blend-dest": Struct.getIfType(json, "view-wallpaper_blend-mode-target", String, BlendModeExt.getKey(BlendModeExt.INV_SRC_ALPHA)),
+    "vw-layer_blend-eq": Struct.getIfType(json, "view-wallpaper_blend-equation", String, BlendEquation.getKey(BlendEquation.ADD)),
+    "vw-layer_use-spd": true,
+    "vw-layer_spd": {
+      value: Struct.getIfType(json, "view-wallpaper_speed", Number, 0.0),
+      target: Struct.getIfType(Struct.get(json, "view-wallpaper_speed-transform"), "target", Number, 0.0),
+      factor: Struct.getIfType(Struct.get(json, "view-wallpaper_speed-transform"), "factor", Number, 0.0),
+      increase: Struct.getIfType(Struct.get(json, "view-wallpaper_speed-transform"), "increase", Number, 0.0),
+    },
+    "vw-layer_change-spd": Struct.getIfType(json, "view-wallpaper_use-speed-transform", Boolean, false),
+    "vw-layer_use-dir": true,
+    "vw-layer_dir": {
+      value: Struct.getIfType(json, "view-wallpaper_angle", Number, 0.0),
+      target: Struct.getIfType(Struct.get(json, "view-wallpaper_angle-transform"), "target", Number, 0.0),
+      factor: Struct.getIfType(Struct.get(json, "view-wallpaper_angle-transform"), "factor", Number, 0.0),
+      increase: Struct.getIfType(Struct.get(json, "view-wallpaper_angle-transform"), "increase", Number, 0.0),
+    },
+    "vw-layer_change-dir": Struct.getIfType(json, "view-wallpaper_use-angle-transform", Boolean, false),
+    "vw-layer_use-scale-x": true,
+    "vw-layer_scale-x": {
+      value: Struct.getIfType(json, "view-wallpaper_xScale", Number, 1.0),
+      target: Struct.getIfType(Struct.get(json, "view-wallpaper_xScale-transform"), "target", Number, 1.0),
+      factor: Struct.getIfType(Struct.get(json, "view-wallpaper_xScale-transform"), "factor", Number, 1.0),
+      increase: Struct.getIfType(Struct.get(json, "view-wallpaper_xScale-transform"), "increase", Number, 0.0),
+    },
+    "vw-layer_change-scale-x": Struct.getIfType(json, "view-wallpaper_use-xScale-transform", Boolean, false),
+    "vw-layer_use-scale-y": true,
+    "vw-layer_scale-y": {
+      value: Struct.getIfType(json, "view-wallpaper_yScale", Number, 1.0),
+      target: Struct.getIfType(Struct.get(json, "view-wallpaper_yScale-transform"), "target", Number, 1.0),
+      factor: Struct.getIfType(Struct.get(json, "view-wallpaper_yScale-transform"), "factor", Number, 1.0),
+      increase: Struct.getIfType(Struct.get(json, "view-wallpaper_yScale-transform"), "increase", Number, 0.0),
+    },
+    "vw-layer_change-scale-y": Struct.getIfType(json, "view-wallpaper_use-yScale-transform", Boolean, false),
   }
 }
 
@@ -28,11 +80,11 @@ function brush_view_old_wallpaper(json = null) {
     store: new Map(String, Struct, {
       "view-wallpaper_type": {
         type: String,
-        value: Struct.getDefault(json, "view-wallpaper_type", WALLPAPER_TYPES[0]),
+        value: migrateWallpaperType(Struct.getDefault(json, "view-wallpaper_type", WallpaperType.BACKGROUND)),
         validate: function(value) {
           Assert.areEqual(true, this.data.contains(value))
         },
-        data: new Array(String, WALLPAPER_TYPES),
+        data: WallpaperType.keys(),
       },
       "view-wallpaper_blend-mode-source": {
         type: String,
@@ -40,15 +92,15 @@ function brush_view_old_wallpaper(json = null) {
         validate: function(value) {
           Assert.areEqual(true, this.data.contains(value))
         },
-        data: new Array(String, BLEND_MODES_EXT),
+        data: BlendModeExt.keys(),
       },
       "view-wallpaper_blend-mode-target": {
         type: String,
-        value: Struct.getDefault(json, "view-wallpaper_blend-mode-target", Struct.get(json, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE"),
+        value: Struct.getDefault(json, "view-wallpaper_blend-mode-target", Struct.get(json, "view-wallpaper_type") == WallpaperType.BACKGROUND ? "INV_SRC_ALPHA" : "ONE"),
         validate: function(value) {
           Assert.areEqual(true, this.data.contains(value))
         },
-        data: new Array(String, BLEND_MODES_EXT),
+        data: BlendModeExt.keys(),
       },
       "view-wallpaper_blend-equation": {
         type: String,
@@ -56,7 +108,7 @@ function brush_view_old_wallpaper(json = null) {
         validate: function(value) {
           Assert.areEqual(true, this.data.contains(value))
         },
-        data: new Array(String, BLEND_EQUATIONS),
+        data: BlendEquation.keys(),
       },
       "view-wallpaper_fade-in-duration": {
         type: Number,

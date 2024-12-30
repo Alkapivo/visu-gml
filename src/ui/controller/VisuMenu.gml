@@ -875,12 +875,12 @@ function VisuMenu(_config = null) constructor {
             label: { text: "Shaders limit" },
             previous: { 
               callback: function() {
-                var value = clamp(int64(Visu.settings.getValue("visu.graphics.shaders-limit") - 1), 1, 32)
+                var value = clamp(int64(Visu.settings.getValue("visu.graphics.shaders-limit") - 1), 1, DEFAULT_SHADER_PIPELINE_LIMIT)
                 Visu.settings.setValue("visu.graphics.shaders-limit", value).save()
                 Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
               },
               updateCustom: function() {
-                var value = clamp(int64(Visu.settings.getValue("visu.graphics.shaders-limit")), 1, 32)
+              var value = clamp(int64(Visu.settings.getValue("visu.graphics.shaders-limit")), 1, DEFAULT_SHADER_PIPELINE_LIMIT)
                 if (value == 1) {
                   this.sprite.setAlpha(0.0)
                 } else {
@@ -899,13 +899,13 @@ function VisuMenu(_config = null) constructor {
             },
             next: { 
               callback: function() {
-                var value = clamp(int64(Visu.settings.getValue("visu.graphics.shaders-limit") + 1), 1, 32)
+                var value = clamp(int64(Visu.settings.getValue("visu.graphics.shaders-limit") + 1), 1, DEFAULT_SHADER_PIPELINE_LIMIT)
                 Visu.settings.setValue("visu.graphics.shaders-limit", value).save()
                 Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
               },
               updateCustom: function() {
-                var value = clamp(int64(Visu.settings.getValue("visu.graphics.shaders-limit")), 1, 32)
-                if (value == 32) {
+                var value = clamp(int64(Visu.settings.getValue("visu.graphics.shaders-limit")), 1, DEFAULT_SHADER_PIPELINE_LIMIT)
+                if (value == DEFAULT_SHADER_PIPELINE_LIMIT) {
                   this.sprite.setAlpha(0.0)
                 } else {
                   this.sprite.setAlpha(1.0)
@@ -2197,7 +2197,6 @@ function VisuMenu(_config = null) constructor {
                   }
                   break
                 case "menu-spin-select-entry":
-                  //Core.print("do nth")
                   break
                 case "menu-keyboard-key-entry":
                   var label = component.items.find(function(item, index, name) { 

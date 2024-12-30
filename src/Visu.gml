@@ -658,6 +658,130 @@ function _Visu() constructor {
     }
   }
 
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} valueKey
+  ///@param {String} containerKey
+  ///@param {Struct} container
+  static resolveBooleanTrackEvent = function(data, useKey, valueKey, containerKey, container) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    Struct.set(container, containerKey, Struct.get(data, valueKey))
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} sourceKey
+  ///@param {String} targetKey
+  ///@param {String} equationKey
+  ///@param {BlendConfig} blendConfig
+  static resolveBlendConfigTrackEvent = function(data, useKey, sourceKey, targetKey, equationKey, blendConfig) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    blendConfig
+      .setSource(BlendModeExt.get(Struct.get(data, sourceKey)))
+      .setTarget(BlendModeExt.get(Struct.get(data, targetKey)))
+      .setEquation(BlendEquation.get(Struct.get(data, equationKey)))
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} eventName
+  ///@param {any} eventData
+  ///@param {EventPump} pump
+  static resolveSendEventTrackEvent = function(data, useKey, eventName, eventData, pump) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    pump.send(new Event(eventName, eventData))
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} transformerKey
+  ///@param {String} changeKey
+  ///@param {String} containerKey
+  ///@param {Struct} container
+  ///@param {EventPump} pump
+  ///@param {TaskExecutor} executor
+  static resolveNumberTransformerTrackEvent = function(data, useKey, transformerKey, changeKey, containerKey, container, pump, executor) {
+    var override = Struct.get(data, useKey)
+    var change = Struct.get(data, changeKey)
+    var transformer = Struct.get(data, transformerKey)
+    if (change) {
+      pump.send(new Event("transform-property", {
+        key: containerKey,
+        container: container,
+        executor: executor,
+        transformer: new NumberTransformer({
+          value: override ? transformer.value : Struct.get(container, containerKey),
+          //value: Struct.get(container, containerKey),
+          target: transformer.target,
+          factor: transformer.factor,
+          increase: transformer.increase,
+        })
+      }))
+    } else if (override) {
+      Struct.set(container, containerKey, transformer.value)
+    }
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} colorKey
+  ///@param {String} speedKey
+  ///@param {String} containerKey
+  ///@param {Struct} container
+  ///@param {EventPump} pump
+  ///@param {TaskExecutor} executor
+  static resolveColorTransformerTrackEvent = function(data, useKey, colorKey, speedKey, containerKey, container, pump, executor) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    var colA = Struct.get(container, containerKey)
+    var colB = Struct.get(data, colorKey)
+    var duration = Struct.get(data, speedKey) 
+    var length = max(
+      abs(colA.red - colB.red),
+      abs(colA.green - colB.green),
+      abs(colA.blue - colB.blue)
+    )
+
+    var factor = duration > 0.0 && length > 0.0
+      ? (length / (duration * GAME_FPS))
+      : 1.0
+    pump.send(new Event("transform-property", {
+      key: containerKey,
+      container: container,
+      executor: executor,
+      transformer: new ColorTransformer({
+        value: Struct.get(container, containerKey).toHex(true),
+        target: Struct.get(data, colorKey).toHex(true),
+        factor: factor,
+        increase: 0.0,
+      })
+    }))
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} valueKey
+  ///@param {String} containerKey
+  ///@param {Struct} container
+  static resolvePropertyTrackEvent = function(data, useKey, valueKey, containerKey, container) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    Struct.set(container, containerKey, Struct.get(data, valueKey))
+  }
+
   ///@param {String} [layerName]
   ///@param {Number} [layerDefaultDepth]
   ///@return {Visu}

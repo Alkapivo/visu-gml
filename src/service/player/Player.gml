@@ -202,16 +202,16 @@ function PlayerStats(_player, json) constructor {
         controller.sfxService.play("player-collect-point-or-force")
         //Core.print("Force incremented from", previous, "to", value)
       } else if (previous > value) {
-        Core.print("Force decremented from", previous, "to", value)
+        //Core.print("Force decremented from", previous, "to", value)
       }
       return this
     },
     onMinValueExceed: function() { 
-      Core.print("Force already reached minimum")
+      //Core.print("Force already reached minimum")
       return this
     },
     onMaxValueExceed: function() { 
-      Core.print("Force alread reached maximum")
+      //Core.print("Force alread reached maximum")
       return this
     },
   }))
@@ -241,16 +241,16 @@ function PlayerStats(_player, json) constructor {
         controller.sfxService.play("player-collect-point-or-force")
         //Core.print("Points incremented from", previous, "to", value)
       } else if (previous > value) {
-        Core.print("Points decremented from", previous, "to", value)
+        //Core.print("Points decremented from", previous, "to", value)
       }
       return this
     },
     onMinValueExceed: function() { 
-      Core.print("Points already reached minimum")
+      //Core.print("Points already reached minimum")
       return this
     },
     onMaxValueExceed: function() { 
-      Core.print("Points already reached maximum")
+      //Core.print("Points already reached maximum")
       return this
     },
   }))

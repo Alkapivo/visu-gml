@@ -478,7 +478,7 @@ function GridRenderer() constructor {
   ///@return {GridRenderer}
   renderPlayer = function(gridService, playerService, baseX, baseY) { 
     var player = playerService.player
-    if (!gridService.properties.renderElements
+    if (!gridService.properties.renderPlayer
       || !Core.isType(player, Player)) {
       this.player2DCoords.x = null
       this.player2DCoords.y = null
@@ -732,7 +732,7 @@ function GridRenderer() constructor {
   ///@return {GridRenderer}
   debugRenderPlayer = function(gridService, playerService, baseX, baseY) { 
     var player = playerService.player
-    if (!gridService.properties.renderElements
+    if (!gridService.properties.renderPlayer
       || !Core.isType(player, Player)) {
       this.player2DCoords.x = null
       this.player2DCoords.y = null
@@ -1470,7 +1470,7 @@ function GridRenderer() constructor {
       this.gridSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, GuiWidth() / 2.0, 0.0)
       this.shaderBackgroundSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, 0.0, GuiHeight() / 2.0)
       this.shaderSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, GuiWidth() / 2.0, GuiHeight() / 2.0)
-      return this;
+      return this
     }
 
     var playerService = Beans.get(BeanVisuController).playerService

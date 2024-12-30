@@ -1,43 +1,26 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
-///@static
-///@type {String[]}
-global.__WALLPAPER_TYPES = [
-  "Background",
-  "Foreground",
-]
-#macro WALLPAPER_TYPES global.__WALLPAPER_TYPES
+///@enum
+function _WallpaperType(): Enum() constructor {
+  BACKGROUND = "BACKGROUND"
+  FOREGROUND = "FOREGROUND"
+}
+global.__WallpaperType = new _WallpaperType()
+#macro WallpaperType global.__WallpaperType
 
-
-///@static
-///@type {String[]}
-global.__BLEND_MODES_EXT = [
-  "ONE",
-  "ZERO",
-  "SRC_ALPHA",
-  "INV_SRC_ALPHA",
-  "SRC_COLOUR",
-  "INV_SRC_COLOUR",
-  "SRC_ALPHA_SAT",
-  "DEST_ALPHA",
-  "INV_DEST_ALPHA",
-  "DEST_COLOUR",
-  "INV_DEST_COLOUR"
-]
-#macro BLEND_MODES_EXT global.__BLEND_MODES_EXT
-
-
-///@static
-///@type {String[]}
-global.__BLEND_EQUATIONS = [
-  "ADD",
-  "SUBTRACT",
-  "REVERSE_SUBTRACT",
-  "MIN",
-  "MAX"
-]
-#macro BLEND_EQUATIONS global.__BLEND_EQUATIONS
-
+///@param {String} type
+///@return {ShaderPipelineType}
+function migrateWallpaperType(type) {
+  switch (type) {
+    case WallpaperType.BACKGROUND:
+    case "Background": return WallpaperType.BACKGROUND
+    case WallpaperType.FOREGROUND:
+    case "Foreground": return WallpaperType.FOREGROUND
+    default: 
+      Logger.warn("migrateWallpaperType", $"Found unsupported type: '{type}'. Return default value: '{WallpaperType.BACKGROUND}'")
+      return ShaderPipelineType.COMBINED
+  }
+}
 
 ///@param {?Struct} [json]
 ///@return {Struct}
@@ -49,7 +32,7 @@ function brush_view_wallpaper(json = null) {
         type: String,
         value: Struct.get(json, "vw-layer_type"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, WALLPAPER_TYPES),
+        data: WallpaperType.keys(),
       },
       "vw-layer_fade-in": {
         type: Number,
@@ -103,19 +86,19 @@ function brush_view_wallpaper(json = null) {
         type: String,
         value: Struct.get(json, "vw-layer_blend-src"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_MODES_EXT),
+        data: BlendModeExt.keys(),
       },
       "vw-layer_blend-dest": {
         type: String,
         value: Struct.get(json, "vw-layer_blend-dest"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_MODES_EXT),
+        data: BlendModeExt.keys(),
       },
       "vw-layer_blend-eq": {
         type: String,
         value: Struct.get(json, "vw-layer_blend-eq"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_EQUATIONS),
+        data: BlendEquation.keys(),
       },
       "vw-layer_use-spd": {
         type: Boolean,
@@ -190,9 +173,15 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
+        name: "vw-layer_type-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "vw-layer_fade-in",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Fade in" },
@@ -205,12 +194,16 @@ function brush_view_wallpaper(json = null) {
             store: { key: "vw-layer_fade-in" },
             factor: 0.25,
           },
+          slider: {
+            store: { key: "vw-layer_fade-in" },
+            factor: 0.01,
+          },
         },
       },
       {
         name: "vw-layer_fade-out",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Fade out" },
@@ -222,6 +215,10 @@ function brush_view_wallpaper(json = null) {
           increase: {
             store: { key: "vw-layer_fade-out" },
             factor: 0.25,
+          },
+          slider: {
+            store: { key: "vw-layer_fade-out" },
+            factor: 0.01,
           },
         },
       },
@@ -784,7 +781,10 @@ function brush_view_wallpaper(json = null) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
               text: "Speed",

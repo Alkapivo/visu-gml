@@ -241,7 +241,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Fade in (s)",
+            text: "Fade in",
             font: "font_inter_10_regular",
           },
           field: { store: { key: "vw-sub-fade-in" } },
@@ -262,7 +262,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Fade out (s)",
+            text: "Fade out",
             font: "font_inter_10_regular",
           },
           field: { store: { key: "vw-sub-fade-out" } },
@@ -289,7 +289,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Line (s)",
+            text: "Line",
             enable: { key: "vw-sub_use-nl-delay" },
           },  
           field: { 
@@ -324,7 +324,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "End (s)",
+            text: "End",
             enable: { key: "vw-sub_use-end-delay" },
           },  
           field: { 
@@ -359,7 +359,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Timeout (s)",
+            text: "Timeout",
             enable: { key: "vw-sub_use-timeout" },
           },  
           field: { 

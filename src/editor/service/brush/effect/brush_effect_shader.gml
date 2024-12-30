@@ -42,7 +42,7 @@ function brush_effect_shader(json) {
         type: String,
         value: Struct.get(json, "ef-shd_pipeline"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, SHADER_PIPELINE_TYPES),
+        data: ShaderPipelineType.keys(),
       },
       "ef-shd_use-merge-cfg": {
         type: Boolean,
@@ -81,6 +81,90 @@ function brush_effect_shader(json) {
         },
       },
       {
+        name: "ef-shd_pipeline-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "ef-shd_duration",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Duration",
+          },  
+          field: { 
+            store: { key: "ef-shd_duration" },
+          },
+          decrease: {
+            store: { key: "ef-shd_duration" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "ef-shd_duration" },
+            factor: 0.1,
+          },
+          slider: {
+            store: { key: "ef-shd_duration" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
+        name: "ef-shd_fade-in",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Fade in",
+          },  
+          field: { 
+            store: { key: "ef-shd_fade-in" },
+          },
+          decrease: {
+            store: { key: "ef-shd_fade-in" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "ef-shd_fade-in" },
+            factor: 0.1,
+          },
+          slider: {
+            store: { key: "ef-shd_fade-in" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
+        name: "ef-shd_fade-out",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Fade out",
+          },  
+          field: { 
+            store: { key: "ef-shd_fade-out" },
+          },
+          decrease: {
+            store: { key: "ef-shd_fade-out" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "ef-shd_fade-out" },
+            factor: 0.1,
+          },
+          slider: {
+            store: { key: "ef-shd_fade-out" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
         name: "ef-shd_alpha",  
         template: VEComponents.get("numeric-slider-increase-field"),
         layout: VELayouts.get("numeric-slider-increase-field"),
@@ -110,66 +194,6 @@ function brush_effect_shader(json) {
       },
       {
         name: "ef-shd_alpha-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
-        name: "ef-shd_duration",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Duration (s)" },
-          field: { store: { key: "ef-shd_duration" } },
-          decrease: {
-            store: { key: "ef-shd_duration" },
-            factor: -0.5,
-          },
-          increase: {
-            store: { key: "ef-shd_duration" },
-            factor: 0.5,
-          },
-        },
-      },
-      {
-        name: "ef-shd_fade-in",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Fade in (s)" },
-          field: { store: { key: "ef-shd_fade-in" } },
-          decrease: {
-            store: { key: "ef-shd_fade-in" },
-            factor: -0.25,
-          },
-          increase: {
-            store: { key: "ef-shd_fade-in" },
-            factor: 0.25,
-          },
-        },
-      },
-      {
-        name: "ef-shd_fade-out",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Fade out (s)" },
-          field: { store: { key: "ef-shd_fade-out" } },
-          decrease: {
-            store: { key: "ef-shd_fade-out" },
-            factor: -0.25,
-          },
-          increase: {
-            store: { key: "ef-shd_fade-out" },
-            factor: 0.25,
-          },
-        },
-      },
-      {
-        name: "ef-shd_fade-out-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },

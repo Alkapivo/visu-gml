@@ -7,22 +7,27 @@ function migrateGridOldChannelEvent(json) {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "gr-c_use-mode": Struct.getIfType(json, "grid-channel_use-mode", Boolean, false),
     "gr-c_mode": Struct.getIfType(json, "grid-channel_mode", String, "DUAL"),
-    "gr-c_use-amount": Struct.getIfType(json, "grid-channel_use-transform-amount", Boolean, false),
+    "gr-c_use-amount": false,
     "gr-c_amount": Struct.getIfType(json, "grid-channel_transform-amount", Struct),
+    "gr-c_change-amount": Struct.getIfType(json, "grid-channel_use-transform-amount", Boolean, false),
     "gr-c_use-main-col": Struct.getIfType(json, "grid-channel_use-primary-color", Boolean, false),
-    "gr-c_main-col": Struct.getIfType(json, "grid-channel_primary-color", String),
-    "gr-c_main-col-spd": Struct.getIfType(json, "grid-channel_primary-color-speed", Number),
-    "gr-c_use-main-alpha": Struct.getIfType(json, "grid-channel_use-transform-primary-alpha", Boolean, false),
+    "gr-c_main-col": Struct.getIfType(json, "grid-channel_primary-color", String, "#ffffff"),
+    "gr-c_main-col-spd": Struct.getIfType(json, "grid-channel_primary-color-speed", Number, 1.0),
+    "gr-c_use-main-alpha": false,
     "gr-c_main-alpha": Struct.getIfType(json, "grid-channel_transform-primary-alpha", Struct),
-    "gr-c_use-main-size": Struct.getIfType(json, "grid-channel_use-transform-primary-size", Boolean, false),
+    "gr-c_change-main-alpha": Struct.getIfType(json, "grid-channel_use-transform-primary-alpha", Boolean, false),
+    "gr-c_use-main-size": false,
     "gr-c_main-size": Struct.getIfType(json, "grid-channel_transform-primary-size", Struct),
+    "gr-c_change-main-size": Struct.getIfType(json, "grid-channel_use-transform-primary-size", Boolean, false),
     "gr-c_use-side-col": Struct.getIfType(json, "grid-channel_use-secondary-color", Boolean, false),
-    "gr-c_side-col": Struct.getIfType(json, "grid-channel_secondary-color", String),
-    "gr-c_side-col-spd": Struct.getIfType(json, "grid-channel_secondary-color-speed", Number),
-    "gr-c_use-side-alpha": Struct.getIfType(json, "grid-channel_use-transform-secondary-alpha", Boolean, false),
+    "gr-c_side-col": Struct.getIfType(json, "grid-channel_secondary-color", String, "#ffffff"),
+    "gr-c_side-col-spd": Struct.getIfType(json, "grid-channel_secondary-color-speed", Number, 1.0),
+    "gr-c_use-side-alpha": false,
     "gr-c_side-alpha": Struct.getIfType(json, "grid-channel_transform-secondary-alpha", Struct),
-    "gr-c_use-side-size": Struct.getIfType(json, "grid-channel_use-transform-secondary-size", Boolean, false),
+    "gr-c_change-side-alpha": Struct.getIfType(json, "grid-channel_use-transform-secondary-alpha", Boolean, false),
+    "gr-c_use-side-size": false,
     "gr-c_side-size": Struct.getIfType(json, "grid-channel_transform-secondary-size", Struct),
+    "gr-c_change-side-size": Struct.getIfType(json, "grid-channel_use-transform-secondary-size", Boolean, false),
   }
 }
 
@@ -39,11 +44,9 @@ function brush_grid_old_channel(json = null) {
       },
       "grid-channel_mode": {
         type: String,
-        value: Struct.getIfType(json, "grid-channel_mode", String, "DUAL"),
-        passthrough: function(value) {
-          return this.data.contains(value) ? value : this.value
-        },
-        data: new Array(String, GRID_MODES)
+        value: Struct.getIfType(json, "grid-channel_mode", String, GridMode.DUAL),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: GridMode.keys(),
       },
       "grid-channel_use-transform-amount": {
         type: Boolean,

@@ -3,9 +3,31 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateGridOldConfigEvent(json) {
-  Logger.debug("Track", "migrateGridOldConfigEvent is not implemented")
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "gr-cfg_use-render": Struct.getIfType(json, "grid-config_use-render-grid", Boolean, false),
+    "gr-cfg_render": Struct.getIfType(json, "grid-config_render-grid", Boolean, false),
+    "gr-cfg_use-spd": false,
+    "gr-cfg_spd": Struct.getIfType(json, "grid-config_speed", Struct, {
+      value: 1.0,
+      target: 1.0,
+      factor: 1.0,
+      increase: 0.0,
+    }),
+    "gr-cfg_change-spd": Struct.getIfType(json, "grid-config_use-speed", Boolean, false),
+    "gr-cfg_use-cls-frame": Struct.getIfType(json, "grid-config_use-clear-frame", Boolean, false),
+    "gr-cfg_cls-frame": Struct.getIfType(json, "grid-config_clear-frame", Boolean, false),
+    "gr-cfg_use-cls-frame-col": Struct.getIfType(json, "grid-config_use-clear-color", Boolean, false),
+    "gr-cfg_cls-frame-col": Struct.getIfType(json, "grid-config_clear-color", String, "#000000"),
+    "gr-cfg_cls-frame-col-spd": 1.0,
+    "gr-cfg_use-cls-frame-alpha": false,
+    "gr-cfg_cls-frame-alpha": Struct.getIfType(json, "grid-config_clear-frame-alpha", Struct, {
+      value: 1.0,
+      target: 1.0,
+      factor: 1.0,
+      increase: 0.0,
+    }),
+    "gr-cfg_change-cls-frame-alpha": Struct.getIfType(json, "grid-config_use-clear-frame-alpha", Boolean, false),
   }
 }
 
@@ -13,9 +35,62 @@ function migrateGridOldConfigEvent(json) {
 ///@param {Struct} json
 ///@return {Struct}
 function migrateGridOldConfigToGridAreaEvent(json) {
-  Logger.debug("Track", "migrateGridOldConfigToGridAreaEvent is not implemented")
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "gr-area_use-h": false,
+    "gr-area_h": Struct.getIfType(json, "grid-config_border-horizontal-width", Struct, {
+      value: 2.0,
+      target: 2.0,
+      factor: 2.0,
+      increase: 0.0,
+    }),
+    "gr-area_change-h": Struct.getIfType(json, "grid-config_use-border-horizontal-width", Boolean, false),
+    "gr-area_use-h-col": Struct.getIfType(json, "grid-config_use-border-bottom-color", Boolean, false),
+    "gr-area_h-col": Struct.getIfType(json, "grid-config_border-bottom-color", String, "#ffffff"),
+    "gr-area_h-col-spd": Struct.getIfType(json, "grid-config_border-bottom-color-speed", Number, 1.0),
+    "gr-area_use-h-alpha": false,
+    "gr-area_h-alpha": Struct.getIfType(json, "grid-config_border-bottom-alpha", Struct, {
+      value: 1.0,
+      target: 1.0,
+      factor: 1.0,
+      increase: 0.0,
+    }),
+    "gr-area_change-h-alpha": Struct.getIfType(json, "grid-config_use-border-bottom-alpha", Boolean, false),
+    "gr-area_use-h-size": false,
+    "gr-area_h-size": Struct.getIfType(json, "grid-config_border-bottom-size", Struct, {
+      value: 1.0,
+      target: 1.0,
+      factor: 1.0,
+      increase: 0.0,
+    }),
+    "gr-area_change-h-size": Struct.getIfType(json, "grid-config_use-border-bottom-size", Boolean, false),
+    "gr-area_use-v": false,
+    "gr-area_v": Struct.getIfType(json, "grid-config_border-horizontal-height", Struct, {
+      value: 2.0,
+      target: 2.0,
+      factor: 2.0,
+      increase: 0.0,
+    }),
+    "gr-area_change-v": Struct.getIfType(json, "grid-config_use-border-horizontal-height", Boolean, false),
+    "gr-area_use-v-col": Struct.getIfType(json, "grid-config_use-border-horizontal-color", Boolean, false),
+    "gr-area_v-col": Struct.getIfType(json, "grid-config_border-horizontal-color", String, "#ffffff"),
+    "gr-area_v-col-spd": Struct.getIfType(json, "grid-config_border-horizontal-color-speed", Number, 1.0),
+    "gr-area_use-v-alpha": false,
+    "gr-area_v-alpha": Struct.getIfType(json, "grid-config_border-horizontal-alpha", Struct, {
+      value: 1.0,
+      target: 1.0,
+      factor: 1.0,
+      increase: 0.0,
+    }),
+    "gr-area_change-v-alpha": Struct.getIfType(json, "grid-config_use-border-horizontal-alpha", Boolean, false),
+    "gr-area_use-v-size": false,
+    "gr-area_v-size": Struct.getIfType(json, "grid-config_border-horizontal-size", Struct, {
+      value: 1.0,
+      target: 1.0,
+      factor: 1.0,
+      increase: 0.0,
+    }),
+    "gr-area_change-v-size": Struct.getIfType(json, "grid-config_use-border-horizontal-size", Boolean, false),
   }
 }
 
@@ -23,9 +98,22 @@ function migrateGridOldConfigToGridAreaEvent(json) {
 ///@param {Struct} json
 ///@return {Struct}
 function migrateGridOldConfigToEntityConfigEvent(json) {
-  Logger.debug("Track", "migrateGridOldConfigToEntityConfigEvent is not implemented")
+  var useRender = Struct.getIfType(json, "grid-config_use-render-grid-elements", Boolean, false)
+  var render = Struct.getIfType(json, "grid-config_render-grid-elements", Boolean, false)
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "en-cfg_use-render-shr": useRender,
+    "en-cfg_render-shr": render,
+    "en-cfg_use-render-player": useRender,
+    "en-cfg_render-player": render,
+    "en-cfg_use-render-coin": useRender,
+    "en-cfg_render-coin": render,
+    "en-cfg_use-render-bullet": useRender,
+    "en-cfg_render-bullet": render,
+    "en-cfg_cls-shr": false,
+    "en-cfg_cls-player": Struct.getIfType(json, "grid-config_clear-player", Boolean, false),
+    "en-cfg_cls-coin": Struct.getIfType(json, "grid-config_clear-coins", Boolean, false),
+    "en-cfg_cls-bullet": Struct.getIfType(json, "grid-config_clear-bullets", Boolean, false),
   }
 }
 

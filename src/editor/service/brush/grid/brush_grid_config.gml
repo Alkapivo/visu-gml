@@ -120,19 +120,19 @@ function brush_grid_config(json) {
         type: String,
         value: Struct.get(json, "gr-cfg_grid-blend-src"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_MODES_EXT),
+        data: BlendModeExt.keys(),
       },
       "gr-cfg_grid-blend-dest": {
         type: String,
         value: Struct.get(json, "gr-cfg_grid-blend-dest"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_MODES_EXT),
+        data: BlendModeExt.keys(),
       },
       "gr-cfg_grid-blend-eq": {
         type: String,
         value: Struct.get(json, "gr-cfg_grid-blend-eq"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_EQUATIONS),
+        data: BlendEquation.keys(),
       },
       "gr-cfg_focus-grid-use-blend": {
         type: Boolean,
@@ -142,22 +142,40 @@ function brush_grid_config(json) {
         type: String,
         value: Struct.get(json, "gr-cfg_focus-grid-blend-src"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_MODES_EXT),
+        data: BlendModeExt.keys(),
       },
       "gr-cfg_focus-grid-blend-dest": {
         type: String,
         value: Struct.get(json, "gr-cfg_focus-grid-blend-dest"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_MODES_EXT),
+        data: BlendModeExt.keys(),
       },
       "gr-cfg_focus-grid-blend-eq": {
         type: String,
         value: Struct.get(json, "gr-cfg_focus-grid-blend-eq"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, BLEND_EQUATIONS),
+        data: BlendEquation.keys(),
       },
     }),
     components: new Array(Struct, [
+      {
+        name: "gr-cfg_grid-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Grid",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          checkbox: { 
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: {
+            backgroundColor: VETheme.color.accentShadow,
+          },
+        },
+      },
       {
         name: "gr-cfg_render",
         template: VEComponents.get("property"),
@@ -165,27 +183,121 @@ function brush_grid_config(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Render grid",
+            text: "Render",
             enable: { key: "gr-cfg_use-render" },
-            backgroundColor: VETheme.color.accentShadow,
+            //backgroundColor: VETheme.color.dark,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "gr-cfg_use-render" },
-            backgroundColor: VETheme.color.accentShadow,
+            //backgroundColor: VETheme.color.accentShadow,
           },
           input: {
             spriteOn: { name: "visu_texture_checkbox_switch_on" },
             spriteOff: { name: "visu_texture_checkbox_switch_off" },
             store: { key: "gr-cfg_render" },
             enable: { key: "gr-cfg_use-render" },
-            backgroundColor: VETheme.color.accentShadow,
+            //backgroundColor: VETheme.color.accentShadow,
           },
         },
       },
       {
-        name: "gr-cfg_render-line-h",
+        name: "gr-cfg_grid-use-blend",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Blend mode",
+            //backgroundColor: VETheme.color.dark,
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          input: {
+            //backgroundColor: VETheme.color.dark,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "gr-cfg_grid-use-blend" },
+            //backgroundColor: VETheme.color.dark,
+          },
+        },
+      },
+      {
+        name: "gr-cfg_grid-blend-src",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Source",
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          previous: {
+            store: { key: "gr-cfg_grid-blend-src" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "gr-cfg_grid-blend-src" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            store: { key: "gr-cfg_grid-blend-src" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_grid-blend-dest",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Target",
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          previous: {
+            store: { key: "gr-cfg_grid-blend-dest" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "gr-cfg_grid-blend-dest" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            store: { key: "gr-cfg_grid-blend-dest" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_grid-blend-eq",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Equation",
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          previous: {
+            store: { key: "gr-cfg_grid-blend-eq" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "gr-cfg_grid-blend-eq" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "gr-cfg_grid-blend-eq" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_blend-eq-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -200,8 +312,8 @@ function brush_grid_config(json) {
             label: {
               text: "Speed",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-cfg_use-spd" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-cfg_use-spd" },
             },
             field: {
               store: { key: "gr-cfg_spd" },
@@ -312,10 +424,10 @@ function brush_grid_config(json) {
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Z",
+              text: "Z position",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-cfg_use-z" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-cfg_use-z" },
             },
             field: {
               store: { key: "gr-cfg_z" },
@@ -419,352 +531,22 @@ function brush_grid_config(json) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "gr-cfg_grid-use-blend",
+        name: "gr-cfg_focus-grid-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: {
-            text: "Grid blend mode",
-            backgroundColor: VETheme.color.accentShadow,
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-          input: {
+          label: { 
+            text: "Focus grid",
             backgroundColor: VETheme.color.accentShadow,
           },
           checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "gr-cfg_grid-use-blend" },
             backgroundColor: VETheme.color.accentShadow,
-          },
-        },
-      },
-      {
-        name: "gr-cfg_grid-blend-src",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Source",
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-          previous: {
-            store: { key: "gr-cfg_grid-blend-src" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "gr-cfg_grid-blend-src" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "gr-cfg_grid-blend-src" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-        },
-      },
-      {
-        name: "gr-cfg_grid-blend-dest",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Target",
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-          previous: {
-            store: { key: "gr-cfg_grid-blend-dest" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "gr-cfg_grid-blend-dest" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "gr-cfg_grid-blend-dest" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-        },
-      },
-      {
-        name: "gr-cfg_grid-blend-eq",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Equation",
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-          previous: {
-            store: { key: "gr-cfg_grid-blend-eq" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "gr-cfg_grid-blend-eq" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: {
-            store: { key: "gr-cfg_grid-blend-eq" },
-            enable: { key: "gr-cfg_grid-use-blend" },
-          },
-        },
-      },
-      {
-        name: "gr-cfg_grid-blend-eq-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
-        name: "en-cfg_cls-frame-title",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Clear grid frame",
-            backgroundColor: VETheme.color.accentShadow,
-            enable: { key: "gr-cfg_use-cls-frame" },
-          },
-          checkbox: {
-            backgroundColor: VETheme.color.accentShadow,
-            store: { key: "gr-cfg_use-cls-frame" },
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
           },
           input: {
             backgroundColor: VETheme.color.accentShadow,
-            store: { key: "gr-cfg_cls-frame" },
-            enable: { key: "gr-cfg_use-cls-frame" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
           },
         },
-      },
-      {
-        name: "gr-cfg_cls-frame-alpha",
-        template: VEComponents.get("number-transformer-increase-checkbox"),
-        layout: VELayouts.get("number-transformer-increase-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          value: {
-            label: {
-              text: "Alpha",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-cfg_use-cls-frame-alpha" },
-            },
-            field: {
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_use-cls-frame-alpha" },
-            },
-            decrease: { 
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_use-cls-frame-alpha" },
-              factor: -1.0,
-            },
-            increase: { 
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_use-cls-frame-alpha" },
-              factor: 1.0,
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-cfg_use-cls-frame-alpha" },
-            },
-            title: { 
-              text: "Override",
-              enable: { key: "gr-cfg_use-cls-frame-alpha" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-            },
-            field: {
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-            },
-            decrease: { 
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha"},
-              factor: -1.0,
-            },
-            increase: { 
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-              factor: 1.0,
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-cfg_change-cls-frame-alpha" },
-            },
-            title: { 
-              text: "Change",
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-            },
-            field: {
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-            },
-            decrease: { 
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-              factor: -1.0,
-            },
-            increase: { 
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-              factor: 1.0,
-            },
-          },
-          increase: {
-            label: {
-              text: "Increase",
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-            },
-            field: {
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-            },
-            decrease: { 
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha" },
-              factor: 0.001,
-            },
-            increase: { 
-              store: { key: "gr-cfg_cls-frame-alpha" },
-              enable: { key: "gr-cfg_change-cls-frame-alpha"} ,
-              factor: 0.001,
-            },
-          },
-        },
-      },
-      {
-        name: "gr-cfg_cls-frame-col",
-        template: VEComponents.get("color-picker"),
-        layout: VELayouts.get("color-picker"),
-        config: {
-          layout: { type: UILayoutType.VERTICAL },
-          title: { 
-            label: {
-              text: "Color",
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            input: { 
-              store: { key: "gr-cfg_cls-frame-col" },
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            }
-          },
-          red: {
-            label: {
-              text: "Red",
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            field: {
-              store: { key: "gr-cfg_cls-frame-col" },
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            slider: {
-              store: { key: "gr-cfg_cls-frame-col" },
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-          },
-          green: {
-            label: {
-              text: "Green",
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            field: {
-              store: { key: "gr-cfg_cls-frame-col" },
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            slider: {
-              store: { key: "gr-cfg_cls-frame-col" },
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-          },
-          blue: {
-            label: {
-              text: "Blue",
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            field: {
-              store: { key: "gr-cfg_cls-frame-col" },
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            slider: {
-              store: { key: "gr-cfg_cls-frame-col" },
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-          },
-          hex: { 
-            label: {
-              text: "Hex",
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-            field: {
-              store: { key: "gr-cfg_cls-frame-col" },
-              enable: { key: "gr-cfg_use-cls-frame-col" },
-            },
-          },
-        },
-      },
-      {
-        name: "gr-cfg_cls-frame-col-spd",
-        template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("numeric-slider-increase-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Speed",
-            enable: { key: "gr-cfg_use-cls-frame-col" },
-          },  
-          field: { 
-            store: { key: "gr-cfg_cls-frame-col-spd" },
-            enable: { key: "gr-cfg_use-cls-frame-col" },
-          },
-          slider: {
-            store: { key: "gr-cfg_cls-frame-col-spd" },
-            enable: { key: "gr-cfg_use-cls-frame-col" },
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
-          },
-          decrease: {
-            store: { key: "gr-cfg_cls-frame-col-spd" },
-            enable: { key: "gr-cfg_use-cls-frame-col" },
-            factor: -0.001,
-          },
-          increase: {
-            store: { key: "gr-cfg_cls-frame-col-spd" },
-            enable: { key: "gr-cfg_use-cls-frame-col" },
-            factor: 0.001,
-          },
-        },
-      },
-      {
-        name: "gr-cfg_cls-frame-col-spd-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "gr-cfg_render-focus-grid",
@@ -773,27 +555,121 @@ function brush_grid_config(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Render focus grid",
+            text: "Render",
             enable: { key: "gr-cfg_use-render-focus-grid" },
-            backgroundColor: VETheme.color.accentShadow,
+            //backgroundColor: VETheme.color.accentShadow,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "gr-cfg_use-render-focus-grid" },
-            backgroundColor: VETheme.color.accentShadow,
+            //backgroundColor: VETheme.color.accentShadow,
           },
           input: {
             spriteOn: { name: "visu_texture_checkbox_switch_on" },
             spriteOff: { name: "visu_texture_checkbox_switch_off" },
             store: { key: "gr-cfg_render-focus-grid" },
             enable: { key: "gr-cfg_use-render-focus-grid" },
-            backgroundColor: VETheme.color.accentShadow,
+            //backgroundColor: VETheme.color.accentShadow,
           },
         },
       },
       {
-        name: "gr-cfg_render-focus-grid-line-h",
+        name: "gr-cfg_focus-grid-use-blend",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Blend mode",
+            //backgroundColor: VETheme.color.dark,
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          input: {
+            //backgroundColor: VETheme.color.dark,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "gr-cfg_focus-grid-use-blend" },
+            //backgroundColor: VETheme.color.dark,
+          },
+        },
+      },
+      {
+        name: "gr-cfg_focus-grid-blend-src",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Source",
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          previous: {
+            store: { key: "gr-cfg_focus-grid-blend-src" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "gr-cfg_focus-grid-blend-src" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            store: { key: "gr-cfg_focus-grid-blend-src" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_focus-grid-blend-dest",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Target",
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          previous: {
+            store: { key: "gr-cfg_focus-grid-blend-dest" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "gr-cfg_focus-grid-blend-dest" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            store: { key: "gr-cfg_focus-grid-blend-dest" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_focus-grid-blend-eq",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Equation",
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          previous: {
+            store: { key: "gr-cfg_focus-grid-blend-eq" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "gr-cfg_focus-grid-blend-eq" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "gr-cfg_focus-grid-blend-eq" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_render-focus-grid-blend-eq-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -808,8 +684,8 @@ function brush_grid_config(json) {
             label: {
               text: "Treshold",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-cfg_use-focus-grid-treshold" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-cfg_use-focus-grid-treshold" },
             },
             field: {
               store: { key: "gr-cfg_focus-grid-treshold" },
@@ -922,8 +798,8 @@ function brush_grid_config(json) {
             label: {
               text: "Alpha",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-cfg_use-focus-grid-alpha" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-cfg_use-focus-grid-alpha" },
             },
             field: {
               store: { key: "gr-cfg_focus-grid-alpha" },
@@ -1021,103 +897,264 @@ function brush_grid_config(json) {
         },
       },
       {
-        name: "gr-cfg_focus-grid-alpha-line-h",
+        name: "gr-cfg_cls-focus-grid-alph-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "gr-cfg_focus-grid-use-blend",
+        name: "en-cfg_cls-frame-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: {
-            text: "Focus grid blend mode",
+          label: { 
+            text: "Clear frame",
             backgroundColor: VETheme.color.accentShadow,
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+            enable: { key: "gr-cfg_use-cls-frame" },
           },
-          input: { backgroundColor: VETheme.color.accentShadow },
-          checkbox: { 
+          checkbox: {
+            backgroundColor: VETheme.color.accentShadow,
+            store: { key: "gr-cfg_use-cls-frame" },
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          input: {
             backgroundColor: VETheme.color.accentShadow,
+            store: { key: "gr-cfg_cls-frame" },
+            enable: { key: "gr-cfg_use-cls-frame" },
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
           },
         },
       },
       {
-        name: "gr-cfg_focus-grid-blend-src",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Source",
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+        name: "gr-cfg_cls-frame-col",
+        template: VEComponents.get("color-picker"),
+        layout: VELayouts.get("color-picker"),
+        config: {
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 0, bottom: 0 },
           },
-          previous: {
-            store: { key: "gr-cfg_focus-grid-blend-src" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          line: { disable: true },
+          title: { 
+            label: {
+              text: "Color",
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+              //backgroundColor: VETheme.color.dark,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "gr-cfg_use-cls-frame-col" },
+              //backgroundColor: VETheme.color.dark,
+            },
+            input: { 
+              store: { key: "gr-cfg_cls-frame-col" },
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+              //backgroundColor: VETheme.color.dark,
+            }
           },
-          preview: Struct.appendRecursive({ 
-            store: { key: "gr-cfg_focus-grid-blend-src" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "gr-cfg_focus-grid-blend-src" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          red: {
+            label: {
+              text: "Red",
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+            field: {
+              store: { key: "gr-cfg_cls-frame-col" },
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+            slider: {
+              store: { key: "gr-cfg_cls-frame-col" },
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+          },
+          green: {
+            label: {
+              text: "Green",
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+            field: {
+              store: { key: "gr-cfg_cls-frame-col" },
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+            slider: {
+              store: { key: "gr-cfg_cls-frame-col" },
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+          },
+          blue: {
+            label: {
+              text: "Blue",
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+            field: {
+              store: { key: "gr-cfg_cls-frame-col" },
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+            slider: {
+              store: { key: "gr-cfg_cls-frame-col" },
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+          },
+          hex: { 
+            label: {
+              text: "Hex",
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
+            field: {
+              store: { key: "gr-cfg_cls-frame-col" },
+              enable: { key: "gr-cfg_use-cls-frame-col" },
+            },
           },
         },
       },
       {
-        name: "gr-cfg_focus-grid-blend-dest",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
+        name: "gr-cfg_cls-frame-col-spd",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Target",
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+            text: "Duration",
+            enable: { key: "gr-cfg_use-cls-frame-col" },
+          },  
+          field: { 
+            store: { key: "gr-cfg_cls-frame-col-spd" },
+            enable: { key: "gr-cfg_use-cls-frame-col" },
           },
-          previous: {
-            store: { key: "gr-cfg_focus-grid-blend-dest" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          decrease: {
+            store: { key: "gr-cfg_cls-frame-col-spd" },
+            enable: { key: "gr-cfg_use-cls-frame-col" },
+            factor: -0.1,
           },
-          preview: Struct.appendRecursive({ 
-            store: { key: "gr-cfg_focus-grid-blend-dest" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "gr-cfg_focus-grid-blend-dest" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          increase: {
+            store: { key: "gr-cfg_cls-frame-col-spd" },
+            enable: { key: "gr-cfg_use-cls-frame-col" },
+            factor: 0.1,
+          },
+          slider: {
+            store: { key: "gr-cfg_cls-frame-col-spd" },
+            enable: { key: "gr-cfg_use-cls-frame-col" },
+            factor: 0.01,
           },
         },
       },
       {
-        name: "gr-cfg_focus-grid-blend-eq",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
+        name: "gr-cfg_cls-frame-col-spd-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "gr-cfg_cls-frame-alpha",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Equation",
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          value: {
+            label: {
+              text: "Alpha",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-cfg_use-cls-frame-alpha" },
+            },
+            field: {
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_use-cls-frame-alpha" },
+            },
+            decrease: { 
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_use-cls-frame-alpha" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_use-cls-frame-alpha" },
+              factor: 1.0,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "gr-cfg_use-cls-frame-alpha" },
+            },
+            title: { 
+              text: "Override",
+              enable: { key: "gr-cfg_use-cls-frame-alpha" },
+            },
           },
-          previous: {
-            store: { key: "gr-cfg_focus-grid-blend-eq" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+            },
+            field: {
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+            },
+            decrease: { 
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha"},
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+              factor: 1.0,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "gr-cfg_change-cls-frame-alpha" },
+            },
+            title: { 
+              text: "Change",
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+            },
           },
-          preview: Struct.appendRecursive({ 
-            store: { key: "gr-cfg_focus-grid-blend-eq" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: {
-            store: { key: "gr-cfg_focus-grid-blend-eq" },
-            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+            },
+            field: {
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+            },
+            decrease: { 
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+              factor: 1.0,
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+            },
+            field: {
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+            },
+            decrease: { 
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha" },
+              factor: 0.001,
+            },
+            increase: { 
+              store: { key: "gr-cfg_cls-frame-alpha" },
+              enable: { key: "gr-cfg_change-cls-frame-alpha"} ,
+              factor: 0.001,
+            },
           },
         },
-      }
+      },
     ]),
   }
     

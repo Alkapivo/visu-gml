@@ -67,17 +67,90 @@ global.__view_track_event = {
       }
     },
     run: function(data) {
-      Core.print("Dispatch track event:", "brush_view_camera")
-      return null;
       var controller = Beans.get(BeanVisuController)
-      if (Struct.get(data, "vw-cam_use-lock-x")) {
-        controller.gridService.targetLocked.isLockedX = Struct.get(data, "vw-cam_lock-x")
-      }
-      
-      if (Struct.get(data, "vw-cam_use-lock-y")) {
-        controller.gridService.targetLocked.isLockedY = Struct.get(data, "vw-cam_lock-y")
-      }
+      var gridService = controller.gridService
+      var pump = gridService.dispatcher
+      var executor = gridService.executor
+      var camera = controller.visuRenderer.gridRenderer.camera
+      var lock = gridService.targetLocked
+      var follow = gridService.view.follow
 
+      ///@feature TODO view.camera.lock.x
+      Visu.resolveBooleanTrackEvent(data,
+        "vw-cam_use-lock-x",
+        "vw-cam_lock-x",
+        "isLockedX",
+        lock)
+
+      ///@feature TODO view.camera.lock.y
+      Visu.resolveBooleanTrackEvent(data,
+        "vw-cam_use-lock-y",
+        "vw-cam_lock-y",
+        "isLockedY",
+        lock)
+
+      ///@feature TODO view.camera.follow.x
+      Visu.resolvePropertyTrackEvent(data,
+        "vw-cam_use-follow-x",
+        "vw-cam_follow-x",
+        "xMargin",
+        follow)
+
+      ///@feature TODO view.camera.follow.y
+      Visu.resolvePropertyTrackEvent(data,
+        "vw-cam_use-follow-y",
+        "vw-cam_follow-y",
+        "yMargin",
+        follow)
+
+      ///@feature TODO view.camera.follow.smooth
+      Visu.resolvePropertyTrackEvent(data,
+        "vw-cam_use-follow-smooth",
+        "vw-cam_follow-smooth",
+        "smooth",
+        follow)
+
+      ///@feature TODO view.camera.x
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "vw-cam_use-x",
+        "vw-cam_x",
+        "vw-cam_change-x",
+        "x",
+        camera, pump, executor)
+
+      ///@feature TODO view.camera.y
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "vw-cam_use-y",
+        "vw-cam_y",
+        "vw-cam_change-y",
+        "y",
+        camera, pump, executor)
+      
+      ///@feature TODO view.camera.z
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "vw-cam_use-z",
+        "vw-cam_z",
+        "vw-cam_change-z",
+        "z",
+        camera, pump, executor)
+
+      ///@feature TODO view.camera.dir
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "vw-cam_use-dir",
+        "vw-cam_dir",
+        "vw-cam_change-dir",
+        "angle",
+        camera, pump, executor)
+
+      ///@feature TODO view.camera.pitch
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "vw-cam_use-pitch",
+        "vw-cam_pitch",
+        "vw-cam_change-pitch",
+        "pitch",
+        camera, pump, executor)
+      
+      /*
       if (Struct.get(data, "view-config_use-movement")) {
         controller.gridService.movement.enable = Struct
           .get(data, "view-config_movement-enable")
@@ -99,125 +172,34 @@ global.__view_track_event = {
           increase: movementSpeed.increase,
         })
       }
-
-      if (Struct.get(data, "vw-cam_follow")) {
-        var follow = controller.gridService.view.follow
-        follow.xMargin = Struct.get(data, "vw-cam_follow-x")
-        follow.yMargin = Struct.get(data, "vw-cam_follow-y")
-        follow.smooth = Struct.get(data, "vw-cam_follow-smooth")
-      }
-
-      if (Struct.get(data, "vw-cam_use-change-x")) {
-        var transformer = Struct.get(data, "vw-cam_change-x")
-        controller.gridService.send(new Event("transform-property", {
-          key: "x",
-          container: controller.visuRenderer.gridRenderer.camera,
-          executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
-          transformer: new NumberTransformer({
-            value: controller.visuRenderer.gridRenderer.camera.x,
-            target: transformer.target,
-            factor: transformer.factor,
-            increase: transformer.increase,
-          })
-        }))
-      }
-      
-      if (Struct.get(data, "vw-cam_use-change-y")) {
-        var transformer = Struct.get(data, "vw-cam_change-y")
-        controller.gridService.send(new Event("transform-property", {
-          key: "y",
-          container: controller.visuRenderer.gridRenderer.camera,
-          executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
-          transformer: new NumberTransformer({
-            value: controller.visuRenderer.gridRenderer.camera.y,
-            target: transformer.target,
-            factor: transformer.factor,
-            increase: transformer.increase,
-          })
-        }))
-      }
-      
-      if (Struct.get(data, "vw-cam_use-change-z")) {
-        var transformer = Struct.get(data, "vw-cam_change-z")
-        controller.gridService.send(new Event("transform-property", {
-          key: "z",
-          container: controller.visuRenderer.gridRenderer.camera,
-          executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
-          transformer: new NumberTransformer({
-            value: controller.visuRenderer.gridRenderer.camera.z,
-            target: transformer.target,
-            factor: transformer.factor,
-            increase: transformer.increase,
-          })
-        }))
-      }
-      
-      if (Struct.get(data, "vw-cam_use-change-zoom")) {
-        var transformer = Struct.get(data, "vw-cam_change-zoom")
-        controller.gridService.send(new Event("transform-property", {
-          key: "zoom",
-          container: controller.visuRenderer.gridRenderer.camera,
-          executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
-          transformer: new NumberTransformer({
-            value: controller.visuRenderer.gridRenderer.camera.zoom,
-            target: transformer.target,
-            factor: transformer.factor,
-            increase: transformer.increase,
-          })
-        }))
-      }
-      
-      if (Struct.get(data, "vw-cam_use-change-dir")) {
-        var transformer = Struct.get(data, "vw-cam_change-dir")
-        var angleDifference = Math.fetchPointsAngleDiff(transformer.target, controller.visuRenderer.gridRenderer.camera.angle)
-        controller.gridService.send(new Event("transform-property", {
-          key: "angle",
-          container: controller.visuRenderer.gridRenderer.camera,
-          executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
-          transformer: new NumberTransformer({
-            value: controller.visuRenderer.gridRenderer.camera.angle,
-            target: controller.visuRenderer.gridRenderer.camera.angle + angleDifference,
-            factor: transformer.factor,
-            increase: transformer.increase,
-          })
-        }))
-      }
-      
-      if (Struct.get(data, "vw-cam_use-change-pitch")) {
-        var transformer = Struct.get(data, "vw-cam_change-pitch")
-        controller.gridService.send(new Event("transform-property", {
-          key: "pitch",
-          container: controller.visuRenderer.gridRenderer.camera,
-          executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
-          transformer: new NumberTransformer({
-            value: controller.visuRenderer.gridRenderer.camera.pitch,
-            target: transformer.target,
-            factor: transformer.factor,
-            increase: transformer.increase,
-          })
-        }))
-      }
+      */
     },
   },
   "brush_view_wallpaper": {
     parse: function(data) {
+      var useTextureBlend = Struct.parse.boolean(data, "vw-layer_use-texture-blend")
+      var textureBlend = Struct.parse.color(data, "vw-layer_texture-blend")
+      var texture = Struct.parse.sprite(data, "vw-layer_texture").setBlend(useTextureBlend
+        ? textureBlend.toGMColor()
+        : c_white)
+      
       return {
         "icon": Struct.parse.sprite(data, "icon"),
-        "vw-layer_type": Struct.parse.gmArrayValue(data, "vw-layer_type", WALLPAPER_TYPES, WALLPAPER_TYPES[0]),
+        "vw-layer_type": Struct.parse.enumerable(data, "vw-layer_type", WallpaperType, WallpaperType.BACKGROUND),
         "vw-layer_fade-in": Struct.parse.number(data, "vw-layer_fade-in", 0.0, 0.0, 999.9),
         "vw-layer_fade-out": Struct.parse.number(data, "vw-layer_fade-out", 0.0, 0.0, 999.9),
         "vw-layer_use-texture": Struct.parse.boolean(data, "vw-layer_use-texture"),
-        "vw-layer_texture": Struct.parse.sprite(data, "vw-layer_texture"),
-        "vw-layer_use-texture-blend": Struct.parse.boolean(data, "vw-layer_use-texture-blend"),
-        "vw-layer_texture-blend": Struct.parse.color(data, "vw-layer_texture-blend"),
+        "vw-layer_texture": texture,
+        "vw-layer_use-texture-blend": useTextureBlend,
+        "vw-layer_texture-blend": textureBlend,
         "vw-layer_use-col": Struct.parse.boolean(data, "vw-layer_use-col"),
         "vw-layer_col": Struct.parse.color(data, "vw-layer_col"),
         "vw-layer_cls-texture": Struct.parse.boolean(data, "vw-layer_cls-texture"),
         "vw-layer_cls-col": Struct.parse.boolean(data, "vw-layer_cls-col"),
         "vw-layer_use-blend": Struct.parse.boolean(data, "vw-layer_use-blend"),
-        "vw-layer_blend-src": Struct.parse.gmArrayValue(data, "vw-layer_blend-src", BLEND_MODES_EXT, BLEND_MODES_EXT[0]),
-        "vw-layer_blend-dest": Struct.parse.gmArrayValue(data, "vw-layer_blend-dest", BLEND_MODES_EXT, BLEND_MODES_EXT[0]),
-        "vw-layer_blend-eq": Struct.parse.gmArrayValue(data, "vw-layer_blend-dest", BLEND_EQUATIONS, BLEND_EQUATIONS[0]),
+        "vw-layer_blend-src": Struct.parse.enumerableKey(data, "vw-layer_blend-src", BlendModeExt, BlendModeExt.SRC_ALPHA),
+        "vw-layer_blend-dest": Struct.parse.enumerableKey(data, "vw-layer_blend-dest", BlendModeExt, BlendModeExt.INV_SRC_ALPHA),
+        "vw-layer_blend-eq": Struct.parse.enumerableKey(data, "vw-layer_blend-eq", BlendEquation, BlendEquation.ADD),
         "vw-layer_use-spd": Struct.parse.boolean(data, "vw-layer_use-spd"),
         "vw-layer_spd": Struct.parse.numberTransformer(data, "vw-layer_spd", {
           clampValue: { from: 0.0, to: 99.9 },
@@ -245,80 +227,125 @@ global.__view_track_event = {
       }
     },
     run: function(data) {
-      Core.print("Dispatch track event:", "brush_view_wallpaper")
-      return null;
-      var controller = Beans.get(BeanVisuController)
-      if (Struct.get(data, "vw-layer_cls-col") == true) {
-        controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
-          if (task.name == "fade-color" && task.state.get("type") == type) {
-            task.state.set("stage", "fade-out")
-          }
-        }, Struct.get(data, "vw-layer_type"))
-      }
-
-      if (Struct.get(data, "vw-layer_use-col") == true) {
-        controller.gridService.send(new Event("fade-color", {
-          color: ColorUtil.fromHex(Struct.get(data, "vw-layer_col")),
-          collection: Struct.get(data, "vw-layer_type") == "Background" 
-            ? controller.visuRenderer.gridRenderer.overlayRenderer.backgroundColors
-            : controller.visuRenderer.gridRenderer.overlayRenderer.foregroundColors,
-          type: Struct.get(data, "vw-layer_type"),
-          fadeInDuration: Struct.get(data, "vw-layer_fade-in"),
-          fadeOutDuration: Struct.get(data, "vw-layer_fade-out"),
-          executor: controller.gridService.executor,
-          blendModeSource: BlendModeExt.get(Struct.getDefault(data, "vw-layer_blend-src", "SRC_ALPHA")),
-          blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "vw-layer_blend-dest", Struct.get(data, "vw-layer_type") == "Background" ? "INV_SRC_ALPHA" : "ONE")),
-          blendEquation: BlendEquation.get(Struct.getDefault(data, "vw-layer_blend-eq", "ADD")),
-        }))
-      }
-
-      if (Struct.get(data, "vw-layer_cls-texture") == true) {
-        controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
-          if (task.name == "fade-sprite" && task.state.get("type") == type) {
-            task.state.set("stage", "fade-out")
-          }
-        }, Struct.get(data, "vw-layer_type"))
-      }
-
-      if (Struct.get(data, "vw-layer_use-texture") == true) {
-        var sprite = Struct.get(data, "vw-layer_texture")
-
-        if (Struct.get(data, "vw-layer_use-texture-blend")) {
-          Struct.set(sprite, "blend", Struct.get(data, "vw-layer_texture-blend"))
-        } else {
-          Struct.remove(sprite, "blend")
+      static fadeOutTask = function(task, iterator, type) {
+        if (task.name != "fade-color" || task.state.get("type") != type) {
+          return
         }
 
-        controller.gridService.send(new Event("fade-sprite", {
-          sprite: SpriteUtil.parse(sprite),
-          collection: Struct.get(data, "vw-layer_type") == "Background" 
-            ? controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds
-            : controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
-          type: Struct.get(data, "vw-layer_type"),
-          blendModeSource: BlendModeExt.get(Struct.getDefault(data, "vw-layer_blend-src", "SRC_ALPHA")),
-          blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "vw-layer_blend-dest", Struct.get(data, "vw-layer_type") == "Background" ? "INV_SRC_ALPHA" : "ONE")),
-          blendEquation: BlendEquation.get(Struct.getDefault(data, "vw-layer_blend-eq", "ADD")),
+        if (task.state.get("stage") == "fade-out") {
+          task.fullfill()
+          return
+        }
+        
+        task.state.set("stage", "fade-out")
+      }
+
+      var controller = Beans.get(BeanVisuController)
+      var gridService = controller.gridService
+      var pump = gridService.dispatcher
+      var executor = gridService.executor
+      var overlayRenderer = controller.visuRenderer.gridRenderer.overlayRenderer
+      var type = Struct.get(data, "vw-layer_type")
+
+      ///@feature TODO view.layer.color.clear
+      if (Struct.get(data, "vw-layer_cls-col")) {
+        executor.tasks.forEach(fadeOutTask, type)
+      }
+
+      ///@feature TODO view.layer.color
+      Visu.resolveSendEventTrackEvent(data,
+        "vw-layer_use-col",
+        "fade-color",
+        {
+          executor: executor,
+          type: type,
+          collection: type == WallpaperType.BACKGROUND
+            ? overlayRenderer.backgroundColors
+            : overlayRenderer.foregroundColors,
+          color: ColorUtil.fromHex(Struct.get(data, "vw-layer_col")),
           fadeInDuration: Struct.get(data, "vw-layer_fade-in"),
           fadeOutDuration: Struct.get(data, "vw-layer_fade-out"),
-          angle: Struct.get(data, "view-wallpaper_angle"),
-          angleTransformer: Struct.get(data, "vw-layer_change-dir") 
-            ? Struct.get(data, "vw-layer_dir") 
-            : null,
-          speed: Struct.get(data, "view-wallpaper_speed"),
-          speedTransformer: Struct.get(data, "vw-layer_change-spd") 
-            ? Struct.get(data, "vw-layer_spd") 
-            : null,
-          xScale: Struct.get(data, "view-wallpaper_xScale"),
-          xScaleTransformer: Struct.get(data, "vw-layer_change-scale-x") 
-            ? Struct.get(data, "vw-layer_scale-x") 
-            : null,
-          yScale: Struct.get(data, "view-wallpaper_yScale"),
-          yScaleTransformer: Struct.get(data, "vw-layer_change-scale-y") 
-            ? Struct.get(data, "vw-layer_scale-y") 
-            : null,
-          executor: controller.gridService.executor,
-        }))
+          blendModeSource: BlendModeExt.get(Struct.get(data, "vw-layer_blend-src")),
+          blendModeTarget: BlendModeExt.get(Struct.get(data, "vw-layer_blend-dest")),
+          blendEquation: BlendEquation.get(Struct.get(data, "vw-layer_blend-eq")),
+        },
+        pump)
+      
+
+      ///@feature TODO view.layer.texture.clear
+      if (Struct.get(data, "vw-layer_cls-texture")) {
+        executor.tasks.forEach(fadeOutTask, type)
       }
+
+      var collection = type == WallpaperType.BACKGROUND
+        ? overlayRenderer.backgrounds
+        : overlayRenderer.foregrounds,
+      var lastTask = collection.getLast()
+      var lastSpeed = 0.0
+      var lastAngle = 0.0
+      var lastXScale = 1.0
+      var lastYScale = 1.0
+      if (Core.isType(lastTask, Task) && Core.isType(lastTask.state, Map)) {
+        var speedTransformer = lastTask.state.get("speedTransformer")
+        lastSpeed = Optional.is(speedTransformer) ? speedTransformer.value : lastTask.state.get("speed")
+        lastSpeed = Core.isType(lastSpeed, Number) ? lastSpeed : 0.0
+
+        var angleTransformer = lastTask.state.get("angleTransformer")
+        lastAngle = Optional.is(angleTransformer) ? angleTransformer.value : lastTask.state.get("angle")
+        lastAngle = Core.isType(lastAngle, Number) ? lastAngle : 0.0
+
+        var xScaleTransformer = lastTask.state.get("xScaleTransformer")
+        lastXScale = Optional.is(xScaleTransformer) ? xScaleTransformer.value : lastTask.state.get("xScale")
+        lastXScale = Core.isType(lastXScale, Number) ? lastXScale : 1.0
+
+        var yScaleTransformer = lastTask.state.get("yScaleTransformer")
+        lastYScale = Optional.is(yScaleTransformer) ? yScaleTransformer.value : lastTask.state.get("yScale")
+        lastYScale = Core.isType(lastYScale, Number) ? lastYScale : 1.0
+      }
+      ///@feature TODO view.layer.texture
+      Visu.resolveSendEventTrackEvent(data,
+        "vw-layer_use-texture",
+        "fade-sprite",
+        {
+          executor: executor,
+          type: type,
+          collection: collection,
+          sprite: Struct.get(data, "vw-layer_texture"),
+          fadeInDuration: Struct.get(data, "vw-layer_fade-in"),
+          fadeOutDuration: Struct.get(data, "vw-layer_fade-out"),
+          blendModeSource: BlendModeExt.get(Struct.get(data, "vw-layer_blend-src")),
+          blendModeTarget: BlendModeExt.get(Struct.get(data, "vw-layer_blend-dest")),
+          blendEquation: BlendEquation.get(Struct.get(data, "vw-layer_blend-eq")),
+          angle: Struct.get(data, "vw-layer_use-dir") 
+            ? Struct.get(data, "vw-layer_dir").value 
+            : lastAngle,
+          angleTransformer: (Struct.get(data, "vw-layer_use-dir") 
+            && Struct.get(data, "vw-layer_change-dir"))
+              ? Struct.get(data, "vw-layer_dir")
+              : null,
+          speed: Struct.get(data, "vw-layer_use-spd")
+            ? Struct.get(data, "vw-layer_spd").value
+            : lastSpeed,
+          speedTransformer: (Struct.get(data, "vw-layer_use-spd")
+            && Struct.get(data, "vw-layer_change-spd"))
+              ? Struct.get(data, "vw-layer_spd")
+              : null,
+          xScale: Struct.get(data, "vw-layer_use-scale-x")
+            ? Struct.get(data, "vw-layer_scale-x").value
+            : lastXScale,
+          xScaleTransformer: (Struct.get(data, "vw-layer_use-scale-x")
+            && Struct.get(data, "vw-layer_change-scale-x"))
+              ? Struct.get(data, "vw-layer_scale-x")
+              : null,
+          yScale: Struct.get(data, "vw-layer_use-scale-y")
+            ? Struct.get(data, "vw-layer_scale-y").value
+            : lastYScale,
+          yScaleTransformer: (Struct.get(data, "vw-layer_use-scale-y")
+            && Struct.get(data, "vw-layer_change-scale-y"))
+              ? Struct.get(data, "vw-layer_scale-y")
+              : null,
+        },
+        pump)
     },
   },
   "brush_view_subtitle": {
@@ -361,7 +388,76 @@ global.__view_track_event = {
       }
     },
     run: function(data) {
-      Core.print("Dispatch track event:", "brush_view_subtitle")
+      var subtitleService = Beans.get(BeanVisuController).subtitleService
+
+      ///@feature TODO view.subtitle.add
+      subtitleService.send(new Event("add", {
+        template: Struct.get(data, "vw-sub_template"),
+        font: FontUtil.fetch(Struct.get(data, "vw-sub_font")),
+        fontHeight: Struct.get(data, "vw-sub-fh"),
+        timeout: Struct.get(data, "vw-sub_use-timeout")
+          ? Struct.get(data, "vw-sub_timeout")
+          : null,
+        color: Struct.get(data, "vw-sub_col").toGMColor(),
+        outline: Struct.get(data, "vw-sub_use-outline")
+          ? Struct.get(data, "vw-sub_outline").toGMColor()
+          : null,
+        align: {
+          v: VAlign.get(Struct.get(data, "vw-sub_align-v")),
+          h: HAlign.get(Struct.get(data, "vw-sub_align-h")),
+        },
+        area: new Rectangle({ 
+          x: Struct.get(data, "vw-sub_x"),
+          y: Struct.get(data, "vw-sub_y"),
+          width: Struct.get(data, "vw-sub_w"),
+          height: Struct.get(data, "vw-sub_h"),
+        }),
+        charSpeed: Struct.get(data, "vw-sub-char-spd"),
+        lineDelay: Struct.get(data, "vw-sub_use-nl-delay")
+          ? new Timer(Struct.get(data, "vw-sub_nl-delay"))
+          : null,
+        finishDelay: Struct.get(data, "vw-sub_use-end-delay")
+          ? new Timer(Struct.get(data, "vw-sub_end-delay"))
+          : null,
+        angleTransformer: new NumberTransformer({
+          value: (Struct.get(data, "vw-sub_use-dir")
+            ? Struct.get(data, "vw-sub_dir").value
+            : 0.0),
+          target: (Struct.get(data, "vw-sub_change-dir")
+            ? Struct.get(data, "vw-sub_dir").target
+            : (Struct.get(data, "vw-sub_use-dir")
+              ? Struct.get(data, "vw-sub_dir").value
+              : 0.0)),
+          factor: (Struct.get(data, "vw-sub_change-dir")
+            ? Struct.get(data, "vw-sub_dir").factor
+            : (Struct.get(data, "vw-sub_use-dir")
+              ? Struct.get(data, "vw-sub_dir").value
+              : 0.0)),
+          increase: (Struct.get(data, "vw-sub_change-dir")
+            ? Struct.get(data, "vw-sub_dir").increase
+            : 0.0),
+        }),
+        speedTransformer: new NumberTransformer({
+          value: (Struct.get(data, "vw-sub_use-spd")
+            ? Struct.get(data, "vw-sub_spd").value
+            : 0.0),
+          target: (Struct.get(data, "vw-sub_change-spd")
+            ? Struct.get(data, "vw-sub_spd").target
+            : (Struct.get(data, "vw-sub_use-spd")
+              ? Struct.get(data, "vw-sub_spd").value
+              : 0.0)),
+          factor: (Struct.get(data, "vw-sub_change-spd")
+            ? Struct.get(data, "vw-sub_spd").factor
+            : (Struct.get(data, "vw-sub_use-spd")
+              ? Struct.get(data, "vw-sub_spd").value
+              : 0.0)),
+          increase: (Struct.get(data, "vw-sub_change-spd")
+            ? Struct.get(data, "vw-sub_spd").increase
+            : 0.0),
+        }),
+        fadeIn: Struct.get(data, "vw-sub-fade-in"),
+        fadeOut: Struct.get(data, "vw-sub-fade-out"),
+      }))
     },
   },
   "brush_view_config": {
@@ -374,57 +470,91 @@ global.__view_track_event = {
         "vw-cfg_render-subtitle": Struct.parse.boolean(data, "vw-cfg_render-subtitle"),
         "vw-cfg_use-render-video": Struct.parse.boolean(data, "vw-cfg_use-render-video"),
         "vw-cfg_render-video": Struct.parse.boolean(data, "vw-cfg_render-video"),
-        "vw-cfg_cls-subtitle": Struct.parse.boolean(data, "vw-cfg_cls-subtitle"),    
-        "vw-cfg_cls-background": Struct.parse.boolean(data, "vw-cfg_cls-background"),    
-        "vw-cfg_cls-foreground": Struct.parse.boolean(data, "vw-cfg_cls-foreground"),
+        "vw-cfg_cls-subtitle": Struct.parse.boolean(data, "vw-cfg_cls-subtitle"),
+        "vw-cfg_cls-bkg-texture": Struct.parse.boolean(data, "vw-cfg_cls-bkg-texture"),
+        "vw-cfg_cls-bkg-col": Struct.parse.boolean(data, "vw-cfg_cls-bkg-col"),
+        "vw-cfg_cls-frg-texture": Struct.parse.boolean(data, "vw-cfg_cls-frg-texture"),
+        "vw-cfg_cls-frg-col": Struct.parse.boolean(data, "vw-cfg_cls-frg-col"),
         "vw-cfg_use-video-alpha": Struct.parse.boolean(data, "vw-cfg_use-video-alpha"),
         "vw-cfg_video-alpha": Struct.parse.normalizedNumberTransformer(data, "vw-cfg_video-alpha"),
         "vw-cfg_change-video-alpha": Struct.parse.boolean(data, "vw-cfg_change-video-alpha"),
+        "vw-cfg_video-use-blend": Struct.parse.boolean(data, "vw-cfg_video-use-blend"),
+        "vw-cfg_video-blend-src": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-src", BlendModeExt, BlendModeExt.SRC_ALPHA),
+        "vw-cfg_video-blend-dest": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-dest", BlendModeExt, BlendModeExt.INV_SRC_ALPHA),
+        "vw-cfg_video-blend-eq": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-eq", BlendEquation, BlendEquation.ADD),
       }
     },
     run: function(data) {
-      Core.print("Dispatch track event:", "brush_view_config")
-      return null;
       var controller = Beans.get(BeanVisuController)
       var gridService = controller.gridService
-      if (Struct.get(data, "view-config_use-render-grid")) {
-        controller.gridService.properties.renderGrid = Struct
-          .get(data, "view-config_render-grid")
+      var properties = gridService.properties
+      var pump = gridService.dispatcher
+      var executor = gridService.executor
+      var overlayRenderer = controller.visuRenderer.gridRenderer.overlayRenderer
+
+      ///@feature TODO view.hud.render
+      Visu.resolveBooleanTrackEvent(data,
+        "vw-cfg_use-render-hud",
+        "vw-cfg_render-hud",
+        "enabled",
+        controller.visuRenderer.hudRenderer)
+
+      ///@feature TODO view.subtitle.render
+      Visu.resolveBooleanTrackEvent(data,
+        "vw-cfg_use-render-subtitle",
+        "vw-cfg_render-subtitle",
+        "renderSubtitles",
+        properties)
+
+      ///@feature TODO view.subtitle.render
+      Visu.resolveBooleanTrackEvent(data,
+        "vw-cfg_use-render-video",
+        "vw-cfg_render-video",
+        "renderVideo",
+        properties)
+
+      ///@feature TODO view.subtitle.clear
+      Visu.resolveSendEventTrackEvent(data,
+        "vw-cfg_cls-subtitle",
+        "clear-subtitle",
+        null,
+        controller.subtitleService.dispatcher)
+
+      ///@feature TODO view.bkg-texture.clear
+      if (Struct.get(data, "vw-cfg_cls-bkg-texture")) {
+        overlayRenderer.backgrounds.clear()
       }
 
-      if (Struct.get(data, "view-config_use-render-particles")) {
-        gridService.properties.renderParticles = Struct
-          .get(data, "view-config_render-particles")
-      }
-      
-      if (Struct.get(data, "view-config_use-transform-particles-z")) {
-        var transformer = Struct.get(data, "view-config_transform-particles-z")
-        gridService.send(new Event("transform-property", {
-          key: "particleZ",
-          container: gridService.properties.depths,
-          executor: gridService.executor,
-          transformer: new NumberTransformer({
-            value: gridService.properties.depths.particleZ,
-            target: transformer.target,
-            factor: transformer.factor,
-            increase: transformer.increase,
-          })
-        }))
-      }
-      
-      if (Struct.get(data, "vw-cfg_use-render-video")) {
-        gridService.properties.renderVideo = Struct
-          .get(data, "vw-cfg_render-video")
+      ///@feature TODO view.bkg-col.clear
+      if (Struct.get(data, "vw-cfg_cls-bkg-col")) {
+        overlayRenderer.backgroundColors.clear()
       }
 
-      if (Struct.get(data, "vw-cfg_use-render-hud")) {
-        controller.visuRenderer.hudRenderer.enabled = Struct
-          .get(data, "vw-cfg_render-hud")
+      ///@feature TODO view.frg-texture.clear
+      if (Struct.get(data, "vw-cfg_cls-frg-texture")) {
+        overlayRenderer.foregrounds.clear()
       }
 
-      if (Struct.get(data, "vw-cfg_cls-subtitle")) {
-        controller.subtitleService.send(new Event("clear-subtitle"))
+      ///@feature TODO view.frg-col.clear
+      if (Struct.get(data, "vw-cfg_cls-frg-col")) {
+        overlayRenderer.foregroundColors.clear()
       }
+
+      ///@feature TODO view.video.alpha
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "vw-cfg_use-video-alpha",
+        "vw-cfg_video-alpha",
+        "vw-cfg_change-video-alpha",
+        "videoAlpha",
+        properties, pump, executor)
+
+      ///@feature TODO view.video.blend
+      Visu.resolveBlendConfigTrackEvent(data,
+        "vw-cfg_video-use-blend",
+        "vw-cfg_video-blend-src",
+        "vw-cfg_video-blend-dest",
+        "vw-cfg_video-blend-eq",
+        properties.videoBlendConfig)
     },
   },
 }

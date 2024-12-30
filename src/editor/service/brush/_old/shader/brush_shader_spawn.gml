@@ -10,7 +10,7 @@ function migrateShaderSpawnEvent(json) {
     "ef-shd_fade-in": Struct.getIfType(json, "shader-spawn_fade-in", Number, 1.0),
     "ef-shd_fade-out": Struct.getIfType(json, "shader-spawn_fade-out", Number, 1.0),
     "ef-shd_alpha": Struct.getIfType(json, "shader-spawn_alpha-max", Number, 1.0),
-    "ef-shd_pipeline": Struct.getIfType(json, "shader-spawn_pipeline", String, "All"),
+    "ef-shd_pipeline": migrateShaderPipelineType(Struct.getDefault(json, "shader-spawn_pipeline", ShaderPipelineType.COMBINED)),
     "ef-shd_use-merge-cfg": Struct.getIfType(json, "shader-spawn_use-merge-properties", Boolean, false),
     "ef-shd_merge-cfg": Struct.getIfType(json, "shader-spawn_merge-properties", Struct, {}),
   }
@@ -25,9 +25,9 @@ function brush_shader_spawn(json = null) {
     store: new Map(String, Struct, {
       "shader-spawn_pipeline": {
         type: String,
-        value: Struct.get(json, "shader-spawn_pipeline"),
+        value: migrateShaderPipelineType(Struct.get(json, "shader-spawn_pipeline")),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: new Array(String, SHADER_PIPELINE_TYPES),
+        data: ShaderPipelineType.keys(),
       },
       "shader-spawn_template": {
         type: String,

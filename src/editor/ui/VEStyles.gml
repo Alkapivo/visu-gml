@@ -22,13 +22,17 @@ global.__VETheme = {
     text: "#D9D9D9",
     textShadow: "#878787",
     textFocus: "#ededed",
-    textSelected: "#462f63",
+    textSelected: "#7742b8",
     accept: "#3d9e87",
     acceptShadow: "#368b77",
     deny: "#9e3d54",
     denyShadow: "#6d3c54",
     ruler: "#E64B3D",
     header: "#963271",
+
+    stick: "#3B3B53",
+    stickHover: "#878787",
+    stickBackground: "#0D0D0F",
   },
   ///@theme vscode
   vscode: {
@@ -377,23 +381,24 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "line-h": {
     image: {
-      backgroundColor: VETheme.color.primaryDark,
+      backgroundColor: VETheme.color.primaryShadow,
       backgroundAlpha: 1.0,
     },
   },
   "line-w": {
     image: {
-      backgroundColor: VETheme.color.primaryDark,
+      backgroundColor: VETheme.color.primaryShadow,
       backgroundAlpha: 1.0,
     },
   },
   "property": {
     checkbox: {
       backgroundColor: VETheme.color.primaryShadow,
+      margin: { top: 1, bottom: 1, left: 1, right: 1 },
     },
     label: {
       backgroundColor: VETheme.color.primaryShadow,
-      offset: { x: 4 },
+      offset: { x: 8, y: 0 },
       font: "font_inter_10_bold",
       color: VETheme.color.textFocus,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
@@ -498,8 +503,8 @@ global.__VEStyles = new Map(String, Struct, {
     },
     checkbox: { },
     title: {
-      font: "font_inter_10_regular",
-      color: VETheme.color.textShadow,
+      font: "font_inter_8_regular",
+      color: VETheme.color.text,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
     },
   },

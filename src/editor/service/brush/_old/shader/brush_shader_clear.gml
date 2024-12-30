@@ -3,9 +3,16 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateShaderClearEvent(json) {
-  Logger.debug("Track", "migrateShaderClearEvent is not implemented")
+  var pipeline = migrateShaderPipelineType(Struct.get(json, "shader-clear_pipeline"))
+  var clear = Struct.getIfType(json, "shader-clear_use-clear-all-shaders", Boolean, false)
+    || (Struct.getIfType(json, "shader-clear_use-clear-amount", Boolean, false)
+      && Struct.getIfType(json, "shader-clear_clear-amount", Number, 0) > 0)
+
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "ef-cfg_cls-shd-bkg": clear && pipeline == ShaderPipelineType.BACKGROUND,
+    "ef-cfg_cls-shd-gr": clear && pipeline == ShaderPipelineType.GRID,
+    "ef-cfg_cls-shd-all": clear && pipeline == ShaderPipelineType.COMBINED,
   }
 }
 
@@ -18,11 +25,11 @@ function brush_shader_clear(json = null) {
     store: new Map(String, Struct, {
       "shader-clear_pipeline": {
         type: String,
-        value: Struct.getDefault(json, "shader-clear_pipeline", "Grid"),
+        value: migrateShaderPipelineType(Struct.getDefault(json, "shader-clear_pipeline", ShaderPipelineType.BACKGROUND)),
         validate: function(value) {
           Assert.isTrue(this.data.contains(value))
         },
-        data: new Array(String, SHADER_PIPELINE_TYPES)
+        data: ShaderPipelineType.keys(),
       },
       "shader-clear_use-clear-all-shaders": {
         type: Boolean,

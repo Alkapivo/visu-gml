@@ -722,7 +722,7 @@ function VisuNewProjectForm(json = null) constructor {
                       "scaleY":0.23225806451612904
                     },
                     "view-wallpaper_texture-blend":"#BC2EFC",
-                    "view-wallpaper_type":"Background",
+                    "view-wallpaper_type":"BACKGROUND",
                     "view-wallpaper_use-angle-transform":false,
                     "view-wallpaper_use-color":true,
                     "view-wallpaper_use-speed-transform":false,
@@ -794,7 +794,7 @@ function VisuNewProjectForm(json = null) constructor {
                       "scaleY":0.23225806451612904
                     },
                     "view-wallpaper_texture-blend":"#BC2EFC",
-                    "view-wallpaper_type":"Foreground",
+                    "view-wallpaper_type":"FOREGROUND",
                     "view-wallpaper_use-angle-transform":false,
                     "view-wallpaper_use-color":0.0,
                     "view-wallpaper_use-speed-transform":false,

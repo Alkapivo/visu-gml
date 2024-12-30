@@ -8,7 +8,6 @@ global.__grid_old_track_event = {
       return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
     },   
     run: function(data) {
-      //Core.print("Dispatch track event:", "brush_grid_old_channel")
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "grid-channel_use-transform-amount") == true) {
         var transformer = Struct.get(data, "grid-channel_transform-amount")
@@ -136,7 +135,6 @@ global.__grid_old_track_event = {
       return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
     },
     run: function(data) {
-      //Core.print("Dispatch track event:", "brush_grid_old_coin")
       var controller = Beans.get(BeanVisuController)
       var view = controller.gridService.view
       var viewX = Struct.getDefault(data, "grid-coin_use-snap-h", false)
@@ -164,7 +162,6 @@ global.__grid_old_track_event = {
       return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
     },
     run: function(data) {
-      //Core.print("Dispatch track event:", "brush_grid_old_config")
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "grid-config_use-render-grid")) {
         controller.gridService.properties.renderGrid = Struct
@@ -363,7 +360,6 @@ global.__grid_old_track_event = {
       return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
     },
     run: function(data) {
-      //Core.print("Dispatch track event:", "brush_grid_old_particle")
       var particleService = Beans.get(BeanVisuController).particleService
       var event = particleService.factoryEventSpawnParticleEmitter({
         particleName: Struct.get(data, "grid-particle_template"),
@@ -385,7 +381,6 @@ global.__grid_old_track_event = {
       return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
     },
     run: function(data) {
-      //Core.print("Dispatch track event:", "brush_grid_old_player")
       var controller = Beans.get(BeanVisuController)
       var json = {
         sprite: Struct.get(data, "grid-player_texture")
@@ -453,7 +448,6 @@ global.__grid_old_track_event = {
       return Struct.appendUnique({ "icon": Struct.parse.sprite(data, "icon") }, data, false)
     },
     run: function(data) {
-      //Core.print("Dispatch track event:", "brush_grid_old_separator")
       var controller = Beans.get(BeanVisuController)
       if (Struct.get(data, "grid-separator_use-transform-amount") == true) {
         var transformer = Struct.get(data, "grid-separator_transform-amount")

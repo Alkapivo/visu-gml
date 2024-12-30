@@ -32,7 +32,7 @@ function brush_grid_area(json) {
         type: Number,
         value: Struct.get(json, "gr-area_h-col-spd"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.000001, 1.0),
+        data: new Vector2(0.0, 999.9),
       },
       "gr-area_use-h-alpha": {
         type: Boolean,
@@ -87,7 +87,7 @@ function brush_grid_area(json) {
         type: Number,
         value: Struct.get(json, "gr-area_v-col-spd"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.000001, 1.0),
+        data: new Vector2(0.0, 999.9),
       },
       "gr-area_use-v-alpha": {
         type: Boolean,
@@ -125,7 +125,7 @@ function brush_grid_area(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Horizontal",
+            text: "Horizontal border",
             backgroundColor: VETheme.color.accentShadow,
           },
           input: { backgroundColor: VETheme.color.accentShadow },
@@ -137,13 +137,16 @@ function brush_grid_area(json) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
-              text: "Width",
+              text: "Length",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-area_use-h" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-area_use-h" },
             },
             field: {
               store: { key: "gr-area_h" },
@@ -256,8 +259,8 @@ function brush_grid_area(json) {
             label: {
               text: "Thickness",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-area_use-h-size" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-area_use-h-size" },
             },
             field: {
               store: { key: "gr-area_h-size" },
@@ -290,16 +293,16 @@ function brush_grid_area(json) {
             },
             field: {
               store: { key: "gr-area_h-size" },
-              enable: { key: "gr-area_use-h-size" },
+              enable: { key: "gr-area_change-h-size" },
             },
             decrease: {
               store: { key: "gr-area_h-size" },
-              enable: { key: "gr-area_use-h-size" },
+              enable: { key: "gr-area_change-h-size" },
               factor: -0.25,
             },
             increase: {
               store: { key: "gr-area_h-size" },
-              enable: { key: "gr-area_use-h-size" },
+              enable: { key: "gr-area_change-h-size" },
               factor: 0.25,
             },
             checkbox: { 
@@ -323,12 +326,12 @@ function brush_grid_area(json) {
             },
             decrease: {
               store: { key: "gr-area_h-size" },
-              enable: { key: "gr-area_use-h-size" },
+              enable: { key: "gr-area_change-h-size" },
               factor: -0.01,
             },
             increase: {
               store: { key: "gr-area_h-size" },
-              enable: { key: "gr-area_use-h-size" },
+              enable: { key: "gr-area_change-h-size" },
               factor: 0.01,
             },
           },
@@ -343,12 +346,12 @@ function brush_grid_area(json) {
             },
             decrease: {
               store: { key: "gr-area_h-size" },
-              enable: { key: "gr-area_use-h-size" },
+              enable: { key: "gr-area_change-h-size" },
               factor: -0.001,
             },
             increase: {
               store: { key: "gr-area_h-size" },
-              enable: { key: "gr-area_use-h-size" },
+              enable: { key: "gr-area_change-h-size" },
               factor: 0.001,      
             },
           },
@@ -370,8 +373,8 @@ function brush_grid_area(json) {
             label: {
               text: "Alpha",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-area_use-h-alpha" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-area_use-h-alpha" },
             },
             field: {
               store: { key: "gr-area_h-alpha" },
@@ -469,12 +472,6 @@ function brush_grid_area(json) {
         },
       },
       {
-        name: "gr-area_h-alpha-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
         name: "gr-area_h-col",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
@@ -484,15 +481,18 @@ function brush_grid_area(json) {
             label: {
               text: "Color",
               enable: { key: "gr-area_use-h-col" },
+              backgroundColor: VETheme.color.dark,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-area_use-h-col" },
+              backgroundColor: VETheme.color.dark,
             },
             input: { 
               store: { key: "gr-area_h-col" },
               enable: { key: "gr-area_use-h-col" },
+              backgroundColor: VETheme.color.dark,
             }
           },
           red: {
@@ -551,34 +551,32 @@ function brush_grid_area(json) {
       },
       {
         name: "gr-area_h-col-spd",
-        template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("numeric-slider-increase-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Speed",
+            text: "Duration",
             enable: { key: "gr-area_use-h-col" },
           },  
           field: { 
             store: { key: "gr-area_h-col-spd" },
             enable: { key: "gr-area_use-h-col" },
           },
-          slider: {
-            store: { key: "gr-area_h-col-spd" },
-            enable: { key: "gr-area_use-h-col" },
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
-          },
           decrease: {
             store: { key: "gr-area_h-col-spd" },
             enable: { key: "gr-area_use-h-col" },
-            factor: -0.001,
+            factor: -0.1,
           },
           increase: {
             store: { key: "gr-area_h-col-spd" },
             enable: { key: "gr-area_use-h-col" },
-            factor: 0.001,
+            factor: 0.1,
+          },
+          slider: {
+            store: { key: "gr-area_h-col-spd" },
+            enable: { key: "gr-area_use-h-col" },
+            factor: 0.01,
           },
         },
       },
@@ -595,7 +593,7 @@ function brush_grid_area(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Vertical",
+            text: "Vertical border",
             backgroundColor: VETheme.color.accentShadow,
           },
           input: { backgroundColor: VETheme.color.accentShadow },
@@ -607,13 +605,16 @@ function brush_grid_area(json) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
-              text: "Height",
+              text: "Length",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-area_use-v" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-area_use-v" },
             },
             field: {
               store: { key: "gr-area_v" },
@@ -726,8 +727,8 @@ function brush_grid_area(json) {
             label: {
               text: "Thickness",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-area_use-v-size" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-area_use-v-size" },
             },
             field: {
               store: { key: "gr-area_v-size" },
@@ -840,8 +841,8 @@ function brush_grid_area(json) {
             label: {
               text: "Alpha",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "gr-area_use-v-alpha" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "gr-area_use-v-alpha" },
             },
             field: {
               store: { key: "gr-area_v-alpha" },
@@ -939,12 +940,6 @@ function brush_grid_area(json) {
         },
       },
       {
-        name: "gr-area_v-alpha-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
         name: "gr-area_v-col",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
@@ -954,15 +949,18 @@ function brush_grid_area(json) {
             label: {
               text: "Color",
               enable: { key: "gr-area_use-v-col" },
+              backgroundColor: VETheme.color.dark,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-area_use-v-col" },
+              backgroundColor: VETheme.color.dark,
             },
             input: { 
               store: { key: "gr-area_v-col" },
               enable: { key: "gr-area_use-v-col" },
+              backgroundColor: VETheme.color.dark,
             }
           },
           red: {
@@ -1021,34 +1019,32 @@ function brush_grid_area(json) {
       },
       {
         name: "gr-area_v-col-spd",
-        template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("numeric-slider-increase-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Speed",
+            text: "Duration",
             enable: { key: "gr-area_use-v-col" },
           },  
           field: { 
             store: { key: "gr-area_v-col-spd" },
             enable: { key: "gr-area_use-v-col" },
           },
-          slider: {
-            store: { key: "gr-area_v-col-spd" },
-            enable: { key: "gr-area_use-v-col" },
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
-          },
           decrease: {
             store: { key: "gr-area_v-col-spd" },
             enable: { key: "gr-area_use-v-col" },
-            factor: -0.001,
+            factor: -0.1,
           },
           increase: {
             store: { key: "gr-area_v-col-spd" },
             enable: { key: "gr-area_use-v-col" },
-            factor: 0.001,
+            factor: 0.1,
+          },
+          slider: {
+            store: { key: "gr-area_v-col-spd" },
+            enable: { key: "gr-area_use-v-col" },
+            factor: 0.01,
           },
         },
       },

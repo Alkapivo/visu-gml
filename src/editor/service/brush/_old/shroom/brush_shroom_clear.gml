@@ -3,9 +3,11 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateShroomClearEvent(json) {
-  Logger.debug("Track", "migrateShroomClearEvent is not implemented")
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "en-cfg_cls-shr": Struct.getIfType(json, "shroom-clear_use-clear-all-shrooms", Boolean, false)
+      || (Struct.getIfType(json, "shroom-clear_use-clear-amount", Boolean, false)
+        && Struct.getIfType(json, "shroom-clear_clear-amount", Number, 0) > 0),
   }
 }
 

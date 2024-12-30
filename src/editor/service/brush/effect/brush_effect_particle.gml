@@ -56,6 +56,107 @@ function brush_effect_particle(json) {
     }),
     components: new Array(Struct, [
       {
+        name: "ef-part_template",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Template" },
+          field: { store: { key: "ef-part_template" } },
+        },
+      },
+      {
+        name: "ef-part_shape",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Shape" },
+          previous: { store: { key: "ef-part_shape" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "ef-part_shape" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "ef-part_shape" } },
+        },
+      },
+      {
+        name: "ef-part_distribution",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Dist." },
+          previous: { store: { key: "ef-part_distribution" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "ef-part_distribution" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "ef-part_distribution" } },
+        },
+      },
+      {
+        name: "ef-part_distribution-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "ef-part_amount",  
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Amount" },
+          field: {
+            store: { key: "ef-part_amount" },
+            GMTF_DECIMAL: 0,
+          },
+          decrease: { store: { key: "ef-part_amount" } },
+          increase: { store: { key: "ef-part_amount" } },
+        },
+      },
+      {
+        name: "ef-part_duration",  
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Duration" },
+          field: { store: { key: "ef-part_duration" } },
+          decrease: {
+            store: { key: "ef-part_duration" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "ef-part_duration" },
+            factor: 0.25,
+          },
+        },
+      },
+      {
+        name: "ef-part_interval",  
+        template: VEComponents.get("text-field-increase"),
+        layout: VELayouts.get("text-field-increase"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Interval" },
+          field: { store: { key: "ef-part_interval" } },
+          decrease: {
+            store: { key: "ef-part_interval" },
+            factor: -1.0 * FRAME_MS,
+          },
+          increase: {
+            store: { key: "ef-part_interval" },
+            factor: FRAME_MS,
+          },
+        },
+      },
+      {
+        name: "ef-part_area-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "ef-part_preview",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -173,112 +274,14 @@ function brush_effect_particle(json) {
         },
       },
       {
-        name: "ef-part_template",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Template" },
-          field: { store: { key: "ef-part_template" } },
-        },
-      },
-      {
-        name: "ef-part_shape",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Shape" },
-          previous: { store: { key: "ef-part_shape" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "ef-part_shape" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "ef-part_shape" } },
-        },
-      },
-      {
-        name: "ef-part_distribution",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Dist." },
-          previous: { store: { key: "ef-part_distribution" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "ef-part_distribution" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "ef-part_distribution" } },
-        },
-      },
-      {
-        name: "ef-part_distribution-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
-        name: "ef-part_amount",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Amount" },
-          field: {
-            store: { key: "ef-part_amount" },
-            GMTF_DECIMAL: 0,
-          },
-          decrease: { store: { key: "ef-part_amount" } },
-          increase: { store: { key: "ef-part_amount" } },
-        },
-      },
-      {
-        name: "ef-part_duration",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Duration (s)" },
-          field: { store: { key: "ef-part_duration" } },
-          decrease: {
-            store: { key: "ef-part_duration" },
-            factor: -0.25,
-          },
-          increase: {
-            store: { key: "ef-part_duration" },
-            factor: 0.25,
-          },
-        },
-      },
-      {
-        name: "ef-part_interval",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Interval (s)" },
-          field: { store: { key: "ef-part_interval" } },
-          decrease: {
-            store: { key: "ef-part_interval" },
-            factor: -1.0 * FRAME_MS,
-          },
-          increase: {
-            store: { key: "ef-part_interval" },
-            factor: FRAME_MS,
-          },
-        },
-      },
-      {
-        name: "ef-part_area-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
         name: "ef-part_area",
         template: VEComponents.get("vec4-slider-increase"),
         layout: VELayouts.get("vec4"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           x: {
             label: { text: "Emitter X" },
             field: { store: { key: "ef-part_area" } },

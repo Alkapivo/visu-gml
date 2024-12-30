@@ -267,7 +267,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
         controller.send(new Event("fade-sprite", {
           sprite: SpriteUtil.parse({ name: "texture_hechan_3" }),
           collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
-          type: "Foreground",
+          type: WallpaperType.FOREGROUND,
           fadeInDuration: 0.5,
           fadeOutDuration: 0.5,
           angle: 3,
@@ -500,7 +500,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@param {Player} player
   shroomCollisionGodMode = function(shroom, index, player) {
     if (shroom.collide(player)) {
-      player.signal("shroomCollision", shroom)
+      shroom.signal("playerCollision", player)
+      shroom.signal("kill")
     }
   }
 
@@ -560,9 +561,11 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       acc.bulletService.updateBullet(bullet, index, acc.bulletService)
     }
     static shroomLambda = function(shroom, index, acc) {
-      acc.moveShroom(shroom, index, acc)
       acc.shroomCollision(shroom, index, acc.player)
       acc.shroomService.updateShroom(shroom, index, acc.shroomService)
+      if (!shroom.signals.kill) {
+        acc.moveShroom(shroom, index, acc)
+      }
     }
     
     var gridService = this
@@ -572,12 +575,9 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     var player = playerService.player
     var view = this.controller.gridService.view
 
-    this.updatePlayerServiceTimer.start()
     if (Core.isType(player, Player)) {
       player.move()
     }
-    playerService.update()
-    this.updatePlayerServiceTimer.finish()
 
     this.updateBulletServiceTimer.start()
     bulletService.dispatcher.update()
@@ -609,6 +609,11 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       shroomService: shroomService,
     }).runGC()
     this.updateShroomServiceTimer.finish()
+
+    this.updatePlayerServiceTimer.start()
+    
+    playerService.update()
+    this.updatePlayerServiceTimer.finish()
     return this
   }
 

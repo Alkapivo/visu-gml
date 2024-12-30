@@ -37,7 +37,9 @@ global.__entity_track_event = {
     },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
-      var shroom = {
+
+      ///@feature TODO entity.shroom.spawn
+      controller.shroomService.send(new Event("spawn-shroom", {
         template: Struct.get(data, "en-shr_template"),
         speed: abs(Struct.get(data, "en-shr_spd")
           + (Struct.get(data, "en-shr_use-spd-rng")
@@ -67,10 +69,8 @@ global.__entity_track_event = {
               * choose(1.0, -1.0))
             : 0.0),
         snapV: Struct.getDefault(data, "en-shr_snap-y", false),
-      }
-
-      controller.shroomService.send(new Event("spawn-shroom", shroom))
-
+      }))
+      
       ///@ecs
       /*
       var controller = Beans.get(BeanVisuController)
@@ -128,8 +128,9 @@ global.__entity_track_event = {
       var viewY = Struct.get(data, "en-coin_snap-y")
         ? floor(view.y / (view.height / 2.0)) * (view.height / 2.0)
         : view.y
-      
-      var coin = {
+
+      ///@feature TODO entity.coin.spawn
+      controller.coinService.send(new Event("spawn-coin", {
         template: Struct.get(data, "en-coin_template"),
         x: viewX + Struct.get(data, "en-coin_x")
           * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
@@ -147,23 +148,19 @@ global.__entity_track_event = {
               * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
               * choose(1.0, -1.0))
             : 0.0),
-      }
-      
-      controller.coinService.send(new Event("spawn-coin", coin))
+      }))
     },
   },
   "brush_entity_player": {
     parse: function(data) {
       return {
         "icon": Struct.parse.sprite(data, "icon"),
-        "en-pl_texture": Struct.parse.sprite(data, "en-pl_texture", {
-          name: "texture_player"
-        }),
+        "en-pl_texture": Struct.parse.sprite(data, "en-pl_texture", { name: "texture_player" }),
         "en-pl_use-mask": Struct.parse.boolean(data, "en-pl_use-mask"),
         "en-pl_mask": Struct.parse.rectangle(data, "en-pl_mask"),
         "en-pl_reset-pos": Struct.parse.boolean(data, "en-pl_reset-pos"),
         "en-pl_use-stats": Struct.parse.boolean(data, "en-pl_use-stats"),
-        "en-pl_stats": Struct.getIfType(data, "ef-shd_merge-cfg", Struct, {
+        "en-pl_stats": Struct.getIfType(data, "en-pl_stats", Struct, {
           force: { value: 0 },
           point: { value: 0 },
           bomb: { value: 5 },
@@ -214,38 +211,27 @@ global.__entity_track_event = {
     },
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
-      var json = {
-        sprite: Struct.get(data, "en-pl_texture")
-      }
-
-      if (Struct.get(data, "en-pl_use-mask")) {
-        Struct.set(json, "mask", Struct.get(data, "en-pl_mask"))
-      }
-
-      if (Struct.getIfType(data, "en-pl_reset-pos", Boolean, false)) {
-        Struct.set(json, "reset-position", Struct.get(data, "en-pl_reset-pos"))
-      }
-
-      if (Struct.get(data, "en-pl_use-stats")) {
-        Struct.set(json, "stats", Struct.get(data, "en-pl_stats"))
-      }
-
-      if (Struct.get(data, "en-pl_use-racing")) {
-        Struct.set(json, "racing", Struct
-          .get(data, "en-pl_racing"))
-      }
-
-      if (Struct.get(data, "en-pl_use-bullethell")) {
-        Struct.set(json, "bulletHell", Struct
-          .get(data, "en-pl_bullethell"))
-      }
-
-      if (Struct.get(data, "en-pl_use-platformer")) {
-        Struct.set(json, "platformer", Struct
-          .get(data, "en-pl_platformer"))
-      }
-
-      controller.playerService.send(new Event("spawn-player", json))
+      
+      ///@feature TODO entity.player.spawn
+      controller.playerService.send(new Event("spawn-player", {
+        "sprite": Struct.get(data, "en-pl_texture").serialize(),
+        "mask": Struct.get(data, "en-pl_mask").serialize(),
+        "reset-position": Struct.get(data, "en-pl_reset-pos")
+          ? Struct.get(data, "en-pl_reset-pos")
+          : false,
+        "stats": Struct.get(data, "en-pl_use-stats")
+          ? Struct.get(data, "en-pl_stats")
+          : null,
+        "bulletHell": Struct.get(data, "en-pl_use-bullethell")
+          ? Struct.get(data, "en-pl_bullethell")
+          : null,
+        "platformer": Struct.get(data, "en-pl_use-platformer")
+          ? Struct.get(data, "en-pl_platformer")
+          : null,
+        "racing": Struct.get(data, "en-pl_use-racing")
+          ? Struct.get(data, "en-pl_racing")
+          : null,
+      }))
     },
   },
   "brush_entity_config": {
@@ -291,7 +277,100 @@ global.__entity_track_event = {
       }
     },
     run: function(data) {
-      Core.print("Dispatch track event:", "brush_entity_config")
+      var controller = Beans.get(BeanVisuController)
+      var gridService = controller.gridService
+      var properties = gridService.properties
+      var pump = gridService.dispatcher
+      var executor = gridService.executor
+      var depths = properties.depths
+
+      ///@feature TODO grid.shroom.render
+      Visu.resolveBooleanTrackEvent(data,
+        "en-cfg_use-render-shr",
+        "en-cfg_render-shr",
+        "renderShrooms",
+        properties)
+
+      ///@feature TODO grid.player.render
+      Visu.resolveBooleanTrackEvent(data,
+        "en-cfg_use-render-player",
+        "en-cfg_render-player",
+        "renderPlayer",
+        properties)
+
+      ///@feature TODO grid.coin.render
+      Visu.resolveBooleanTrackEvent(data,
+        "en-cfg_use-render-coin",
+        "en-cfg_render-coin",
+        "renderCoins",
+        properties)
+
+      ///@feature TODO grid.bullet.render
+      Visu.resolveBooleanTrackEvent(data,
+        "en-cfg_use-render-bullet",
+        "en-cfg_render-bullet",
+        "renderBullets",
+        properties)
+
+      ///@feature TODO grid.shroom.clear
+      Visu.resolveSendEventTrackEvent(data,
+        "en-cfg_cls-shr",
+        "clear-shrooms",
+        null,
+        controller.shroomService.dispatcher)
+
+      ///@feature TODO grid.player.clear
+      Visu.resolveSendEventTrackEvent(data,
+        "en-cfg_cls-player",
+        "clear-player",
+        null,
+        controller.playerService.dispatcher)
+
+      ///@feature TODO grid.coin.clear
+      Visu.resolveSendEventTrackEvent(data,
+        "en-cfg_cls-coin",
+        "clear-coins",
+        null,
+        controller.coinService.dispatcher)
+
+      ///@feature TODO grid.bullets.clear
+      Visu.resolveSendEventTrackEvent(data,
+        "en-cfg_cls-bullet",
+        "clear-bullets",
+        null,
+        controller.bulletService.dispatcher)
+
+      ///@feature TODO grid.shroom.z
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "en-cfg_use-z-shr",
+        "en-cfg_z-shr",
+        "en-cfg_change-z-shr",
+        "shroomZ",
+        depths, pump, executor)
+
+      ///@feature TODO grid.player.z
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "en-cfg_use-z-player",
+        "en-cfg_z-player",
+        "en-cfg_change-z-player",
+        "playerZ",
+        depths, pump, executor)
+
+      ///@feature TODO grid.coin.z
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "en-cfg_use-z-coin",
+        "en-cfg_z-coin",
+        "en-cfg_change-z-coin",
+        "coinZ",
+        depths, pump, executor)
+
+      ///@feature TODO grid.bullet.z
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "en-cfg_use-z-bullet",
+        "en-cfg_z-bullet",
+        "en-cfg_change-z-bullet",
+        "bulletZ",
+        depths, pump, executor)
     },
   },
 }

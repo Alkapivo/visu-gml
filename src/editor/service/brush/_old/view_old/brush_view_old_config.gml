@@ -3,19 +3,35 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateViewOldConfigEvent(json) {
-  Logger.debug("Track", "migrateViewOldConfigEvent is not implemented")
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "vw-cfg_use-render-hud": Struct.getIfType(json, "view-config_use-render-HUD", Boolean, false),
+    "vw-cfg_render-hud": Struct.getIfType(json, "view-config_render-HUD", Boolean, false),
+    "vw-cfg_use-render-video": Struct.getIfType(json, "view-config_use-render-video", Boolean, false),
+    "vw-cfg_render-video": Struct.getIfType(json, "view-config_render-video", Boolean, false),
+    "vw-cfg_cls-subtitle": Struct.getIfType(json, "view-config_clear-lyrics", Boolean, false),
   }
 }
 
 
 ///@param {Struct} json
 ///@return {Struct}
-function migrateViewOldConfigToEntityConfigEvent(json) {
-  Logger.debug("Track", "migrateViewOldConfigToEntityConfigEvent is not implemented")
+function migrateViewOldConfigToGridConfigEvent(json) {
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "gr-cfg_use-render": Struct.getIfType(json, "view-config_use-render-grid", Boolean, false),
+    "gr-cfg_render": Struct.getIfType(json, "view-config_render-grid", Boolean, false),
+  }
+}
+
+
+///@param {Struct} json
+///@return {Struct}
+function migrateViewOldConfigToEffectConfigEvent(json) {
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "ef-cfg_use-render-part": Struct.getIfType(json, "view-config_use-render-particles", Boolean, false),
+    "ef-cfg_render-part": Struct.getIfType(json, "view-config_render-particles", Boolean, false),
   }
 }
 

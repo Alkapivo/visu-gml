@@ -86,7 +86,7 @@ function brush_effect_config(json) {
         type: Number,
         value: Struct.get(json, "ef-cfg_cls-frame-col-spd"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.000001, 1.0),
+        data: new Vector2(0.0, 999.9),
       },
       "ef-cfg_cls-frame-alpha": {
         type: NumberTransformer,
@@ -370,6 +370,125 @@ function brush_effect_config(json) {
         },
       },
       {
+        name: "ef-cfg_cls-frame-col",
+        template: VEComponents.get("color-picker"),
+        layout: VELayouts.get("color-picker"),
+        config: { 
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 0, bottom: 0 },
+          },
+          line: { disable: true },
+          title: {
+            label: { 
+              text: "Color",
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+              //backgroundColor: VETheme.color.dark,
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "ef-cfg_use-cls-frame-col" },
+              //backgroundColor: VETheme.color.dark,
+            },
+            input: { 
+              store: { key: "ef-cfg_cls-frame-col" },
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+              //backgroundColor: VETheme.color.dark,
+            }
+          },
+          red: {
+            label: { 
+              text: "Red",
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+            field: { 
+              store: { key: "ef-cfg_cls-frame-col" },
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+            slider: { 
+              store: { key: "ef-cfg_cls-frame-col" },
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+          },
+          green: {
+            label: { 
+              text: "Green",
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+            field: { 
+              store: { key: "ef-cfg_cls-frame-col" },
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+            slider: { 
+              store: { key: "ef-cfg_cls-frame-col" },
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+          },
+          blue: {
+            label: { 
+              text: "Blue",
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+            field: { 
+              store: { key: "ef-cfg_cls-frame-col" },
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+            slider: { 
+              store: { key: "ef-cfg_cls-frame-col" },
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+          },
+          hex: { 
+            label: { 
+              text: "Hex",
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+            field: { 
+              store: { key: "ef-cfg_cls-frame-col" },
+              enable: { key: "ef-cfg_use-cls-frame-col" },
+            },
+          },
+        },
+      },
+      {
+        name: "ef-cfg_cls-frame-col-spd",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Duration",
+            enable: { key: "ef-cfg_use-cls-frame-col" },
+          },  
+          field: { 
+            store: { key: "ef-cfg_cls-frame-col-spd" },
+            enable: { key: "ef-cfg_use-cls-frame-col" },
+          },
+          decrease: {
+            store: { key: "ef-cfg_cls-frame-col-spd" },
+            enable: { key: "ef-cfg_use-cls-frame-col" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "ef-cfg_cls-frame-col-spd" },
+            enable: { key: "ef-cfg_use-cls-frame-col" },
+            factor: 0.1,
+          },
+          slider: {
+            store: { key: "ef-cfg_cls-frame-col-spd" },
+            enable: { key: "ef-cfg_use-cls-frame-col" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
+        name: "ef-cfg_cls-frame-col-spd-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "ef-cfg_cls-frame-alpha",
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
@@ -379,8 +498,8 @@ function brush_effect_config(json) {
             label: {
               text: "Alpha",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "ef-cfg_use-cls-frame-alpha" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "ef-cfg_use-cls-frame-alpha" },
             },
             field: {
               store: { key: "ef-cfg_cls-frame-alpha" },
@@ -477,114 +596,7 @@ function brush_effect_config(json) {
           },
         },
       },
-      {
-        name: "ef-cfg_cls-frame-col",
-        template: VEComponents.get("color-picker"),
-        layout: VELayouts.get("color-picker"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Color",
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },  
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "ef-cfg_use-cls-frame-col" },
-            },
-            input: { 
-              store: { key: "ef-cfg_cls-frame-col" },
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            }
-          },
-          red: {
-            label: { 
-              text: "Red",
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-            field: { 
-              store: { key: "ef-cfg_cls-frame-col" },
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-            slider: { 
-              store: { key: "ef-cfg_cls-frame-col" },
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-          },
-          green: {
-            label: { 
-              text: "Green",
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-            field: { 
-              store: { key: "ef-cfg_cls-frame-col" },
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-            slider: { 
-              store: { key: "ef-cfg_cls-frame-col" },
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-          },
-          blue: {
-            label: { 
-              text: "Blue",
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-            field: { 
-              store: { key: "ef-cfg_cls-frame-col" },
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-            slider: { 
-              store: { key: "ef-cfg_cls-frame-col" },
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-          },
-          hex: { 
-            label: { 
-              text: "Hex",
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-            field: { 
-              store: { key: "ef-cfg_cls-frame-col" },
-              enable: { key: "ef-cfg_use-cls-frame-col" },
-            },
-          },
-        },
-      },
-      {
-        name: "ef-cfg_cls-frame-col-spd",  
-        template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("numeric-slider-increase-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Speed",
-            enable: { key: "ef-cfg_use-cls-frame-col" },
-          },  
-          field: { 
-            store: { key: "ef-cfg_cls-frame-col-spd" },
-            enable: { key: "ef-cfg_use-cls-frame-col" },
-          },
-          slider: {
-            store: { key: "ef-cfg_cls-frame-col-spd" },
-            enable: { key: "ef-cfg_use-cls-frame-col" },
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
-          },
-          decrease: {
-            store: { key: "ef-cfg_cls-frame-col-spd" },
-            enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: -0.001,
-          },
-          increase: {
-            store: { key: "ef-cfg_cls-frame-col-spd" },
-            enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: 0.001,
-          },
-        },
-      },
+      
     ]),
   }
 }

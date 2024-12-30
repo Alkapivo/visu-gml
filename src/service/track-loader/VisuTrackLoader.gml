@@ -88,7 +88,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   && task.status != TaskStatus.REJECTED) {
                 task.fullfill()
               }
-            }, "Background")
+            }, WallpaperType.BACKGROUND)
             controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
               if ((task.name == "fade-color" || task.name == "fade-sprite")
                   && task.state.get("type") == type 
@@ -96,7 +96,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   && task.status != TaskStatus.REJECTED) {
                 task.fullfill()
               }
-            }, "Foreground")
+            }, WallpaperType.FOREGROUND)
             
 
             Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
@@ -303,12 +303,10 @@ function VisuTrackLoader(_controller): Service() constructor {
                                 break
                               case VEBrushType.SHADER_OVERLAY:
                                 event.callable = VEBrushType.GRID_CONFIG
-                                ///@todo
                                 event.data = migrateShaderOverlayEvent(event.data)
                                 break
                               case VEBrushType.SHADER_CLEAR:
                                 event.callable = VEBrushType.EFFECT_CONFIG
-                                ///@todo
                                 event.data = migrateShaderClearEvent(event.data)
                                 break
                               case VEBrushType.SHADER_CONFIG:
@@ -321,12 +319,10 @@ function VisuTrackLoader(_controller): Service() constructor {
                                 break
                               case VEBrushType.SHROOM_CLEAR:
                                 event.callable = VEBrushType.ENTITY_CONFIG
-                                ///@todo
                                 event.data = migrateShroomClearEvent(event.data)
                                 break
                               case VEBrushType.SHROOM_CONFIG:
                                 event.callable = VEBrushType.ENTITY_CONFIG
-                                ///@todo
                                 event.data = migrateShroomConfigEvent(event.data)
                                 break
                               case VEBrushType.GRID_OLD_CHANNEL:
@@ -338,13 +334,8 @@ function VisuTrackLoader(_controller): Service() constructor {
                                 event.data = migrateGridOldCoinEvent(event.data)
                                 break
                               case VEBrushType.GRID_OLD_CONFIG:
-                                event.callable = VEBrushType.GRID_CONFIG
-                                ///@todo
-                                event.data = migrateGridOldConfigEvent(event.data)
-                            
                                 var parsedEvent = JSON.clone(event)
                                 parsedEvent.callable = VEBrushType.GRID_AREA
-                                ///@todo
                                 parsedEvent.data = migrateGridOldConfigToGridAreaEvent(parsedEvent.data)
                                 var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
                                 eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
@@ -353,29 +344,30 @@ function VisuTrackLoader(_controller): Service() constructor {
                             
                                 parsedEvent = JSON.clone(event)
                                 parsedEvent.callable = VEBrushType.ENTITY_CONFIG
-                                ///@todo
                                 parsedEvent.data = migrateGridOldConfigToEntityConfigEvent(parsedEvent.data)
                                 eventsToMigrate = config.channelsToMigrate.get($"migrated 2 {config.__channelName}")
                                 eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
                                 eventsToMigrate.add(parsedEvent)
                                 config.channelsToMigrate.set($"migrated 2 {config.__channelName}", eventsToMigrate)
+
+                                event.callable = VEBrushType.GRID_CONFIG
+                                event.data = migrateGridOldConfigEvent(event.data)
                                 break
                               case VEBrushType.GRID_OLD_PARTICLE:
                                 event.callable = VEBrushType.EFFECT_PARTICLE
                                 event.data = migrateGridOldParticleEvent(event.data)
                                 break
                               case VEBrushType.GRID_OLD_PLAYER:
-                                event.callable = VEBrushType.ENTITY_PLAYER
-                                event.data = migrateGridOldPlayerEvent(event.data)
-                            
                                 var parsedEvent = JSON.clone(event)
                                 parsedEvent.callable = VEBrushType.ENTITY_CONFIG
-                                ///@todo
                                 parsedEvent.data = migrateGridOldPlayerToEntityConfigEvent(parsedEvent.data)
                                 var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
                                 eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
                                 eventsToMigrate.add(parsedEvent)
                                 config.channelsToMigrate.set($"migrated 1 {config.__channelName}", eventsToMigrate)
+
+                                event.callable = VEBrushType.ENTITY_PLAYER
+                                event.data = migrateGridOldPlayerEvent(event.data)
                                 break
                               case VEBrushType.GRID_OLD_SEPARATOR:
                                 event.callable = VEBrushType.GRID_ROW
@@ -383,12 +375,10 @@ function VisuTrackLoader(_controller): Service() constructor {
                                 break
                               case VEBrushType.VIEW_OLD_WALLPAPER:
                                 event.callable = VEBrushType.VIEW_WALLPAPER
-                                ///@todo
                                 event.data = migrateViewOldWallpaperEvent(event.data)
                                 break
                               case VEBrushType.VIEW_OLD_CAMERA:
                                 event.callable = VEBrushType.VIEW_CAMERA
-                                ///@todo
                                 event.data = migrateViewOldCameraEvent(event.data)
                                 break
                               case VEBrushType.VIEW_OLD_LYRICS:
@@ -400,18 +390,24 @@ function VisuTrackLoader(_controller): Service() constructor {
                                 event.data = migrateViewOldGlitchEvent(event.data)
                                 break
                               case VEBrushType.VIEW_OLD_CONFIG:
-                                event.callable = VEBrushType.VIEW_CONFIG
-                                ///@todo
-                                event.data = migrateViewOldConfigEvent(event.data)
-                            
                                 var parsedEvent = JSON.clone(event)
-                                parsedEvent.callable = VEBrushType.ENTITY_CONFIG
-                                ///@todo
-                                parsedEvent.data = migrateViewOldConfigToEntityConfigEvent(parsedEvent.data)
+                                parsedEvent.callable = VEBrushType.GRID_CONFIG
+                                parsedEvent.data = migrateViewOldConfigToGridConfigEvent(parsedEvent.data)
                                 var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
                                 eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
                                 eventsToMigrate.add(parsedEvent)
                                 config.channelsToMigrate.set($"migrated 1 {config.__channelName}", eventsToMigrate)
+                                
+                                parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.EFFECT_CONFIG
+                                parsedEvent.data = migrateViewOldConfigToEffectConfigEvent(parsedEvent.data)
+                                eventsToMigrate = config.channelsToMigrate.get($"migrated 2 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 2 {config.__channelName}", eventsToMigrate)
+
+                                event.callable = VEBrushType.VIEW_CONFIG
+                                event.data = migrateViewOldConfigEvent(event.data)
                                 break
                             }
                             

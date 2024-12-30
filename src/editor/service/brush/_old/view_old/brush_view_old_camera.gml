@@ -3,9 +3,76 @@
 ///@param {Struct} json
 ///@return {Struct}
 function migrateViewOldCameraEvent(json) {
-  Logger.debug("Track", "migrateViewOldCameraEvent is not implemented")
+  var follow = Struct.getIfType(json, "view-config_use-follow-properties", Boolean, false)
   return {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "vw-cam_use-lock-x": Struct.getIfType(json, "view-config_use-lock-target-x", Boolean, false),
+    "vw-cam_lock-x": Struct.getIfType(json, "view-config_lock-target-x", Boolean, false),
+    "vw-cam_use-lock-y": Struct.getIfType(json, "view-config_use-lock-target-y", Boolean, false),
+    "vw-cam_lock-y": Struct.getIfType(json, "view-config_lock-target-y", Boolean, false),
+    "vw-cam_follow": true,
+    "vw-cam_use-follow-x": follow,
+    "vw-cam_follow-x": Struct.getIfType(json, "view-config_follow-margin-x", Number, 0.4),
+    "vw-cam_use-follow-y": follow,
+    "vw-cam_follow-y": Struct.getIfType(json, "view-config_follow-margin-y", Number, 0.35),
+    "vw-cam_use-follow-smooth": follow,
+    "vw-cam_follow-smooth": Struct.getIfType(json, "view-config_follow-smooth", Number, 32.0),
+    "vw-cam_use-x": false,
+    "vw-cam_x": Struct.getIfType(json, "view-config_transform-x", Struct, {
+      value: 0.0,
+      target: 0.0,
+      factor: 0.0,
+      increase: 0.0,
+    }),
+    "vw-cam_change-x": Struct.getIfType(json, "view-config_use-transform-x", Boolean, false),
+    "vw-cam_use-y": false,
+    "vw-cam_y": Struct.getIfType(json, "view-config_transform-y", Struct, {
+      value: 0.0,
+      target: 0.0,
+      factor: 0.0,
+      increase: 0.0,
+    }),
+    "vw-cam_change-y": Struct.getIfType(json, "view-config_use-transform-y", Boolean, false),
+    "vw-cam_use-z": false,
+    "vw-cam_z": Struct.getIfType(json, "view-config_transform-z", Struct, {
+      value: 0.0,
+      target: 0.0,
+      factor: 0.0,
+      increase: 0.0,
+    }),
+    "vw-cam_change-z": Struct.getIfType(json, "view-config_use-transform-z", Boolean, false),
+    "vw-cam_use-dir": false,
+    "vw-cam_dir": Struct.getIfType(json, "view-config_transform-angle", Struct, {
+      value: 0.0,
+      target: 0.0,
+      factor: 0.0,
+      increase: 0.0,
+    }),
+    "vw-cam_change-dir": Struct.getIfType(json, "view-config_use-transform-angle", Boolean, false),
+    "vw-cam_use-pitch": false,
+    "vw-cam_pitch": Struct.getIfType(json, "view-config_transform-pitch", Struct, {
+      value: 0.0,
+      target: 0.0,
+      factor: 0.0,
+      increase: 0.0,
+    }),
+    "vw-cam_change-pitch": Struct.getIfType(json, "view-config_use-transform-pitch", Boolean, false),
+    "vw-cam_use-move-speed": false,
+    "vw-cam_move-speed": Struct.getIfType(json, "view-config_movement-speed", Struct, {
+      value: 0.0,
+      target: 0.0,
+      factor: 0.0,
+      increase: 0.0,
+    }),
+    "vw-cam_change-move-speed": true,
+    "vw-cam_use-move-angle": false,
+    "vw-cam_move-angle": Struct.getIfType(json, "view-config_movement-angle", Struct, {
+      value: 0.0,
+      target: 0.0,
+      factor: 0.0,
+      increase: 0.0,
+    }),
+    "vw-cam_change-move-angle": true,
   }
 }
 

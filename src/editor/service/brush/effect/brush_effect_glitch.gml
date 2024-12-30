@@ -247,7 +247,10 @@ function brush_effect_glitch(json = null) {
         template: VEComponents.get("numeric-slider-increase-field"),
         layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4.0 },
+          },
           label: { 
             text: "Speed",
             enable: { key: "ef-glt_use-config" }
@@ -379,7 +382,10 @@ function brush_effect_glitch(json = null) {
         template: VEComponents.get("numeric-slider-increase-field"),
         layout: VELayouts.get("numeric-slider-increase-field"),
         config: {
-          layout: { type: UILayoutType.VERTICAL},
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { bottom: 4.0 },
+          },
           label: {
             text: "Drift",
             enable: { key: "ef-glt_use-config" },
@@ -427,7 +433,10 @@ function brush_effect_glitch(json = null) {
         template: VEComponents.get("numeric-slider-increase-field"),
         layout: VELayouts.get("numeric-slider-increase-field"),
         config: {
-          layout: { type: UILayoutType.VERTICAL},
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4.0 },
+          },
           label: {
             text: "Speed",
             enable: { key: "ef-glt_use-config" },
@@ -526,7 +535,10 @@ function brush_effect_glitch(json = null) {
         template: VEComponents.get("numeric-slider-increase-field"),
         layout: VELayouts.get("numeric-slider-increase-field"),
         config: {
-          layout: { type: UILayoutType.VERTICAL},
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { bottom: 4.0 },
+          },
           label: {
             text: "Chaos",
             enable: { key: "ef-glt_use-config" },
@@ -574,7 +586,10 @@ function brush_effect_glitch(json = null) {
         template: VEComponents.get("numeric-slider-increase-field"),
         layout: VELayouts.get("numeric-slider-increase-field"),
         config: {
-          layout: { type: UILayoutType.VERTICAL},
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4.0 },
+          },
           label: {
             text: "Dispersion",
             enable: { key: "ef-glt_use-config" },
@@ -739,7 +754,10 @@ function brush_effect_glitch(json = null) {
         template: VEComponents.get("numeric-slider-increase-field"),
         layout: VELayouts.get("numeric-slider-increase-field"),
         config: {
-          layout: { type: UILayoutType.VERTICAL},
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { bottom: 4.0 },
+          },
           label: {
             text: "Intensity",
             enable: { key: "ef-glt_use-config" },
