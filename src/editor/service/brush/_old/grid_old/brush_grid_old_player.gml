@@ -457,6 +457,7 @@ function brush_grid_old_player(json = null) {
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
             title: { text: "Rng" }, 
+            stick: { store: { key: "grid-player_texture" } },
           },
           speed: {
             label: { text: "Speed" },
@@ -469,18 +470,21 @@ function brush_grid_old_player(json = null) {
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
             title: { text: "Animate" }, 
+            stick: { store: { key: "grid-player_texture" } },
           },
           scaleX: {
             label: { text: "Scale X" },
             field: { store: { key: "grid-player_texture" } },
             decrease: { store: { key: "grid-player_texture" } },
             increase: { store: { key: "grid-player_texture" } },
+            stick: { store: { key: "grid-player_texture" } },
           },
           scaleY: {
             label: { text: "Scale Y" },
             field: { store: { key: "grid-player_texture" } },
             decrease: { store: { key: "grid-player_texture" } },
             increase: { store: { key: "grid-player_texture" } },
+            stick: { store: { key: "grid-player_texture" } },
           },
         },
       },
@@ -493,11 +497,14 @@ function brush_grid_old_player(json = null) {
           label: {
             text: "Collision mask",
             enable: { key: "grid-player_use-mask" },
+            backgroundColor: VETheme.color.side,
           },
+          input: { backgroundColor: VETheme.color.side },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "grid-player_use-mask" },
+            backgroundColor: VETheme.color.side,
           },
         },
       },
@@ -521,7 +528,7 @@ function brush_grid_old_player(json = null) {
       },
       {
         name: "grid-player_mask",
-        template: VEComponents.get("vec4"),
+        template: VEComponents.get("vec4-stick-increase"),
         layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
@@ -545,6 +552,11 @@ function brush_grid_old_player(json = null) {
               enable: { key: "grid-player_use-mask" },
               factor: 1.0,
             },
+            slider: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: 0.1,
+            },
           },
           y: {
             label: {
@@ -565,6 +577,11 @@ function brush_grid_old_player(json = null) {
               store: { key: "grid-player_mask" },
               enable: { key: "grid-player_use-mask" },
               factor: 1.0,
+            },
+            slider: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: 0.1,
             },
           },
           z: {
@@ -587,6 +604,11 @@ function brush_grid_old_player(json = null) {
               enable: { key: "grid-player_use-mask" },
               factor: 1.0,
             },
+            slider: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: 0.1,
+            },
           },
           a: {
             label: {
@@ -607,6 +629,11 @@ function brush_grid_old_player(json = null) {
               store: { key: "grid-player_mask" },
               enable: { key: "grid-player_use-mask" },
               factor: 1.0,
+            },
+            slider: {
+              store: { key: "grid-player_mask" },
+              enable: { key: "grid-player_use-mask" },
+              factor: 0.1,
             },
           },
         },

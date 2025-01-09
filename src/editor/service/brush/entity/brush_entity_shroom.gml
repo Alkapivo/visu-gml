@@ -906,6 +906,14 @@ function brush_entity_shroom(json) {
               spriteOff: { name: "visu_texture_checkbox_off" },
               enable: { key: "en-shr_use-texture" },
             },
+            title: { 
+              text: "Rng",
+              enable: { key: "en-shr_use-texture" },
+            }, 
+            stick: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
           },
           speed: {
             label: { 
@@ -930,6 +938,10 @@ function brush_entity_shroom(json) {
               spriteOff: { name: "visu_texture_checkbox_off" },
               enable: { key: "en-shr_use-texture" },
             },
+            stick: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
           },
           scaleX: {
             label: { 
@@ -945,6 +957,10 @@ function brush_entity_shroom(json) {
               enable: { key: "en-shr_use-texture" },
             },
             increase: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
+            stick: { 
               store: { key: "en-shr_texture" },
               enable: { key: "en-shr_use-texture" },
             },
@@ -966,6 +982,10 @@ function brush_entity_shroom(json) {
               store: { key: "en-shr_texture" },
               enable: { key: "en-shr_use-texture" },
             },
+            stick: { 
+              store: { key: "en-shr_texture" },
+              enable: { key: "en-shr_use-texture" },
+            },
           },
         },
       },
@@ -984,14 +1004,14 @@ function brush_entity_shroom(json) {
           label: {
             text: "Override collision mask",
             enable: { key: "en-shr_use-mask" },
-            backgroundColor: VETheme.color.accentShadow,
+            backgroundColor: VETheme.color.side,
           },
-          input: { backgroundColor: VETheme.color.accentShadow },
+          input: { backgroundColor: VETheme.color.side },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "en-shr_use-mask" },
-            backgroundColor: VETheme.color.accentShadow,
+            backgroundColor: VETheme.color.side,
           },
         },
       },
@@ -1015,7 +1035,7 @@ function brush_entity_shroom(json) {
       },
       {
         name: "en-shr_mask",
-        template: VEComponents.get("vec4-increase"),
+        template: VEComponents.get("vec4-stick-increase"),
         layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
@@ -1039,6 +1059,11 @@ function brush_entity_shroom(json) {
               enable: { key: "en-shr_use-mask" },
               factor: 1.0,
             },
+            slider: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: 0.1,
+            },
           },
           y: {
             label: {
@@ -1059,6 +1084,11 @@ function brush_entity_shroom(json) {
               store: { key: "en-shr_mask" },
               enable: { key: "en-shr_use-mask" },
               factor: 1.0,
+            },
+            slider: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: 0.1,
             },
           },
           z: {
@@ -1081,6 +1111,11 @@ function brush_entity_shroom(json) {
               enable: { key: "en-shr_use-mask" },
               factor: 1.0,
             },
+            slider: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: 0.1,
+            },
           },
           a: {
             label: {
@@ -1101,6 +1136,11 @@ function brush_entity_shroom(json) {
               store: { key: "en-shr_mask" },
               enable: { key: "en-shr_use-mask" },
               factor: 1.0,
+            },
+            slider: {
+              store: { key: "en-shr_mask" },
+              enable: { key: "en-shr_use-mask" },
+              factor: 0.1,
             },
           },
         },

@@ -1,5 +1,8 @@
 ///@package io.alkapivo.visu.editor.ui.controller
 
+#macro BRUSH_TOOLBAR_ENTRY_STEP 1
+
+
 ///@param {Struct} config
 ///@return {Struct}
 function factoryVEBrushToolbarTypeItem(config, index) {
@@ -45,7 +48,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
       }),
       brushToolbar: brushToolbar,
       updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.accordion.updateTimer", 10.0), { loop: Infinity, shuffle: true }),
@@ -119,7 +122,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         "components": new Array(Struct, Core.getProperty("visu.editor.migrate", false) 
           ?
             [
@@ -130,7 +133,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 layout: VELayouts.get("vertical-item"),
                 config: {
                   backgroundColor: VETheme.color.primary,
-                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentLight).toGMColor(),
                   backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
                   backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
                   backgroundMargin: { top: 0, bottom: 1, left: 1, right: 0 },
@@ -160,7 +163,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 layout: VELayouts.get("vertical-item"),
                 config: {
                   backgroundColor: VETheme.color.primary,
-                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentLight).toGMColor(),
                   backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
                   backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
                   backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
@@ -190,7 +193,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 layout: VELayouts.get("vertical-item"),
                 config: {
                   backgroundColor: VETheme.color.primary,
-                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentLight).toGMColor(),
                   backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
                   backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
                   backgroundMargin: { top: 1, bottom: 1, left: 1, right: 0 },
@@ -220,7 +223,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 layout: VELayouts.get("vertical-item"),
                 config: {
                   backgroundColor: VETheme.color.primary,
-                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+                  backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentLight).toGMColor(),
                   backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
                   backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
                   backgroundMargin: { top: 1, bottom: 0, left: 1, right: 0 },
@@ -482,7 +485,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
         "category": null,
         "type": null,
         "shader": new Array(Struct, [
@@ -684,7 +687,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         
         store.get("category").addSubscriber({ 
           name: this.name,
-          overrideSubscriber: false,
+          overrideSubscriber: true,
           callback: function(category, context) { 
             if (category == context.state.get("category")) {
               return
@@ -702,7 +705,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
         store.get("type").addSubscriber({ 
           name: this.name,
-          overrideSubscriber: false,
+          overrideSubscriber: true,
           callback: function(type, context) {
             //if (type == context.state.get("type")) {
             //  return
@@ -731,7 +734,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
@@ -858,7 +861,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-alpha": 1.0,
         "type": null,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         "empty-label": new UILabel({
           text: "Click to\nadd template",
           font: "font_inter_10_regular",
@@ -1017,7 +1020,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: this.layout })
         this.brushToolbar.store.get("type").addSubscriber({ 
           name: container.name,
-          overrideSubscriber: false,
+          overrideSubscriber: true,
           callback: function(type, data) {
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
             data.collection.components.clear() ///@todo replace with remove lambda
@@ -1086,7 +1089,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.inspector-bar.updateTimer", 10.0), { loop: Infinity, shuffle: true }),
       updateTimerCooldown: Core.getProperty("visu.editor.ui.brush-toolbar.inspector-bar.updateTimer.cooldown", 4.0),
@@ -1190,7 +1193,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         "inspectorType": VEBrushToolbar,
       }),
       updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.inspector-view.updateTimer", 60), { loop: Infinity, shuffle: true }),
@@ -1221,7 +1224,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: container.layout })
         this.brushToolbar.store.get("template").addSubscriber({ 
           name: this.name,
-          overrideSubscriber: false,
+          overrideSubscriber: true,
           callback: function(template, data) {
             if (!Optional.is(template)) {
               data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
@@ -1291,16 +1294,23 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       .getLast().layout.context
                   }
                   
-                  repeat (1.000) {
+                  
+                  if (Optional.is(task.state.context.updateTimer)) {
+
+                    ///@updateTimerNow
+                    task.state.context.updateTimer.time = task.state.context.updateTimer.duration * 0.5
+                  }
+
+                  repeat (BRUSH_TOOLBAR_ENTRY_STEP) {
                     var index = task.state.componentsQueue.pop()
                     if (!Optional.is(index)) {
+                      task.fullfill()
                       if (Optional.is(task.state.context.updateTimer)) {
 
                         ///@updateTimerNow
                         task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
                       }
-  
-                      task.fullfill()
+
                       break
                     }
   
@@ -1337,7 +1347,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         "components": new Array(Struct, [
           {
             name: "button_control-preview",

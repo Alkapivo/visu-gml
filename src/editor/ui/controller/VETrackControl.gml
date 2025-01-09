@@ -157,14 +157,14 @@ function VETrackControl(_editor) constructor {
           progress: { 
             thickness: 1.75, 
             alpha: 1.0,
-            blend: VETheme.color.accent,
+            blend: VETheme.color.accentLight,
             line: { name: "texture_grid_line_bold" },
             cornerFrom: { name: "texture_empty" },
             cornerTo: { name: "texture_empty" },
           },
           background: {
             thickness: 0.0, 
-            blend: VETheme.color.dark,
+            blend: VETheme.color.side,
             alpha: 0.0,
           },
           preRender: function() {
@@ -172,7 +172,7 @@ function VETrackControl(_editor) constructor {
             if (!Core.isType(background, TexturedLine)) {
               background = new TexturedLine({
                 thickness: 2.0, 
-                blend: VETheme.color.dark,
+                blend: VETheme.color.side,
                 alpha: 0.75,
                 line: { name: "texture_grid_line_default" },
                 cornerFrom: { name: "texture_empty" },
@@ -303,7 +303,7 @@ function VETrackControl(_editor) constructor {
              ? json.updateCustom
              : function() {},
           onMouseHoverOver: function(event) {
-            this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+            this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accentLight).toGMColor())
           },
           onMouseHoverOut: function(event) {
             this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.textShadow).toGMColor())

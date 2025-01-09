@@ -184,6 +184,8 @@ function template_shroom(json) {
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
+            title: { text: "Rng" }, 
+            stick: { store: { key: "shroom_texture" } },
           },
           speed: {
             label: { text: "Speed" },
@@ -196,20 +198,29 @@ function template_shroom(json) {
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
             title: { text: "Animate" }, 
+            stick: { store: { key: "shroom_texture" } },
           },
           scaleX: {
             label: { text: "Scale X" },
             field: { store: { key: "shroom_texture" } },
             decrease: { store: { key: "shroom_texture" } },
             increase: { store: { key: "shroom_texture" } },
+            stick: { store: { key: "shroom_texture" } },
           },
           scaleY: {
             label: { text: "Scale Y" },
             field: { store: { key: "shroom_texture" } },
             decrease: { store: { key: "shroom_texture" } },
             increase: { store: { key: "shroom_texture" } },
+            stick: { store: { key: "shroom_texture" } },
           },
         },
+      },
+      {
+        name: "shroom_texture-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "shroom_mask-property",
@@ -220,11 +231,14 @@ function template_shroom(json) {
           label: {
             text: "Collision mask",
             enable: { key: "use_shroom_mask" },
+            backgroundColor: VETheme.color.side,
           },
+          input: { backgroundColor: VETheme.color.side },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "use_shroom_mask" },
+            backgroundColor: VETheme.color.side,
           },
         },
       },
@@ -248,7 +262,7 @@ function template_shroom(json) {
       },
       {
         name: "shroom_mask",
-        template: VEComponents.get("vec4-increase"),
+        template: VEComponents.get("vec4-stick-increase"),
         layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
@@ -272,6 +286,11 @@ function template_shroom(json) {
               enable: { key: "use_shroom_mask" },
               factor: 1.0,
             },
+            slider: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 0.1,
+            },
           },
           y: {
             label: {
@@ -292,6 +311,11 @@ function template_shroom(json) {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
               factor: 1.0,
+            },
+            slider: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 0.1,
             },
           },
           z: {
@@ -314,6 +338,11 @@ function template_shroom(json) {
               enable: { key: "use_shroom_mask" },
               factor: 1.0,
             },
+            slider: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 0.1,
+            },
           },
           a: {
             label: {
@@ -334,6 +363,11 @@ function template_shroom(json) {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
               factor: 1.0,
+            },
+            slider: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 0.1,
             },
           },
         },

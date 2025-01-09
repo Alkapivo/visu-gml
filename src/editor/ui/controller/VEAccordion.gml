@@ -33,10 +33,8 @@ function VEAccordion(_editor, config = null) constructor {
     },
   })
 
-  this.store.get("render-template-toolbar").addSubscriber(Visu
-    .generateSettingsSubscriber("visu.editor.accordion.render-template-toolbar"))
-  this.store.get("render-event-inspector").addSubscriber(Visu
-    .generateSettingsSubscriber("visu.editor.accordion.render-event-inspector"))
+  this.store.get("render-template-toolbar").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.accordion.render-template-toolbar"))
+  this.store.get("render-event-inspector").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.accordion.render-event-inspector"))
 
   ///@private
   ///@param {UIlayout} parent
@@ -138,7 +136,7 @@ function VEAccordion(_editor, config = null) constructor {
         name: "_ve-accordion_accordion-items",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         accordion: accordion,
@@ -222,7 +220,7 @@ function VEAccordion(_editor, config = null) constructor {
         name: "_ve-accordion_accordion-options",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
           "components": new Array(Struct, [
             {
               name: "ve-accordion-option-button_template-toolbar",

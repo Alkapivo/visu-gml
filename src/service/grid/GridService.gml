@@ -238,51 +238,80 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   }
 
   ///@type {Struct}
-  properties = Optional.is(Struct.get(this.config, "properties"))
+  movement = {
+    enable: false,
+    angle: new NumberTransformer({ value: 90.0, target: 1.0, factor: 0.01, increase: 0.0 }),
+    speed: new NumberTransformer({ value: 0.0, target: 1.0, factor: 0.01, increase: 0.0 }),
+  }
+  
+  ///@type {Struct}
+  avgTime = {
+    value: 0,
+    count: 0,
+    add: function(value) {
+      this.value += value
+      this.count += 1
+      return this
+    },
+    reset: function() {
+      this.value = 0
+      this.count = 0
+      return this
+    },
+    get: function() {
+      return this.value / this.count
+    }
+  }
+
+  ///@type {Struct}
+  textureGroups = {
+    map: new Map(String, Number),
+    getIndex: function(item) {
+      var value = this.map.get(item.sprite.getName())
+      if (value == null) {
+        value = this.map.size()
+        this.map.set(item.sprite.getName(), value)
+      }
+
+      return value
+    },
+    compareItems: function(a, b) {
+      return this.getIndex(a) - this.getIndex(b)
+    },
+    sortItems: function(items) {
+      items.setContainer(GMArray.sort(items.getContainer(), this.compareItems))
+    },
+  }
+
+  ///@type {Struct}
+  properties = Optional.is(Struct.getIfType(this.config, "properties", Struct))
     ? new GridProperties(this.config.properties)
     : new GridProperties()
 
   ///@private
   ///@type {Number}
-  uidPointer = int64(Core.isType(Struct.get(config, "uidPointer"), Number) 
-    ? config.uidPointer 
-    : 0) 
+  uidPointer = toInt(Struct.getIfType(config, "uidPointer", Number, 0)) 
 
   ///@private
-  ///@return {String}
-  generateUID = function() {
-    if (this.uidPointer >= MAX_INT_64 - 1) {
-      Logger.warn("GridService", $"Reached maximum available value for uidPointer ('{MAX_INT_64}'). Reset uidPointer to '0'")
-      this.uidPointer = int64(0)
-    }
-    this.uidPointer++
-    return md5_string_utf8(string(this.uidPointer))
-  }
+  ///@type {DebugTimer}
+  moveGridItemsTimer = new DebugTimer("MoveGridItems")
 
-  init = function() {
-    var task = new Task("init-foreground")
-      .setTimeout(3.0)
-      .whenUpdate(function(executor) {
-        var controller = Beans.get(BeanVisuController)
-        controller.send(new Event("fade-sprite", {
-          sprite: SpriteUtil.parse({ name: "texture_hechan_3" }),
-          collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
-          type: WallpaperType.FOREGROUND,
-          fadeInDuration: 0.5,
-          fadeOutDuration: 0.5,
-          angle: 3,
-          speed: 0.25,
-          blendModeSource: BlendModeExt.SRC_ALPHA,
-          blendModeTarget: BlendModeExt.ONE,
-          executor: executor,
-        }))
-        this.fullfill()
-      })
-    this.controller.executor.add(task)
-    
-    return this
-  }
+  ///@private
+  ///@type {DebugTimer}
+  signalGridItemsCollisionTimer = new DebugTimer("GrdCollission")
 
+  ///@private
+  ///@type {DebugTimer}
+  updatePlayerServiceTimer = new DebugTimer("PlayerService")
+
+  ///@private
+  ///@type {DebugTimer}
+  updateShroomServiceTimer = new DebugTimer("ShroomService")
+
+  ///@private
+  ///@type {DebugTimer}
+  updateBulletServiceTimer = new DebugTimer("BulletService")
+  
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "transform-property": Callable.run(Struct.get(EVENT_DISPATCHERS, "transform-property")),
@@ -291,7 +320,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     "clear-grid": function(event) {
 
       this.view.x = (this.width - this.view.width) / 2.0
-	    this.view.y = this.height - this.view.height
+      this.view.y = this.height - this.view.height
       
       this.targetLocked = {
         x: this.view.x,
@@ -323,65 +352,42 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@type {TaskExecutor}
   executor = new TaskExecutor(this)
 
-  avgTime = {
-    value: 0,
-    count: 0,
-    add: function(value) {
-      this.value += value
-      this.count += 1
-      return this
-    },
-    reset: function() {
-      this.value = 0
-      this.count = 0
-      return this
-    },
-    get: function() {
-      return this.value / this.count
+  ///@private
+  ///@return {String}
+  generateUID = function() {
+    if (this.uidPointer >= MAX_INT_64 - 1) {
+      Logger.warn("GridService", $"Reached maximum available value for uidPointer ('{MAX_INT_64}'). Reset uidPointer to '0'")
+      this.uidPointer = int64(0)
     }
+    this.uidPointer++
+    return md5_string_utf8(string(this.uidPointer))
   }
 
-  textureGroups = {
-    map: new Map(String, Number),
-    getIndex: function(item) {
-      var value = this.map.get(item.sprite.getName())
-      if (value == null) {
-        value = this.map.size()
-        this.map.set(item.sprite.getName(), value)
-      }
-
-      return value
-    },
-    compareItems: function(a, b) {
-      return this.getIndex(a) - this.getIndex(b)
-    },
-    sortItems: function(items) {
-      items.setContainer(GMArray.sort(items.getContainer(), this.compareItems))
-    },
+  ///@return {GridService}
+  init = function() {
+    var task = new Task("init-foreground")
+      .setTimeout(3.0)
+      .whenUpdate(function(executor) {
+        var controller = Beans.get(BeanVisuController)
+        controller.send(new Event("fade-sprite", {
+          sprite: SpriteUtil.parse({ name: "texture_hechan_3" }),
+          collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
+          type: WallpaperType.FOREGROUND,
+          fadeInDuration: 0.5,
+          fadeOutDuration: 0.5,
+          angle: 3,
+          speed: 0.25,
+          blendModeSource: BlendModeExt.SRC_ALPHA,
+          blendModeTarget: BlendModeExt.ONE,
+          executor: executor,
+        }))
+        this.fullfill()
+      })
+    this.controller.executor.add(task)
+    
+    return this
   }
 
-  
-
-  ///@private
-  ///@type {DebugTimer}
-  moveGridItemsTimer = new DebugTimer("MoveGridItems")
-
-  ///@private
-  ///@type {DebugTimer}
-  signalGridItemsCollisionTimer = new DebugTimer("GrdCollission")
-
-  ///@private
-  ///@type {DebugTimer}
-  updatePlayerServiceTimer = new DebugTimer("PlayerService")
-
-  ///@private
-  ///@type {DebugTimer}
-  updateShroomServiceTimer = new DebugTimer("ShroomService")
-
-  ///@private
-  ///@type {DebugTimer}
-  updateBulletServiceTimer = new DebugTimer("BulletService")
-  
   ///@param {Bullet} bullet
   ///@param {Number} key
   ///@param {Struct} acc
@@ -483,6 +489,11 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     }
   }
 
+  ///@param {Bullet} bullet
+  ///@param {Number} index
+  ///@param {GridService} context
+  bulletCollisionNoPlayer = function(bullet, index, context) { }
+
   ///@param {Shroom} shroom
   ///@param {Number} index
   ///@param {Player} player
@@ -505,17 +516,32 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     }
   }
 
+  ///@param {Shroom} shroom
+  ///@param {Number} index
+  ///@param {?Player} player
+  shroomCollisionNoPlayer = function(shroom, index, player) { }
+
   ///@private
   ///@return {GridService}
   signalGridItemsCollision = function() {
     var player = this.controller.playerService.player
-    if (Core.isType(player, Player)) {
-      var shroomCollision = player.stats.godModeCooldown > 0.0 
-        ? this.shroomCollisionGodMode 
-        : this.shroomCollision
-      this.controller.bulletService.bullets.forEach(this.bulletCollision, this) 
-      this.controller.shroomService.shrooms.forEach(shroomCollision, player)
-    }
+    var isPlayer = Core.isType(player, Player)
+  
+    this.controller.bulletService.bullets.forEach(
+      isPlayer
+        ? this.bulletCollision
+        : this.bulletCollisionNoPlayer,
+      this
+    )
+     
+    this.controller.shroomService.shrooms.forEach(
+      isPlayer
+        ? (player.stats.godModeCooldown > 0.0 
+          ? this.shroomCollisionGodMode 
+          : this.shroomCollision)
+        : this.shroomCollisionNoPlayer, 
+      player
+    )
     
     return this
   }
@@ -546,13 +572,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   }
 
   ///@private
-  ///@param {any} item
-  ///@param {any} index
-  ///@parma {any} acc
-  __dummy = function(item, index, acc) { }
-
-  
-  ///@private
   ///@return {GridService}
   updateGridItemsAlternative = function() {
     static bulletLambda = function(bullet, index, acc) {
@@ -560,6 +579,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       acc.bulletCollision(bullet, index, acc.gridService)
       acc.bulletService.updateBullet(bullet, index, acc.bulletService)
     }
+
     static shroomLambda = function(shroom, index, acc) {
       acc.shroomCollision(shroom, index, acc.player)
       acc.shroomService.updateShroom(shroom, index, acc.shroomService)
@@ -567,15 +587,16 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
         acc.moveShroom(shroom, index, acc)
       }
     }
-    
+
     var gridService = this
     var bulletService = this.controller.bulletService
     var shroomService = this.controller.shroomService
     var playerService = this.controller.playerService
     var player = playerService.player
+    var isPlayer = Core.isType(player, Player)
     var view = this.controller.gridService.view
 
-    if (Core.isType(player, Player)) {
+    if (isPlayer) {
       player.move()
     }
 
@@ -585,7 +606,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       moveBullet: this.moveBullet,
       view: view,
       chunkService: bulletService.chunkService,
-      bulletCollision: this.bulletCollision,
+      bulletCollision: isPlayer ? this.bulletCollision : this.bulletCollisionNoPlayer,
       gridService: gridService,
       bulletService: bulletService,
     }).runGC() 
@@ -602,9 +623,11 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       moveShroom: this.moveShroom,
       view: view,
       chunkService: shroomService.chunkService,
-      shroomCollision: player != null 
-        ? (player.stats.godModeCooldown > 0.0 ? this.shroomCollisionGodMode : this.shroomCollision) 
-        : this.__dummy,
+      shroomCollision: isPlayer
+        ? (player.stats.godModeCooldown > 0.0 
+          ? this.shroomCollisionGodMode 
+          : this.shroomCollision) 
+        : this.shroomCollisionNoPlayer,
       player: player,
       shroomService: shroomService,
     }).runGC()
@@ -623,14 +646,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     return this.dispatcher.send(event)
   }
 
-  ///@type {Struct}
-  movement = {
-    enable: false,
-    angle: new NumberTransformer({ value: 90.0, target: 1.0, factor: 0.01, increase: 0.0 }),
-    speed: new NumberTransformer({ value: 0.0, target: 1.0, factor: 0.01, increase: 0.0 }),
-  }
-
-  ///@override
   ///@return {GridService}
   update = function() {
     this.properties.update(this)
@@ -638,6 +653,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.executor.update()
 
     var player = this.controller.playerService.player
+    var isPlayer = Core.isType(player, Player) 
     if (this.movement.enable) {
       this.movement.angle.update()
       this.movement.speed.update()
@@ -646,7 +662,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       this.targetLocked.setY(this.targetLocked.y + Math
         .fetchCircleY(DeltaTime.apply(this.movement.speed.get()) / 500.0, this.movement.angle.get()))
     } else {
-      if (Core.isType(player, Player)) {
+      if (isPlayer) {
         this.targetLocked.setX(player.x)
         this.targetLocked.setY(player.y)
       }
@@ -660,7 +676,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       }
     }
 
-    if (Core.isType(player, Player)) {
+    if (isPlayer) {
       player.x = clamp(player.x, 0.0, this.width)
       player.y = clamp(player.y, 0.0, this.height)
     }

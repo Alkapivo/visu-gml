@@ -456,7 +456,7 @@ function VEStatusBar(_editor) constructor {
       "ve-status-bar": new UI({
         name: "ve-status-bar",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
           "components": new Array(Struct, [
             {
               name: "ve-status-bar_fps-label",

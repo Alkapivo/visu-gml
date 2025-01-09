@@ -81,7 +81,10 @@ function VETemplate(json) constructor {
       template: VEComponents.get("text-field"),
       layout: VELayouts.get("text-field"),
       config: { 
-        layout: { type: UILayoutType.VERTICAL },
+        layout: { 
+          type: UILayoutType.VERTICAL,
+          margin: { top: 2 },
+        },
         label: { text: "Name" },
         field: { 
           read_only: json.type == VETemplateType.TEXTURE,
@@ -190,15 +193,15 @@ function VETemplate(json) constructor {
       wiggleAmplitude: this.store.getValue("bullet_use-wiggle")
         ? this.store.getValue("bullet_wiggle-amplitude")
         : null,
-      angleOffset: this.store.getValue("bullet_use-angle-offset")
-        ? this.store.getValue("bullet_angle-offset")
-        : null,
+      useAngleOffset: this.store.getValue("bullet_use-angle-offset"),
+      changeAngleOffset: this.store.getValue("bullet_change-angle-offset"),
+      angleOffset: this.store.getValue("bullet_angle-offset"),
       angleOffsetRng: this.store.getValue("bullet_use-angle-offset")
         ? this.store.getValue("bullet_use-angle-offset-rng")
         : null,
-      speedOffset: this.store.getValue("bullet_use-speed-offset")
-        ? this.store.getValue("bullet_speed-offset")
-        : null,
+      useSpeedOffset: this.store.getValue("bullet_use-speed-offset"),
+      changeSpeedOffset: this.store.getValue("bullet_change-speed-offset"),
+      speedOffset: this.store.getValue("bullet_speed-offset"),
       onDeath: this.store.getValue("bullet_use-on-death")
         ? this.store.getValue("bullet_on-death")
         : null,
@@ -243,6 +246,9 @@ function VETemplate(json) constructor {
       name: Assert.isType(this.store.getValue("template-name"), String),
       category: Assert.isEnum(this.store.getValue("coin_category"), CoinCategory),
       sprite: sprite.serialize(),
+      useSpeed: this.store.getValue("coin_use-speed"),
+      speed: this.store.getValue("coin_speed").serialize(),
+      changeSpeed: this.store.getValue("coin_change-speed"),
     }
 
     if (this.store.getValue("coin_use-mask")) {
@@ -253,11 +259,6 @@ function VETemplate(json) constructor {
     if (this.store.getValue("coin_use-amount")) {
       Struct.set(json, "amount", Assert.isType(this.store
         .getValue("coin_amount"), Number))
-    }
-
-    if (this.store.getValue("coin_use-speed")) {
-      Struct.set(json, "speed", this.store
-        .getValue("coin_speed").serialize())
     }
 
     return new CoinTemplate(json.name, json)

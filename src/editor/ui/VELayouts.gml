@@ -316,8 +316,8 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "property-bar",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 28 - this.margin.top - this.margin.bottom },
-      margin: { top: 0, bottom: 4 },
+      height: Struct.getIfType(config, "height", Callable, function() { return 28 - this.margin.top - this.margin.bottom }),
+      margin: Struct.getIfType(config, "margin", Struct, { top: 0, bottom: 4 }),
       nodes: {
         checkbox: {
           name: "property-bar.checkbox",
@@ -346,7 +346,7 @@ global.__VELayouts = new Map(String, Callable, {
       name: "line-h",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       height: function() { return 1 },
-      margin: { top: 4, bottom: 4 },
+      margin: Struct.getIfType(config, "margin", Struct, { top: 4, bottom: 4 }),
       nodes: {
         image: {
           name: "line-h.image",
@@ -1077,6 +1077,7 @@ global.__VELayouts = new Map(String, Callable, {
           name: "texture-field-ext.texture",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
           height: function() { return 28 },
+          margin: { top: 4 },
         },
         preview: {
           name: "texture-field-ext.preview",
@@ -1089,9 +1090,14 @@ global.__VELayouts = new Map(String, Callable, {
           y: function() { return this.context.nodes.preview.bottom() + this.margin.top },
           height: function() { return 28 },
         },
+        alpha: {
+          name: "texture-field-ext.alpha",
+          y: function() { return this.context.nodes.resolution.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
         frame: {
           name: "texture-field-ext.frame",
-          y: function() { return this.context.nodes.resolution.bottom() + this.margin.top },
+          y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
           height: function() { return 28 },
         },
         speed: {
@@ -1099,14 +1105,9 @@ global.__VELayouts = new Map(String, Callable, {
           y: function() { return this.context.nodes.frame.bottom() + this.margin.top },
           height: function() { return 28 },
         },
-        alpha: {
-          name: "texture-field-ext.alpha",
-          y: function() { return this.context.nodes.speed.bottom() + this.margin.top },
-          height: function() { return 28 },
-        },
         scaleX: {
           name: "texture-field-ext.scaleX",
-          y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+          y: function() { return this.context.nodes.speed.bottom() + this.margin.top },
           height: function() { return 28 },
         },
         scaleY: {
@@ -1355,6 +1356,7 @@ global.__VELayouts = new Map(String, Callable, {
       name: "color-picker",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       height: function() { return this.nodes.blue.bottom() - this.y() },
+      margin: Struct.getIfType(config, "margin", Struct),
       nodes: {
         line: {
           name: "color-picker.line",
@@ -1654,9 +1656,15 @@ global.__VELayouts = new Map(String, Callable, {
           y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
           height: function() { return 28 },
         },
+        lineY: {
+          name: "transform-vec3-uniform.lineY",
+          y: function() { return this.context.nodes.increaseY.bottom() + this.margin.top },
+          height: function() { return 1 },
+          margin: { top: 4, bottom: 5 },
+        },
         valueZ: {
           name: "transform-vec3-uniform.valueZ",
-          y: function() { return this.context.nodes.increaseY.bottom() + this.margin.top },
+          y: function() { return this.context.nodes.lineY.bottom() + this.margin.top },
           height: function() { return 28 },
         },
         targetZ: {
@@ -1957,6 +1965,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       height: function() { return 0 },
+      margin: Struct.getIfType(config, "margin", Struct),
     }
   },
 })

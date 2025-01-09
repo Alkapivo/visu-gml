@@ -42,11 +42,23 @@ function BulletTemplate(_name, json) constructor {
   ///@type {?Struct}
   angleOffset = Struct.getIfType(json, "angleOffset", Struct)
 
-  ///@type {?Boolean}
-  angleOffsetRng = Struct.getIfType(json, "angleOffsetRng", Boolean)
+  ///@type {Boolean}
+  angleOffsetRng = Struct.getIfType(json, "angleOffsetRng", Boolean, false)
+
+  ///@type {Boolean}
+  useAngleOffset = Struct.getIfType(json, "useAngleOffset", Boolean, false)
+
+  ///@type {Boolean}
+  changeAngleOffset = Struct.getIfType(json, "changeAngleOffset", Boolean, false)
 
   ///@type {?Struct}
   speedOffset = Struct.getIfType(json, "speedOffset", Struct)
+
+  ///@type {Boolean}
+  useSpeedOffset = Struct.getIfType(json, "useSpeedOffset", Boolean, false)
+
+  ///@type {Boolean}
+  changeSpeedOffset = Struct.getIfType(json, "changeSpeedOffset", Boolean, false)
 
   ///@type {?String}
   onDeath = Struct.getIfType(json, "onDeath", String)
@@ -79,6 +91,10 @@ function BulletTemplate(_name, json) constructor {
   serialize = function() {
     var json = {
       sprite: this.sprite,
+      useSpeedOffset: this.useSpeedOffset,
+      changeSpeedOffset: this.changeSpeedOffset,
+      useAngleOffset: this.useAngleOffset,
+      changeAngleOffset: this.changeAngleOffset,
     }
 
     if (Optional.is(this.damage)) {
@@ -213,6 +229,19 @@ function Bullet(template): GridItem(template) constructor {
     ? choose(1, -1) * this.wiggleFrequency
     : this.wiggleFrequency
 
+
+  if (Optional.is(Struct.get(template, "angleOffset"))) {
+    if (!template.useAngleOffset) {
+      Struct.set(template.angleOffset, "value", this.angle)
+    }
+
+    if (!template.changeAngleOffset) {
+      Struct.set(template.angleOffset, "target", template.angleOffset.value)
+      Struct.set(template.angleOffset, "factor", abs(template.angleOffset.value))
+      Struct.set(template.angleOffset, "increase", 0.0)
+    }
+  }
+
   ///@type {?NumberTransformer}
   angleOffset = Optional.is(Struct.getIfType(template, "angleOffset", Struct))
     ? new NumberTransformer(template.angleOffset)
@@ -224,8 +253,21 @@ function Bullet(template): GridItem(template) constructor {
   ///@param {Number}
   angleOffsetDir = this.angleOffsetRng ? choose(1, -1) : 1
 
+
+  if (Optional.is(Struct.get(template, "speedOffset"))) {
+    if (!template.useSpeedOffset) {
+      Struct.set(template.speedOffset, "value", this.speed * 1000.0)
+    }
+
+    if (!template.changeSpeedOffset) {
+      Struct.set(template.speedOffset, "target", template.speedOffset.value)
+      Struct.set(template.speedOffset, "factor", abs(template.speedOffset.value))
+      Struct.set(template.speedOffset, "increase", 0.0)
+    }
+  }
+
   ///@type {?NumberTransformer}
-  speedOffset = Optional.is(Struct.getIfType(template, "speedOffset", Struct))
+  speedOffset = Optional.is(Struct.get(template, "speedOffset"))
     ? new NumberTransformer(template.speedOffset)
     : null
 

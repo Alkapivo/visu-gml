@@ -1,6 +1,9 @@
 ///@package io.alkapivo.visu.editor.ui.controller
 
 #macro TEMPLATE_ENTRY_STEP 5
+#macro TEMPLATE_TOOLBAR_ENTRY_STEP 1
+
+
 ///@todo move to VEBrushToolbar
 ///@static
 ///@type {Map<String, Callable>}
@@ -10,7 +13,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
         "types": new Array(Struct, [
           {
             name: "button_type-shader",
@@ -253,7 +256,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         "template_shader": new Array(Struct, [
           {
             name: "button_new-shader-template-title",
@@ -287,6 +290,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               previous: { store: { key: "shader" } },
               preview: Struct.appendRecursive({ 
                 store: { key: "shader" },
+                preRender: function() { 
+                  Struct.set(this, "_text", this.label.text)
+                  this.label.text = String.toUpperCase(String.replaceAll(String.replace(this.label.text, "shader_", ""), "_", " "))
+                },
+                postRender: function() { 
+                  this.label.text = this._text
+                },
               }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
               next: { store: { key: "shader" } },
             },
@@ -700,6 +710,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: this.layout })
         this.templateToolbar.store.get("type").addSubscriber({ 
           name: container.name,
+          overrideSubscriber: true,
           callback: function(type, data) {
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
             data.collection.components.clear() ///@todo replace with remove lambda
@@ -729,7 +740,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -741,7 +752,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           type: UIText,
           text: "Templates",
           update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
-          backgroundColor: VETheme.color.darkBetween,
+          backgroundColor: VETheme.color.sideShadow,
           font: "font_inter_8_regular",
           color: VETheme.color.textShadow,
           align: { v: VAlign.CENTER, h: HAlign.LEFT },
@@ -1114,7 +1125,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.template-toolbar.template-view.updateTimer", 30), { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -1154,6 +1165,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: this.layout })
         this.templateToolbar.store.get("type").addSubscriber({ 
           name: container.name,
+          overrideSubscriber: true,
           callback: function(type, data) {
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
             data.collection.components.clear() ///@todo replace with remove lambda
@@ -2119,7 +2131,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.darkBetween).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -2253,7 +2265,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.template-toolbar.inspector-view.updateTimer", 30), { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -2295,6 +2307,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: container.layout })
         this.templateToolbar.store.get("template").addSubscriber({ 
           name: container.name,
+          overrideSubscriber: true,
           callback: function(template, data) {
 
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
@@ -2357,19 +2370,30 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       .forEach(add, acc)
                       .getLast().layout.context
                   }
-                  
-                  var index = task.state.componentsQueue.pop()
-                  if (!Optional.is(index)) {
-                    if (Optional.is(task.state.context.updateTimer)) {
-                      task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
-                    }
 
-                    task.fullfill()
-                    task.state.context.state.set("previousOffset", task.state.previousOffset)
-                    return
+                  if (Optional.is(task.state.context.updateTimer)) {
+
+                    ///@updateTimerNow
+                    //task.state.context.updateTimer.time = task.state.context.updateTimer.duration * 0.5
                   }
-                  var component = new UIComponent(task.state.components.get(index))
-                  factoryComponent(component, index, task.state.componentsConfig)
+
+                  repeat (TEMPLATE_TOOLBAR_ENTRY_STEP) {
+                    var index = task.state.componentsQueue.pop()
+                    if (!Optional.is(index)) {
+                      task.fullfill()
+                      task.state.context.state.set("previousOffset", task.state.previousOffset)
+                      if (Optional.is(task.state.context.updateTimer)) {
+
+                        ///@updateTimerNow
+                        task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
+                      }
+
+                      break
+                    }
+  
+                    var component = new UIComponent(task.state.components.get(index))
+                    factoryComponent(component, index, task.state.componentsConfig)
+                  }
                 },
               })
               .whenUpdate(function() {
@@ -2401,7 +2425,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         "components": new Array(Struct, [
           {
             name: "button_control-save",
@@ -2532,7 +2556,7 @@ function VETemplateToolbar(_editor) constructor {
         Assert.isType(ShaderUtil.fetch(value), Shader)
         Assert.isTrue(this.data.contains(value))
       },
-      data: new Array(String, Struct.keys(SHADERS)),
+      data: new Array(String, GMArray.sort(Struct.keys(SHADERS))),
     },
     "texture-intent": {
       type: TextureIntent,

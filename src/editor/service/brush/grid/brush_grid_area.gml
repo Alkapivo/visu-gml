@@ -481,18 +481,18 @@ function brush_grid_area(json) {
             label: {
               text: "Color",
               enable: { key: "gr-area_use-h-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-area_use-h-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             },
             input: { 
               store: { key: "gr-area_h-col" },
               enable: { key: "gr-area_use-h-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             }
           },
           red: {
@@ -949,18 +949,18 @@ function brush_grid_area(json) {
             label: {
               text: "Color",
               enable: { key: "gr-area_use-v-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-area_use-v-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             },
             input: { 
               store: { key: "gr-area_v-col" },
               enable: { key: "gr-area_use-v-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             }
           },
           red: {

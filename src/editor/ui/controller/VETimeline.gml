@@ -264,7 +264,7 @@ function VETimeline(_editor) constructor {
         name: "_ve-timeline-background",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
 
         }),
         controller: controller,
@@ -349,7 +349,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-form": {
         name: "ve-timeline-form",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
@@ -404,7 +404,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-channels": {
         name: "ve-timeline-channels",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
           "dragItem": null,
         }),
@@ -531,6 +531,8 @@ function VETimeline(_editor) constructor {
             return false
           }
 
+
+
           var dragItem = this.state.get("dragItem")
           if (Optional.is(dragItem) && Beans.get(BeanVisuEditorIO).mouse.getClipboard() == dragItem) {
             this.state.set("dragItem", null)
@@ -579,6 +581,13 @@ function VETimeline(_editor) constructor {
                 ///@updateTimerNow
                 events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
               }
+            }
+          } else {
+            var mouse = Beans.get(BeanVisuEditorIO).mouse
+            var dropEvent = mouse.getClipboard()
+            mouse.clearClipboard()
+            if (Core.isType(Struct.get(dropEvent, "drop"), Callable)) {
+              dropEvent.drop()
             }
           }
         },
@@ -695,7 +704,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-channel-settings": {
         name: "ve-timeline-channel-settings",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
@@ -748,13 +757,13 @@ function VETimeline(_editor) constructor {
                   layout: { type: UILayoutType.VERTICAL },
                   label: { 
                     text: "Channel config",
-                    backgroundColor: VETheme.color.dark,
+                    backgroundColor: VETheme.color.side,
                   },
                   checkbox: {
-                    backgroundColor: VETheme.color.dark,
+                    backgroundColor: VETheme.color.side,
                   },
                   input: {
-                    backgroundColor: VETheme.color.dark,
+                    backgroundColor: VETheme.color.side,
                   },
                 },
               }),
@@ -902,7 +911,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-events": {
         name: "ve-timeline-events",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
           "chunkService": controller.factoryChunkService(),
           "viewSize": Beans.get(BeanVisuEditorController).store.getValue("timeline-zoom"),
@@ -913,8 +922,8 @@ function VETimeline(_editor) constructor {
           "lines-alpha": 1.0,
           "lines-thickness": 0.2,
           "lines-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-          "lines-color-accent": ColorUtil.parse("#525280").toGMColor(),
-          "bkg-color": ColorUtil.parse("#212129").toGMColor(),//ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+          "lines-color-accentLight": ColorUtil.parse(VETheme.color.primaryLight).toGMColor(),
+          "bkg-color": ColorUtil.parse(VETheme.color.sideLight).toGMColor(),//ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
           "initialized": false,
           "initializeChannels": false,
         }),
@@ -1161,7 +1170,7 @@ function VETimeline(_editor) constructor {
           var thickness = this.state.get("lines-thickness")
           var alpha = this.state.get("lines-alpha")
           var color = this.state.get("lines-color")
-          var colorAccent = this.state.get("lines-color-accent")
+          var colorAccent = this.state.get("lines-color-accentLight")
           var bkgColor = this.state.get("bkg-color")
           var editor = Beans.get(BeanVisuEditorController)
           var bpm = editor.store.getValue("bpm")
@@ -1591,6 +1600,8 @@ function VETimeline(_editor) constructor {
             dropEvent.fullfill()
           } else if (Core.isType(dropEvent, TrackEvent)) {
             this.handleMouseDropTrackEvent(event, dropEvent)
+          } else if (Core.isType(Struct.get(dropEvent, "drop"), Callable)) {
+            dropEvent.drop()
           }
         },
 
@@ -2358,7 +2369,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-ruler": {
         name: "ve-timeline-ruler",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
           "viewSize": Beans.get(BeanVisuEditorController).store.getValue("timeline-zoom"),
           "stepSize": 2,

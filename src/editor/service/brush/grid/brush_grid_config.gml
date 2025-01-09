@@ -185,7 +185,7 @@ function brush_grid_config(json) {
           label: { 
             text: "Render",
             enable: { key: "gr-cfg_use-render" },
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -210,17 +210,17 @@ function brush_grid_config(json) {
           layout: { type: UILayoutType.VERTICAL },
           label: {
             text: "Blend mode",
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
             enable: { key: "gr-cfg_grid-use-blend" },
           },
           input: {
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "gr-cfg_grid-use-blend" },
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
           },
         },
       },
@@ -582,17 +582,17 @@ function brush_grid_config(json) {
           layout: { type: UILayoutType.VERTICAL },
           label: {
             text: "Blend mode",
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
             enable: { key: "gr-cfg_focus-grid-use-blend" },
           },
           input: {
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "gr-cfg_focus-grid-use-blend" },
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
           },
         },
       },
@@ -942,18 +942,18 @@ function brush_grid_config(json) {
             label: {
               text: "Color",
               enable: { key: "gr-cfg_use-cls-frame-col" },
-              //backgroundColor: VETheme.color.dark,
+              //backgroundColor: VETheme.color.side,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-cfg_use-cls-frame-col" },
-              //backgroundColor: VETheme.color.dark,
+              //backgroundColor: VETheme.color.side,
             },
             input: { 
               store: { key: "gr-cfg_cls-frame-col" },
               enable: { key: "gr-cfg_use-cls-frame-col" },
-              //backgroundColor: VETheme.color.dark,
+              //backgroundColor: VETheme.color.side,
             }
           },
           red: {

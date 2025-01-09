@@ -123,14 +123,14 @@ function brush_grid_column(json) {
           label: {
             text: "Column render mode",
             enable: { key: "gr-c_use-mode" },
-            backgroundColor: VETheme.color.dark,
+            backgroundColor: VETheme.color.side,
           },
-          input: { backgroundColor: VETheme.color.dark },
+          input: { backgroundColor: VETheme.color.side },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "gr-c_use-mode" },
-            backgroundColor: VETheme.color.dark,
+            backgroundColor: VETheme.color.side,
           },
         },
       },
@@ -527,18 +527,18 @@ function brush_grid_column(json) {
             label: {
               text: "Color",
               enable: { key: "gr-c_use-main-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-c_use-main-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             },
             input: { 
               store: { key: "gr-c_main-col" },
               enable: { key: "gr-c_use-main-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             }
           },
           red: {
@@ -883,18 +883,18 @@ function brush_grid_column(json) {
             label: {
               text: "Color",
               enable: { key: "gr-c_use-side-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "gr-c_use-side-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             },
             input: {
               store: { key: "gr-c_side-col" },
               enable: { key: "gr-c_use-side-col" },
-              backgroundColor: VETheme.color.dark,
+              backgroundColor: VETheme.color.side,
             }
           },
           red: {

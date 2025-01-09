@@ -2678,6 +2678,157 @@ global.__VEComponents = new Map(String, Callable, {
       }).toUIItems(layout)
     }
 
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncreaseStickCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase-stick-checkbox"),
+        layout: VELayouts.get("text-field-increase-stick-checkbox"),
+        config: Struct.appendRecursive(
+          {
+            stick: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "spriteProperty")
+                  var sprite = item.get()
+                  if (!Core.isType(sprite, Sprite) 
+                    || !Struct.contains(sprite, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(sprite, key, parsedValue))
+                },
+              },
+              factor: 0.01,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var key = Struct.get(this, "spriteProperty")
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(this.store.getValue(), key) : this.value)
+                  : this.base 
+
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(this.store.getValue(), key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+            checkbox: {
+              margin: { top: 2, bottom: 2, left: 2, right: 2 },
+            },
+            title: {
+              store: Struct.get(Struct.get(config, "checkbox"), "store"),
+              onMouseReleasedLeft: function(event) {
+                if (!Core.isType(this.store, UIStore)) {
+                  return
+                }
+
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                item.set(!item.get())
+
+                if (Core.isType(this.context, UI) 
+                    && Optional.is(this.context.updateTimer)) {
+                  ///@updateTimerNow
+                  this.context.updateTimer.time = clamp(
+                    this.context.updateTimer.time,
+                    this.context.updateTimer.duration * 0.7500,
+                    this.context.updateTimer.duration
+                  )
+                }
+              }
+            }
+          },
+          config, 
+          false
+        )
+      }).toUIItems(layout)
+    }
+
     var items = new Array(UIItem)
 
     factoryTitle(
@@ -2787,7 +2938,7 @@ global.__VEComponents = new Map(String, Callable, {
       )
     )
 
-    factoryTextFieldIncreaseCheckbox(
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_frame",
       layout.nodes.frame, 
       Struct.appendRecursive(
@@ -2907,13 +3058,14 @@ global.__VEComponents = new Map(String, Callable, {
             }
           },
           title: { text: "Rng frame" }, 
+          stick: { spriteProperty: "frame" },
         },
         Struct.get(config, "frame"),
         false
       )
     ).forEach(addItem, items)
     
-    factoryTextFieldIncreaseCheckbox(
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_speed",
       layout.nodes.speed, 
       Struct.appendRecursive(
@@ -3022,6 +3174,7 @@ global.__VEComponents = new Map(String, Callable, {
             }
           },
           title: { text: "Animate" },
+          stick: { spriteProperty: "speed" },
         },
         Struct.get(config, "speed"),
         false
@@ -3194,6 +3347,153 @@ global.__VEComponents = new Map(String, Callable, {
       }).toUIItems(layout)
     }
 
+    static factoryTextFieldIncreaseStickCheckbox = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("text-field-increase-stick-checkbox"),
+        layout: VELayouts.get("text-field-increase-stick-checkbox"),
+        config: Struct.appendRecursive(
+          {
+            stick: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "spriteProperty")
+                  var sprite = item.get()
+                  if (!Core.isType(sprite, Sprite) 
+                    || !Struct.contains(sprite, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(sprite, key, parsedValue))
+                },
+              },
+              factor: 0.01,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var key = Struct.get(this, "spriteProperty")
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(this.store.getValue(), key) : this.value)
+                  : this.base 
+
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(this.store.getValue(), key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+            checkbox: {
+              margin: { top: 2, bottom: 2, left: 2, right: 2 },
+            },
+            title: {
+              store: Struct.get(Struct.get(config, "checkbox"), "store"),
+              onMouseReleasedLeft: function(event) {
+                if (!Core.isType(this.store, UIStore)) {
+                  return
+                }
+
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                item.set(!item.get())
+
+                if (Core.isType(this.context, UI) 
+                    && Optional.is(this.context.updateTimer)) {
+                  ///@updateTimerNow
+                  this.context.updateTimer.time = clamp(
+                    this.context.updateTimer.time,
+                    this.context.updateTimer.duration * 0.7500,
+                    this.context.updateTimer.duration
+                  )
+                }
+              }
+            }
+          },
+          config, 
+          false
+        )
+      }).toUIItems(layout)
+    }
+
     var items = new Array(UIItem)
 
     factoryTitle(
@@ -3303,7 +3603,123 @@ global.__VEComponents = new Map(String, Callable, {
       )
     )
 
-    factoryTextFieldIncreaseCheckbox(
+    
+    factoryNumericSliderIncreaseField(
+      $"{name}_alpha",
+      layout.nodes.alpha, 
+      Struct.appendRecursive(
+        { 
+          field: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+
+                if (data.textField.isFocused()) {
+                  return
+                }
+
+                data.textField.setText(value.getAlpha())
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                sprite.setAlpha(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            }
+          },
+          decrease: { 
+            factor: -0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setAlpha(sprite.getAlpha() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          increase: { 
+            factor: 0.01,
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+
+              var sprite = item.get()
+              if (!Core.isType(sprite, Sprite)) {
+                return
+              }
+
+              item.set(sprite.setAlpha(sprite.getAlpha() + factor))
+            },
+            store: { 
+              callback: function(value, data) { },
+              set: function(value) { },
+            }
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.value = value.getAlpha()
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Optional.is(item)) {
+                  return
+                }
+
+                var sprite = item.get()
+                if (!Core.isType(sprite, Sprite)) {
+                  return
+                }
+                sprite.setAlpha(NumberUtil.parse(value))
+                item.set(sprite)
+              },
+            },
+          },
+        },
+        Struct.get(config, "alpha"),
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_frame",
       layout.nodes.frame, 
       Struct.appendRecursive(
@@ -3422,14 +3838,15 @@ global.__VEComponents = new Map(String, Callable, {
               },
             }
           },
-          title: { text: "Rng frame" }, 
+          title: { text: "Rng frame" },
+          stick: { spriteProperty: "frame" },
         },
         Struct.get(config, "frame"),
         false
       )
     ).forEach(addItem, items)
     
-    factoryTextFieldIncreaseCheckbox(
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_speed",
       layout.nodes.speed, 
       Struct.appendRecursive(
@@ -3538,128 +3955,14 @@ global.__VEComponents = new Map(String, Callable, {
             }
           },
           title: { text: "Animate" },
+          stick: { spriteProperty: "speed" },
         },
         Struct.get(config, "speed"),
         false
       )
     ).forEach(addItem, items)
 
-    factoryNumericSliderIncreaseField(
-      $"{name}_alpha",
-      layout.nodes.alpha, 
-      Struct.appendRecursive(
-        { 
-          field: { 
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-
-                if (data.textField.isFocused()) {
-                  return
-                }
-
-                data.textField.setText(value.getAlpha())
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                sprite.setAlpha(NumberUtil.parse(value))
-                item.set(sprite)
-              },
-            }
-          },
-          decrease: { 
-            factor: -0.01,
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-
-              var sprite = item.get()
-              if (!Core.isType(sprite, Sprite)) {
-                return
-              }
-
-              item.set(sprite.setAlpha(sprite.getAlpha() + factor))
-            },
-            store: { 
-              callback: function(value, data) { },
-              set: function(value) { },
-            }
-          },
-          increase: { 
-            factor: 0.01,
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-
-              var sprite = item.get()
-              if (!Core.isType(sprite, Sprite)) {
-                return
-              }
-
-              item.set(sprite.setAlpha(sprite.getAlpha() + factor))
-            },
-            store: { 
-              callback: function(value, data) { },
-              set: function(value) { },
-            }
-          },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
-            store: { 
-              callback: function(value, data) {
-                if (!Core.isType(value, Sprite)) {
-                  return
-                }
-                data.value = value.getAlpha()
-              },
-              set: function(value) {
-                var item = this.get()
-                if (!Optional.is(item)) {
-                  return
-                }
-
-                var sprite = item.get()
-                if (!Core.isType(sprite, Sprite)) {
-                  return
-                }
-                sprite.setAlpha(NumberUtil.parse(value))
-                item.set(sprite)
-              },
-            },
-          },
-        },
-        Struct.get(config, "alpha"),
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextFieldIncrease(
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_scale_x",
       layout.nodes.scaleX, 
       Struct.appendRecursive(
@@ -3743,13 +4046,14 @@ global.__VEComponents = new Map(String, Callable, {
               set: function(value) { },
             }
           },
+          stick: { spriteProperty: "scaleX" },
         },
         Struct.get(config, "scaleX"),
         false
       )
     ).forEach(addItem, items)
 
-    factoryTextFieldIncrease(
+    factoryTextFieldIncreaseStickCheckbox(
       $"{name}_scale_y",
       layout.nodes.scaleY, 
       Struct.appendRecursive(
@@ -3833,6 +4137,7 @@ global.__VEComponents = new Map(String, Callable, {
               set: function(value) { },
             }
           },
+          stick: { spriteProperty: "scaleY" },
         },
         Struct.get(config, "scaleY"),
         false
@@ -6470,7 +6775,7 @@ global.__VEComponents = new Map(String, Callable, {
       $"{name}_factorY",
       layout.nodes.factorY,
       Struct.appendRecursive(
-        Struct.get(config, "valueY"),
+        Struct.get(config, "factorY"),
         {
           field: {
             transformNumericProperty: "factor",
@@ -7068,7 +7373,7 @@ global.__VEComponents = new Map(String, Callable, {
       $"{name}_factorY",
       layout.nodes.factorY,
       Struct.appendRecursive(
-        Struct.get(config, "valueY"),
+        Struct.get(config, "factorY"),
         {
           field: {
             transformNumericProperty: "factor",
@@ -7117,6 +7422,20 @@ global.__VEComponents = new Map(String, Callable, {
         false
       )
     ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_y-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineY,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
     #endregion
 
     #region Z
@@ -7178,7 +7497,7 @@ global.__VEComponents = new Map(String, Callable, {
       $"{name}_factorZ",
       layout.nodes.factorZ,
       Struct.appendRecursive(
-        Struct.get(config, "valueZ"),
+        Struct.get(config, "factorZ"),
         {
           field: {
             transformNumericProperty: "factor",
@@ -7776,7 +8095,7 @@ global.__VEComponents = new Map(String, Callable, {
       $"{name}_factorY",
       layout.nodes.factorY,
       Struct.appendRecursive(
-        Struct.get(config, "valueY"),
+        Struct.get(config, "factorY"),
         {
           field: {
             transformNumericProperty: "factor",
@@ -7825,6 +8144,20 @@ global.__VEComponents = new Map(String, Callable, {
         false
       )
     ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_y-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineY,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
     #endregion
 
     #region Z
@@ -7886,7 +8219,7 @@ global.__VEComponents = new Map(String, Callable, {
       $"{name}_factorZ",
       layout.nodes.factorZ,
       Struct.appendRecursive(
-        Struct.get(config, "valueZ"),
+        Struct.get(config, "factorZ"),
         {
           field: {
             transformNumericProperty: "factor",
@@ -7935,6 +8268,20 @@ global.__VEComponents = new Map(String, Callable, {
         false
       )
     ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_z-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineZ,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
     #endregion
     
     #region A
@@ -10102,7 +10449,309 @@ global.__VEComponents = new Map(String, Callable, {
 
     return items
   },
+  
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "vec4-stick-increase": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
 
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryNumericStickIncreaseField = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        
+        config: Struct.appendRecursive(
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) 
+                    || !Struct.contains(vec4, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+                  data.textField.setText(Struct.get(vec4, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(vec4, key, parsedValue))
+                },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) 
+                    || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  data.value = Struct.get(vec4, key)
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var key = Struct.get(this.context, "vec4Property")
+                  var vec4 = item.get()
+                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                    return 
+                  }
+                  item.set(Struct.set(vec4, key, parsedValue))
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var key = Struct.get(this, "vec4Property")
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(this.store.getValue(), key) : this.value)
+                  : this.base 
+ 
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(this.store.getValue(), key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+            decrease: {
+              factor: -0.01,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "vec4Property")
+                var vec4 = item.get()
+                if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  return 
+                }
+                
+                Struct.set(vec4, key, Struct.get(vec4, key) + factor)
+                item.set(vec4)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 0.01,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var key = Struct.get(this, "vec4Property")
+                var vec4 = item.get()
+                if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  return 
+                }
+                
+                Struct.set(vec4, key, Struct.get(vec4, key) + factor)
+                item.set(vec4)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+          },
+          config,
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryNumericStickIncreaseField(
+      $"{name}_x",
+      layout.nodes.x,
+      Struct.appendRecursive(
+        Struct.get(config, "x"),
+        {
+          field: { vec4Property: "x" },
+          slider: { vec4Property: "x" },
+          decrease: { vec4Property: "x" },
+          increase: { vec4Property: "x" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryNumericStickIncreaseField(
+      $"{name}_y",
+      layout.nodes.y,
+      Struct.appendRecursive(
+        Struct.get(config, "y"),
+        { 
+          field: { vec4Property: "y" },
+          slider: { vec4Property: "y" },
+          decrease: { vec4Property: "y" },
+          increase: { vec4Property: "y" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryNumericStickIncreaseField(
+      $"{name}_z",
+      layout.nodes.z,
+      Struct.appendRecursive(
+        Struct.get(config, "z"),
+        {
+          field: { vec4Property: "z" },
+          slider: { vec4Property: "z" },
+          decrease: { vec4Property: "z" },
+          increase: { vec4Property: "z" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryNumericStickIncreaseField(
+      $"{name}_a",
+      layout.nodes.a,
+      Struct.appendRecursive(
+        Struct.get(config, "a"),
+        {
+          field: { vec4Property: "a" },
+          slider: { vec4Property: "a" },
+          decrease: { vec4Property: "a" },
+          increase: { vec4Property: "a" },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    return items
+  },
+  
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -10114,10 +10763,18 @@ global.__VEComponents = new Map(String, Callable, {
     ///@param {?Struct} [config]
     ///@return {Array<UIItem>}
     static factoryNumericIncreaseStickField = function(name, layout, config) {
+      var isCheckbox = Core.isType(Struct.get(config, "checkbox"), Struct)
+      var componentName = isCheckbox
+        ? "text-field-increase-stick-checkbox"
+        : "numeric-slider-increase-field"
+      var layoutName = isCheckbox
+        ? "text-field-increase-stick-checkbox"
+        : "text-field-increase-slider-checkbox"
+      
       return new UIComponent({
         name: name,
-        template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("text-field-increase-slider-checkbox"),
+        template: VEComponents.get(componentName),
+        layout: VELayouts.get(layoutName),
         config: Struct.appendRecursive(
           {
             decrease: {
@@ -10170,7 +10827,7 @@ global.__VEComponents = new Map(String, Callable, {
                 set: function(value) { },
               },
             },
-            slider: {
+            stick: {
               store: {
                 callback: function(value, data) { },
                 set: function(value) {

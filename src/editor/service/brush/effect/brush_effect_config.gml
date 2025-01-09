@@ -383,18 +383,18 @@ function brush_effect_config(json) {
             label: { 
               text: "Color",
               enable: { key: "ef-cfg_use-cls-frame-col" },
-              //backgroundColor: VETheme.color.dark,
+              //backgroundColor: VETheme.color.side,
             },  
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "ef-cfg_use-cls-frame-col" },
-              //backgroundColor: VETheme.color.dark,
+              //backgroundColor: VETheme.color.side,
             },
             input: { 
               store: { key: "ef-cfg_cls-frame-col" },
               enable: { key: "ef-cfg_use-cls-frame-col" },
-              //backgroundColor: VETheme.color.dark,
+              //backgroundColor: VETheme.color.side,
             }
           },
           red: {

@@ -236,10 +236,10 @@ function brush_effect_glitch(json = null) {
           label: { 
             text: "Line",
             enable: { key: "ef-glt_use-config" },
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
           },
-          //input: { backgroundColor: VETheme.color.dark },
-          //checkbox: { backgroundColor: VETheme.color.dark },
+          //input: { backgroundColor: VETheme.color.side },
+          //checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
@@ -422,10 +422,10 @@ function brush_effect_glitch(json = null) {
           label: { 
             text: "Jumble",
             enable: { key: "ef-glt_use-config" },
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
           },
-          //input: { backgroundColor: VETheme.color.dark },
-          //checkbox: { backgroundColor: VETheme.color.dark },
+          //input: { backgroundColor: VETheme.color.side },
+          //checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
@@ -575,10 +575,10 @@ function brush_effect_glitch(json = null) {
           label: { 
             text: "Shader",
             enable: { key: "ef-glt_use-config" },
-            //backgroundColor: VETheme.color.dark,
+            //backgroundColor: VETheme.color.side,
           },
-          //input: { backgroundColor: VETheme.color.dark },
-          //checkbox: { backgroundColor: VETheme.color.dark },
+          //input: { backgroundColor: VETheme.color.side },
+          //checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {

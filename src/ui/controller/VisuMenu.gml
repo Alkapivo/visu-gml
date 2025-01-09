@@ -1959,7 +1959,7 @@ function VisuMenu(_config = null) constructor {
         previousIndex: 0,
         state: new Map(String, any, {
           "background-alpha": 0.33,
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
           "content": content,
           "isKeyboardEvent": true,
           "initPress": false,

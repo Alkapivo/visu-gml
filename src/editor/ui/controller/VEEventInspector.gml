@@ -1,5 +1,8 @@
 ///@package io.alkapivo.visu.editor.ui.controller
 
+#macro EVENT_INSPECTOR_ENTRY_STEP 1
+
+
 ///@param {VisuEditorController} _editor
 function VEEventInspector(_editor) constructor {
 
@@ -67,7 +70,7 @@ function VEEventInspector(_editor) constructor {
         name: "ve-event-inspector-title",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         layout: layout.nodes.title,
@@ -82,7 +85,7 @@ function VEEventInspector(_editor) constructor {
             color: VETheme.color.textShadow,
             align: { v: VAlign.CENTER, h: HAlign.LEFT },
             offset: { x: 4 },
-            backgroundColor: VETheme.color.darkBetween,
+            backgroundColor: VETheme.color.sideShadow,
             clipboard: {
               name: "label_ve-event-inspector-title",
               drag: function() {
@@ -193,7 +196,7 @@ function VEEventInspector(_editor) constructor {
       "ve-event-inspector-properties": {
         name: "ve-event-inspector-properties",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
           "empty-label": new UILabel({
             text: "Click on\ntimeline\nevent",
             font: "font_inter_10_regular",
@@ -273,7 +276,7 @@ function VEEventInspector(_editor) constructor {
             .get("selected-event")
             .addSubscriber({ 
               name: container.name,
-              overrideSubscriber: true, ///@todo investigate
+              overrideSubscriber: true,
               callback: function(selectedEvent, data) { 
                 if (!Optional.is(selectedEvent)) {
                   data.collection.components.clear() ///@todo replace with remove lambda
@@ -333,6 +336,7 @@ function VEEventInspector(_editor) constructor {
                       .map(function(key) { return key }).container),
                     subscribersConfig: {
                       name: data.name,
+                      overrideSubscriber: true,
                       callback: function(value, data) { 
                         data.state.set("updateTrackEvent", true)
                       },
@@ -361,29 +365,43 @@ function VEEventInspector(_editor) constructor {
                           .forEach(add, acc)
                           .getLast().layout.context
                       }
-                      
-                      var index = task.state.componentsQueue.pop()
-                      if (!Optional.is(index)) {
-                        task.state.stage = "set-subscribers"
-                        return
+
+                      if (Optional.is(task.state.context.updateTimer)) {
+    
+                        ///@updateTimerNow
+                        task.state.context.updateTimer.time = task.state.context.updateTimer.duration * 0.5
                       }
 
-                      var component = new UIComponent(task.state.components.get(index))
-                      factoryComponent(component, index, task.state.componentsConfig)
+                      repeat (EVENT_INSPECTOR_ENTRY_STEP) {
+                        var index = task.state.componentsQueue.pop()
+                        if (!Optional.is(index)) {
+                          task.state.stage = "set-subscribers"
+                          if (Optional.is(task.state.context.updateTimer)) {
+    
+                            ///@updateTimerNow
+                            task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
+                          }
+
+                          break
+                        }
+      
+                        var component = new UIComponent(task.state.components.get(index))
+                        factoryComponent(component, index, task.state.componentsConfig)
+                      }
                     },
                     "set-subscribers": function(task) {
                       var key = task.state.subscribersQueue.pop()
-                      if (!Optional.is(key)) {
-                        if (Optional.is(task.state.context.updateTimer)) {
-                          task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
-                        }
-
-                        task.fullfill()
+                      if (Optional.is(key)) {
+                        var item = task.state.subscribers.get(key)
+                        item.addSubscriber(task.state.subscribersConfig)
                         return
                       }
 
-                      var item = task.state.subscribers.get(key)
-                      item.addSubscriber(task.state.subscribersConfig)
+                      if (Optional.is(task.state.context.updateTimer)) {
+                        task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
+                      }
+
+                      task.fullfill()
                     }
                   })
                   .whenUpdate(function() {
@@ -415,7 +433,7 @@ function VEEventInspector(_editor) constructor {
         name: "ve-event-inspector-control",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
           "components": new Array(Struct, [
             {
               name: "button_control-preview",

@@ -111,6 +111,8 @@ function brush_entity_player(json = null) {
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
+            title: { text: "Rng" }, 
+            stick: { store: { key: "en-pl_texture" } },
           },
           speed: {
             label: { text: "Speed" },
@@ -122,18 +124,21 @@ function brush_entity_player(json = null) {
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
+            stick: { store: { key: "en-pl_texture" } },
           },
           scaleX: {
             label: { text: "Scale X" },
             field: { store: { key: "en-pl_texture" } },
             decrease: { store: { key: "en-pl_texture" } },
             increase: { store: { key: "en-pl_texture" } },
+            stick: { store: { key: "en-pl_texture" } },
           },
           scaleY: {
             label: { text: "Scale Y" },
             field: { store: { key: "en-pl_texture" } },
             decrease: { store: { key: "en-pl_texture" } },
             increase: { store: { key: "en-pl_texture" } },
+            stick: { store: { key: "en-pl_texture" } },
           },
         },
       },
@@ -152,11 +157,14 @@ function brush_entity_player(json = null) {
           label: {
             text: "Collision mask",
             enable: { key: "en-pl_use-mask" },
+            backgroundColor: VETheme.color.side,
           },
+          input: { backgroundColor: VETheme.color.side },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "en-pl_use-mask" },
+            backgroundColor: VETheme.color.side,
           },
         },
       },
@@ -180,7 +188,7 @@ function brush_entity_player(json = null) {
       },
       {
         name: "en-pl_mask",
-        template: VEComponents.get("vec4-increase"),
+        template: VEComponents.get("vec4-stick-increase"),
         layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
@@ -204,6 +212,11 @@ function brush_entity_player(json = null) {
               enable: { key: "en-pl_use-mask" },
               factor: 1.0,
             },
+            slider: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: 0.1,
+            },
           },
           y: {
             label: {
@@ -224,6 +237,11 @@ function brush_entity_player(json = null) {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
               factor: 1.0,
+            },
+            slider: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: 0.1,
             },
           },
           z: {
@@ -246,6 +264,11 @@ function brush_entity_player(json = null) {
               enable: { key: "en-pl_use-mask" },
               factor: 1.0,
             },
+            slider: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: 0.1,
+            },
           },
           a: {
             label: {
@@ -266,6 +289,11 @@ function brush_entity_player(json = null) {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
               factor: 1.0,
+            },
+            slider: {
+              store: { key: "en-pl_mask" },
+              enable: { key: "en-pl_use-mask" },
+              factor: 0.1,
             },
           },
         },

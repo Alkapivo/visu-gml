@@ -649,6 +649,7 @@ function _Visu() constructor {
   static generateSettingsSubscriber = function(name) {
     return { 
       name: name,
+      overrideSubscriber: true,
       callback: function(value) {
         if (Visu.settings.getValue(this.name) == value) {
           return
@@ -837,9 +838,49 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.keyboard.player.action", type: SettingTypes.NUMBER, defaultValue: ord("Z") }))
       .set(new SettingEntry({ name: "visu.keyboard.player.bomb", type: SettingTypes.NUMBER, defaultValue: ord("X") }))
       .set(new SettingEntry({ name: "visu.keyboard.player.focus", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.SHIFT }))
+      .set(new SettingEntry({ 
+          name: "visu.editor.theme",
+          type: SettingTypes.STRUCT,
+          defaultValue: { 
+            accentLight: "#7742b8",
+            accent: "#5f398e",
+            accentShadow: "#462f63",
+            accentDark: "#231832",
+            primaryLight: "#455f82",
+            primary: "#3B3B53",
+            primaryShadow: "#2B2B35",
+            primaryDark: "#222227",
+            sideLight: "#212129",
+            side: "#1B1B20",
+            sideShadow: "#141418",
+            sideDark: "#0D0D0F",
+            button: "#3B3B53",
+            buttonHover: "#3c4e66",
+            text: "#D9D9D9",
+            textShadow: "#878787",
+            textFocus: "#ededed",
+            textSelected: "#7742b8",
+            accept: "#3d9e87",
+            acceptShadow: "#368b77",
+            deny: "#9e3d54",
+            denyShadow: "#6d3c54",
+            ruler: "#E64B3D",
+            header: "#963271",
+            stick: "#3B3B53",
+            stickHover: "#878787",
+            stickBackground: "#0D0D0F",
+          }
+        }))
       .load()
     
     Language.load(this.settings.getValue("visu.language", LanguageType.en_EN))
+    if (Core.getProperty("visu.editor.edit-theme")) {
+      Struct.forEach(this.settings.getValue("visu.editor.theme"), function(hex, name) {
+        Struct.set(VETheme, name, hex)
+      })
+
+      VEStyles = generateVEStyles()
+    }
 
     var layerId = Scene.fetchLayer(layerName, layerDefaultDepth)
 

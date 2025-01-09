@@ -153,7 +153,7 @@ function VETitleBar(_editor) constructor {
       "ve-title-bar": new UI({
         name: "ve-title-bar",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
         controller: controller,
