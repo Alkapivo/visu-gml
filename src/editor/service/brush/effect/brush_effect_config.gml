@@ -476,11 +476,12 @@ function brush_effect_config(json) {
             enable: { key: "ef-cfg_use-cls-frame-col" },
             factor: 0.1,
           },
-          slider: {
+          stick: {
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
             factor: 0.01,
           },
+          checkbox: { },
         },
       },
       {

@@ -609,10 +609,6 @@ function brush_grid_row(json) {
             store: { key: "gr-r_main-col-spd" },
             enable: { key: "gr-r_use-main-col" },
           },
-          slider: {
-            store: { key: "gr-r_main-col-spd" },
-            enable: { key: "gr-r_use-main-col" },
-          },
           decrease: {
             store: { key: "gr-r_main-col-spd" },
             enable: { key: "gr-r_use-main-col" },
@@ -623,6 +619,11 @@ function brush_grid_row(json) {
             enable: { key: "gr-r_use-main-col" },
             factor: 0.1,
           },
+          stick: {
+            store: { key: "gr-r_main-col-spd" },
+            enable: { key: "gr-r_use-main-col" },
+          },
+          checkbox: { },
         },
       },
       {
@@ -975,11 +976,12 @@ function brush_grid_row(json) {
             enable: { key: "gr-r_use-side-col" },
             factor: 0.1,
           },
-          slider: {
+          stick: {
             store: { key: "gr-r_side-col-spd" },
             enable: { key: "gr-r_use-side-col" },
             factor: 0.01,
           },
+          checkbox: { },
         },
       },
     ]),

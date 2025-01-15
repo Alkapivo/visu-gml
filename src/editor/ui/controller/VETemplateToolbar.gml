@@ -829,7 +829,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 .setPromise(new Promise())
               
               var controller = Beans.get(BeanVisuController)
-              switch(type) {
+              switch (type) {
                 case VETemplateType.SHADER:
                   event.data.filename = "shader"
                   event.promise

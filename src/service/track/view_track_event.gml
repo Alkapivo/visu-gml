@@ -479,10 +479,15 @@ global.__view_track_event = {
         "vw-cfg_use-video-alpha": Struct.parse.boolean(data, "vw-cfg_use-video-alpha"),
         "vw-cfg_video-alpha": Struct.parse.normalizedNumberTransformer(data, "vw-cfg_video-alpha"),
         "vw-cfg_change-video-alpha": Struct.parse.boolean(data, "vw-cfg_change-video-alpha"),
+        "vw-cfg_video-use-blend-col": Struct.parse.boolean(data, "vw-cfg_video-use-blend-col"),
+        "vw-cfg_video-blend-col": Struct.parse.color(data, "vw-cfg_video-blend-col", "#ffffff"),
+        "vw-cfg_video-blend-col-spd": Struct.parse.number(data, "vw-cfg_video-blend-col-spd", 1.0, 0.0, 999.9),
         "vw-cfg_video-use-blend": Struct.parse.boolean(data, "vw-cfg_video-use-blend"),
         "vw-cfg_video-blend-src": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-src", BlendModeExt, BlendModeExt.SRC_ALPHA),
         "vw-cfg_video-blend-dest": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-dest", BlendModeExt, BlendModeExt.INV_SRC_ALPHA),
         "vw-cfg_video-blend-eq": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-eq", BlendEquation, BlendEquation.ADD),
+        "vw-cfg_use-render-video-after": Struct.parse.boolean(data, "vw-cfg_use-render-video-after"),
+        "vw-cfg_render-video-after": Struct.parse.boolean(data, "vw-cfg_render-video-after"),
       }
     },
     run: function(data) {
@@ -507,11 +512,18 @@ global.__view_track_event = {
         "renderSubtitles",
         properties)
 
-      ///@feature TODO view.subtitle.render
+      ///@feature TODO view.video.render
       Visu.resolveBooleanTrackEvent(data,
         "vw-cfg_use-render-video",
         "vw-cfg_render-video",
         "renderVideo",
+        properties)
+
+      ///@feature TODO view.video.render-after
+      Visu.resolveBooleanTrackEvent(data,
+        "vw-cfg_use-render-video-after",
+        "vw-cfg_render-video-after",
+        "renderVideoAfter",
         properties)
 
       ///@feature TODO view.subtitle.clear
@@ -547,6 +559,14 @@ global.__view_track_event = {
         "vw-cfg_video-alpha",
         "vw-cfg_change-video-alpha",
         "videoAlpha",
+        properties, pump, executor)
+
+      ///@feature TODO grid.column.side.color
+      Visu.resolveColorTransformerTrackEvent(data, 
+        "vw-cfg_video-use-blend-col",
+        "vw-cfg_video-blend-col",
+        "vw-cfg_video-blend-col-spd",
+        "videoBlendColor",
         properties, pump, executor)
 
       ///@feature TODO view.video.blend

@@ -573,11 +573,12 @@ function brush_grid_area(json) {
             enable: { key: "gr-area_use-h-col" },
             factor: 0.1,
           },
-          slider: {
+          stick: {
             store: { key: "gr-area_h-col-spd" },
             enable: { key: "gr-area_use-h-col" },
             factor: 0.01,
           },
+          checkbox: { },
         },
       },
       {
@@ -1041,11 +1042,12 @@ function brush_grid_area(json) {
             enable: { key: "gr-area_use-v-col" },
             factor: 0.1,
           },
-          slider: {
+          stick: {
             store: { key: "gr-area_v-col-spd" },
             enable: { key: "gr-area_use-v-col" },
             factor: 0.01,
           },
+          checkbox: { },
         },
       },
     ]),

@@ -154,6 +154,10 @@ function GridProperties(config = {}) constructor {
     .getDefault(config, "properties.renderVideo", true), Boolean)
 
   ///@type {Boolean}
+  renderVideoAfter = Assert.isType(Struct
+    .getDefault(config, "properties.renderVideoAfter", false), Boolean)
+
+  ///@type {Boolean}
   renderForeground = Assert.isType(Struct
     .getDefault(config, "properties.renderForeground", true), Boolean)
 
@@ -228,6 +232,10 @@ function GridProperties(config = {}) constructor {
   videoAlpha = Assert.isType(Struct
     .getDefault(config, "properties.videoAlpha", 1.0), Number)
 
+  ///@type {Color}
+  videoBlendColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.videoBlendColor", "#ffffff")), Color)
+  
   ///@type {BlendConfig}
   videoBlendConfig = new BlendConfig(Struct
     .getIfType(config, "properties.videoBlendConfig", Struct))

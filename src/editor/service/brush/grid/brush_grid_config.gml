@@ -1034,11 +1034,12 @@ function brush_grid_config(json) {
             enable: { key: "gr-cfg_use-cls-frame-col" },
             factor: 0.1,
           },
-          slider: {
+          stick: {
             store: { key: "gr-cfg_cls-frame-col-spd" },
             enable: { key: "gr-cfg_use-cls-frame-col" },
             factor: 0.01,
           },
+          checkbox: { },
         },
       },
       {

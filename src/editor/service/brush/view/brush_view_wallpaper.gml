@@ -563,7 +563,7 @@ function brush_view_wallpaper(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: {
             backgroundColor: VETheme.color.side,
-            text: "Blend texture",
+            text: "Blend color",
             enable: {
               keys: [ 
                 { key: "vw-layer_use-texture" },

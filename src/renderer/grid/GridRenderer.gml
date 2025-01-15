@@ -954,12 +954,29 @@ function GridRenderer() constructor {
     var width = layout.width()
     var height = layout.height()
     GPU.render.clear(ColorUtil.BLACK_TRANSPARENT)
-    if (properties.renderVideo) {
-      this.overlayRenderer.renderVideo(width, height) 
-    }
 
-    if (properties.renderBackground) {
-      this.overlayRenderer.renderBackgrounds(width, height)
+    switch (properties.renderVideoAfter) {
+      case true:
+        if (properties.renderBackground) {
+          this.overlayRenderer.renderBackgrounds(width, height)
+        }
+        
+        if (properties.renderVideo) {
+          this.overlayRenderer.renderVideo(width, height, properties.videoAlpha,
+            properties.videoBlendColor.toGMColor(), properties.videoBlendConfig)
+        }
+        break
+      case false:
+      default:
+        if (properties.renderVideo) {
+          this.overlayRenderer.renderVideo(width, height, properties.videoAlpha,
+            properties.videoBlendColor.toGMColor(), properties.videoBlendConfig)
+        }
+    
+        if (properties.renderBackground) {
+          this.overlayRenderer.renderBackgrounds(width, height)
+        }
+        break
     }
 
     return this

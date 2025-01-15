@@ -100,8 +100,11 @@ function GridOverlayRenderer() constructor {
 
   ///@param {Number} width
   ///@param {Number} height
+  ///@param {Number} [alpha]
+  ///@param {GMColor} [blend]
+  ///@param {?BlendConfig} [blendConfig]
   ///@return {GridOverlayRenderer}
-  renderVideo = function(width, height) {
+  renderVideo = function(width, height, alpha = 1.0, blend = c_white, blendConfig = null) {
     var videoService = Beans.get(BeanVisuController).videoService
     var video = videoService.getVideo()
     if (!Core.isType(video, Video) || !video.isLoaded()) {
@@ -114,7 +117,7 @@ function GridOverlayRenderer() constructor {
     var _height = ceil(video.surface.height * scale)
     var _x = -1 * ceil((_width - width) / 2.0)
     var _y = -1 * ceil((_height - height) / 2.0)
-    video.surface.render(_x, _y, _width, _height)    
+    video.surface.render(_x, _y, _width, _height, alpha, blend, blendConfig)    
     return this
   }
 

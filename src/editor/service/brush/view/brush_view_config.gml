@@ -63,6 +63,20 @@ function brush_view_config(json = null) {
         type: Boolean,
         value: Struct.get(json, "vw-cfg_change-video-alpha"),
       },
+      "vw-cfg_video-use-blend-col": {
+        type: Boolean,
+        value: Struct.get(json, "vw-cfg_video-use-blend-col"),
+      },
+      "vw-cfg_video-blend-col": {
+        type: Color,
+        value: Struct.get(json, "vw-cfg_video-blend-col"),
+      },
+      "vw-cfg_video-blend-col-spd": {
+        type: Number,
+        value: Struct.get(json, "vw-cfg_video-blend-col-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
+      },
       "vw-cfg_video-use-blend": {
         type: Boolean,
         value: Struct.get(json, "vw-cfg_video-use-blend"),
@@ -84,6 +98,14 @@ function brush_view_config(json = null) {
         value: Struct.get(json, "vw-cfg_video-blend-eq"),
         passthrough: UIUtil.passthrough.getArrayValue(),
         data: BlendEquation.keys(),
+      },
+      "vw-cfg_use-render-video-after": {
+        type: Boolean,
+        value: Struct.get(json, "vw-cfg_use-render-video-after"),
+      },
+      "vw-cfg_render-video-after": {
+        type: Boolean,
+        value: Struct.get(json, "vw-cfg_render-video-after"),
       },
     }),
     components: new Array(Struct, [
@@ -282,22 +304,59 @@ function brush_view_config(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
+        name: "vw-cfg_video-config-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Video config",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
+          input: { backgroundColor: VETheme.color.accentShadow },
+        },
+      },
+      {
+        name: "vw-cfg_use-render-video-after",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Render after background",
+            enable: { key: "vw-cfg_use-render-video-after" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-cfg_use-render-video-after" },
+          },
+          input: {
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "vw-cfg_render-video-after" },
+            enable: { key: "vw-cfg_use-render-video-after" },
+          }
+        },
+      },
+      {
         name: "vw-cfg_video-use-blend",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Video blend mode",
-            backgroundColor: VETheme.color.accentShadow,
+            text: "Blend mode",
+            //backgroundColor: VETheme.color.accentShadow,
             enable: { key: "vw-cfg_video-use-blend" },
           },
-          input: { backgroundColor: VETheme.color.accentShadow },
+          //input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "vw-cfg_video-use-blend" },
-            backgroundColor: VETheme.color.accentShadow,
+            //backgroundColor: VETheme.color.accentShadow,
           },
         },
       },
@@ -374,24 +433,123 @@ function brush_view_config(json = null) {
         },
       },
       {
-        name: "vw-cfg_video-blend-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
+        name: "vw-cfg_video-blend-col",
+        template: VEComponents.get("color-picker"),
+        layout: VELayouts.get("color-picker"),
+        config: {
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            hex: { margin: { top: 0 } },
+          },
+          title: { 
+            label: {
+              text: "Blend color",
+              enable: { key: "vw-cfg_video-use-blend-col" },
+              backgroundColor: VETheme.color.side,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-cfg_video-use-blend-col" },
+              backgroundColor: VETheme.color.side,
+            },
+            input: {
+              store: { key: "vw-cfg_video-blend-col" },
+              enable: { key: "vw-cfg_video-use-blend-col" },
+              backgroundColor: VETheme.color.side,
+            }
+          },
+          red: {
+            label: {
+              text: "Red",
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+            field: {
+              store: { key: "vw-cfg_video-blend-col" },
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+            slider: {
+              store: { key: "vw-cfg_video-blend-col" },
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+          },
+          green: {
+            label: {
+              text: "Green",
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+            field: {
+              store: { key: "vw-cfg_video-blend-col" },
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+            slider: {
+              store: { key: "vw-cfg_video-blend-col" },
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+          },
+          blue: {
+            label: {
+              text: "Blue",
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+            field: {
+              store: { key: "vw-cfg_video-blend-col" },
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+            slider: {
+              store: { key: "vw-cfg_video-blend-col" },
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+          },
+          hex: { 
+            label: {
+              text: "Hex",
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+            field: {
+              store: { key: "vw-cfg_video-blend-col" },
+              enable: { key: "vw-cfg_video-use-blend-col" },
+            },
+          },
+        },
       },
       {
-        name: "vw-cfg_video-alpha-title",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
+        name: "vw-cfg_video-blend-col-spd",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Video alpha",
-            backgroundColor: VETheme.color.accentShadow,
+            text: "Duration",
+            enable: { key: "vw-cfg_video-use-blend-col" },
+          },  
+          field: { 
+            store: { key: "vw-cfg_video-blend-col-spd" },
+            enable: { key: "vw-cfg_video-use-blend-col" },
           },
-          checkbox: { backgroundColor: VETheme.color.accentShadow },
-          input: { backgroundColor: VETheme.color.accentShadow },
+          decrease: {
+            store: { key: "vw-cfg_video-blend-col-spd" },
+            enable: { key: "vw-cfg_video-use-blend-col" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "vw-cfg_video-blend-col-spd" },
+            enable: { key: "vw-cfg_video-use-blend-col" },
+            factor: 0.1,
+          },
+          stick: {
+            store: { key: "vw-cfg_video-blend-col-spd" },
+            enable: { key: "vw-cfg_video-use-blend-col" },
+            factor: 0.01,
+          },
+          checkbox: { },
         },
+      },
+      {
+        name: "vw-cfg_video-blend-col-spd-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "vw-cfg_video-alpha",
