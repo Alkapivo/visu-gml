@@ -1,8 +1,7 @@
 ///@package io.alkapivo.visu.editor.ui.controller
 
-#macro TEMPLATE_ENTRY_STEP 5
+#macro TEMPLATE_ENTRY_STEP 1
 #macro TEMPLATE_TOOLBAR_ENTRY_STEP 1
-
 
 ///@todo move to VEBrushToolbar
 ///@static
@@ -2360,21 +2359,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       }
               
                       acc.context.add(item, item.name)
-                      if (Optional.is(item.updateArea())) {
-                        item.updateArea()
-                      }
+                      //if (Optional.is(item.updateArea)) {
+                      //  item.updateArea()
+                      //}
                     }
               
                     acc.layout = component
                       .toUIItems(acc.layout)
                       .forEach(add, acc)
                       .getLast().layout.context
-                  }
-
-                  if (Optional.is(task.state.context.updateTimer)) {
-
-                    ///@updateTimerNow
-                    //task.state.context.updateTimer.time = task.state.context.updateTimer.duration * 0.5
                   }
 
                   repeat (TEMPLATE_TOOLBAR_ENTRY_STEP) {

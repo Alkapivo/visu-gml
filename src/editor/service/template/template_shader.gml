@@ -414,9 +414,9 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       },
       components: new Array(Struct, [
         {
-          name: $"shader-uniform_{uniform.name}",
-          template: VEComponents.get("transform-vec2-uniform"),
-          layout: VELayouts.get("transform-vec2-uniform"),
+          name: $"shader-uniform_{uniform.name}-x",
+          template: VEComponents.get("transform-vec2-x-uniform"),
+          layout: VELayouts.get("transform-vec2-x-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
             label: { text: uniform.name },
@@ -452,6 +452,14 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
             },
+          }, Struct.get(config, "vec2x"), false),
+        },
+        {
+          name: $"shader-uniform_{uniform.name}-y",
+          template: VEComponents.get("transform-vec2-y-uniform"),
+          layout: VELayouts.get("transform-vec2-y-uniform"),
+          config: Struct.appendRecursive({
+            layout: { type: UILayoutType.VERTICAL },
             valueY: {
               label:{
                 text: "Y",
@@ -483,8 +491,8 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
             },
-          }, config, false),
-        }
+          }, Struct.get(config, "vec2y"), false),
+        },
       ]),
     }
   })
@@ -518,9 +526,9 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       },
       components: new Array(Struct, [
         {
-          name: $"shader-uniform_{uniform.name}",
-          template: VEComponents.get("transform-vec3-uniform"),
-          layout: VELayouts.get("transform-vec3-uniform"),
+          name: $"shader-uniform_{uniform.name}-x",
+          template: VEComponents.get("transform-vec3-x-uniform"),
+          layout: VELayouts.get("transform-vec3-x-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
             label: { text: uniform.name },
@@ -556,6 +564,14 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
             },
+          }, Struct.get(config, "vec3x"), false),
+        },
+        {
+          name: $"shader-uniform_{uniform.name}-y",
+          template: VEComponents.get("transform-vec3-y-uniform"),
+          layout: VELayouts.get("transform-vec3-y-uniform"),
+          config: Struct.appendRecursive({
+            layout: { type: UILayoutType.VERTICAL },
             valueY: {
               label: {
                 text: "Y",
@@ -587,6 +603,14 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
             },
+          }, Struct.get(config, "vec3y"), false),
+        },
+        {
+          name: $"shader-uniform_{uniform.name}-z",
+          template: VEComponents.get("transform-vec3-z-uniform"),
+          layout: VELayouts.get("transform-vec3-z-uniform"),
+          config: Struct.appendRecursive({
+            layout: { type: UILayoutType.VERTICAL },
             valueZ: {
               label: {
                 text: "Z",
@@ -618,7 +642,7 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
             },
-          }, config, false),
+          }, Struct.get(config, "vec3z"), false),
         }
       ]),
     }
@@ -659,9 +683,9 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       },
       components: new Array(Struct, [
         {
-          name: $"shader-uniform_{uniform.name}",
-          template: VEComponents.get("transform-vec4-uniform"),
-          layout: VELayouts.get("transform-vec4-uniform"),
+          name: $"shader-uniform_{uniform.name}-x",
+          template: VEComponents.get("transform-vec4-x-uniform"),
+          layout: VELayouts.get("transform-vec4-x-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
             label: { text: uniform.name },
@@ -698,6 +722,14 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
             },
+          }, Struct.get(config, "vec4x"), false),
+        },
+        {
+          name: $"shader-uniform_{uniform.name}-y",
+          template: VEComponents.get("transform-vec4-y-uniform"),
+          layout: VELayouts.get("transform-vec4-y-uniform"),
+          config: Struct.appendRecursive({
+            layout: { type: UILayoutType.VERTICAL },
             valueY: {
               label: {
                 text: "Y",
@@ -729,6 +761,14 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
             },
+          }, Struct.get(config, "vec4y"), false),
+        },
+        {
+          name: $"shader-uniform_{uniform.name}-z",
+          template: VEComponents.get("transform-vec4-z-uniform"),
+          layout: VELayouts.get("transform-vec4-z-uniform"),
+          config: Struct.appendRecursive({
+            layout: { type: UILayoutType.VERTICAL },
             valueZ: {
               label: {
                 text: "Z",
@@ -759,7 +799,15 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
-            },
+            }
+          }, Struct.get(config, "vec4z"), false),
+        },
+        {
+          name: $"shader-uniform_{uniform.name}-a",
+          template: VEComponents.get("transform-vec4-a-uniform"),
+          layout: VELayouts.get("transform-vec4-a-uniform"),
+          config: Struct.appendRecursive({
+            layout: { type: UILayoutType.VERTICAL },
             valueA: {
               label: {
                 text: "A",
@@ -791,7 +839,7 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               decrease: { store: { key: uniform.name } },
               slider: { store: { key: uniform.name } },
             },
-          }, config, false),
+          }, Struct.get(config, "vec4a"), false),
         }
       ]),
     }

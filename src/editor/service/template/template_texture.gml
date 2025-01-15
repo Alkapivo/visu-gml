@@ -36,14 +36,64 @@ function template_texture(json = null) {
               },
             },
           },
+          onMouseOnLeft: function(event) {
+            var _x = event.data.x - this.context.area.getX() - this.area.getX() - this.context.offset.x
+            var _y = event.data.y - this.context.area.getY() - this.area.getY() - this.context.offset.y
+            var areaWidth = this.area.getWidth()
+            var areaHeight = this.area.getHeight()
+            var scaleX = this.image.getScaleX()
+            var scaleY = this.image.getScaleY()
+            this.image.scaleToFit(areaWidth, areaHeight)
+
+            var width = this.image.getWidth() * this.image.getScaleX()
+            var height = this.image.getHeight() * this.image.getScaleY()
+            this.image.setScaleX(scaleX).setScaleY(scaleY)
+
+            var marginH = (areaWidth - width) / 2.0
+            var marginV = (areaHeight - height) / 2.0
+
+            var originX = round(this.image.getWidth() * ((clamp(_x, marginH, areaWidth - marginH) - marginH) / width))
+            var originY = round(this.image.getHeight() * ((clamp(_y, marginV, areaHeight - marginV) - marginV) / height))
+
+            var textureIntent = this.store.getValue()
+            if (textureIntent.originX != originX
+               || textureIntent.originY != originY) {
+              textureIntent.originX = originX
+              textureIntent.originY = originY
+              this.store.get().set(textureIntent)
+            }
+
+            return this
+          },
+          preRender: function() {
+            if (!mouse_check_button(mb_left)) {
+              return this
+            }
+
+            Beans.get(BeanVisuEditorController).uiService.send(new Event("MouseOnLeft", { 
+              x: MouseUtil.getMouseX(), 
+              y: MouseUtil.getMouseY(),
+            }))
+           
+            return this
+          }
         },
       },
       {
+        name: "texture-preview-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "texture-origin-x",
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: {
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
           label: { text: "Origin X" },
           field: { 
             store: { 
@@ -125,12 +175,53 @@ function template_texture(json = null) {
               set: function(value) { },
             },
           },
+          stick: {
+            factor: 1,
+            store: { 
+              key: "texture-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+
+                var intent = item.get()
+                if (!Core.isType(item.get(), TextureTemplate)) {
+                  return
+                }
+
+                intent.originX = parsedValue
+                item.set(intent)
+              },
+            },
+            updateValue: function(mouseX, mouseY) {
+              this.factor = sprite_get_width(this.store.getValue().asset) / GuiWidth()
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().originX : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().originX) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "texture-origin-y",
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Origin Y" },
@@ -214,6 +305,47 @@ function template_texture(json = null) {
               set: function(value) { },
             },
           },
+          stick: {
+            factor: 1,
+            store: { 
+              key: "texture-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+
+                var intent = item.get()
+                if (!Core.isType(item.get(), TextureTemplate)) {
+                  return
+                }
+
+                intent.originY = parsedValue
+                item.set(intent)
+              },
+            },
+            updateValue: function(mouseX, mouseY) {
+              this.factor = sprite_get_height(this.store.getValue().asset) / GuiHeight()
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().originY : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().originY) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
     ]),

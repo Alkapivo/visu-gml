@@ -273,381 +273,6 @@ function template_bullet(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "bullet_speed-offset",
-        template: VEComponents.get("number-transformer-increase-checkbox"),
-        layout: VELayouts.get("number-transformer-increase-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          value: {
-            label: {
-              text: "Speed",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textShadow,
-              //enable: { key: "bullet_use-speed-offset" },
-            },
-            field: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_use-speed-offset" },
-            },
-            decrease: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_use-speed-offset" },
-              factor: -0.25,
-            },
-            increase: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_use-speed-offset" },
-              factor: 0.25,        
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-speed-offset" },
-            },
-            title: { 
-              text: "Override",
-              enable: { key: "bullet_use-speed-offset" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_change-speed-offset" },
-            },
-            field: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-            },
-            decrease: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-              factor: -0.25,
-            },
-            increase: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-              factor: 0.25,
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_change-speed-offset" },
-            },
-            title: { 
-              text: "Change",
-              enable: { key: "bullet_change-speed-offset" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_change-speed-offset" },
-            },
-            field: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-            },
-            decrease: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-              factor: -0.01,
-            },
-            increase: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-              factor: 0.01,
-            },
-          },
-          increase: {
-            label: {
-              text: "Increase",
-              enable: { key: "bullet_change-speed-offset" },
-            },
-            field: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-            },
-            decrease: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-              factor: -0.001,
-            },
-            increase: {
-              store: { key: "bullet_speed-offset" },
-              enable: { key: "bullet_change-speed-offset" },
-              factor: 0.001,      
-            },
-          },
-        },
-      },
-      {
-        name: "bullet_speed-offset-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
-        name: "bullet_angle-offset",
-        template: VEComponents.get("number-transformer-increase-checkbox"),
-        layout: VELayouts.get("number-transformer-increase-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          value: {
-            label: {
-              text: "Angle",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textShadow,
-              //enable: { key: "bullet_use-angle-offset" },
-            },
-            field: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_use-angle-offset" },
-            },
-            decrease: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_use-angle-offset" },
-              factor: -0.25,
-            },
-            increase: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_use-angle-offset" },
-              factor: 0.25,        
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-angle-offset" },
-            },
-            title: { 
-              text: "Override",
-              enable: { key: "bullet_use-angle-offset" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_change-angle-offset" },
-            },
-            field: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-            },
-            decrease: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-              factor: -0.25,
-            },
-            increase: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-              factor: 0.25,
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_change-angle-offset" },
-            },
-            title: { 
-              text: "Change",
-              enable: { key: "bullet_change-angle-offset" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_change-angle-offset" },
-            },
-            field: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-            },
-            decrease: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-              factor: -0.01,
-            },
-            increase: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-              factor: 0.01,
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-angle-offset-rng" },
-            },
-            title: {
-              text: "Rand. dir.",
-            },
-          },
-          increase: {
-            label: {
-              text: "Increase",
-              enable: { key: "bullet_change-angle-offset" },
-            },
-            field: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-            },
-            decrease: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-              factor: -0.001,
-            },
-            increase: {
-              store: { key: "bullet_angle-offset" },
-              enable: { key: "bullet_change-angle-offset" },
-              factor: 0.001,      
-            },
-          },
-        },
-      },
-      {
-        name: "bullet_angle-offset-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
-        name: "bullet_angle-wiggle-title",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: {
-            text: "Wiggle",
-            enable: { key: "bullet_use-wiggle" },
-            backgroundColor: VETheme.color.side,
-          },
-          input: { backgroundColor: VETheme.color.side },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "bullet_use-wiggle" },
-            backgroundColor: VETheme.color.side,
-          },
-        },
-      },
-      {
-        name: "bullet_wiggle-time",
-        template: VEComponents.get("numeric-input"),
-        layout: VELayouts.get("div"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Theta",
-            enable: { key: "bullet_use-wiggle" },
-          },  
-          field: { 
-            store: { key: "bullet_wiggle-time" },
-            enable: { key: "bullet_use-wiggle" },
-          },
-          decrease: {
-            store: { key: "bullet_wiggle-time" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: -0.1,
-          },
-          increase: {
-            store: { key: "bullet_wiggle-time" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: 0.1,
-          },
-          stick: {
-            store: { key: "bullet_wiggle-time" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: 0.01,
-          },
-          checkbox: {
-            store: { key: "bullet_use-wiggle-time-rng" },
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            enable: { key: "bullet_use-wiggle" },
-          },
-          title: {
-            text: "Randomize",
-            enable: { key: "bullet_use-wiggle" },
-          }
-        },
-      },
-      {
-        name: "bullet_wiggle-frequency",
-        template: VEComponents.get("numeric-input"),
-        layout: VELayouts.get("div"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Frequency",
-            enable: { key: "bullet_use-wiggle" },
-          },  
-          field: { 
-            store: { key: "bullet_wiggle-frequency" },
-            enable: { key: "bullet_use-wiggle" },
-          },
-          decrease: {
-            store: { key: "bullet_wiggle-frequency" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: -0.1,
-          },
-          increase: {
-            store: { key: "bullet_wiggle-frequency" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: 0.1,
-          },
-          stick: {
-            store: { key: "bullet_wiggle-frequency" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: 0.01,
-          },
-          checkbox: {
-            store: { key: "bullet_use-wiggle-dir-rng" },
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            enable: { key: "bullet_use-wiggle" },
-          },
-          title: {
-            text: "Rand. dir.",
-            enable: { key: "bullet_use-wiggle" },
-          }
-        },
-      },
-      {
-        name: "bullet_wiggle-amplitude",
-        template: VEComponents.get("numeric-input"),
-        layout: VELayouts.get("div"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Amplitude",
-            enable: { key: "bullet_use-wiggle" },
-          },  
-          field: { 
-            store: { key: "bullet_wiggle-amplitude" },
-            enable: { key: "bullet_use-wiggle" },
-          },
-          decrease: {
-            store: { key: "bullet_wiggle-amplitude" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: -0.1,
-          },
-          increase: {
-            store: { key: "bullet_wiggle-amplitude" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: 0.1,
-          },
-          stick: {
-            store: { key: "bullet_wiggle-amplitude" },
-            enable: { key: "bullet_use-wiggle" },
-            factor: 0.01,
-          },
-        },
-      },
-      {
-        name: "bullet_wiggle-amplitude-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
         name: "bullet_texture",
         template: VEComponents.get("texture-field-ext"),
         layout: VELayouts.get("texture-field-ext"),
@@ -889,6 +514,401 @@ function template_bullet(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
+        name: "bullet_movement-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Bullet movement",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { 
+            backgroundColor: VETheme.color.accentShadow,
+          },
+        },
+      },
+      {
+        name: "bullet_speed-offset",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
+          value: {
+            label: {
+              text: "Speed",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "bullet_use-speed-offset" },
+            },
+            field: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_use-speed-offset" },
+            },
+            decrease: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_use-speed-offset" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_use-speed-offset" },
+              factor: 0.25,        
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-speed-offset" },
+            },
+            title: { 
+              text: "Override",
+              enable: { key: "bullet_use-speed-offset" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_change-speed-offset" },
+            },
+            field: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+            },
+            decrease: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: 0.25,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_change-speed-offset" },
+            },
+            title: { 
+              text: "Change",
+              enable: { key: "bullet_change-speed-offset" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_change-speed-offset" },
+            },
+            field: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+            },
+            decrease: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: 0.01,
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: { key: "bullet_change-speed-offset" },
+            },
+            field: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+            },
+            decrease: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: 0.001,      
+            },
+          },
+        },
+      },
+      {
+        name: "bullet_speed-offset-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "bullet_angle-offset",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          value: {
+            label: {
+              text: "Angle",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "bullet_use-angle-offset" },
+            },
+            field: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_use-angle-offset" },
+            },
+            decrease: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_use-angle-offset" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_use-angle-offset" },
+              factor: 0.25,        
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-angle-offset" },
+            },
+            title: { 
+              text: "Override",
+              enable: { key: "bullet_use-angle-offset" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_change-angle-offset" },
+            },
+            field: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+            },
+            decrease: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+              factor: 0.25,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_change-angle-offset" },
+            },
+            title: { 
+              text: "Change",
+              enable: { key: "bullet_change-angle-offset" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_change-angle-offset" },
+            },
+            field: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+            },
+            decrease: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+              factor: 0.01,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-angle-offset-rng" },
+            },
+            title: {
+              text: "Rand. dir.",
+              enable: { key: "bullet_use-angle-offset-rng" },
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: { key: "bullet_change-angle-offset" },
+            },
+            field: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+            },
+            decrease: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_change-angle-offset" },
+              factor: 0.001,      
+            },
+          },
+        },
+      },
+      {
+        name: "bullet_angle-offset-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "bullet_angle-wiggle-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Wiggle",
+            enable: { key: "bullet_use-wiggle" },
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-wiggle" },
+            backgroundColor: VETheme.color.side,
+          },
+        },
+      },
+      {
+        name: "bullet_wiggle-time",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Theta",
+            enable: { key: "bullet_use-wiggle" },
+          },  
+          field: { 
+            store: { key: "bullet_wiggle-time" },
+            enable: { key: "bullet_use-wiggle" },
+          },
+          decrease: {
+            store: { key: "bullet_wiggle-time" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "bullet_wiggle-time" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: 0.1,
+          },
+          stick: {
+            store: { key: "bullet_wiggle-time" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: 0.01,
+          },
+          checkbox: {
+            store: { key: "bullet_use-wiggle-time-rng" },
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            enable: { key: "bullet_use-wiggle" },
+          },
+          title: {
+            text: "Randomize",
+            enable: { key: "bullet_use-wiggle" },
+          }
+        },
+      },
+      {
+        name: "bullet_wiggle-frequency",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Frequency",
+            enable: { key: "bullet_use-wiggle" },
+          },  
+          field: { 
+            store: { key: "bullet_wiggle-frequency" },
+            enable: { key: "bullet_use-wiggle" },
+          },
+          decrease: {
+            store: { key: "bullet_wiggle-frequency" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "bullet_wiggle-frequency" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: 0.1,
+          },
+          stick: {
+            store: { key: "bullet_wiggle-frequency" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: 0.01,
+          },
+          checkbox: {
+            store: { key: "bullet_use-wiggle-dir-rng" },
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            enable: { key: "bullet_use-wiggle" },
+          },
+          title: {
+            text: "Rand. dir.",
+            enable: { key: "bullet_use-wiggle" },
+          },
+        },
+      },
+      {
+        name: "bullet_wiggle-amplitude",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Amplitude",
+            enable: { key: "bullet_use-wiggle" },
+          },  
+          field: { 
+            store: { key: "bullet_wiggle-amplitude" },
+            enable: { key: "bullet_use-wiggle" },
+          },
+          decrease: {
+            store: { key: "bullet_wiggle-amplitude" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "bullet_wiggle-amplitude" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: 0.1,
+          },
+          stick: {
+            store: { key: "bullet_wiggle-amplitude" },
+            enable: { key: "bullet_use-wiggle" },
+            factor: 0.01,
+          },
+        },
+      },
+      {
+        name: "bullet_wiggle-amplitude-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "bullet_use-on-death",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -915,7 +935,7 @@ function template_bullet(json = null) {
         config: { 
           layout: {
             type: UILayoutType.VERTICAL,
-            margin: { top: 4 },
+            margin: { top: 4, bottom: 2 },
           },
           label: { 
             text: "Bullet",

@@ -68,18 +68,47 @@ function template_coin(json = null) {
     }),
     components: new Array(Struct, [
       {
+        name: "coin_category-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Coin type",
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { 
+            backgroundColor: VETheme.color.side,
+          },
+        },
+      },
+      {
         name: "coin_category",
         template: VEComponents.get("spin-select"),
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Category" },
+          label: { text: "" },
           previous: { store: { key: "coin_category" } },
           preview: Struct.appendRecursive({ 
             store: { key: "coin_category" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(this.label.text)
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { store: { key: "coin_category" } },
         },
+      },
+      {
+        name: "coin_category-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "coin_amount",
@@ -89,6 +118,8 @@ function template_coin(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Amount",
+            //font: "font_inter_10_bold",
+            //color: VETheme.color.textShadow,
             enable: { key: "coin_use-amount" },
           },  
           field: { 
