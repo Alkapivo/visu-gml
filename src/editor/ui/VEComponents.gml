@@ -439,10 +439,7 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.appendRecursive(
             { 
               layout: layout.nodes.image,
-              _updateArea: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout"))),
-              updateArea: function() {
-                this._updateArea()
-              }
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyCollectionLayout")),
             }, 
             VEStyles.get("brush-entry").image,
             false
@@ -2795,7 +2792,7 @@ global.__VEComponents = new Map(String, Callable, {
               },
             },
             checkbox: {
-              margin: { top: 2, bottom: 2, left: 2, right: 2 },
+              //margin: { top: 2, bottom: 2, left: 2, right: 2 },
             },
             title: {
               store: Struct.get(Struct.get(config, "checkbox"), "store"),
@@ -3460,7 +3457,7 @@ global.__VEComponents = new Map(String, Callable, {
               },
             },
             checkbox: {
-              margin: { top: 2, bottom: 2, left: 2, right: 2 },
+              //margin: { top: 2, bottom: 2, left: 2, right: 2 },
             },
             title: {
               store: Struct.get(Struct.get(config, "checkbox"), "store"),
@@ -4604,6 +4601,47 @@ global.__VEComponents = new Map(String, Callable, {
             false
           ),
           Struct.get(config, "increase"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "numeric-slider": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field_label"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UISliderHorizontal(
+        $"slider_{name}",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: Assert.isType(Struct.get(layout.nodes, "slider"), Struct),
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
+              setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
+            },
+            VEStyles.get("slider-horizontal"),
+            false
+          ),
+          Struct.get(config, "slider"),
           false
         )
       ),
@@ -6833,6 +6871,823 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
+  "transform-vec2-x-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncrease = function(name, layout, config) { //factoryNumericSliderIncreaseField
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec2 = Struct.get(data, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec2 = Struct.get(this.context, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec2Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = item.get()
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec2Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = item.get()
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec2Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec2 = Struct.get(this.context, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec2Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          config,
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title",
+      layout.nodes.title,
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    #region X
+    factoryTextFieldIncrease(
+      $"{name}_valueX",
+      layout.nodes.valueX,
+      Struct.appendRecursive(
+        Struct.get(config, "valueX"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector2Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector2Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector2Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector2Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncrease(
+      $"{name}_targetX",
+      layout.nodes.targetX,
+      Struct.appendRecursive(
+        Struct.get(config, "targetX"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector2Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector2Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector2Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector2Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorX",
+      layout.nodes.factorX,
+      Struct.appendRecursive(
+        Struct.get(config, "factorX"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextFieldIncrease(
+      $"{name}_increaseX",
+      layout.nodes.increaseX,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseX"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_x-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineX,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
+    #endregion
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec2-y-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    ///@param {String} name
+    ///@param {UILayout} layout
+    ///@param {?Struct} [config]
+    ///@return {UIComponent}
+    static factoryTextFieldIncrease = function(name, layout, config) { //factoryNumericSliderIncreaseField
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec2 = Struct.get(data, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec2 = Struct.get(this.context, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec2Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = item.get()
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec2Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = item.get()
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec2Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec2 = Struct.get(this.context, "transformVector2Property")
+                  var vec2Transformer = item.get()
+                  if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                    || !Struct.contains(vec2Transformer, vec2)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec2Transformer, vec2)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec2Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec2 = Struct.get(this, "transformVector2Property")
+                var vec2Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec2Transformer, Vector2Transformer) 
+                  || !Struct.contains(vec2Transformer, vec2)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec2Transformer, vec2)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          config,
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    #region Y
+    factoryTextFieldIncrease(
+      $"{name}_valueY",
+      layout.nodes.valueY,
+      Struct.appendRecursive(
+        Struct.get(config, "valueY"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector2Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncrease(
+      $"{name}_targetY",
+      layout.nodes.targetY,
+      Struct.appendRecursive(
+        Struct.get(config, "targetY"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector2Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector2Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector2Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector2Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorY",
+      layout.nodes.factorY,
+      Struct.appendRecursive(
+        Struct.get(config, "factorY"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector2Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextFieldIncrease(
+      $"{name}_increaseY",
+      layout.nodes.increaseY,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseY"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector2Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "transform-vec3-uniform": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
@@ -7437,6 +8292,1219 @@ global.__VEComponents = new Map(String, Callable, {
       )
     )
     #endregion
+
+    #region Z
+    factoryTextFieldIncrease(
+      $"{name}_valueZ",
+      layout.nodes.valueZ,
+      Struct.appendRecursive(
+        Struct.get(config, "valueZ"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector3Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncrease(
+      $"{name}_targetZ",
+      layout.nodes.targetZ,
+      Struct.appendRecursive(
+        Struct.get(config, "targetZ"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector3Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector3Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector3Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector3Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorZ",
+      layout.nodes.factorZ,
+      Struct.appendRecursive(
+        Struct.get(config, "factorZ"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextFieldIncrease(
+      $"{name}_increaseZ",
+      layout.nodes.increaseZ,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseZ"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec3-x-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec3 = Struct.get(data, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = item.get()
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec3Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = item.get()
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec3Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+ 
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title",
+      layout.nodes.title,
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    #region X
+    factoryTextFieldIncrease(
+      $"{name}_valueX",
+      layout.nodes.valueX,
+      Struct.appendRecursive(
+        Struct.get(config, "valueX"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector3Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector3Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector3Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector3Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncrease(
+      $"{name}_targetX",
+      layout.nodes.targetX,
+      Struct.appendRecursive(
+        Struct.get(config, "targetX"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector3Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector3Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector3Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector3Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorX",
+      layout.nodes.factorX,
+      Struct.appendRecursive(
+        Struct.get(config, "factorX"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextFieldIncrease(
+      $"{name}_increaseX",
+      layout.nodes.increaseX,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseX"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_x-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineX,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
+    #endregion
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec3-y-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec3 = Struct.get(data, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = item.get()
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec3Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = item.get()
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec3Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+ 
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    #region Y
+    factoryTextFieldIncrease(
+      $"{name}_valueY",
+      layout.nodes.valueY,
+      Struct.appendRecursive(
+        Struct.get(config, "valueY"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector3Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector3Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector3Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector3Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncrease(
+      $"{name}_targetY",
+      layout.nodes.targetY,
+      Struct.appendRecursive(
+        Struct.get(config, "targetY"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector3Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorY",
+      layout.nodes.factorY,
+      Struct.appendRecursive(
+        Struct.get(config, "factorY"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector3Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+ 
+    factoryTextFieldIncrease(
+      $"{name}_increaseY",
+      layout.nodes.increaseY,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseY"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector3Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_y-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineY,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
+    #endregion
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec3-z-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec3 = Struct.get(data, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = item.get()
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec3Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = item.get()
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec3Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec3 = Struct.get(this.context, "transformVector3Property")
+                  var vec3Transformer = item.get()
+                  if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                    || !Struct.contains(vec3Transformer, vec3)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec3Transformer, vec3)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec3Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec3 = Struct.get(this, "transformVector3Property")
+                var vec3Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec3Transformer, Vector3Transformer) 
+                  || !Struct.contains(vec3Transformer, vec3)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec3Transformer, vec3)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+ 
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
 
     #region Z
     factoryTextFieldIncrease(
@@ -8393,6 +10461,1624 @@ global.__VEComponents = new Map(String, Callable, {
       )
     ).forEach(addItem, items)
     #endregion
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec4-x-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTitle = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: config,
+      }).toUIItems(layout)
+    }
+
+
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec4 = Struct.get(data, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    factoryTitle(
+      $"{name}_title",
+      layout.nodes.title,
+      Struct.get(config, "title")
+    ).forEach(addItem, items)
+
+    #region X
+    factoryTextFieldIncrease(
+      $"{name}_valueX",
+      layout.nodes.valueX,
+      Struct.appendRecursive(
+        Struct.get(config, "valueX"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector4Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector4Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector4Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector4Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_targetX",
+      layout.nodes.targetX,
+      Struct.appendRecursive(
+        Struct.get(config, "targetX"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector4Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector4Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector4Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector4Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorX",
+      layout.nodes.factorX,
+      Struct.appendRecursive(
+        Struct.get(config, "factorX"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_increaseX",
+      layout.nodes.increaseX,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseX"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "x",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "x",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "x",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "x",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_x-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineX,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
+    #endregion
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec4-y-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec4 = Struct.get(data, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    #region Y
+    factoryTextFieldIncrease(
+      $"{name}_valueY",
+      layout.nodes.valueY,
+      Struct.appendRecursive(
+        Struct.get(config, "valueY"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector4Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector4Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector4Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector4Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_targetY",
+      layout.nodes.targetY,
+      Struct.appendRecursive(
+        Struct.get(config, "targetY"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector4Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector4Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector4Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector4Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorY",
+      layout.nodes.factorY,
+      Struct.appendRecursive(
+        Struct.get(config, "factorY"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_increaseY",
+      layout.nodes.increaseY,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseY"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "y",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "y",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "y",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "y",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_y-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineY,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
+    #endregion
+
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec4-z-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec4 = Struct.get(data, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    #region Z
+    factoryTextFieldIncrease(
+      $"{name}_valueZ",
+      layout.nodes.valueZ,
+      Struct.appendRecursive(
+        Struct.get(config, "valueZ"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector4Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector4Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector4Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector4Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_targetZ",
+      layout.nodes.targetZ,
+      Struct.appendRecursive(
+        Struct.get(config, "targetZ"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector4Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector4Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector4Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector4Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorZ",
+      layout.nodes.factorZ,
+      Struct.appendRecursive(
+        Struct.get(config, "factorZ"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_increaseZ",
+      layout.nodes.increaseZ,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseZ"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "z",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "z",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "z",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "z",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    items.add(
+      UIImage(
+        $"{name}_z-line-h",
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.lineZ,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          VEStyles.get("line-h").image,
+          false
+        )
+      )
+    )
+    #endregion
+    
+    return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "transform-vec4-a-uniform": function(name, layout, config = null) {
+    ///@todo move to Lambda util
+    static addItem = function(item, index, items) {
+      items.add(item)
+    }
+
+    static factoryTextFieldIncrease = function(name, layout, config) {
+      return new UIComponent({
+        name: name,
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-stick-increase-field"),
+        config: Struct.appendRecursive(
+          config, 
+          {
+            field: {
+              store: {
+                callback: function(value, data) { 
+                  var item = data.store.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var vec4 = Struct.get(data, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(data, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)
+                    || GMTFContext.get() == data.textField) {
+                    return 
+                  }
+
+                  data.textField.setText(Struct.get(transformer, key))
+                },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+            },
+            decrease: {
+              factor: -1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            increase: {
+              factor: 1.0,
+              callback: function() {
+                var factor = Struct.get(this, "factor")
+                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                  return
+                }
+  
+                var item = this.store.get()
+                if (!Core.isType(item, StoreItem)) {
+                  return
+                }
+
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = item.get()
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                Struct.set(transformer, key, Struct.get(transformer, key) + factor)
+                item.set(vec4Transformer)
+              },
+              store: {
+                callback: function(value, data) { },
+                set: function(value) { },
+              },
+            },
+            slider: {
+              store: {
+                callback: function(value, data) { },
+                set: function(value) {
+                  var item = this.get()
+                  if (item == null) {
+                    return 
+                  }
+
+                  var parsedValue = NumberUtil.parse(value, null)
+                  if (parsedValue == null) {
+                    return
+                  }
+
+                  var vec4 = Struct.get(this.context, "transformVector4Property")
+                  var vec4Transformer = item.get()
+                  if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                    || !Struct.contains(vec4Transformer, vec4)) {
+                    return 
+                  }
+  
+                  var key = Struct.get(this.context, "transformNumericProperty")
+                  var transformer = Struct.get(vec4Transformer, vec4)
+                  if (!Core.isType(transformer, NumberTransformer) 
+                      || !Struct.contains(transformer, key)) {
+                    return 
+                  }
+                  Struct.set(transformer, key, parsedValue)
+                  item.set(vec4Transformer)
+                },
+              },
+              factor: 0.0001,
+              base: null,
+              _value: 0.0,
+              value: 0.25,
+              minValue: 0.0,
+              maxValue: 0.5,
+              pointer: {
+                name: "texture_slider_pointer_simple",
+                scaleX: 0.125,
+                scaleY: 0.125,
+                blend: VETheme.color.stick,
+              },
+              progress: { thickness: 0.0 },
+              background: {
+                thickness: 0.0000,
+                blend: VETheme.color.stickBackground,
+                line: { name: "texture_grid_line_bold" },
+              },
+              updateValue: function(mouseX, mouseY) {
+                var isUIStore = Core.isType(this.store, UIStore)
+                var vec4 = Struct.get(this, "transformVector4Property")
+                var vec4Transformer = isUIStore ? this.store.getValue() : null
+                if (!Core.isType(vec4Transformer, Vector4Transformer) 
+                  || !Struct.contains(vec4Transformer, vec4)) {
+                  return 
+                }
+
+                var key = Struct.get(this, "transformNumericProperty")
+                var transformer = Struct.get(vec4Transformer, vec4)
+                if (!Core.isType(transformer, NumberTransformer) 
+                    || !Struct.contains(transformer, key)) {
+                  return 
+                }
+
+                this.base = !Core.isType(this.base, Number) 
+                  ? (isUIStore ? Struct.get(transformer, key) : this.value)
+                  : this.base 
+
+                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+                this.value = this.base + (distance * this.factor)
+                if (isUIStore && this.value != Struct.get(transformer, key)) {
+                  this.store.set(this.value)
+                }
+              },
+              colorHoverOver: VETheme.color.stickHover,
+              colorHoverOut: VETheme.color.stick,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+                  return
+                }
+                
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+              },
+              onMouseHoverOut: function(event) {
+                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+                  return
+                }
+                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              },
+              //onMouseDragLeft: function(event) {
+              onMousePressedLeft: function(event) { ///@stickhack
+                if (Struct.get(this.enable, "value") == false 
+                    || Optional.is(this.getClipboard())) {
+                  return
+                }
+          
+                var context = this
+                this.base = null
+                this.setClipboard(new Promise()
+                  .setState({
+                    context: context,
+                    callback: context.callback,
+                  })
+                  .whenSuccess(function() {
+                    this.state.context.base = null
+                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                    Callable.run(Struct.get(this.state, "callback"))
+                  })
+                )
+              },
+              preRender: function() {
+                this._value = this.value
+                var _base = this.base != null ? this.base : this.value
+                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+                //orderOfMagnitude = GuiWidth()
+                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+              },
+              postRender: function() {
+                this.value = this._value
+              },
+            },
+          },
+          false
+        )
+      }).toUIItems(layout)
+    }
+
+    var items = new Array(UIItem)
+
+    #region A
+    factoryTextFieldIncrease(
+      $"{name}_valueA",
+      layout.nodes.valueA,
+      Struct.appendRecursive(
+        Struct.get(config, "valueA"),
+        {
+          field: {
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          },
+          decrease: {
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          },
+          increase: {
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          },
+          slider: {
+            transformNumericProperty: "value",
+            transformVector4Property: "a",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    
+    factoryTextFieldIncrease(
+      $"{name}_targetA",
+      layout.nodes.targetA,
+      Struct.appendRecursive(
+        Struct.get(config, "targetA"),
+        {
+          field: {
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          },
+          decrease: {
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          },
+          increase: {
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          },
+          slider: {
+            transformNumericProperty: "target",
+            transformVector4Property: "a",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+
+    factoryTextFieldIncrease(
+      $"{name}_factorA",
+      layout.nodes.factorA,
+      Struct.appendRecursive(
+        Struct.get(config, "factorA"),
+        {
+          field: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          },
+          decrease: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          },
+          increase: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          },
+          slider: {
+            transformNumericProperty: "factor",
+            transformVector4Property: "a",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+  
+    factoryTextFieldIncrease(
+      $"{name}_increaseA",
+      layout.nodes.increaseA,
+      Struct.appendRecursive(
+        Struct.get(config, "increaseA"),
+        {
+          field: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          },
+          decrease: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          },
+          increase: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          },
+          slider: {
+            transformNumericProperty: "increase",
+            transformVector4Property: "a",
+          },
+        },
+        false
+      )
+    ).forEach(addItem, items)
+    #endregion
+    
     return items
   },
 
@@ -9642,7 +13328,7 @@ global.__VEComponents = new Map(String, Callable, {
               },
             },
             checkbox: {
-              margin: { top: 2, bottom: 2, left: 2, right: 2 },
+              //margin: { top: 2, bottom: 2, left: 2, right: 2 },
             },
             title: {
               store: Struct.get(Struct.get(config, "checkbox"), "store"),
@@ -10468,7 +14154,7 @@ global.__VEComponents = new Map(String, Callable, {
       return new UIComponent({
         name: name,
         template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("numeric-stick-increase-field"),
+        layout: VELayouts.get("__text-field-increase-stick-checkbox"),
         
         config: Struct.appendRecursive(
           {

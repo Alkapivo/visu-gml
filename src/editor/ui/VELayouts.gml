@@ -41,12 +41,12 @@ global.__VELayouts = new Map(String, Callable, {
           name: "texture-field.image",
           y: function() { return this.context.y() + this.margin.top },
           height: function() { return 144 },
-          margin: { top: 8, bottom: 8, left: 8, right: 8 },
+          margin: { top: 8, bottom: 0, left: 4, right: 4 },
         },
         resolution: {
           name: "texture-field.resolution",
           y: function() { return this.context.nodes.image.bottom() + this.margin.top },
-          height: function() { return 28 },
+          height: function() { return 24 },
         },
       },
     }
@@ -750,6 +750,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "text-field-increase-stick-checkbox",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      margin: Struct.getIfType(config, "margin", Struct),
       height: function() { return 28 },
       nodes: {
         label: {
@@ -785,6 +786,62 @@ global.__VELayouts = new Map(String, Callable, {
         checkbox: {
           name: "text-field-increase-stick-checkbox.checkbox",
           x: function() { return this.context.nodes.stick.right() },
+          width: function() { return 24 },
+          height: function() { return 24 },
+          margin: { top: 2, bottom: 2 },
+        },
+        title: {
+          name: "text-field-increase-stick-checkbox.title",
+          x: function() { return this.context.nodes.checkbox.right() + this.margin.left },
+          width: function() { return this.context.width() - this.context.nodes.checkbox.right() },
+          margin: { top: 1, bottom: 1, left: 0 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "__text-field-increase-stick-checkbox": function(config = null) {
+    return {
+      name: "text-field-increase-stick-checkbox",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      margin: Struct.getIfType(config, "margin", Struct),
+      height: function() { return 28 },
+      nodes: {
+        label: {
+          name: "text-field-increase-stick-checkbox.label",
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 2, bottom: 2, left: 5 },
+        },
+        field: {
+          name: "text-field-increase-stick-checkbox.field",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
+            - 10 - 10 - 7 - this.margin.left - this.margin.right },
+          margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 2 },
+        },
+        decrease: {
+          name: "text-field-increase-stick-checkbox.decrease",
+          x: function() { return this.context.nodes.field.right() },
+          width: function() { return 10 },
+          margin: { top: 1.0000, bottom: 1.0000, left: 0, right: 0 },
+        },
+        increase: {
+          name: "text-field-increase-stick-checkbox.increase",
+          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+          width: function() { return 10 },
+          margin: { top: 1.0000, bottom: 1.0000, left: 2, right: 5 },
+        },
+        slider: {
+          name: "text-field-increase-stick-checkbox.stick",
+          x: function() { return this.context.nodes.increase.right() + this.margin.left },
+          width: function() { return 14 },
+          margin: { top: 0, bottom: 0, left: 5, right: 7 },
+        },
+        checkbox: {
+          name: "text-field-increase-stick-checkbox.checkbox",
+          x: function() { return this.context.nodes.slider.right() },
           width: function() { return 24 },
           height: function() { return 24 },
           margin: { top: 2, bottom: 2 },
@@ -840,8 +897,8 @@ global.__VELayouts = new Map(String, Callable, {
         checkbox: {
           name: "text-field-increase-slider-checkbox.checkbox",
           x: function() { return this.context.nodes.slider.right() },
-          width: function() { return 20 },
-          margin: { top: 4, bottom: 4 },
+          width: function() { return 24 },
+          margin: { top: 2, bottom: 2 },
         },
         title: {
           name: "text-field-increase-slider-checkbox.title",
@@ -946,12 +1003,12 @@ global.__VELayouts = new Map(String, Callable, {
           name: "texture-field.preview",
           y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 144 },
-          margin: { top: 8, bottom: 8, left: 8, right: 8 },
+          margin: { top: 8, bottom: 0, left: 4, right: 4 },
         },
         resolution: {
           name: "texture-field.resolution",
           y: function() { return this.context.nodes.preview.bottom() + this.margin.top },
-          height: function() { return 28 },
+          height: function() { return 24 },
         },
         frame: {
           name: "texture-field.frame",
@@ -988,17 +1045,18 @@ global.__VELayouts = new Map(String, Callable, {
           name: "texture-field.texture",
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
           height: function() { return 28 },
+          margin: { top: 4 },
         },
         preview: {
           name: "texture-field.preview",
           y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 144 },
-          margin: { top: 8, bottom: 8, left: 8, right: 8 },
+          margin: { top: 8, bottom: 0, left: 4, right: 4 },
         },
         resolution: {
           name: "texture-field.resolution",
           y: function() { return this.context.nodes.preview.bottom() + this.margin.top },
-          height: function() { return 28 },
+          height: function() { return 24 },
         },
         frame: {
           name: "texture-field.frame",
@@ -1040,12 +1098,12 @@ global.__VELayouts = new Map(String, Callable, {
           name: "texture-field-simple.preview",
           y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 144 },
-          margin: { top: 8, bottom: 8, left: 8, right: 8 },
+          margin: { top: 8, bottom: 0, left: 4, right: 4 },
         },
         resolution: {
           name: "texture-field-simple.resolution",
           y: function() { return this.context.nodes.preview.bottom() + this.margin.top },
-          height: function() { return 28 },
+          height: function() { return 24 },
         },
         frame: {
           name: "texture-field-simple.frame",
@@ -1083,12 +1141,12 @@ global.__VELayouts = new Map(String, Callable, {
           name: "texture-field-ext.preview",
           y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 144 },
-          margin: { top: 8, bottom: 8, left: 8, right: 8 },
+          margin: { top: 8, bottom: 0, left: 4, right: 4 },
         },
         resolution: {
           name: "texture-field-ext.resolution",
           y: function() { return this.context.nodes.preview.bottom() + this.margin.top },
-          height: function() { return 28 },
+          height: function() { return 24 },
         },
         alpha: {
           name: "texture-field-ext.alpha",
@@ -1130,12 +1188,12 @@ global.__VELayouts = new Map(String, Callable, {
         preview: {
           name: "preview-image-mask.preview",
           height: function() { return 144 },
-          margin: { top: 8, bottom: 8, left: 8, right: 8 },
+          margin: { top: 8, bottom: 0, left: 4, right: 4 },
         },
         resolution: {
           name: "texture-field-ext.resolution",
           y: function() { return this.context.nodes.preview.bottom() + this.margin.top },
-          height: function() { return 28 },
+          height: function() { return 24 },
         },
       },
     }
@@ -1210,7 +1268,7 @@ global.__VELayouts = new Map(String, Callable, {
           x: function() { return this.context.nodes.increase.right() + this.margin.left },
           width: function() { return this.context.width() - this.context.nodes.increase.right()
             - this.margin.left - this.margin.right },
-          margin: { top: 2, bottom: 2, right: 15, left: 10 },
+          margin: { top: 2, bottom: 2, right: 15, left: 12 },
         }
       }
     }
@@ -1233,19 +1291,19 @@ global.__VELayouts = new Map(String, Callable, {
           name: "numeric-stick-increase-field.field",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
           width: function() { return this.context.width() - this.context.nodes.label.right()
-            - 20 - 20 - 8 - 45 - this.margin.left - this.margin.right },
+            - 10 - 10 - 8 - 45 - this.margin.left - this.margin.right },
           margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 2 },
         },
         decrease: {
           name: "numeric-stick-increase-field.decrease",
           x: function() { return this.context.nodes.field.right() },
-          width: function() { return 20 },
+          width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 0, right: 0 },
         },
         increase: {
           name: "numeric-stick-increase-field.increase",
           x: function() { return this.context.nodes.decrease.right() + this.margin.left },
-          width: function() { return 20 },
+          width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 2, right: 5 },
         },
         slider: {
@@ -1344,6 +1402,35 @@ global.__VELayouts = new Map(String, Callable, {
           x: function() { return this.context.width() - this.margin.right - this.width() },
           width: function() { return 16 },
           margin: { top: 6, bottom: 6, right: 5, left: 0 },
+        },
+      }
+    }
+  },
+
+    ///@param {?Struct} [config]
+  ///@return {Struct}
+  "numeric-slider": function(config = null) {
+    return {
+      name: "numeric-slider",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      margin: Struct.getIfType(config, "margin", Struct),
+      height: function() { return 28 },
+      nodes: {
+        label: {
+          name: "numeric-slider.label",
+          width: function() { return 72 - this.margin.left - this.margin.right },
+          margin: { top: 4, bottom: 4, left: 5 },
+        },
+        slider: {
+          name: "numeric-slider.slider",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return this.context.width()
+            - this.margin.left 
+            - this.margin.right 
+            - this.context.nodes.label.width() 
+            - this.context.nodes.label.margin.left
+            - this.context.nodes.label.margin.right },
+          margin: { top: 4, bottom: 4, right: 11, left: 13 },
         },
       }
     }
@@ -1591,6 +1678,85 @@ global.__VELayouts = new Map(String, Callable, {
 
   ///@param {?Struct} [config]
   ///@return {Struct}
+  "transform-vec2-x-uniform": function(config = null) {
+    return {
+      name: "transform-vec2-x-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.lineX.y() + this.nodes.lineX.margin.bottom - this.nodes.title.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        title: {
+          name: "transform-vec2-x-uniform.title",
+          height: function() { return 28 },
+        },
+        valueX: {
+          name: "transform-vec2-x-uniform.valueX",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        targetX: {
+          name: "transform-vec2-x-uniform.targetX",
+          y: function() { return this.context.nodes.valueX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorX: {
+          name: "transform-vec2-x-uniform.factorX",
+          y: function() { return this.context.nodes.targetX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseX: {
+          name: "transform-vec2-x-uniform.increaseX",
+          y: function() { return this.context.nodes.factorX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        lineX: {
+          name: "transform-vec2-x-uniform.lineX",
+          y: function() { return this.context.nodes.increaseX.bottom() + this.margin.top },
+          height: function() { return 1 },
+          margin: { top: 4, bottom: 5 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec2-y-uniform": function(config = null) {
+    return {
+      name: "transform-vec2-y-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.increaseY.y() + this.nodes.increaseY.margin.bottom - this.nodes.valueY.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        valueY: {
+          name: "transform-vec2-y-uniform.valueY",
+          height: function() { return 28 },
+        },
+        targetY: {
+          name: "transform-vec2-y-uniform.targetY",
+          y: function() { return this.context.nodes.valueY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorY: {
+          name: "transform-vec2-y-uniform.factorY",
+          y: function() { return this.context.nodes.targetY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseY: {
+          name: "transform-vec2-y-uniform.increaseY",
+          y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
   "transform-vec3-uniform": function(config = null) {
     return {
       name: "transform-vec3-uniform",
@@ -1679,6 +1845,125 @@ global.__VELayouts = new Map(String, Callable, {
         },
         increaseZ: {
           name: "transform-vec3-uniform.increaseZ",
+          y: function() { return this.context.nodes.factorZ.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec3-x-uniform": function(config = null) {
+    return {
+      name: "transform-vec3-x-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.lineX.y() + this.nodes.lineX.margin.bottom - this.nodes.title.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        title: {
+          name: "transform-vec3-x-uniform.title",
+          height: function() { return 28 },
+        },
+        valueX: {
+          name: "transform-vec3-x-uniform.valueX",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        targetX: {
+          name: "transform-vec3-x-uniform.targetX",
+          y: function() { return this.context.nodes.valueX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorX: {
+          name: "transform-vec3-x-uniform.factorX",
+          y: function() { return this.context.nodes.targetX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseX: {
+          name: "transform-vec3-x-uniform.increaseX",
+          y: function() { return this.context.nodes.factorX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        lineX: {
+          name: "transform-vec3-x-uniform.lineX",
+          y: function() { return this.context.nodes.increaseX.bottom() + this.margin.top },
+          height: function() { return 1 },
+          margin: { top: 4, bottom: 5 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec3-y-uniform": function(config = null) {
+    return {
+      name: "transform-vec3-y-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.lineY.y() + this.nodes.lineY.margin.bottom - this.nodes.valueY.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        valueY: {
+          name: "transform-vec3-y-uniform.valueY",
+          height: function() { return 28 },
+        },
+        targetY: {
+          name: "transform-vec3-y-uniform.targetY",
+          y: function() { return this.context.nodes.valueY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorY: {
+          name: "transform-vec3-y-uniform.factorY",
+          y: function() { return this.context.nodes.targetY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseY: {
+          name: "transform-vec3-y-uniform.increaseY",
+          y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        lineY: {
+          name: "transform-vec3-y-uniform.lineY",
+          y: function() { return this.context.nodes.increaseY.bottom() + this.margin.top },
+          height: function() { return 1 },
+          margin: { top: 4, bottom: 5 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec3-z-uniform": function(config = null) {
+    return {
+      name: "transform-vec3-z-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.increaseZ.y() + this.nodes.increaseZ.margin.bottom - this.nodes.valueZ.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        valueZ: {
+          name: "transform-vec3-z-uniform.valueZ",
+          height: function() { return 28 },
+        },
+        targetZ: {
+          name: "transform-vec3-z-uniform.targetZ",
+          y: function() { return this.context.nodes.valueZ.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorZ: {
+          name: "transform-vec3-z-uniform.factorZ",
+          y: function() { return this.context.nodes.targetZ.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseZ: {
+          name: "transform-vec3-z-uniform.increaseZ",
           y: function() { return this.context.nodes.factorZ.bottom() + this.margin.top },
           height: function() { return 28 },
         },
@@ -1811,6 +2096,166 @@ global.__VELayouts = new Map(String, Callable, {
 
   ///@param {?Struct} [config]
   ///@return {Struct}
+  "transform-vec4-x-uniform": function(config = null) {
+    return {
+      name: "transform-vec4-x-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.lineX.y() + this.nodes.lineX.margin.bottom - this.nodes.title.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        title: {
+          name: "transform-vec4-x-uniform.title",
+          height: function() { return 28 },
+        },
+        valueX: {
+          name: "transform-vec4-x-uniform.valueX",
+          y: function() { return this.context.nodes.title.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        targetX: {
+          name: "transform-vec4-x-uniform.targetX",
+          y: function() { return this.context.nodes.valueX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorX: {
+          name: "transform-vec4-x-uniform.factorX",
+          y: function() { return this.context.nodes.targetX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseX: {
+          name: "transform-vec4-x-uniform.increaseX",
+          y: function() { return this.context.nodes.factorX.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        lineX: {
+          name: "transform-vec4-x-uniform.lineX",
+          y: function() { return this.context.nodes.increaseX.bottom() + this.margin.top },
+          height: function() { return 1 },
+          margin: { top: 4, bottom: 5 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec4-y-uniform": function(config = null) {
+    return {
+      name: "transform-vec4-y-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.lineY.y() + this.nodes.lineY.margin.bottom - this.nodes.valueY.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        valueY: {
+          name: "transform-vec4-y-uniform.valueY",
+          height: function() { return 28 },
+        },
+        targetY: {
+          name: "transform-vec4-y-uniform.targetY",
+          y: function() { return this.context.nodes.valueY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorY: {
+          name: "transform-vec4-y-uniform.factorY",
+          y: function() { return this.context.nodes.targetY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseY: {
+          name: "transform-vec4-y-uniform.increaseY",
+          y: function() { return this.context.nodes.factorY.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        lineY: {
+          name: "transform-vec4-y-uniform.lineY",
+          y: function() { return this.context.nodes.increaseY.bottom() + this.margin.top },
+          height: function() { return 1 },
+          margin: { top: 4, bottom: 5 },
+        },
+       
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec4-z-uniform": function(config = null) {
+    return {
+      name: "transform-vec4-z-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.lineZ.y() + this.nodes.lineZ.margin.bottom - this.nodes.valueZ.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        valueZ: {
+          name: "transform-vec4-z-uniform.valueZ",
+          height: function() { return 28 },
+        },
+        targetZ: {
+          name: "transform-vec4-z-uniform.targetZ",
+          y: function() { return this.context.nodes.valueZ.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorZ: {
+          name: "transform-vec4-z-uniform.factorZ",
+          y: function() { return this.context.nodes.targetZ.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseZ: {
+          name: "transform-vec4-z-uniform.increaseZ",
+          y: function() { return this.context.nodes.factorZ.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        lineZ: {
+          name: "transform-vec4-z-uniform.lineZ",
+          y: function() { return this.context.nodes.increaseZ.bottom() + this.margin.top },
+          height: function() { return 1 },
+          margin: { top: 4, bottom: 5 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "transform-vec4-a-uniform": function(config = null) {
+    return {
+      name: "transform-vec4-a-uniform",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { 
+        return this.nodes.increaseA.y() + this.nodes.increaseA.margin.bottom - this.nodes.valueA.y()
+      },
+      margin: Struct.get(config, "margin"),
+      nodes: {
+        valueA: {
+          name: "transform-vec4-a-uniform.valueA",
+          height: function() { return 28 },
+        },
+        targetA: {
+          name: "transform-vec4-a-uniform.targetA",
+          y: function() { return this.context.nodes.valueA.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        factorA: {
+          name: "transform-vec4-a-uniform.factorA",
+          y: function() { return this.context.nodes.targetA.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+        increaseA: {
+          name: "transform-vec4-a-uniform.increaseA",
+          y: function() { return this.context.nodes.factorA.bottom() + this.margin.top },
+          height: function() { return 28 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
   "uniform-vec2-field": function(config = null) {
     return {
       name: "uniform-vec2-field",
@@ -1928,7 +2373,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "number-transformer-increase-checkbox",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return this.nodes.increase.bottom() - this.y() - this.margin.top - this.margin.bottom },
+      height: function() { return this.nodes.increase.bottom() - this.y() },
       margin: Struct.get(config, "margin"),
       nodes: {
         //title: {
