@@ -417,7 +417,6 @@ function VisuNewProjectForm(json = null) constructor {
   ///@param {String} manifestPath
   ///@return {VisuNewProjectForm}
   save = function(manifestPath) {
-    Core.print("manifestPath", manifestPath)
     Assert.isTrue(!FileUtil.fileExists(manifestPath), $"Visu project cannot be saved at location '{manifestPath}', because it already contains visu project.\nasd\ndef\  ghi\n---")
 
     var json = this.serialize()

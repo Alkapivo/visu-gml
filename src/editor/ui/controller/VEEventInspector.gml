@@ -279,8 +279,9 @@ function VEEventInspector(_editor) constructor {
               overrideSubscriber: true,
               callback: function(selectedEvent, data) { 
                 if (!Optional.is(selectedEvent)) {
+                  data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
                   data.collection.components.clear() ///@todo replace with remove lambda
-                  data.items.clear() ///@todo replace with remove lambda
+                  //data.items.clear() ///@todo replace with remove lambda
                   data.state
                     .set("selectedEvent", null)
                     .set("event", null)
@@ -298,8 +299,9 @@ function VEEventInspector(_editor) constructor {
                   "type": trackEvent.callableName,
                   "properties": Struct.remove(JSON.clone(trackEvent.data), "icon")
                 })
+                data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
                 data.collection.components.clear() ///@todo replace with remove lambda
-                data.items.clear() ///@todo replace with remove lambda
+                //data.items.clear() ///@todo replace with remove lambda
                 data.eventInspector.store.get("event").set(event)
                 data.state
                   .set("selectedEvent", selectedEvent)
@@ -355,21 +357,15 @@ function VEEventInspector(_editor) constructor {
                           }
                   
                           acc.context.add(item, item.name)
-                          if (Optional.is(item.updateArea())) {
-                            item.updateArea()
-                          }
+                          //if (Optional.is(item.updateArea)) {
+                          //  item.updateArea()
+                          //}
                         }
                   
                         acc.layout = component
                           .toUIItems(acc.layout)
                           .forEach(add, acc)
                           .getLast().layout.context
-                      }
-
-                      if (Optional.is(task.state.context.updateTimer)) {
-    
-                        ///@updateTimerNow
-                        task.state.context.updateTimer.time = task.state.context.updateTimer.duration * 0.5
                       }
 
                       repeat (EVENT_INSPECTOR_ENTRY_STEP) {

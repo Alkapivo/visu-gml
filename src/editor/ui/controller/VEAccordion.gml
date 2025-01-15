@@ -360,17 +360,21 @@ function VEAccordion(_editor, config = null) constructor {
   ///@params {Struct} context
   ///@params {Boolean} enable
   updateContainerObject = function(context, enable) {
-    if (!context.enable && enable) {
-      context.containers.forEach(function(container) {
-        if (Optional.is(container.updateArea)) {
-          container.updateArea()
+    static updateContainer = function(container) {
+      static updateItem = function(item) {
+        if (Optional.is(item.updateArea)) {
+          item.updateArea()
         }
-        container.items.forEach(function(item) {
-          if (Optional.is(item.updateArea)) {
-            item.updateArea()
-          }
-        }) 
-      })
+      }
+
+      if (Optional.is(container.updateArea)) {
+        container.updateArea()
+      }
+      container.items.forEach(updateItem) 
+    }
+
+    if (!context.enable && enable) {
+      context.containers.forEach(updateContainer)
     }
 
     context.enable = enable

@@ -453,6 +453,7 @@ function VisuProjectForm(json = null) constructor {
           } else if (this.state.stage == "open") {
             var editor = Beans.get(BeanVisuEditorController)
             if (Optional.is(editor)) {
+              editor.renderUI = true
               editor.send(new Event("open"))
               this.fullfill()
             }
