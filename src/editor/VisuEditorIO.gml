@@ -409,7 +409,7 @@ function VisuEditorIO() constructor {
         var event = editor.accordion.eventInspector.store.getValue("event")
         if (Core.isType(event, VEEvent)) {
           var handler = controller.trackService.handlers.get(event.type)
-          handler(event.toTemplate().event.data)
+          handler.run(handler.parse(event.toTemplate().event.data))
         }
       }
     }
