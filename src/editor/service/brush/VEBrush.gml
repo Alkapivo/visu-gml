@@ -81,7 +81,7 @@ global.__VEBrushTypeNames = {
   "brush_grid_row": "Grid row",
   "brush_grid_config": "Grid config",
   "brush_view_camera": "View camera",
-  "brush_view_wallpaper": "View wallpaper",
+  "brush_view_wallpaper": "View layer",
   "brush_view_subtitle": "View subtitle",
   "brush_view_config": "View config"
 }

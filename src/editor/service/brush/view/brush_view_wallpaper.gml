@@ -229,6 +229,203 @@ function brush_view_wallpaper(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
+        name: "vw-layer_use-blend",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Layer blend mode",
+            backgroundColor: VETheme.color.accentShadow,
+            enable: { key: "vw-layer_use-blend" },
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_use-blend" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+        },
+      },
+      {
+        name: "vw-layer_blend-src",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Source",
+            enable: { key: "vw-layer_use-blend" },
+          },
+          previous: {
+            store: { key: "vw-layer_blend-src" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-layer_blend-src" },
+            enable: { key: "vw-layer_use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            store: { key: "vw-layer_blend-src" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_blend-dest",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Target",
+            enable: { key: "vw-layer_use-blend" },
+          },
+          previous: {
+            store: { key: "vw-layer_blend-dest" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-layer_blend-dest" },
+            enable: { key: "vw-layer_use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            store: { key: "vw-layer_blend-dest" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_blend-eq",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Equation",
+            enable: { key: "vw-layer_use-blend" },
+          },
+          previous: {
+            store: { key: "vw-layer_blend-eq" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-layer_blend-eq" },
+            enable: { key: "vw-layer_use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "vw-layer_blend-eq" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_blend-eq-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_col",
+        template: VEComponents.get("color-picker"),
+        layout: VELayouts.get("color-picker-alpha"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Layer color",
+              enable: { key: "vw-layer_use-col" },
+              backgroundColor: VETheme.color.accentShadow,
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-layer_use-col" },
+              backgroundColor: VETheme.color.accentShadow,
+            },
+            input: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+              backgroundColor: VETheme.color.accentShadow,
+            }
+          },
+          red: {
+            label: { 
+              text: "Red",
+              enable: { key: "vw-layer_use-col" },
+            },
+            field: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+            slider: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+          },
+          green: {
+            label: { 
+              text: "Green",
+              enable: { key: "vw-layer_use-col" },
+            },
+            field: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+            slider: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+          },
+          blue: {
+            label: { 
+              text: "Blue",
+              enable: { key: "vw-layer_use-col" },
+            },
+            field: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+            slider: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+          },
+          alpha: {
+            label: { 
+              text: "Alpha",
+              enable: { key: "vw-layer_use-col" },
+            },
+            field: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+            slider: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+          },
+          hex: { 
+            label: { 
+              text: "Hex",
+              enable: { key: "vw-layer_use-col" },
+            },
+            field: { 
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+            },
+          },
+          line: { disable: true },
+        },
+      },
+      {
+        name: "vw-layer-col-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "vw-layer_texture",
         template: VEComponents.get("texture-field"),
         layout: VELayouts.get("texture-field"),
@@ -236,7 +433,7 @@ function brush_view_wallpaper(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Wallpaper texture",
+              text: "Layer texture",
               enable: { key: "vw-layer_use-texture" },
               backgroundColor: VETheme.color.accentShadow,
             },
@@ -353,38 +550,56 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
+        name: "vw-layer-texture-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_texture-blend-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            backgroundColor: VETheme.color.side,
+            text: "Blend texture",
+            enable: {
+              keys: [ 
+                { key: "vw-layer_use-texture" },
+                { key: "vw-layer_use-texture-blend" }
+              ],
+            },
+            updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+          },
+          input: { 
+            backgroundColor: VETheme.color.side,
+            store: { key: "vw-layer_texture-blend" },
+            enable: {
+              keys: [ 
+                { key: "vw-layer_use-texture" },
+                { key: "vw-layer_use-texture-blend" }
+              ],
+            },
+            updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            enable: { key: "vw-layer_use-texture" },
+            store: { key: "vw-layer_use-texture-blend" },
+            backgroundColor: VETheme.color.side,
+          },
+        },
+      },
+      {
         name: "vw-layer_texture-blend",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
         config: {
-          layout: { type: UILayoutType.VERTICAL },
-          booleanField: { 
-            label: { 
-              text: "Blend",
-              enable: {
-                keys: [ 
-                  { key: "vw-layer_use-texture" },
-                  { key: "vw-layer_use-texture-blend" }
-                ],
-              },
-              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
-            },
-            field: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              enable: { key: "vw-layer_use-texture" },
-              store: { key: "vw-layer_use-texture-blend" },
-            },
-            input: { 
-              store: { key: "vw-layer_texture-blend" },
-              enable: {
-                keys: [ 
-                  { key: "vw-layer_use-texture" },
-                  { key: "vw-layer_use-texture-blend" }
-                ],
-              },
-              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
-            }
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
           },
           red: {
             label: {
@@ -513,132 +728,17 @@ function brush_view_wallpaper(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "vw-layer_col",
-        template: VEComponents.get("color-picker"),
-        layout: VELayouts.get("color-picker-alpha"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Wallpaper color",
-              enable: { key: "vw-layer_use-col" },
-              backgroundColor: VETheme.color.accentShadow,
-            },  
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "vw-layer_use-col" },
-              backgroundColor: VETheme.color.accentShadow,
-            },
-            input: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-              backgroundColor: VETheme.color.accentShadow,
-            }
-          },
-          red: {
-            label: { 
-              text: "Red",
-              enable: { key: "vw-layer_use-col" },
-            },
-            field: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-            slider: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-          },
-          green: {
-            label: { 
-              text: "Green",
-              enable: { key: "vw-layer_use-col" },
-            },
-            field: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-            slider: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-          },
-          blue: {
-            label: { 
-              text: "Blue",
-              enable: { key: "vw-layer_use-col" },
-            },
-            field: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-            slider: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-          },
-          alpha: {
-            label: { 
-              text: "Alpha",
-              enable: { key: "vw-layer_use-col" },
-            },
-            field: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-            slider: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-          },
-          hex: { 
-            label: { 
-              text: "Hex",
-              enable: { key: "vw-layer_use-col" },
-            },
-            field: { 
-              store: { key: "vw-layer_col" },
-              enable: { key: "vw-layer_use-col" },
-            },
-          },
-        },
-      },
-      {
-        name: "vw-layer-col-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
         name: "vw-cls-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Clear wallpaper",
+            text: "Clear layer",
             backgroundColor: VETheme.color.accentShadow,
           },
           input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { backgroundColor: VETheme.color.accentShadow },
-        },
-      },
-      {
-        name: "vw-layer_cls-texture",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: {
-            text: "Texture",
-            enable: { key: "vw-layer_cls-texture" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-layer_cls-texture" },
-          },
         },
       },
       {
@@ -659,105 +759,24 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
-        name: "vw-layer-cls-col-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
-        name: "vw-layer_use-blend",
+        name: "vw-layer_cls-texture",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Wallpaper blend mode",
-            backgroundColor: VETheme.color.accentShadow,
-            enable: { key: "vw-layer_use-blend" },
+            text: "Texture",
+            enable: { key: "vw-layer_cls-texture" },
           },
-          input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-layer_use-blend" },
-            backgroundColor: VETheme.color.accentShadow,
+            store: { key: "vw-layer_cls-texture" },
           },
         },
       },
       {
-        name: "vw-layer_blend-src",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Source",
-            enable: { key: "vw-layer_use-blend" },
-          },
-          previous: {
-            store: { key: "vw-layer_blend-src" },
-            enable: { key: "vw-layer_use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "vw-layer_blend-src" },
-            enable: { key: "vw-layer_use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "vw-layer_blend-src" },
-            enable: { key: "vw-layer_use-blend" },
-          },
-        },
-      },
-      {
-        name: "vw-layer_blend-dest",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Target",
-            enable: { key: "vw-layer_use-blend" },
-          },
-          previous: {
-            store: { key: "vw-layer_blend-dest" },
-            enable: { key: "vw-layer_use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "vw-layer_blend-dest" },
-            enable: { key: "vw-layer_use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "vw-layer_blend-dest" },
-            enable: { key: "vw-layer_use-blend" },
-          },
-        },
-      },
-      {
-        name: "vw-layer_blend-eq",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Equation",
-            enable: { key: "vw-layer_use-blend" },
-          },
-          previous: {
-            store: { key: "vw-layer_blend-eq" },
-            enable: { key: "vw-layer_use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "vw-layer_blend-eq" },
-            enable: { key: "vw-layer_use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: {
-            store: { key: "vw-layer_blend-eq" },
-            enable: { key: "vw-layer_use-blend" },
-          },
-        },
-      },
-      {
-        name: "vw-layer_blend-eq-line-h",
+        name: "vw-layer-cls-col-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -769,7 +788,7 @@ function brush_view_wallpaper(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Wallpaper position",
+            text: "Layer movement",
             backgroundColor: VETheme.color.accentShadow,
           },
           input: { backgroundColor: VETheme.color.accentShadow },
@@ -789,8 +808,8 @@ function brush_view_wallpaper(json = null) {
             label: {
               text: "Speed",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-layer_use-spd" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-layer_use-spd" },
             },
             field: {
               store: { key: "vw-layer_spd" },
@@ -903,8 +922,8 @@ function brush_view_wallpaper(json = null) {
             label: {
               text: "Angle",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-layer_use-dir" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-layer_use-dir" },
             },
             field: {
               store: { key: "vw-layer_dir" },
@@ -1017,8 +1036,8 @@ function brush_view_wallpaper(json = null) {
             label: {
               text: "Scale Y",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-layer_use-scale-x" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-layer_use-scale-x" },
             },
             field: {
               store: { key: "vw-layer_scale-x" },
@@ -1131,8 +1150,8 @@ function brush_view_wallpaper(json = null) {
             label: {
               text: "Scale Y",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-layer_use-scale-y" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-layer_use-scale-y" },
             },
             field: {
               store: { key: "vw-layer_scale-y" },

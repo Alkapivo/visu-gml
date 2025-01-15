@@ -1,5 +1,6 @@
 ///@package io.alkapivo.visu.editor.ui.controller
 
+#macro BRUSH_ENTRY_STEP 1
 #macro BRUSH_TOOLBAR_ENTRY_STEP 1
 
 
@@ -562,7 +563,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "view_old": new Array(Struct, [
           {
             name: "button_category-view_old_type-wallpaper",
-            text: "Wallpaper",
+            text: "Layer",
             brushType: VEBrushType.VIEW_OLD_WALLPAPER,
           },
           {
@@ -660,7 +661,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           },
           {
             name: "button_category-view_type-wallpaper",
-            text: "Wallpaper",
+            text: "Layer",
             brushType: VEBrushType.VIEW_WALLPAPER,
           },
           {
@@ -1035,7 +1036,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 parse: data.brushToolbar.parseBrushTemplate,
               })
               .whenUpdate(function(executor) {
-                repeat (1.000) {
+                repeat (BRUSH_ENTRY_STEP) {
                   if (this.state.templates.size() == 0) {
                     this.fullfill()
                     break
@@ -1293,13 +1294,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       .forEach(add, acc)
                       .getLast().layout.context
                   }
-                  
-                  
-                  if (Optional.is(task.state.context.updateTimer)) {
-
-                    ///@updateTimerNow
-                    task.state.context.updateTimer.time = task.state.context.updateTimer.duration * 0.5
-                  }
 
                   repeat (BRUSH_TOOLBAR_ENTRY_STEP) {
                     var index = task.state.componentsQueue.pop()
@@ -1363,10 +1357,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
                 
                 var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)
-                if (!Optional.is(Struct.getIfType(handler, "run", Callable))) {
-                  return
-                }
-                
                 handler.run(handler.parse(brush.toTemplate().properties))
               },
               onMouseHoverOver: function(event) {
@@ -1507,34 +1497,6 @@ function VEBrushToolbar(_editor) constructor {
 
   ///@type {Map<String, Array>}
   categories = new Map(String, Array, {
-    #region Old API
-    "shader": new Array(String, [
-      VEBrushType.SHADER_SPAWN,
-      VEBrushType.SHADER_OVERLAY,
-      VEBrushType.SHADER_CLEAR,
-      VEBrushType.SHADER_CONFIG
-    ]),
-    "shroom": new Array(String, [
-      VEBrushType.SHROOM_SPAWN,
-      VEBrushType.SHROOM_CLEAR,
-      VEBrushType.SHROOM_CONFIG
-    ]),
-    "grid_old": new Array(String, [
-      VEBrushType.GRID_OLD_CHANNEL,
-      VEBrushType.GRID_OLD_COIN,
-      VEBrushType.GRID_OLD_CONFIG,
-      VEBrushType.GRID_OLD_PARTICLE,
-      VEBrushType.GRID_OLD_PLAYER,
-      VEBrushType.GRID_OLD_SEPARATOR
-    ]),
-    "view_old": new Array(String, [
-      VEBrushType.VIEW_OLD_WALLPAPER,
-      VEBrushType.VIEW_OLD_CAMERA,
-      VEBrushType.VIEW_OLD_LYRICS,
-      VEBrushType.VIEW_OLD_GLITCH,
-      VEBrushType.VIEW_OLD_CONFIG
-    ]),
-    #endregion
     "effect": new Array(String, [
       VEBrushType.EFFECT_SHADER,
       VEBrushType.EFFECT_GLITCH,
@@ -1560,6 +1522,40 @@ function VEBrushToolbar(_editor) constructor {
       VEBrushType.VIEW_CONFIG
     ]),
   })
+
+  #region Old API
+  if (Core.getProperty("visu.editor.migrate")) {
+    this.categories.set("shader", new Array(String, [
+      VEBrushType.SHADER_SPAWN,
+      VEBrushType.SHADER_OVERLAY,
+      VEBrushType.SHADER_CLEAR,
+      VEBrushType.SHADER_CONFIG
+    ]))
+    
+    this.categories.set("shroom", new Array(String, [
+      VEBrushType.SHROOM_SPAWN,
+      VEBrushType.SHROOM_CLEAR,
+      VEBrushType.SHROOM_CONFIG
+    ]))
+
+    this.categories.set("grid_old", new Array(String, [
+      VEBrushType.GRID_OLD_CHANNEL,
+      VEBrushType.GRID_OLD_COIN,
+      VEBrushType.GRID_OLD_CONFIG,
+      VEBrushType.GRID_OLD_PARTICLE,
+      VEBrushType.GRID_OLD_PLAYER,
+      VEBrushType.GRID_OLD_SEPARATOR
+    ]))
+
+    this.categories.set("view_old", new Array(String, [
+      VEBrushType.VIEW_OLD_WALLPAPER,
+      VEBrushType.VIEW_OLD_CAMERA,
+      VEBrushType.VIEW_OLD_LYRICS,
+      VEBrushType.VIEW_OLD_GLITCH,
+      VEBrushType.VIEW_OLD_CONFIG
+    ]))
+    #endregion
+  }
 
   ///@private
   ///@param {UIlayout} parent
