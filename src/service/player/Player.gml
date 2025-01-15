@@ -338,7 +338,7 @@ function PlayerStats(_player, json) constructor {
               }))
 
             controller.visuRenderer.hudRenderer.sendGlitchEvent()
-            view_track_event.brush_view_glitch({
+            view_old_track_event.brush_view_old_glitch.run({
               "view-glitch_shader-rng-seed":0.26406799999999998,
               "view-glitch_use-factor":true,
               "view-glitch_shader-intensity":0.3015499999999999,
