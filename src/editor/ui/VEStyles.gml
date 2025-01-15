@@ -3,9 +3,79 @@
 ///@static
 ///@type {Struct}
 global.__VETheme = {
-  color: null,
-  ///@theme purple
-  purple: {
+  ///@param {String} name
+  ///@return {String}
+  getColor: function(name) {
+    return Struct.getIfType(VETheme.color, name, String, "#000000")
+  },
+  colors: {
+    layoutBkg: "sideDark",
+    componentBkg: "sideShadow",
+    button: "primary",
+    buttonHover: "primaryLight",
+    buttonText: "textShadow",
+    bar: "sideDark",
+    barButton: "sideDark",
+    barButtonHover: "sideShadow",
+    barText: "textShadow",
+    propertyBkg: "primary",
+    propertyText: "text",
+    titleBkg: "accentShadow",
+    titleText: "textFocus",
+    snackbarBkg: "primary",
+    snackbarText: "text",
+    slider: "primary",
+    sliderHover: "primaryLight",
+    stick: "primary",
+    stickHover: "primaryLight",
+    modalButton: "primary",
+    modalButtonHover: "primary",
+    modalButtonText: "text",
+    applyButton: "primary",
+    applyButtonHover: "primary",
+    applyButtonText: "text",
+    discardButton: "primary",
+    discardButtonHover: "primary",
+    discardButtonText: "text",
+    divider: "sideLight",
+    spinSelectButton: "primary",
+    spinSelectButtonHover: "primary",
+    spinSelectText: "text",
+    entryBkg: "primaryShadow",
+    entryHover: "primary",
+    entryText: "text",
+    buttonToggle: "primary",
+    buttonToggleSelected: "primaryAccent",
+    buttonToggleHover: "primaryLight",
+    buttonToggleText: "text",
+    controlButton: "primary",
+    controlButtonHover: "primary",
+    controlButtonText: "primary",
+    toolbarBkg: "primary",
+    toolbarButton: "primary",
+    toolbarButtonHover: "primary",
+    toolbarButtonText: "primary",
+    fieldLabel: "textShadow",
+    field: "primary",
+    fieldFocused: "accent",
+    fieldTextSelected: "textSelected",
+    fieldInvalid: "deny",
+    resizeBar: "primary",
+    scrollbar: "primary",
+    increaseButton: "primary",
+    increaseButtonHover: "primaryLight",
+    increaseButtonText: "text",
+    decreaseButton: "primary",
+    decreaseButtonHover: "primaryLight",
+    decreaseButtonText: "text",
+    tableRowBkg: "primary",
+    tableRowBkgStripped: "primary",
+    tableBkg: "primary",
+    tableColumnDivider: "primary",
+    tableColumnAccentDivider: "primary",
+    tableRowDivider: "primary",
+  },
+  color: {
     accentLight: "#7742b8",
     accent: "#5f398e",
     accentShadow: "#462f63",
@@ -34,37 +104,8 @@ global.__VETheme = {
     stickHover: "#878787",
     stickBackground: "#0D0D0F",
   },
-  ///@theme vscode
-  vscode: {
-    primary: "#464646",
-    primaryLight: "#615b5b",
-    primaryLight: "#515b5b",
-    primaryShadow: "#333333",
-    primaryDark: "#1a1a1e",
-    side: "#282828",
-    sideLight: "#212129",
-    sideShadow: "#1A1A1A",
-    sideDark: "#131313",
-    accentLight: "#436995",
-    accent: "#395b82",
-    accentShadow: "#2f4c6e",
-    accentDark: "#1b334f",
-    text: "#D9D9D9",
-    textShadow: "#9B9B9B",
-    textFocus: "#FFFFFF",
-    textSelected: "#B2DBE3",
-    accept: "#469E59",
-    acceptShadow: "#468a55",
-    deny: "#A84545",
-    denyShadow: "#823d3d",
-    ruler: "#E64B3D",
-    header: "#963271",
-  },
 }
 #macro VETheme global.__VETheme
-
-///@description Set theme
-VETheme.color = VETheme.purple
 
 
 ///@return {Map<String, Struct>}
@@ -676,14 +717,14 @@ function generateVEStyles() {
     },
     "texture-field-ext": {
       resolution: {
-        font: "font_inter_10_regular",
+        font: "font_inter_8_regular",
         color: VETheme.color.textShadow,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       }
     },
     "preview-image-mask": {
       resolution: {
-        font: "font_inter_10_regular",
+        font: "font_inter_8_regular",
         color: VETheme.color.textShadow,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       }
@@ -691,21 +732,21 @@ function generateVEStyles() {
     "double-checkbox": {
       label: {
         offset: { x: 0 },
-        font: "font_inter_10_bold",
+        font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
         align: { v: VAlign.CENTER, h: HAlign.RIGHT },
       },
       checkbox1: { },
       label1: {
         offset: { x: 0 },
-        font: "font_inter_10_regular",
+        font: "font_inter_8_regular",
         color: VETheme.color.textShadow,
         align: { v: VAlign.CENTER, h: HAlign.LEFT },
       },
       checkbox2: { },
       label2: {
         offset: { x: 0 },
-        font: "font_inter_10_regular",
+        font: "font_inter_8_regular",
         color: VETheme.color.textShadow,
         align: { v: VAlign.CENTER, h: HAlign.LEFT },
       }
