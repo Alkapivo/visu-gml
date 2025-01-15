@@ -86,7 +86,7 @@ function VisuEditorController() constructor {
     },
     "render-event": {
       type: Boolean,
-      value: Assert.isType(Visu.settings.getValue("visu.editor.render-event", false), Boolean)
+      value: false,
     },
     "_render-event": {
       type: Boolean,
@@ -94,7 +94,7 @@ function VisuEditorController() constructor {
     },
     "render-timeline": {
       type: Boolean,
-      value:Assert.isType(Visu.settings.getValue("visu.editor.render-timeline", false), Boolean)
+      value: false,
     },
     "_render-timeline": {
       type: Boolean,
@@ -102,7 +102,7 @@ function VisuEditorController() constructor {
     },
     "render-brush": {
       type: Boolean,
-      value: Assert.isType(Visu.settings.getValue("visu.editor.render-brush", false), Boolean)
+      value: false,
     },
     "_render-brush": {
       type: Boolean,
@@ -110,7 +110,7 @@ function VisuEditorController() constructor {
     },
     "render-trackControl": {
       type: Boolean,
-      value: Assert.isType(Visu.settings.getValue("visu.editor.render-track-control", false), Boolean)
+      value: false,
     },
     "_render-trackControl": {
       type: Boolean,
@@ -196,10 +196,10 @@ function VisuEditorController() constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
-      this.store.get("render-event").set(this.store.getValue("_render-event"))
-      this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
-      this.store.get("render-brush").set(this.store.getValue("_render-brush"))
-      this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
+      //this.store.get("render-event").set(this.store.getValue("_render-event"))
+      //this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
+      //this.store.get("render-brush").set(this.store.getValue("_render-brush"))
+      //this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
 
       this.requestOpenUI = true
     },
@@ -274,27 +274,32 @@ function VisuEditorController() constructor {
   ///@return {Task}
   factoryInitUITask = function() {
     return new Task("open-editor-ui")
-      .setTimeout(10.0)
+      .setTimeout(20.0)
       .setState({
-        cooldown: new Timer(0.1, { loop: Infinity }),
+        cooldown: new Timer(0., { loop: Infinity }),
         primary: new Queue(Struct, [
           {
             handler: this.titleBar,
             event: new Event("open").setData({ 
               layout: Struct.get(this.layout.nodes, "title-bar")
             }),
+            callback: function(editor) { },
           },
           {
             handler: this.statusBar,
             event: new Event("open").setData({ 
               layout: Struct.get(this.layout.nodes, "status-bar")
             }),
+            callback: function(editor) { },
           },
           {
             handler: this.trackControl,
             event: new Event("open").setData({ 
               layout: Struct.get(this.layout.nodes, "track-control")
             }),
+            callback: function(editor) {
+              editor.store.get("render-trackControl").set(editor.store.getValue("_render-trackControl"))
+            },
           }
         ]),
         events: new Queue(Struct, [
@@ -303,26 +308,39 @@ function VisuEditorController() constructor {
             event: new Event("open").setData({ 
               layout: Struct.get(this.layout.nodes, "accordion")
             }),
+            cooldown: 0.25,
+            callback: function(editor) {
+              editor.store.get("render-event").set(editor.store.getValue("_render-event"))
+            },
           },
           {
             handler: this.brushToolbar,
             event: new Event("open").setData({ 
               layout: Struct.get(this.layout.nodes, "brush-toolbar")
             }),
+            cooldown: 0.15,
+            callback: function(editor) {
+              editor.store.get("render-brush").set(editor.store.getValue("_render-brush"))
+            },
           },
           {
             handler: this.timeline,
             event: new Event("open").setData({ 
               layout: Struct.get(this.layout.nodes, "timeline")
             }),
+            cooldown: 0.25,
+            callback: function(editor) {
+              editor.store.get("render-timeline").set(editor.store.getValue("_render-timeline"))
+            },
           }
         ]),
       })
       .whenUpdate(function() {
         if (this.state.primary.size() > 0) {
-          this.state.primary.forEach(function(entry) {
+          this.state.primary.forEach(function(entry, index, editor) {
+            entry.callback(editor)
             entry.handler.send(entry.event)
-          })
+          }, Beans.get(BeanVisuEditorController))
         }
 
         if (!this.state.cooldown.update().finished) {
@@ -334,7 +352,8 @@ function VisuEditorController() constructor {
           this.fullfill()
           return
         }
-
+        this.state.cooldown.duration = entry.cooldown
+        entry.callback(Beans.get(BeanVisuEditorController))
         entry.handler.send(entry.event)
       })
   }
@@ -377,6 +396,11 @@ function VisuEditorController() constructor {
           return
         }
 
+        var editor = Beans.get(BeanVisuEditorController)
+        editor.store.get("render-event").set(editor.store.getValue("_render-event"))
+        editor.store.get("render-timeline").set(editor.store.getValue("_render-timeline"))
+        editor.store.get("render-brush").set(editor.store.getValue("_render-brush"))
+        editor.store.get("render-trackControl").set(editor.store.getValue("_render-trackControl"))
         entry.handler.send(entry.event)
       })
   }
