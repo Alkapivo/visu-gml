@@ -282,6 +282,104 @@ function brush_view_config(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
+        name: "vw-cfg_video-use-blend",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Video blend mode",
+            backgroundColor: VETheme.color.accentShadow,
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-cfg_video-use-blend" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+        },
+      },
+      {
+        name: "vw-cfg_video-blend-src",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Source",
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          previous: {
+            store: { key: "vw-cfg_video-blend-src" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-cfg_video-blend-src" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            store: { key: "vw-cfg_video-blend-src" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-cfg_video-blend-dest",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Target",
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          previous: {
+            store: { key: "vw-cfg_video-blend-dest" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-cfg_video-blend-dest" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { 
+            store: { key: "vw-cfg_video-blend-dest" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-cfg_video-blend-eq",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Equation",
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          previous: {
+            store: { key: "vw-cfg_video-blend-eq" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-cfg_video-blend-eq" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "vw-cfg_video-blend-eq" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-cfg_video-blend-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "vw-cfg_video-alpha-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -300,11 +398,16 @@ function brush_view_config(json = null) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
-              text: "Value",
-              enable: { key: "vw-cfg_use-video-alpha" },
+              text: "Alpha",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-cfg_use-video-alpha" },
             },
             field: {
               store: { key: "vw-cfg_video-alpha" },
@@ -398,104 +501,6 @@ function brush_view_config(json = null) {
               enable: { key: "vw-cfg_change-video-alpha" },
               factor: 0.0001,
             },
-          },
-        },
-      },
-      {
-        name: "vw-cfg_video-alpha-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
-        name: "vw-cfg_video-use-blend",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: {
-            text: "Video blend mode",
-            backgroundColor: VETheme.color.accentShadow,
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-          input: { backgroundColor: VETheme.color.accentShadow },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-cfg_video-use-blend" },
-            backgroundColor: VETheme.color.accentShadow,
-          },
-        },
-      },
-      {
-        name: "vw-cfg_video-blend-src",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Source",
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-          previous: {
-            store: { key: "vw-cfg_video-blend-src" },
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "vw-cfg_video-blend-src" },
-            enable: { key: "vw-cfg_video-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "vw-cfg_video-blend-src" },
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-        },
-      },
-      {
-        name: "vw-cfg_video-blend-dest",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Target",
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-          previous: {
-            store: { key: "vw-cfg_video-blend-dest" },
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "vw-cfg_video-blend-dest" },
-            enable: { key: "vw-cfg_video-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "vw-cfg_video-blend-dest" },
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-        },
-      },
-      {
-        name: "vw-cfg_video-blend-eq",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Equation",
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-          previous: {
-            store: { key: "vw-cfg_video-blend-eq" },
-            enable: { key: "vw-cfg_video-use-blend" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "vw-cfg_video-blend-eq" },
-            enable: { key: "vw-cfg_video-use-blend" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: {
-            store: { key: "vw-cfg_video-blend-eq" },
-            enable: { key: "vw-cfg_video-use-blend" },
           },
         },
       },

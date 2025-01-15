@@ -204,7 +204,7 @@ function brush_shroom_spawn(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Preview spawn position",
+            text: "Render spawn position",
             enable: { key: "shroom-spawn_use-preview" },
             backgroundColor: VETheme.color.accentShadow,
             updateCustom: function() {

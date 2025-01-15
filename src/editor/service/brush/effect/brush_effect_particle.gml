@@ -66,6 +66,12 @@ function brush_effect_particle(json) {
         },
       },
       {
+        name: "ef-part_template-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "ef-part_shape",
         template: VEComponents.get("spin-select"),
         layout: VELayouts.get("spin-select"),
@@ -101,8 +107,8 @@ function brush_effect_particle(json) {
       },
       {
         name: "ef-part_amount",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Amount" },
@@ -112,12 +118,17 @@ function brush_effect_particle(json) {
           },
           decrease: { store: { key: "ef-part_amount" } },
           increase: { store: { key: "ef-part_amount" } },
+          stick: {
+            store: { key: "ef-part_amount" },
+            factor: 0.01,
+          },
+          checkbox: { },
         },
       },
       {
         name: "ef-part_duration",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Duration" },
@@ -130,12 +141,17 @@ function brush_effect_particle(json) {
             store: { key: "ef-part_duration" },
             factor: 0.25,
           },
+          stick: {
+            store: { key: "ef-part_duration" },
+            factor: 0.01,
+          },
+          checkbox: { },
         },
       },
       {
         name: "ef-part_interval",  
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Interval" },
@@ -148,6 +164,11 @@ function brush_effect_particle(json) {
             store: { key: "ef-part_interval" },
             factor: FRAME_MS,
           },
+          stick: {
+            store: { key: "ef-part_interval" },
+            factor: 0.01,
+          },
+          checkbox: { },
         },
       },
       {
@@ -163,7 +184,7 @@ function brush_effect_particle(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Preview emitter area",
+            text: "Remder emitter area",
             enable: { key: "ef-part_preview" },
             backgroundColor: VETheme.color.accentShadow,
             updateCustom: function() {
@@ -283,7 +304,7 @@ function brush_effect_particle(json) {
             margin: { top: 4 },
           },
           x: {
-            label: { text: "Emitter X" },
+            label: { text: "X" },
             field: { store: { key: "ef-part_area" } },
             slider: {
               snapValue: 0.01 / 5.0,
@@ -301,7 +322,7 @@ function brush_effect_particle(json) {
             },
           },
           y: {
-            label: { text: "Emitter Y" },
+            label: { text: "Y" },
             field: { store: { key: "ef-part_area" } },
             slider: {
               snapValue: 0.01 / 5.0,

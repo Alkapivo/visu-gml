@@ -121,7 +121,7 @@ function brush_grid_row(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Column render mode",
+            text: "Rows render mode",
             enable: { key: "gr-r_use-mode" },
             backgroundColor: VETheme.color.side,
           },

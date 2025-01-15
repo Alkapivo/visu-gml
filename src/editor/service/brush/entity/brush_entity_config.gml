@@ -244,7 +244,7 @@ function brush_entity_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Shaders",
+            text: "Shrooms",
             enable: { key: "en-cfg_cls-shr" },
           },
           checkbox: { 
@@ -318,7 +318,7 @@ function brush_entity_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Entity Z position",
+            text: "Position Z",
             backgroundColor: VETheme.color.accentShadow,
           },
           checkbox: { backgroundColor: VETheme.color.accentShadow },
@@ -336,7 +336,7 @@ function brush_entity_config(json = null) {
           },
           value: {
             label: {
-              text: "Shroom",
+              text: "Shroom Z",
               font: "font_inter_10_bold",
               color: VETheme.color.textShadow,
               //enable: { key: "en-cfg_use-z-shr" },
@@ -450,7 +450,7 @@ function brush_entity_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Player",
+              text: "Player Z",
               font: "font_inter_10_bold",
               color: VETheme.color.textShadow,
               //enable: { key: "en-cfg_use-z-player" },
@@ -564,7 +564,7 @@ function brush_entity_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Coin",
+              text: "Coin Z",
               font: "font_inter_10_bold",
               color: VETheme.color.textShadow,
               //enable: { key: "en-cfg_use-z-coin" },
@@ -678,7 +678,7 @@ function brush_entity_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Bullet",
+              text: "Bullet Z",
               font: "font_inter_10_bold",
               color: VETheme.color.textShadow,
               //enable: { key: "en-cfg_use-z-bullet" },

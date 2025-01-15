@@ -382,6 +382,7 @@ function brush_effect_config(json) {
           title: {
             label: { 
               text: "Color",
+              //color: VETheme.color.textShadow,
               enable: { key: "ef-cfg_use-cls-frame-col" },
               //backgroundColor: VETheme.color.side,
             },  

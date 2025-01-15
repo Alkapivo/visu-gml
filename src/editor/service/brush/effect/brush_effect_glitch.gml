@@ -113,17 +113,30 @@ function brush_effect_glitch(json = null) {
     components: new Array(Struct, [
       {
         name: "ef-glt_fade-out",
-        template: VEComponents.get("text-field-checkbox"),
-        layout: VELayouts.get("text-field-checkbox"),
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Factor",
-            enable: { key: "ef-glt_use-fade-out" },
+            font: "font_inter_10_bold",
+            color: VETheme.color.textShadow,
+            offset: { y: 14 },
+            //enable: { key: "ef-glt_use-fade-out" },
           },  
           field: { 
             store: { key: "ef-glt_fade-out"
-         },
+          },
+            enable: { key: "ef-glt_use-fade-out" },
+          },
+          increase: {
+            factor: 0.01,
+            store: { key: "ef-glt_fade-out" },
+            enable: { key: "ef-glt_use-fade-out" },
+          },
+          decrease: {
+            factor: -0.01,
+            store: { key: "ef-glt_fade-out" },
             enable: { key: "ef-glt_use-fade-out" },
           },
           checkbox: { 
@@ -139,65 +152,17 @@ function brush_effect_glitch(json = null) {
       },
       {
         name: "ef-glt_fade-out-slider",  
-        template: VEComponents.get("numeric-slider-button"),
-        layout: VELayouts.get("numeric-slider-button"),
+        template: VEComponents.get("numeric-slider"),
+        layout: VELayouts.get("numeric-slider"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "" },
-          decrease: {
-            factor: -0.1,
-            minValue: 0.0,
-            maxValue: 1.0,
-            store: { key: "ef-glt_fade-out" },
-            enable: { key: "ef-glt_use-fade-out" },
-            label: { text: "-" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.primaryLight,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
           slider: {
             minValue: 0.0,
             maxValue: 1.0,
             snapValue: 0.01 / 1.0,
             store: { key: "ef-glt_fade-out" },
             enable: { key: "ef-glt_use-fade-out" },
-          },
-          increase: {
-            factor: 0.1,
-            minValue: 0.0,
-            maxValue: 1.0,
-            store: { key: "ef-glt_fade-out" },
-            enable: { key: "ef-glt_use-fade-out" },
-            label: { text: "+" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.primaryLight,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
           },
         },
       },
@@ -235,11 +200,12 @@ function brush_effect_glitch(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Line",
-            enable: { key: "ef-glt_use-config" },
-            //backgroundColor: VETheme.color.side,
+            color: VETheme.color.textShadow,
+            //enable: { key: "ef-glt_use-config" },
+            backgroundColor: VETheme.color.side,
           },
-          //input: { backgroundColor: VETheme.color.side },
-          //checkbox: { backgroundColor: VETheme.color.side },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
@@ -249,7 +215,7 @@ function brush_effect_glitch(json = null) {
         config: { 
           layout: {
             type: UILayoutType.VERTICAL,
-            margin: { top: 4.0 },
+            //margin: { top: 4.0 },
           },
           label: { 
             text: "Speed",
@@ -414,6 +380,12 @@ function brush_effect_glitch(json = null) {
         }
       },
       {
+        name: "ef-glt_jumb-title_line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "ef-glt_jumb-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -421,11 +393,12 @@ function brush_effect_glitch(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Jumble",
-            enable: { key: "ef-glt_use-config" },
-            //backgroundColor: VETheme.color.side,
+            color: VETheme.color.textShadow,
+            //enable: { key: "ef-glt_use-config" },
+            backgroundColor: VETheme.color.side,
           },
-          //input: { backgroundColor: VETheme.color.side },
-          //checkbox: { backgroundColor: VETheme.color.side },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
@@ -435,7 +408,7 @@ function brush_effect_glitch(json = null) {
         config: {
           layout: {
             type: UILayoutType.VERTICAL,
-            margin: { top: 4.0 },
+            //margin: { top: 4.0 },
           },
           label: {
             text: "Speed",
@@ -567,6 +540,12 @@ function brush_effect_glitch(json = null) {
         }
       },
       {
+        name: "ef-glt_shd-title_line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "ef-glt_shd-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -574,11 +553,12 @@ function brush_effect_glitch(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Shader",
-            enable: { key: "ef-glt_use-config" },
-            //backgroundColor: VETheme.color.side,
+            color: VETheme.color.textShadow,
+            //enable: { key: "ef-glt_use-config" },
+            backgroundColor: VETheme.color.side,
           },
-          //input: { backgroundColor: VETheme.color.side },
-          //checkbox: { backgroundColor: VETheme.color.side },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
@@ -588,7 +568,7 @@ function brush_effect_glitch(json = null) {
         config: {
           layout: {
             type: UILayoutType.VERTICAL,
-            margin: { top: 4.0 },
+            //margin: { top: 4.0 },
           },
           label: {
             text: "Dispersion",

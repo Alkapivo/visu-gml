@@ -32,6 +32,7 @@ function migrateViewOldLyricsEvent(json) {
     "vw-sub_change-spd": Struct.getIfType(json, "view-lyrics_use-transform-speed", Boolean, false),
     "vw-sub-fade-in": Struct.getIfType(json, "view-lyrics_fade-in", Number, 1.0),
     "vw-sub-fade-out": Struct.getIfType(json, "view-lyrics_fade-out", Number, 1.0),
+    "vw-sub_use-area-preview": true,
   }
 }
 

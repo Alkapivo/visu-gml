@@ -424,7 +424,7 @@ function brush_grid_config(json) {
           layout: { type: UILayoutType.VERTICAL },
           value: {
             label: {
-              text: "Z position",
+              text: "Grid Z",
               font: "font_inter_10_bold",
               color: VETheme.color.textShadow,
               //enable: { key: "gr-cfg_use-z" },

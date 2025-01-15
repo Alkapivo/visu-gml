@@ -68,13 +68,29 @@ function brush_entity_coin(json) {
     }),
     components: new Array(Struct, [
       {
+        name: "en-coin_template",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Coin" },
+          field: { store: { key: "en-coin_template" } },
+        },
+      },
+      {
+        name: "en-coin_template-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "en-coin_preview",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Preview spawn position",
+            text: "Render spawn position",
             enable: { key: "en-coin_preview" },
             backgroundColor: VETheme.color.accentShadow,
             updateCustom: function() {
@@ -180,90 +196,31 @@ function brush_entity_coin(json) {
         },
       },
       {
-        name: "en-coin_template",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Coin" },
-          field: { store: { key: "en-coin_template" } },
-        },
-      },
-      {
-        name: "en-coin_x-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { layout: { type: UILayoutType.VERTICAL } },
-      },
-      {
         name: "en-coin_x-slider",  
-        template: VEComponents.get("numeric-slider-button"),
-        layout: VELayouts.get("numeric-slider-button"),
+        template: VEComponents.get("numeric-slider"),
+        layout: VELayouts.get("numeric-slider"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 2 },
+          },
           label: { 
             text: "X",
             font: "font_inter_10_bold",
             offset: { y: 14 },
           }, 
-          decrease: {
-            factor: -1.0,
-            minValue: -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2),
-            maxValue: SHROOM_SPAWN_CHANNEL_AMOUNT / 2,
-            store: { key: "en-coin_x" },
-            label: { text: "-" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.primaryLight,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
           slider: {
             minValue: -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2),
             maxValue: SHROOM_SPAWN_CHANNEL_AMOUNT / 2,
             snapValue: 0.1,
             store: { key: "en-coin_x" },
           },
-          increase: {
-            factor: 1.0,
-            minValue: -1.0 * (SHROOM_SPAWN_CHANNEL_AMOUNT / 2),
-            maxValue: SHROOM_SPAWN_CHANNEL_AMOUNT / 2,
-            store: { key: "en-coin_x" },
-            label: { text: "+" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.primaryLight,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
         },
       },
       {
         name: "en-coin_x",
         template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-stick-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -279,7 +236,6 @@ function brush_entity_coin(json) {
             store: { key: "en-coin_x" },
             factor: 0.25,
           },
-          field: { store: { key: "en-coin_x" } },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
@@ -293,8 +249,8 @@ function brush_entity_coin(json) {
       },
       {
         name: "en-coin_rng-x",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -315,6 +271,11 @@ function brush_entity_coin(json) {
             enable: { key: "en-coin_use-rng-x" },
             factor: 0.25,
           },
+          stick: {
+            store: { key: "en-coin_rng-x" },
+            enable: { key: "en-coin_use-rng-x" },
+            factor: 0.01,
+          },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
@@ -327,80 +288,35 @@ function brush_entity_coin(json) {
         },
       },
       {
-        name: "en-coin_y-line-h",
+        name: "en-coin_rng-x-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "en-coin_y-slider",  
-        template: VEComponents.get("numeric-slider-button"),
-        layout: VELayouts.get("numeric-slider-button"),
+        template: VEComponents.get("numeric-slider"),
+        layout: VELayouts.get("numeric-slider"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Y",
+            color: VETheme.color.textShadow,
             font: "font_inter_10_bold",
             offset: { y: 14 },
           },  
-          decrease: {
-            factor: -1.0,
-            minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
-            maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
-            store: { key: "en-coin_y" },
-            label: { text: "-" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.primaryLight,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
           slider: {
             minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
             maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
             snapValue: 0.1,
             store: { key: "en-coin_y" },
           },
-          increase: {
-            factor: 1.0,
-            minValue: -1.0 * (SHROOM_SPAWN_ROW_AMOUNT / 2),
-            maxValue: SHROOM_SPAWN_ROW_AMOUNT / 2,
-            store: { key: "en-coin_y" },
-            label: { text: "+" },
-            backgroundColor: VETheme.color.primary,
-            backgroundColorSelected: VETheme.color.primaryLight,
-            backgroundColorOut: VETheme.color.primary,
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-            callback: function() {
-              this.store.set(clamp(this.store.getValue() + this.factor, this.minValue, this.maxValue))
-            },
-          },
         },
       },
       {
         name: "en-coin_y",
         template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-stick-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -430,8 +346,8 @@ function brush_entity_coin(json) {
       },
       {
         name: "en-coin_rng-y",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -451,6 +367,11 @@ function brush_entity_coin(json) {
             store: { key: "en-coin_rng-y" },
             enable: { key: "en-coin_use-rng-y" },
             factor: 0.25,
+          },
+          stick: {
+            store: { key: "en-coin_rng-y" },
+            enable: { key: "en-coin_use-rng-y" },
+            factor: 0.01,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },

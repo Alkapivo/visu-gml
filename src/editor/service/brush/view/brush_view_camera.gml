@@ -223,7 +223,7 @@ function brush_view_camera(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: {
-            text: "Follow",
+            text: "Follow player",
             enable: { key: "vw-cam_follow" },
           },
           checkbox: { 
@@ -235,12 +235,15 @@ function brush_view_camera(json) {
       },
       {
         name: "vw-cam_follow-x",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: {
-          layout: { type: UILayoutType.VERTICAL},
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           label: { 
-            text: "X margin",
+            text: "Margin X",
             enable: { key: "vw-cam_use-follow-x" },
           },
           field: { 
@@ -250,9 +253,14 @@ function brush_view_camera(json) {
           decrease: {
             store: { key: "vw-cam_follow-x" },
             enable: { key: "vw-cam_use-follow-x" },
-            factor: -0.001,
+            factor: -0.01,
           },
           increase: {
+            store: { key: "vw-cam_follow-x" },
+            enable: { key: "vw-cam_use-follow-x" },
+            factor: 0.01,
+          },
+          stick: {
             store: { key: "vw-cam_follow-x" },
             enable: { key: "vw-cam_use-follow-x" },
             factor: 0.001,
@@ -263,19 +271,19 @@ function brush_view_camera(json) {
             store: { key: "vw-cam_use-follow-x" },
           },
           title: { 
-            text: "Enable",
+            text: "Override",
             enable: { key: "vw-cam_use-follow-x" },
           },
         }
       },
       {
         name: "vw-cam_follow-y",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: {
           layout: { type: UILayoutType.VERTICAL},
           label: { 
-            text: "Y margin",
+            text: "Margin Y",
             enable: { key: "vw-cam_use-follow-y" },
           },
           field: { 
@@ -285,9 +293,14 @@ function brush_view_camera(json) {
           decrease: {
             store: { key: "vw-cam_follow-y" },
             enable: { key: "vw-cam_use-follow-y" },
-            factor: -0.001,
+            factor: -0.01,
           },
           increase: {
+            store: { key: "vw-cam_follow-y" },
+            enable: { key: "vw-cam_use-follow-y" },
+            factor: 0.01,
+          },
+          stick: {
             store: { key: "vw-cam_follow-y" },
             enable: { key: "vw-cam_use-follow-y" },
             factor: 0.001,
@@ -298,15 +311,15 @@ function brush_view_camera(json) {
             store: { key: "vw-cam_use-follow-y" },
           },
           title: { 
-            text: "Enable",
+            text: "Override",
             enable: { key: "vw-cam_use-follow-y" },
           },
         }
       },
       {
         name: "vw-cam_follow-smooth",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: {
           layout: { type: UILayoutType.VERTICAL},
           label: { 
@@ -327,13 +340,18 @@ function brush_view_camera(json) {
             enable: { key: "vw-cam_use-follow-smooth" },
             factor: 0.25,
           },
+          stick: {
+            store: { key: "vw-cam_follow-smooth" },
+            enable: { key: "vw-cam_use-follow-smooth" },
+            factor: 0.01,
+          },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "vw-cam_use-follow-smooth" },
           },
           title: { 
-            text: "Enable",
+            text: "Override",
             enable: { key: "vw-cam_use-follow-smooth" },
           },
         }
@@ -363,13 +381,16 @@ function brush_view_camera(json) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
               text: "Camera X",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-cam_use-x" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-cam_use-x" },
             },
             field: {
               store: { key: "vw-cam_x" },
@@ -482,8 +503,8 @@ function brush_view_camera(json) {
             label: {
               text: "Camera Y",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-cam_use-y" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-cam_use-y" },
             },
             field: {
               store: { key: "vw-cam_y" },
@@ -596,8 +617,8 @@ function brush_view_camera(json) {
             label: {
               text: "Camera Z",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-cam_use-z" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-cam_use-z" },
             },
             field: {
               store: { key: "vw-cam_z" },
@@ -710,8 +731,8 @@ function brush_view_camera(json) {
             label: {
               text: "Angle",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-cam_use-dir" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-cam_use-dir" },
             },
             field: {
               store: { key: "vw-cam_dir" },
@@ -823,9 +844,9 @@ function brush_view_camera(json) {
           value: {
             label: {
               text: "Pitch",
-              enable: { key: "vw-cam_use-pitch" },
+              //enable: { key: "vw-cam_use-pitch" },
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
+              color: VETheme.color.textShadow,
             },
             field: {
               store: { key: "vw-cam_pitch" },
@@ -947,13 +968,16 @@ function brush_view_camera(json) {
         template: VEComponents.get("number-transformer-increase-checkbox"),
         layout: VELayouts.get("number-transformer-increase-checkbox"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
           value: {
             label: {
               text: "Angle",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-cam_use-move-angle" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-cam_use-move-angle" },
             },
             field: {
               store: { key: "vw-cam_move-angle" },
@@ -1066,8 +1090,8 @@ function brush_view_camera(json) {
             label: {
               text: "Speed",
               font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              enable: { key: "vw-cam_use-move-speed" },
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-cam_use-move-speed" },
             },
             field: {
               store: { key: "vw-cam_move-speed" },
