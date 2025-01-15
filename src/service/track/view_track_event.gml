@@ -262,7 +262,7 @@ global.__view_track_event = {
           collection: type == WallpaperType.BACKGROUND
             ? overlayRenderer.backgroundColors
             : overlayRenderer.foregroundColors,
-          color: ColorUtil.fromHex(Struct.get(data, "vw-layer_col")),
+          color: Struct.get(data, "vw-layer_col"),
           fadeInDuration: Struct.get(data, "vw-layer_fade-in"),
           fadeOutDuration: Struct.get(data, "vw-layer_fade-out"),
           blendModeSource: BlendModeExt.get(Struct.get(data, "vw-layer_blend-src")),
@@ -385,6 +385,7 @@ global.__view_track_event = {
         "vw-sub_change-spd": Struct.parse.boolean(data, "vw-sub_change-spd"),
         "vw-sub-fade-in": Struct.parse.number(data, "vw-sub_fade-in", 0.0, 999.9),
         "vw-sub-fade-out": Struct.parse.number(data, "vw-sub_fade-out", 0.0, 999.9),
+        "vw-sub_use-area-preview": Struct.parse.boolean(data, "vw-sub_use-area-preview"),
       }
     },
     run: function(data) {
