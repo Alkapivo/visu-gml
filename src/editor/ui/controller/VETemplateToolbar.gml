@@ -1293,11 +1293,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     },
                     finish: function(task) {
                       task.fullfill()
-                      if (Optional.is(task.state.inspector) 
-                          && Optional.is(task.state.inspector.updateTimer)) {
-                        ///@updateTimerNow
-                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
-                      }
+                      task.state.inspector.finishUpdateTimer()
                     },
                   })
                   .whenUpdate(function(executor) {
@@ -1426,11 +1422,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     },
                     finish: function(task) {
                       task.fullfill()
-                      if (Optional.is(task.state.inspector) 
-                          && Optional.is(task.state.inspector.updateTimer)) {
-                        ///@updateTimerNow
-                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
-                      }
+                      task.state.inspector.finishUpdateTimer()
                     },
                   })
                   .whenUpdate(function(executor) {
@@ -1559,11 +1551,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     },
                     finish: function(task) {
                       task.fullfill()
-                      if (Optional.is(task.state.inspector) 
-                          && Optional.is(task.state.inspector.updateTimer)) {
-                        ///@updateTimerNow
-                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
-                      }
+                      task.state.inspector.finishUpdateTimer()
                     },
                   })
                   .whenUpdate(function(executor) {
@@ -1692,11 +1680,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     },
                     finish: function(task) {
                       task.fullfill()
-                      if (Optional.is(task.state.inspector) 
-                          && Optional.is(task.state.inspector.updateTimer)) {
-                        ///@updateTimerNow
-                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
-                      }
+                      task.state.inspector.finishUpdateTimer()
                     },
                   })
                   .whenUpdate(function(executor) {
@@ -1825,11 +1809,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     },
                     finish: function(task) {
                       task.fullfill()
-                      if (Optional.is(task.state.inspector) 
-                          && Optional.is(task.state.inspector.updateTimer)) {
-                        ///@updateTimerNow
-                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
-                      }
+                      task.state.inspector.finishUpdateTimer()
                     },
                   })
                   .whenUpdate(function(executor) {
@@ -1958,11 +1938,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     },
                     finish: function(task) {
                       task.fullfill()
-                      if (Optional.is(task.state.inspector) 
-                          && Optional.is(task.state.inspector.updateTimer)) {
-                        ///@updateTimerNow
-                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
-                      }
+                      task.state.inspector.finishUpdateTimer()
                     },
                   })
                   .whenUpdate(function(executor) {
@@ -2090,11 +2066,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     },
                     finish: function(task) {
                       task.fullfill()
-                      if (Optional.is(task.state.inspector) 
-                          && Optional.is(task.state.inspector.updateTimer)) {
-                        ///@updateTimerNow
-                        task.state.inspector.updateTimer.time = task.state.inspector.updateTimer.duration + random(task.state.inspector.updateTimer.duration / 2.0)
-                      }
+                      task.state.inspector.finishUpdateTimer()
                     },
                   })
                   .whenUpdate(function(executor) {
@@ -2347,45 +2319,18 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   yMax: data.offsetMax.y,
                 },
                 "load-components": function(task) {
-                  static factoryComponent = function(component, index, acc) {
-                    static add = function(item, index, acc) {
-                      if (item.type == UITextField) {
-                        var textField = item.textField
-                        if (Optional.is(acc.textField)) {
-                          acc.textField.setNext(textField)
-                          textField.setPrevious(acc.textField)
-                        }
-                        acc.textField = textField
-                      }
-              
-                      acc.context.add(item, item.name)
-                      //if (Optional.is(item.updateArea)) {
-                      //  item.updateArea()
-                      //}
-                    }
-              
-                    acc.layout = component
-                      .toUIItems(acc.layout)
-                      .forEach(add, acc)
-                      .getLast().layout.context
-                  }
-
                   repeat (TEMPLATE_TOOLBAR_ENTRY_STEP) {
                     var index = task.state.componentsQueue.pop()
                     if (!Optional.is(index)) {
                       task.fullfill()
                       task.state.context.state.set("previousOffset", task.state.previousOffset)
-                      if (Optional.is(task.state.context.updateTimer)) {
-
-                        ///@updateTimerNow
-                        task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
-                      }
+                      task.state.context.finishUpdateTimer()
 
                       break
                     }
   
                     var component = new UIComponent(task.state.components.get(index))
-                    factoryComponent(component, index, task.state.componentsConfig)
+                    task.state.context.addUIComponent(component, index, task.state.componentsConfig)
                   }
                 },
               })

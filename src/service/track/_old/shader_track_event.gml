@@ -73,11 +73,11 @@ global.__shader_track_event = {
       if (Struct.get(data, "shader-overlay_use-transform-support-grid-treshold") == true) {
         var transformer = Struct.get(data, "shader-overlay_transform-support-grid-treshold")
         controller.gridService.send(new Event("transform-property", {
-          key: "renderSupportGridTreshold",
+          key: "supportGridTreshold",
           container: controller.gridService.properties,
           executor: controller.gridService.executor,
           transformer: new NumberTransformer({
-            value: controller.gridService.properties.renderSupportGridTreshold,
+            value: controller.gridService.properties.supportGridTreshold,
             target: transformer.target,
             factor: transformer.factor,
             increase: transformer.increase,
@@ -88,11 +88,11 @@ global.__shader_track_event = {
       if (Struct.get(data, "shader-overlay_use-transform-support-grid-alpha") == true) {
         var transformer = Struct.get(data, "shader-overlay_transform-support-grid-alpha")
         controller.gridService.send(new Event("transform-property", {
-          key: "renderSupportGridAlpha",
+          key: "supportGridAlpha",
           container: controller.gridService.properties,
           executor: controller.gridService.executor,
           transformer: new NumberTransformer({
-            value: controller.gridService.properties.renderSupportGridAlpha,
+            value: controller.gridService.properties.supportGridAlpha,
             target: transformer.target,
             factor: transformer.factor,
             increase: transformer.increase,

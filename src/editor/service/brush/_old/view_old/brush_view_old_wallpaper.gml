@@ -65,8 +65,6 @@ function migrateViewOldWallpaperEvent(json) {
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_view_old_wallpaper(json = null) {
-
-  ///@migration
   if (Struct.getIfType(json, "view-wallpaper_use-texture-speed", Boolean, false)) {
     Struct.set(
       Struct.get(json, "view-wallpaper_texture"), 

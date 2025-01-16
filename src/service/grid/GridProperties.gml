@@ -188,12 +188,16 @@ function GridProperties(config = {}) constructor {
     .getDefault(config, "properties.renderSupportGrid", true), Boolean)
 
   ///@type {Number}
-  renderSupportGridTreshold = Assert.isType(Struct
-    .getDefault(config, "properties.renderSupportGridTreshold", 2), Number)
+  supportGridTreshold = Assert.isType(Struct
+    .getDefault(config, "properties.supportGridTreshold", 2), Number)
 
   ///@type {Number}
-  renderSupportGridAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.renderSupportGridAlpha", 0.33), Number)
+  supportGridAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.supportGridAlpha", 0.33), Number)
+
+  ///@type {Color}
+  supportGridBlendColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.supportGridColor", "#ffffff")), Color)
 
   ///@type {BlendConfig}
   supportGridBlendConfig = new BlendConfig(Struct

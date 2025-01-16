@@ -95,10 +95,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             node.percentageWidth = abs(GuiWidth() - position) / GuiWidth()
 
             var events = editor.uiService.find("ve-timeline-events")
-            if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
-              ///@updateTimerAlmost
+            if (Optional.is(events)) {
               UIUtil.clampUpdateTimerToCooldown(events, "ve-timeline-events", this.context.updateTimerCooldown)
-              //events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
             }
           }),
           onMousePressedLeft: function(event) {
@@ -1005,8 +1003,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               item.backgroundColor = ColorUtil.fromHex(item.colorHoverOut).toGMColor()
             })
 
-            ///@updateTimerNow
-            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+            this.finishUpdateTimer()
             this.areaWatchdog.signal()
           }
         }
@@ -1272,44 +1269,16 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   textField: null,
                 },
                 "load-components": function(task) {
-                  static factoryComponent = function(component, index, acc) {
-                    static add = function(item, index, acc) {
-                      if (item.type == UITextField) {
-                        var textField = item.textField
-                        if (Optional.is(acc.textField)) {
-                          acc.textField.setNext(textField)
-                          textField.setPrevious(acc.textField)
-                        }
-                        acc.textField = textField
-                      }
-              
-                      acc.context.add(item, item.name)
-                      //if (Optional.is(item.updateArea)) {
-                      //  item.updateArea()
-                      //}
-                    }
-              
-                    acc.layout = component
-                      .toUIItems(acc.layout)
-                      .forEach(add, acc)
-                      .getLast().layout.context
-                  }
-
                   repeat (BRUSH_TOOLBAR_ENTRY_STEP) {
                     var index = task.state.componentsQueue.pop()
                     if (!Optional.is(index)) {
                       task.fullfill()
-                      if (Optional.is(task.state.context.updateTimer)) {
-
-                        ///@updateTimerNow
-                        task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
-                      }
-
+                      task.state.context.finishUpdateTimer()
                       break
                     }
   
                     var component = new UIComponent(task.state.components.get(index))
-                    factoryComponent(component, index, task.state.componentsConfig)
+                    task.state.context.addUIComponent(component, index, task.state.componentsConfig)
                   }
                 },
               })
@@ -1382,14 +1351,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
                 
                 var brushToolbar = this.context.brushToolbar
-                var inspector = brushToolbar.containers
-                  .get("ve-brush-toolbar_inspector-view")
-
-                if (Core.isType(inspector, UI) 
-                  && Optional.is(inspector.updateTimer)) {
-                  ///@updateTimerNow
-                  inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
+                var inspector = brushToolbar.containers.get("ve-brush-toolbar_inspector-view")
+                if (!Optional.is(inspector)) {
+                  return 
                 }
+
+                inspector.finishUpdateTimer()
 
                 if (Optional.is(inspector.updateArea)) {
                   inspector.updateArea()
@@ -1742,13 +1709,9 @@ function VEBrushToolbar(_editor) constructor {
 
               template.set(foundTemplate)
 
-              var inspector = this.context.brushToolbar.containers
-                .get("ve-brush-toolbar_inspector-view")
-
-              if (Core.isType(inspector, UI) 
-                && Optional.is(inspector.updateTimer)) {
-                ///@updateTimerNow
-                inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
+              var inspector = this.context.brushToolbar.containers.get("ve-brush-toolbar_inspector-view")
+              if (Optional.is(inspector)) {
+                inspector.finishUpdateTimer()
               }
             }
           },
@@ -1789,13 +1752,9 @@ function VEBrushToolbar(_editor) constructor {
 
               template.set(foundTemplate)
 
-              var inspector = this.context.brushToolbar.containers
-                .get("ve-brush-toolbar_inspector-view")
-
-              if (Core.isType(inspector, UI) 
-                && Optional.is(inspector.updateTimer)) {
-                ///@updateTimerNow
-                inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
+              var inspector = this.context.brushToolbar.containers.get("ve-brush-toolbar_inspector-view")
+              if (Optional.is(inspector)) {
+                inspector.finishUpdateTimer()
               }
             }
           },

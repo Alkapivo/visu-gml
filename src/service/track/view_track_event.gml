@@ -75,42 +75,42 @@ global.__view_track_event = {
       var lock = gridService.targetLocked
       var follow = gridService.view.follow
 
-      ///@feature TODO view.camera.lock.x
+      ///@description feature TODO view.camera.lock.x
       Visu.resolveBooleanTrackEvent(data,
         "vw-cam_use-lock-x",
         "vw-cam_lock-x",
         "isLockedX",
         lock)
 
-      ///@feature TODO view.camera.lock.y
+      ///@description feature TODO view.camera.lock.y
       Visu.resolveBooleanTrackEvent(data,
         "vw-cam_use-lock-y",
         "vw-cam_lock-y",
         "isLockedY",
         lock)
 
-      ///@feature TODO view.camera.follow.x
+      ///@description feature TODO view.camera.follow.x
       Visu.resolvePropertyTrackEvent(data,
         "vw-cam_use-follow-x",
         "vw-cam_follow-x",
         "xMargin",
         follow)
 
-      ///@feature TODO view.camera.follow.y
+      ///@description feature TODO view.camera.follow.y
       Visu.resolvePropertyTrackEvent(data,
         "vw-cam_use-follow-y",
         "vw-cam_follow-y",
         "yMargin",
         follow)
 
-      ///@feature TODO view.camera.follow.smooth
+      ///@description feature TODO view.camera.follow.smooth
       Visu.resolvePropertyTrackEvent(data,
         "vw-cam_use-follow-smooth",
         "vw-cam_follow-smooth",
         "smooth",
         follow)
 
-      ///@feature TODO view.camera.x
+      ///@description feature TODO view.camera.x
       Visu.resolveNumberTransformerTrackEvent(data, 
         "vw-cam_use-x",
         "vw-cam_x",
@@ -118,7 +118,7 @@ global.__view_track_event = {
         "x",
         camera, pump, executor)
 
-      ///@feature TODO view.camera.y
+      ///@description feature TODO view.camera.y
       Visu.resolveNumberTransformerTrackEvent(data, 
         "vw-cam_use-y",
         "vw-cam_y",
@@ -126,7 +126,7 @@ global.__view_track_event = {
         "y",
         camera, pump, executor)
       
-      ///@feature TODO view.camera.z
+      ///@description feature TODO view.camera.z
       Visu.resolveNumberTransformerTrackEvent(data, 
         "vw-cam_use-z",
         "vw-cam_z",
@@ -134,7 +134,7 @@ global.__view_track_event = {
         "z",
         camera, pump, executor)
 
-      ///@feature TODO view.camera.dir
+      ///@description feature TODO view.camera.dir
       Visu.resolveNumberTransformerTrackEvent(data, 
         "vw-cam_use-dir",
         "vw-cam_dir",
@@ -142,7 +142,7 @@ global.__view_track_event = {
         "angle",
         camera, pump, executor)
 
-      ///@feature TODO view.camera.pitch
+      ///@description feature TODO view.camera.pitch
       Visu.resolveNumberTransformerTrackEvent(data, 
         "vw-cam_use-pitch",
         "vw-cam_pitch",
@@ -247,12 +247,12 @@ global.__view_track_event = {
       var overlayRenderer = controller.visuRenderer.gridRenderer.overlayRenderer
       var type = Struct.get(data, "vw-layer_type")
 
-      ///@feature TODO view.layer.color.clear
+      ///@description feature TODO view.layer.color.clear
       if (Struct.get(data, "vw-layer_cls-col")) {
         executor.tasks.forEach(fadeOutTask, type)
       }
 
-      ///@feature TODO view.layer.color
+      ///@description feature TODO view.layer.color
       Visu.resolveSendEventTrackEvent(data,
         "vw-layer_use-col",
         "fade-color",
@@ -272,7 +272,7 @@ global.__view_track_event = {
         pump)
       
 
-      ///@feature TODO view.layer.texture.clear
+      ///@description feature TODO view.layer.texture.clear
       if (Struct.get(data, "vw-layer_cls-texture")) {
         executor.tasks.forEach(fadeOutTask, type)
       }
@@ -302,7 +302,7 @@ global.__view_track_event = {
         lastYScale = Optional.is(yScaleTransformer) ? yScaleTransformer.value : lastTask.state.get("yScale")
         lastYScale = Core.isType(lastYScale, Number) ? lastYScale : 1.0
       }
-      ///@feature TODO view.layer.texture
+      ///@description feature TODO view.layer.texture
       Visu.resolveSendEventTrackEvent(data,
         "vw-layer_use-texture",
         "fade-sprite",
@@ -391,7 +391,7 @@ global.__view_track_event = {
     run: function(data) {
       var subtitleService = Beans.get(BeanVisuController).subtitleService
 
-      ///@feature TODO view.subtitle.add
+      ///@description feature TODO view.subtitle.add
       subtitleService.send(new Event("add", {
         template: Struct.get(data, "vw-sub_template"),
         font: FontUtil.fetch(Struct.get(data, "vw-sub_font")),
@@ -498,62 +498,62 @@ global.__view_track_event = {
       var executor = gridService.executor
       var overlayRenderer = controller.visuRenderer.gridRenderer.overlayRenderer
 
-      ///@feature TODO view.hud.render
+      ///@description feature TODO view.hud.render
       Visu.resolveBooleanTrackEvent(data,
         "vw-cfg_use-render-hud",
         "vw-cfg_render-hud",
         "enabled",
         controller.visuRenderer.hudRenderer)
 
-      ///@feature TODO view.subtitle.render
+      ///@description feature TODO view.subtitle.render
       Visu.resolveBooleanTrackEvent(data,
         "vw-cfg_use-render-subtitle",
         "vw-cfg_render-subtitle",
         "renderSubtitles",
         properties)
 
-      ///@feature TODO view.video.render
+      ///@description feature TODO view.video.render
       Visu.resolveBooleanTrackEvent(data,
         "vw-cfg_use-render-video",
         "vw-cfg_render-video",
         "renderVideo",
         properties)
 
-      ///@feature TODO view.video.render-after
+      ///@description feature TODO view.video.render-after
       Visu.resolveBooleanTrackEvent(data,
         "vw-cfg_use-render-video-after",
         "vw-cfg_render-video-after",
         "renderVideoAfter",
         properties)
 
-      ///@feature TODO view.subtitle.clear
+      ///@description feature TODO view.subtitle.clear
       Visu.resolveSendEventTrackEvent(data,
         "vw-cfg_cls-subtitle",
         "clear-subtitle",
         null,
         controller.subtitleService.dispatcher)
 
-      ///@feature TODO view.bkg-texture.clear
+      ///@description feature TODO view.bkg-texture.clear
       if (Struct.get(data, "vw-cfg_cls-bkg-texture")) {
         overlayRenderer.backgrounds.clear()
       }
 
-      ///@feature TODO view.bkg-col.clear
+      ///@description feature TODO view.bkg-col.clear
       if (Struct.get(data, "vw-cfg_cls-bkg-col")) {
         overlayRenderer.backgroundColors.clear()
       }
 
-      ///@feature TODO view.frg-texture.clear
+      ///@description feature TODO view.frg-texture.clear
       if (Struct.get(data, "vw-cfg_cls-frg-texture")) {
         overlayRenderer.foregrounds.clear()
       }
 
-      ///@feature TODO view.frg-col.clear
+      ///@description feature TODO view.frg-col.clear
       if (Struct.get(data, "vw-cfg_cls-frg-col")) {
         overlayRenderer.foregroundColors.clear()
       }
 
-      ///@feature TODO view.video.alpha
+      ///@description feature TODO view.video.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "vw-cfg_use-video-alpha",
         "vw-cfg_video-alpha",
@@ -561,7 +561,7 @@ global.__view_track_event = {
         "videoAlpha",
         properties, pump, executor)
 
-      ///@feature TODO grid.column.side.color
+      ///@description feature TODO grid.column.side.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "vw-cfg_video-use-blend-col",
         "vw-cfg_video-blend-col",
@@ -569,7 +569,7 @@ global.__view_track_event = {
         "videoBlendColor",
         properties, pump, executor)
 
-      ///@feature TODO view.video.blend
+      ///@description feature TODO view.video.blend-config
       Visu.resolveBlendConfigTrackEvent(data,
         "vw-cfg_video-use-blend",
         "vw-cfg_video-blend-src",

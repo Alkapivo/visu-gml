@@ -43,7 +43,7 @@ global.__shroom_track_event = {
 
       controller.shroomService.send(new Event("spawn-shroom", shroom))
       
-      ///@ecs
+      ///@description ecs
       /*
       var controller = Beans.get(BeanVisuController)
       controller.gridECS.add(new GridEntity({

@@ -69,7 +69,7 @@ global.__effect_track_event = {
         }
       }
 
-      ///@feature effect.shader.spawn
+      ///@description feature effect.shader.spawn
       getPipeline(data, "ef-shd_pipeline").send(new Event("spawn-shader", {
         template: Struct.get(data, "ef-shd_template"),
         duration: Struct.get(data, "ef-shd_duration"),
@@ -109,7 +109,7 @@ global.__effect_track_event = {
     run: function(data) {
       var pump = Beans.get(BeanVisuController).visuRenderer.gridRenderer.glitchService.dispatcher
 
-      ///@feature TODO effect.glitch.config
+      ///@description feature TODO effect.glitch.config
       if (Struct.get(data, "ef-glt_use-config")) {
         pump.execute(new Event("load-config", {
           lineSpeed: {
@@ -190,7 +190,7 @@ global.__effect_track_event = {
         }))
       }
 
-      ///@feature TODO effect.glitch.spawn
+      ///@description feature TODO effect.glitch.spawn
       pump.execute(new Event("spawn", { 
         factor: (Struct.get(data, "ef-glt_use-fade-out")  ///@todo NumberTransformer
           ? (Struct.get(data, "ef-glt_fade-out") / 100.0) 
@@ -219,7 +219,7 @@ global.__effect_track_event = {
       var particleService = Beans.get(BeanVisuController).particleService
       var area = Struct.get(data, "ef-part_area")
 
-      ///@feature TODO effect.particle.spawn
+      ///@description feature TODO effect.particle.spawn
       particleService.send(particleService
         .factoryEventSpawnParticleEmitter(
           {
@@ -274,35 +274,35 @@ global.__effect_track_event = {
       var pump = gridService.dispatcher
       var executor = gridService.executor
       
-      ///@feature TODO effect.shader.bkg.render
+      ///@description feature TODO effect.shader.bkg.render
       Visu.resolveBooleanTrackEvent(data,
         "ef-cfg_use-render-shd-bkg",
         "ef-cfg_render-shd-bkg",
         "renderBackgroundShaders",
         properties)
 
-      ///@feature TODO effect.shader.grid.render
+      ///@description feature TODO effect.shader.grid.render
       Visu.resolveBooleanTrackEvent(data,
         "ef-cfg_use-render-shd-gr",
         "ef-cfg_render-shd-gr",
         "renderGridShaders",
         properties)
 
-      ///@feature TODO effect.shader.all.render
+      ///@description feature TODO effect.shader.all.render
       Visu.resolveBooleanTrackEvent(data,
         "ef-cfg_use-render-shd-all",
         "ef-cfg_render-shd-all",
         "renderCombinedShaders",
         properties)
 
-      ///@feature TODO effect.shader.all.render
+      ///@description feature TODO effect.shader.all.render
       Visu.resolveBooleanTrackEvent(data,
         "ef-cfg_use-cls-frame",
         "ef-cfg_cls-frame",
         "shaderClearFrame",
         properties)
 
-      ///@feature TODO effect.shader.frame.color
+      ///@description feature TODO effect.shader.frame.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "ef-cfg_use-cls-frame-col",
         "ef-cfg_cls-frame-col",
@@ -310,7 +310,7 @@ global.__effect_track_event = {
         "shaderClearColor",
         properties, pump, executor)
 
-      ///@feature TODO effect.shader.frame.alpha
+      ///@description feature TODO effect.shader.frame.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "ef-cfg_use-cls-frame-alpha",
         "ef-cfg_cls-frame-alpha",
@@ -318,21 +318,21 @@ global.__effect_track_event = {
         "shaderClearFrameAlpha",
         properties, pump, executor)
 
-      ///@feature TODO shader-pipeline.background.clear
+      ///@description feature TODO shader-pipeline.background.clear
       Visu.resolveSendEventTrackEvent(data, 
         "ef-cfg_cls-shd-bkg",
         "clear-shaders",
         null,
         controller.shaderBackgroundPipeline.dispatcher)
 
-      ///@feature TODO shader-pipeline.grid.clear
+      ///@description feature TODO shader-pipeline.grid.clear
       Visu.resolveSendEventTrackEvent(data, 
         "ef-cfg_cls-shd-gr",
         "clear-shaders",
         null,
         controller.shaderPipeline.dispatcher)
 
-      ///@feature TODO shader-pipeline.all.clear
+      ///@description feature TODO shader-pipeline.all.clear
       Visu.resolveSendEventTrackEvent(data, 
         "ef-cfg_cls-shd-all",
         "clear-shaders",

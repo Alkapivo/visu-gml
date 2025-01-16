@@ -38,7 +38,7 @@ global.__entity_track_event = {
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
 
-      ///@feature TODO entity.shroom.spawn
+      ///@description feature TODO entity.shroom.spawn
       controller.shroomService.send(new Event("spawn-shroom", {
         template: Struct.get(data, "en-shr_template"),
         speed: abs(Struct.get(data, "en-shr_spd")
@@ -71,7 +71,7 @@ global.__entity_track_event = {
         snapV: Struct.getDefault(data, "en-shr_snap-y", false),
       }))
       
-      ///@ecs
+      ///@description ecs
       /*
       var controller = Beans.get(BeanVisuController)
       controller.gridECS.add(new GridEntity({
@@ -129,7 +129,7 @@ global.__entity_track_event = {
         ? floor(view.y / (view.height / 2.0)) * (view.height / 2.0)
         : view.y
 
-      ///@feature TODO entity.coin.spawn
+      ///@description feature TODO entity.coin.spawn
       controller.coinService.send(new Event("spawn-coin", {
         template: Struct.get(data, "en-coin_template"),
         x: viewX + Struct.get(data, "en-coin_x")
@@ -212,7 +212,7 @@ global.__entity_track_event = {
     run: function(data) {
       var controller = Beans.get(BeanVisuController)
       
-      ///@feature TODO entity.player.spawn
+      ///@description feature TODO entity.player.spawn
       controller.playerService.send(new Event("spawn-player", {
         "sprite": Struct.get(data, "en-pl_texture").serialize(),
         "mask": Struct.get(data, "en-pl_mask").serialize(),
@@ -284,63 +284,63 @@ global.__entity_track_event = {
       var executor = gridService.executor
       var depths = properties.depths
 
-      ///@feature TODO grid.shroom.render
+      ///@description feature TODO grid.shroom.render
       Visu.resolveBooleanTrackEvent(data,
         "en-cfg_use-render-shr",
         "en-cfg_render-shr",
         "renderShrooms",
         properties)
 
-      ///@feature TODO grid.player.render
+      ///@description feature TODO grid.player.render
       Visu.resolveBooleanTrackEvent(data,
         "en-cfg_use-render-player",
         "en-cfg_render-player",
         "renderPlayer",
         properties)
 
-      ///@feature TODO grid.coin.render
+      ///@description feature TODO grid.coin.render
       Visu.resolveBooleanTrackEvent(data,
         "en-cfg_use-render-coin",
         "en-cfg_render-coin",
         "renderCoins",
         properties)
 
-      ///@feature TODO grid.bullet.render
+      ///@description feature TODO grid.bullet.render
       Visu.resolveBooleanTrackEvent(data,
         "en-cfg_use-render-bullet",
         "en-cfg_render-bullet",
         "renderBullets",
         properties)
 
-      ///@feature TODO grid.shroom.clear
+      ///@description feature TODO grid.shroom.clear
       Visu.resolveSendEventTrackEvent(data,
         "en-cfg_cls-shr",
         "clear-shrooms",
         null,
         controller.shroomService.dispatcher)
 
-      ///@feature TODO grid.player.clear
+      ///@description feature TODO grid.player.clear
       Visu.resolveSendEventTrackEvent(data,
         "en-cfg_cls-player",
         "clear-player",
         null,
         controller.playerService.dispatcher)
 
-      ///@feature TODO grid.coin.clear
+      ///@description feature TODO grid.coin.clear
       Visu.resolveSendEventTrackEvent(data,
         "en-cfg_cls-coin",
         "clear-coins",
         null,
         controller.coinService.dispatcher)
 
-      ///@feature TODO grid.bullets.clear
+      ///@description feature TODO grid.bullets.clear
       Visu.resolveSendEventTrackEvent(data,
         "en-cfg_cls-bullet",
         "clear-bullets",
         null,
         controller.bulletService.dispatcher)
 
-      ///@feature TODO grid.shroom.z
+      ///@description feature TODO grid.shroom.z
       Visu.resolveNumberTransformerTrackEvent(data, 
         "en-cfg_use-z-shr",
         "en-cfg_z-shr",
@@ -348,7 +348,7 @@ global.__entity_track_event = {
         "shroomZ",
         depths, pump, executor)
 
-      ///@feature TODO grid.player.z
+      ///@description feature TODO grid.player.z
       Visu.resolveNumberTransformerTrackEvent(data, 
         "en-cfg_use-z-player",
         "en-cfg_z-player",
@@ -356,7 +356,7 @@ global.__entity_track_event = {
         "playerZ",
         depths, pump, executor)
 
-      ///@feature TODO grid.coin.z
+      ///@description feature TODO grid.coin.z
       Visu.resolveNumberTransformerTrackEvent(data, 
         "en-cfg_use-z-coin",
         "en-cfg_z-coin",
@@ -364,7 +364,7 @@ global.__entity_track_event = {
         "coinZ",
         depths, pump, executor)
 
-      ///@feature TODO grid.bullet.z
+      ///@description feature TODO grid.bullet.z
       Visu.resolveNumberTransformerTrackEvent(data, 
         "en-cfg_use-z-bullet",
         "en-cfg_z-bullet",

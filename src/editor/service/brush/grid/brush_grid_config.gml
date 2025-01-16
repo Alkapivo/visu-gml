@@ -156,6 +156,20 @@ function brush_grid_config(json) {
         passthrough: UIUtil.passthrough.getArrayValue(),
         data: BlendEquation.keys(),
       },
+      "gr-cfg_focus-grid-use-blend-col": {
+        type: Boolean,
+        value: Struct.get(json, "gr-cfg_focus-grid-use-blend-col"),
+      },
+      "gr-cfg_focus-grid-blend-col": {
+        type: Color,
+        value: Struct.get(json, "gr-cfg_focus-grid-blend-col"),
+      },
+      "gr-cfg_focus-grid-blend-col-spd": {
+        type: Number,
+        value: Struct.get(json, "gr-cfg_focus-grid-blend-col-spd"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
+      },
     }),
     components: new Array(Struct, [
       {
@@ -669,7 +683,120 @@ function brush_grid_config(json) {
         },
       },
       {
-        name: "gr-cfg_render-focus-grid-blend-eq-line-h",
+        name: "gr-cfg_focus-grid-blend-col",
+        template: VEComponents.get("color-picker"),
+        layout: VELayouts.get("color-picker"),
+        config: {
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            hex: { margin: { top: 0 } },
+          },
+          title: { 
+            label: {
+              text: "Blend color",
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+              backgroundColor: VETheme.color.side,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "gr-cfg_focus-grid-use-blend-col" },
+              backgroundColor: VETheme.color.side,
+            },
+            input: {
+              store: { key: "gr-cfg_focus-grid-blend-col" },
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+              backgroundColor: VETheme.color.side,
+            }
+          },
+          red: {
+            label: {
+              text: "Red",
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+            field: {
+              store: { key: "gr-cfg_focus-grid-blend-col" },
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+            slider: {
+              store: { key: "gr-cfg_focus-grid-blend-col" },
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+          },
+          green: {
+            label: {
+              text: "Green",
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+            field: {
+              store: { key: "gr-cfg_focus-grid-blend-col" },
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+            slider: {
+              store: { key: "gr-cfg_focus-grid-blend-col" },
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+          },
+          blue: {
+            label: {
+              text: "Blue",
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+            field: {
+              store: { key: "gr-cfg_focus-grid-blend-col" },
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+            slider: {
+              store: { key: "gr-cfg_focus-grid-blend-col" },
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+          },
+          hex: { 
+            label: {
+              text: "Hex",
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+            field: {
+              store: { key: "gr-cfg_focus-grid-blend-col" },
+              enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_focus-grid-blend-col-spd",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Duration",
+            enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+          },  
+          field: { 
+            store: { key: "gr-cfg_focus-grid-blend-col-spd" },
+            enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+          },
+          decrease: {
+            store: { key: "gr-cfg_focus-grid-blend-col-spd" },
+            enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "gr-cfg_focus-grid-blend-col-spd" },
+            enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            factor: 0.1,
+          },
+          stick: {
+            store: { key: "gr-cfg_focus-grid-blend-col-spd" },
+            enable: { key: "gr-cfg_focus-grid-use-blend-col" },
+            factor: 0.01,
+          },
+          checkbox: { },
+        },
+      },
+      {
+        name: "gr-cfg_focus-grid-blend-col-spd-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -897,7 +1024,7 @@ function brush_grid_config(json) {
         },
       },
       {
-        name: "gr-cfg_cls-focus-grid-alph-line-h",
+        name: "gr-cfg_cls-focus-grid-alpha-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },

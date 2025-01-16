@@ -1,6 +1,173 @@
 ///@package io.alkapivo.visu.editor.ui
 
 ///@static
+///@type {Struct}
+global.__VEComponentsUtil = {
+  factory: {
+    config: {
+      increase: function(factor) {
+        return {
+          factor: factor == 0 ? 1.0 : abs(factor),
+          callback: function() {
+            var factor = Struct.get(this, "factor")
+            if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+              return
+            }
+
+            var item = this.store.get()
+            if (!Core.isType(item, StoreItem)) {
+              return
+            }
+
+            var value = item.get()
+            if (!Core.isType(value, Number)) {
+              return
+            }
+
+            item.set(value + factor)
+          },
+          store: {
+            callback: function(value, data) { },
+            set: function(value) { },
+          },
+        }
+      },
+      decrease: function(factor) {
+        return {
+          factor: factor == 0 ? -1.0 : -1.0 * abs(factor),
+          callback: function() {
+            var factor = Struct.get(this, "factor")
+            if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+              return
+            }
+
+            var item = this.store.get()
+            if (!Core.isType(item, StoreItem)) {
+              return
+            }
+
+            var value = item.get()
+            if (!Core.isType(value, Number)) {
+              return
+            }
+
+            item.set(value + factor)
+          },
+          store: {
+            callback: function(value, data) { },
+            set: function(value) { },
+          },
+        }
+      },
+      numberStick: function(factor) {
+        return {
+          store: {
+            callback: function(value, data) { },
+            set: function(value) {
+              var item = this.get()
+              if (item == null) {
+                return 
+              }
+
+              var parsedValue = NumberUtil.parse(value, null)
+              if (parsedValue == null) {
+                return
+              }
+
+              item.set(parsedValue)
+            },
+          },
+          factor: factor == 0.0 ? 0.1 : factor,
+          base: null,
+          _value: 0.0,
+          value: 0.25,
+          minValue: 0.0,
+          maxValue: 0.5,
+          pointer: {
+            name: "texture_slider_pointer_simple",
+            scaleX: 0.125,
+            scaleY: 0.125,
+            blend: VETheme.color.stick,
+          },
+          progress: { thickness: 0.0 },
+          background: {
+            thickness: 0.0000,
+            blend: VETheme.color.stickBackground,
+            line: { name: "texture_grid_line_bold" },
+          },
+          updateValue: function(mouseX, mouseY) {
+            if (!Optional.is(this.store) || !Optional.is(this.context)) {
+              return
+            }
+
+            this.base = !Optional.is(this.base) ? this.store.getValue() : this.base
+            var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+            var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+            var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+            this.value = this.base + (distance * this.factor)
+            if (this.value != this.store.getValue()) {
+              this.store.set(this.value)
+            }
+          },
+          colorHoverOver: VETheme.color.stickHover,
+          colorHoverOut: VETheme.color.stick,
+          onMouseHoverOver: function(event) {
+            if (Struct.get(this.enable, "value") == false) {
+              this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              return
+            }
+
+            this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
+          },
+          onMouseHoverOut: function(event) {
+            if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+              return
+            }
+            
+            this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+          },
+          //onMouseDragLeft: function(event) {
+          onMousePressedLeft: function(event) { ///@stickhack
+            if (Struct.get(this.enable, "value") == false || Optional.is(this.getClipboard())) {
+              return
+            }
+      
+            var context = this
+            this.base = null
+            this.setClipboard(new Promise()
+              .setState({
+                context: context,
+                callback: Struct.get(context, "callback"),
+              })
+              .whenSuccess(function() {
+                this.state.context.base = null
+                this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
+                Callable.run(Struct.get(this.state, "callback"))
+              })
+            )
+          },
+          preRender: function() {
+            Struct.set(this, "_value", this.value)
+
+            var _base = Optional.is(this.base) ? this.base : this.value
+            var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
+            this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
+          },
+          postRender: function() {
+            var temp = Struct.get(this, "_value")
+            if (Optional.is(temp)) {
+              this.value = temp
+            }
+          },
+        }
+      }
+    }
+  }
+}
+#macro VEComponentsUtil global.__VEComponentsUtil
+
+
+///@static
 ///@type {Map<String, Callable>}
 global.__VEComponents = new Map(String, Callable, {
   
@@ -104,6 +271,7 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
+  ///@deprecated
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -333,6 +501,7 @@ global.__VEComponents = new Map(String, Callable, {
       ),
     ])
   },
+
 
   ///@param {String} name
   ///@param {UILayout} layout
@@ -1453,6 +1622,7 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
+  ///@deprecated
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -2808,14 +2978,8 @@ global.__VEComponents = new Map(String, Callable, {
 
                 item.set(!item.get())
 
-                if (Core.isType(this.context, UI) 
-                    && Optional.is(this.context.updateTimer)) {
-                  ///@updateTimerNow
-                  this.context.updateTimer.time = clamp(
-                    this.context.updateTimer.time,
-                    this.context.updateTimer.duration * 0.7500,
-                    this.context.updateTimer.duration
-                  )
+                if (Optional.is(this.context)) {
+                  this.context.clampUpdateTimer(0.7500)
                 }
               }
             }
@@ -3473,14 +3637,8 @@ global.__VEComponents = new Map(String, Callable, {
 
                 item.set(!item.get())
 
-                if (Core.isType(this.context, UI) 
-                    && Optional.is(this.context.updateTimer)) {
-                  ///@updateTimerNow
-                  this.context.updateTimer.time = clamp(
-                    this.context.updateTimer.time,
-                    this.context.updateTimer.duration * 0.7500,
-                    this.context.updateTimer.duration
-                  )
+                if (Optional.is(this.context)) {
+                  this.context.clampUpdateTimer(0.7500)
                 }
               }
             }
@@ -4525,6 +4683,7 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
+  ///@deprecated
   "numeric-slider-field-button": function(name, layout, config = null) {
     return new Array(UIItem, [
       UIText(
@@ -12082,6 +12241,7 @@ global.__VEComponents = new Map(String, Callable, {
     return items
   },
 
+  ///@deprecated
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -12286,6 +12446,7 @@ global.__VEComponents = new Map(String, Callable, {
     return items
   },
 
+  ///@deprecated
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -12462,6 +12623,7 @@ global.__VEComponents = new Map(String, Callable, {
     return items
   },
 
+  ///@deprecated
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -13344,14 +13506,8 @@ global.__VEComponents = new Map(String, Callable, {
 
                 item.set(!item.get())
 
-                if (Core.isType(this.context, UI) 
-                    && Optional.is(this.context.updateTimer)) {
-                  ///@updateTimerNow
-                  this.context.updateTimer.time = clamp(
-                    this.context.updateTimer.time,
-                    this.context.updateTimer.duration * 0.7500,
-                    this.context.updateTimer.duration
-                  )
+                if (Optional.is(this.context)) {
+                  this.context.clampUpdateTimer(0.7500)
                 }
               }
             }
@@ -13565,6 +13721,7 @@ global.__VEComponents = new Map(String, Callable, {
     return items
   },
 
+  ///@deprecated
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -14136,6 +14293,7 @@ global.__VEComponents = new Map(String, Callable, {
     return items
   },
   
+  ///@deprecated
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -14437,188 +14595,27 @@ global.__VEComponents = new Map(String, Callable, {
 
     return items
   },
-  
+
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
   "numeric-input": function(name, layout, config = null) {
-    
-    ///@param {String} name
-    ///@param {?UILayout} layout
-    ///@param {?Struct} [config]
-    ///@return {Array<UIItem>}
-    static factoryNumericIncreaseStickField = function(name, layout, config) {
-      var isCheckbox = Core.isType(Struct.get(config, "checkbox"), Struct)
-      var componentName = isCheckbox
+    var isCheckbox = Core.isType(Struct.get(config, "checkbox"), Struct)
+    return new UIComponent({
+      name: name,
+      template: VEComponents.get(isCheckbox
         ? "text-field-increase-stick-checkbox"
-        : "numeric-slider-increase-field"
-      var layoutName = isCheckbox
+        : "numeric-slider-increase-field"),
+      layout: VELayouts.get(isCheckbox
         ? "text-field-increase-stick-checkbox"
-        : "text-field-increase-slider-checkbox"
-      
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get(componentName),
-        layout: VELayouts.get(layoutName),
-        config: Struct.appendRecursive(
-          {
-            decrease: {
-              factor: -1.0,
-              callback: function() {
-                var factor = Struct.get(this, "factor")
-                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                  return
-                }
-  
-                var item = this.store.get()
-                if (!Core.isType(item, StoreItem)) {
-                  return
-                }
-
-                var value = item.get()
-                if (!Core.isType(value, Number)) {
-                  return
-                }
-
-                item.set(value + factor)
-              },
-              store: {
-                callback: function(value, data) { },
-                set: function(value) { },
-              },
-            },
-            increase: {
-              factor: 1.0,
-              callback: function() {
-                var factor = Struct.get(this, "factor")
-                if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                  return
-                }
-  
-                var item = this.store.get()
-                if (!Core.isType(item, StoreItem)) {
-                  return
-                }
-
-                var value = item.get()
-                if (!Core.isType(value, Number)) {
-                  return
-                }
-
-                item.set(value + factor)
-              },
-              store: {
-                callback: function(value, data) { },
-                set: function(value) { },
-              },
-            },
-            stick: {
-              store: {
-                callback: function(value, data) { },
-                set: function(value) {
-                  var item = this.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var parsedValue = NumberUtil.parse(value, null)
-                  if (parsedValue == null) {
-                    return
-                  }
-
-                  item.set(parsedValue)
-                },
-              },
-              factor: 0.001,
-              base: null,
-              _value: 0.0,
-              value: 0.25,
-              minValue: 0.0,
-              maxValue: 0.5,
-              pointer: {
-                name: "texture_slider_pointer_simple",
-                scaleX: 0.125,
-                scaleY: 0.125,
-                blend: VETheme.color.stick,
-              },
-              progress: { thickness: 0.0 },
-              background: {
-                thickness: 0.0000,
-                blend: VETheme.color.stickBackground,
-                line: { name: "texture_grid_line_bold" },
-              },
-              updateValue: function(mouseX, mouseY) {
-                var isUIStore = Core.isType(this.store, UIStore)
-                this.base = !Core.isType(this.base, Number) 
-                  ? (isUIStore ? this.store.getValue() : this.value)
-                  : this.base 
-
-                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-                this.value = this.base + (distance * this.factor)
-                if (isUIStore && this.value != this.store.getValue()) {
-                  this.store.set(this.value)
-                }
-              },
-              colorHoverOver: VETheme.color.stickHover,
-              colorHoverOut: VETheme.color.stick,
-              onMouseHoverOver: function(event) {
-                if (Struct.get(this.enable, "value") == false) {
-                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
-                  return
-                }
-
-                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
-              },
-              onMouseHoverOut: function(event) {
-                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
-                  return
-                }
-                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
-              },
-              //onMouseDragLeft: function(event) {
-              onMousePressedLeft: function(event) { ///@stickhack
-                if (Struct.get(this.enable, "value") == false 
-                    || Optional.is(this.getClipboard())) {
-                  return
-                }
-          
-                var context = this
-                this.base = null
-                this.setClipboard(new Promise()
-                  .setState({
-                    context: context,
-                    callback: context.callback,
-                  })
-                  .whenSuccess(function() {
-                    this.state.context.base = null
-                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
-                    Callable.run(Struct.get(this.state, "callback"))
-                  })
-                )
-              },
-              preRender: function() {
-                this._value = this.value
-                var _base = this.base != null ? this.base : this.value
-                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
-                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
-                //orderOfMagnitude = GuiWidth()
-                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
-              },
-              postRender: function() {
-                this.value = this._value
-              },
-            },
-          },
-          config,
-          false
-        )
-      }).toUIItems(layout)
-    }
-
-    return factoryNumericIncreaseStickField(name, layout, config)
+        : "text-field-increase-slider-checkbox"),
+      config: Struct.appendRecursive({
+        decrease: VEComponentsUtil.factory.config.decrease(-1.0),
+        increase: VEComponentsUtil.factory.config.increase(1.0),
+        stick: VEComponentsUtil.factory.config.numberStick(0.001),
+      }, config, false)
+    }).toUIItems(layout)
   }
 })
 #macro VEComponents global.__VEComponents

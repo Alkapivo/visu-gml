@@ -660,14 +660,8 @@ function VisuEditorController() constructor {
   ///@private
   ///@param {UI}
   resetUITimer = function(ui) {
-    if (!Optional.is(ui.updateTimer)) {
-      return
-    }
-
     ui.surfaceTick.skip()
-    
-    ///@updateTimerNow
-    ui.updateTimer.time = ui.updateTimer.duration + random(ui.updateTimer.duration / 2.0)
+    ui.finishUpdateTimer()
   }
 
   ///@param {Event} event

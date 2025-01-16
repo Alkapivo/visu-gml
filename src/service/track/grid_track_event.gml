@@ -61,7 +61,7 @@ global.__grid_track_event = {
       var pump = gridService.dispatcher
       var executor = gridService.executor
 
-      ///@feature TODO grid.area.h
+      ///@description feature TODO grid.area.h
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-area_use-h",
         "gr-area_h",
@@ -69,7 +69,7 @@ global.__grid_track_event = {
         "borderHorizontalLength",
         properties, pump, executor)
 
-      ///@feature TODO grid.area.h.color
+      ///@description feature TODO grid.area.h.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "gr-area_use-h-col",
         "gr-area_h-col",
@@ -77,7 +77,7 @@ global.__grid_track_event = {
         "borderVerticalColor",
         properties, pump, executor)
 
-      ///@feature TODO grid.area.h.alpha
+      ///@description feature TODO grid.area.h.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-area_use-h-alpha",
         "gr-area_h-alpha",
@@ -85,7 +85,7 @@ global.__grid_track_event = {
         "borderVerticalAlpha",
         properties, pump, executor)
 
-      ///@feature TODO grid.area.h.size
+      ///@description feature TODO grid.area.h.size
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-area_use-h-size",
         "gr-area_h-size",
@@ -93,7 +93,7 @@ global.__grid_track_event = {
         "borderVerticalThickness",
         properties, pump, executor)
 
-      ///@feature TODO grid.area.v
+      ///@description feature TODO grid.area.v
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-area_use-v",
         "gr-area_v",
@@ -101,7 +101,7 @@ global.__grid_track_event = {
         "borderVerticalLength",
         properties, pump, executor)
 
-      ///@feature TODO grid.area.v.color
+      ///@description feature TODO grid.area.v.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "gr-area_use-v-col",
         "gr-area_v-col",
@@ -109,7 +109,7 @@ global.__grid_track_event = {
         "borderHorizontalColor",
         properties, pump, executor)
 
-      ///@feature TODO grid.area.v.alpha
+      ///@description feature TODO grid.area.v.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-area_use-v-alpha",
         "gr-area_v-alpha",
@@ -117,7 +117,7 @@ global.__grid_track_event = {
         "borderHorizontalAlpha",
         properties, pump, executor)
 
-      ///@feature TODO grid.area.v.size
+      ///@description feature TODO grid.area.v.size
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-area_use-v-size",
         "gr-area_v-size",
@@ -170,14 +170,14 @@ global.__grid_track_event = {
       var pump = gridService.dispatcher
       var executor = gridService.executor
 
-      ///@feature TODO grid.column.mode
+      ///@description feature TODO grid.column.mode
       Visu.resolvePropertyTrackEvent(data,
         "grid-channel_use-mode",
         "grid-channel_mode",
         "channelsMode",
         properties)
       
-      ///@feature TODO grid.column.amount
+      ///@description feature TODO grid.column.amount
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-c_use-amount",
         "gr-c_amount",
@@ -185,7 +185,7 @@ global.__grid_track_event = {
         "channels",
         properties, pump, executor)
 
-      ///@feature TODO grid.column.main.color
+      ///@description feature TODO grid.column.main.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "gr-c_use-main-col",
         "gr-c_main-col",
@@ -193,7 +193,7 @@ global.__grid_track_event = {
         "channelsPrimaryColor",
         properties, pump, executor)
 
-      ///@feature TODO grid.column.main.alpha
+      ///@description feature TODO grid.column.main.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-c_use-main-alpha",
         "gr-c_main-alpha",
@@ -201,7 +201,7 @@ global.__grid_track_event = {
         "channelsPrimaryAlpha",
         properties, pump, executor)
 
-      ///@feature TODO grid.column.main.size
+      ///@description feature TODO grid.column.main.size
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-c_use-main-size",
         "gr-c_main-size",
@@ -209,7 +209,7 @@ global.__grid_track_event = {
         "channelsPrimaryThickness",
         properties, pump, executor)
 
-      ///@feature TODO grid.column.side.color
+      ///@description feature TODO grid.column.side.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "gr-c_use-side-col",
         "gr-c_side-col",
@@ -217,7 +217,7 @@ global.__grid_track_event = {
         "channelsSecondaryColor",
         properties, pump, executor)
 
-      ///@feature TODO grid.column.side.alpha
+      ///@description feature TODO grid.column.side.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-c_use-side-alpha",
         "gr-c_side-alpha",
@@ -225,7 +225,7 @@ global.__grid_track_event = {
         "channelsSecondaryAlpha",
         properties, pump, executor)
       
-      ///@feature TODO grid.column.side.size
+      ///@description feature TODO grid.column.side.size
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-c_use-side-size",
         "gr-c_side-size",
@@ -278,14 +278,14 @@ global.__grid_track_event = {
       var pump = gridService.dispatcher
       var executor = gridService.executor
 
-      ///@feature TODO grid.row.mode
+      ///@description feature TODO grid.row.mode
       Visu.resolvePropertyTrackEvent(data,
         "grid-channel_use-mode",
         "grid-channel_mode",
         "separatorsMode",
         properties)
       
-      ///@feature TODO grid.row.amount
+      ///@description feature TODO grid.row.amount
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-r_use-amount",
         "gr-r_amount",
@@ -293,7 +293,7 @@ global.__grid_track_event = {
         "separators",
         properties, pump, executor)
 
-      ///@feature TODO grid.row.main.color
+      ///@description feature TODO grid.row.main.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "gr-r_use-main-col",
         "gr-r_main-col",
@@ -301,7 +301,7 @@ global.__grid_track_event = {
         "separatorsPrimaryColor",
         properties, pump, executor)
 
-      ///@feature TODO grid.row.main.alpha
+      ///@description feature TODO grid.row.main.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-r_use-main-alpha",
         "gr-r_main-alpha",
@@ -309,7 +309,7 @@ global.__grid_track_event = {
         "separatorsPrimaryAlpha",
         properties, pump, executor)
 
-      ///@feature TODO grid.row.main.size
+      ///@description feature TODO grid.row.main.size
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-r_use-main-size",
         "gr-r_main-size",
@@ -317,7 +317,7 @@ global.__grid_track_event = {
         "separatorsPrimaryThickness",
         properties, pump, executor)
 
-      ///@feature TODO grid.row.side.color
+      ///@description feature TODO grid.row.side.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "gr-r_use-side-col",
         "gr-r_side-col",
@@ -325,7 +325,7 @@ global.__grid_track_event = {
         "separatorsSecondaryColor",
         properties, pump, executor)
 
-      ///@feature TODO grid.row.side.alpha
+      ///@description feature TODO grid.row.side.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-r_use-side-alpha",
         "gr-r_side-alpha",
@@ -333,7 +333,7 @@ global.__grid_track_event = {
         "separatorsSecondaryAlpha",
         properties, pump, executor)
       
-      ///@feature TODO grid.row.side.size
+      ///@description feature TODO grid.row.side.size
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-r_use-side-size",
         "gr-r_side-size",
@@ -387,6 +387,9 @@ global.__grid_track_event = {
         "gr-cfg_focus-grid-blend-src": Struct.parse.enumerableKey(data, "gr-cfg_focus-grid-blend-src", BlendModeExt, BlendModeExt.SRC_ALPHA),
         "gr-cfg_focus-grid-blend-dest": Struct.parse.enumerableKey(data, "gr-cfg_focus-grid-blend-dest", BlendModeExt, BlendModeExt.INV_SRC_ALPHA),
         "gr-cfg_focus-grid-blend-eq": Struct.parse.enumerableKey(data, "gr-cfg_focus-grid-blend-eq", BlendEquation, BlendEquation.ADD),
+        "gr-cfg_focus-grid-use-blend-col": Struct.parse.boolean(data, "gr-cfg_focus-grid-use-blend-col"),
+        "gr-cfg_focus-grid-blend-col": Struct.parse.color(data, "gr-cfg_focus-grid-blend-col", "#ffffff"),
+        "gr-cfg_focus-grid-blend-col-spd": Struct.parse.number(data, "gr-cfg_focus-grid-blend-col-spd", 1.0, 0.0, 999.9),
       }
     },
     run: function(data) {
@@ -395,14 +398,14 @@ global.__grid_track_event = {
       var pump = gridService.dispatcher
       var executor = gridService.executor
 
-      ///@feature TODO grid.render
+      ///@description feature TODO grid.render
       Visu.resolveBooleanTrackEvent(data,
         "gr-cfg_use-render",
         "gr-cfg_render",
         "renderGrid",
         properties)
 
-      ///@feature TODO grid.speed
+      ///@description feature TODO grid.speed
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-cfg_use-spd",
         "gr-cfg_spd",
@@ -410,7 +413,7 @@ global.__grid_track_event = {
         "speed",
         properties, pump, executor)
 
-      ///@feature TODO grid.z
+      ///@description feature TODO grid.z
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-cfg_use-z",
         "gr-cfg_z",
@@ -418,14 +421,14 @@ global.__grid_track_event = {
         "gridZ",
         properties.depths, pump, executor)
 
-      ///@feature TODO grid.frame.clear
+      ///@description feature TODO grid.frame.clear
       Visu.resolveBooleanTrackEvent(data,
         "gr-cfg_use-cls-frame",
         "gr-cfg_cls-frame",
         "gridClearFrame",
         properties)
 
-      ///@feature TODO grid.frame.color
+      ///@description feature TODO grid.frame.color
       Visu.resolveColorTransformerTrackEvent(data, 
         "gr-cfg_use-cls-frame-col",
         "gr-cfg_cls-frame-col",
@@ -433,7 +436,7 @@ global.__grid_track_event = {
         "gridClearColor",
         properties, pump, executor)
 
-      ///@feature TODO grid.frame.alpha
+      ///@description feature TODO grid.frame.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-cfg_use-cls-frame-alpha",
         "gr-cfg_cls-frame-alpha",
@@ -441,7 +444,7 @@ global.__grid_track_event = {
         "gridClearFrameAlpha",
         properties, pump, executor)
 
-      ///@feature TODO grid.blend
+      ///@description feature TODO grid.blend
       Visu.resolveBlendConfigTrackEvent(data,
         "gr-cfg_grid-use-blend",
         "gr-cfg_grid-blend-src",
@@ -449,30 +452,39 @@ global.__grid_track_event = {
         "gr-cfg_grid-blend-eq",
         properties.gridBlendConfig)
 
-      ///@feature TODO focus-grid.render
+      ///@description feature TODO focus-grid.render
       Visu.resolveBooleanTrackEvent(data,
         "gr-cfg_use-render-focus-grid",
         "gr-cfg_render-focus-grid",
         "renderSupportGrid",
         properties)
 
-      ///@feature TODO focus-grid.treshold
+      ///@description feature TODO focus-grid.treshold
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-cfg_use-focus-grid-treshold",
         "gr-cfg_focus-grid-treshold",
         "gr-cfg_change-focus-grid-treshold",
-        "renderSupportGridTreshold",
+        "supportGridTreshold",
+        properties, pump, executor)
+
+      
+      ///@description feature TODO focus-grid.blend-color
+      Visu.resolveColorTransformerTrackEvent(data, 
+        "gr-cfg_focus-grid-use-blend-col",
+        "gr-cfg_focus-grid-blend-col",
+        "gr-cfg_focus-grid-blend-col-spd",
+        "supportGridBlendColor",
         properties, pump, executor)
       
-      ///@feature TODO focus-grid.alpha
+      ///@description feature TODO focus-grid.alpha
       Visu.resolveNumberTransformerTrackEvent(data, 
         "gr-cfg_use-focus-grid-alpha",
         "gr-cfg_focus-grid-alpha",
         "gr-cfg_change-focus-grid-alpha",
-        "renderSupportGridAlpha",
+        "supportGridAlpha",
         properties, pump, executor)
 
-      ///@feature TODO focus-grid.blend
+      ///@description feature TODO focus-grid.blend
       Visu.resolveBlendConfigTrackEvent(data,
         "gr-cfg_focus-grid-use-blend",
         "gr-cfg_focus-grid-blend-src",

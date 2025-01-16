@@ -491,7 +491,7 @@ function VisuController(layerName) constructor {
   visuRenderer = new VisuRenderer(this)
 
   ///@type {GridECS}
-  //gridECS = new GridECS(this) ///@ecs
+  //gridECS = new GridECS(this) ///@description ecs
   
   ///@type {Server}
   server = new Server({
@@ -662,7 +662,7 @@ function VisuController(layerName) constructor {
     "particleService",
     "trackService",
     "gridService",
-    //"gridECS", ///@ecs
+    //"gridECS", ///@description ecs
     "subtitleService",
     "coinService",
   ], function(name, index, controller) {
@@ -793,14 +793,8 @@ function VisuController(layerName) constructor {
   ///@private
   ///@param {UI}
   resetUITimer = function(ui) {
-    if (!Optional.is(ui.updateTimer)) {
-      return
-    }
-
     ui.surfaceTick.skip()
-
-    ///@updateTimerNow
-    ui.updateTimer.time = ui.updateTimer.duration + random(ui.updateTimer.duration / 2.0)
+    ui.finishUpdateTimer()
   }
 
   ///@param {Event}
@@ -837,7 +831,7 @@ function VisuController(layerName) constructor {
 
     try {
       //gpu_set_alphatestenable(true) ///@todo investigate
-      //this.gridECS.render() ///@ecs
+      //this.gridECS.render() ///@description ecs
       this.visuRenderer.render()
     } catch (exception) {
       var message = $"'render' fatal error: {exception.message}"
@@ -858,7 +852,7 @@ function VisuController(layerName) constructor {
     }
 
     try {
-      //this.gridECS.renderGUI() ///@ecs
+      //this.gridECS.renderGUI() ///@description ecs
       this.visuRenderer.renderGUI()
     } catch (exception) {
       var message = $"'renderGUI' fatal error: {exception.message}"

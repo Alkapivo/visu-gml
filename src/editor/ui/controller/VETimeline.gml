@@ -450,43 +450,32 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMousePressedLeft: function(event) {
           this._onMousePressedLeft(event)
-          if (Optional.is(this.updateTimer)) {
-            ///@updateTimerNow
-            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-          }
+          this.finishUpdateTimer()
 
           var events = this.controller.containers.get("ve-timeline-events")
-          events.offset.y = this.offset.y
-          if (Optional.is(events.updateTimer)) {
-            ///@updateTimerNow
-            events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
+          if (Optional.is(events)) {
+            events.offset.y = this.offset.y
+            events.finishUpdateTimer()
           }
         },
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          if (Optional.is(this.updateTimer)) {
-            ///@updateTimerNow
-            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-          }
+          this.finishUpdateTimer()
 
           var events = this.controller.containers.get("ve-timeline-events")
-          events.offset.y = this.offset.y
-          ///@updateTimerNow
-          events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
+          if (Optional.is(events)) {
+            events.offset.y = this.offset.y
+            events.finishUpdateTimer()
+          }
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
-          if (Optional.is(this.updateTimer)) {
-            ///@updateTimerNow
-            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-          }
+          this.finishUpdateTimer()
 
           var events = this.controller.containers.get("ve-timeline-events")
-          events.offset.y = this.offset.y
-          
-          if (Optional.is(events.updateTimer)) {
-            ///@updateTimerNow
-            events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
+          if (Optional.is(events)) {
+            events.offset.y = this.offset.y
+            events.finishUpdateTimer()
           }
         },
         onMouseDragLeft: function(event) {
@@ -569,17 +558,12 @@ function VETimeline(_editor) constructor {
                 }, track.channels)
 
               this.onInit()
-              if (Optional.is(this.updateTimer)) {
-                ///@updateTimerNow
-                this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-              }
+              this.finishUpdateTimer()
 
               var events = this.controller.containers.get("ve-timeline-events")
-              events.onInit()
-
-              if (Optional.is(events.updateTimer)) {
-                ///@updateTimerNow
-                events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
+              if (Optional.is(events)) {
+                events.onInit()
+                events.finishUpdateTimer()
               }
             }
           } else {
@@ -950,8 +934,7 @@ function VETimeline(_editor) constructor {
             var areaWidth = this.area.getWidth()
             var areaHeight = this.area.getHeight()
             if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
-              ///@updateTimerNow
-              this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+              this.finishUpdateTimer()
               this.items.forEach(this.itemMouseEraseEvent, { 
                 data: {
                   x: mouseX, 
@@ -1032,8 +1015,8 @@ function VETimeline(_editor) constructor {
                 var uiItem = acc.container.factoryEventUIItem(acc.channel.name, event)
                 acc.container.add(uiItem, uiItem.name)
               }, { channel: channel, container: container })
-              ///@updateTimerNow
-              this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+              
+              this.finishUpdateTimer()
               return
             }
             
@@ -1337,33 +1320,22 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
-          if (Optional.is(this.updateTimer)) {
-            ///@updateTimerNow
-            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-          }
+          this.finishUpdateTimer()
 
           var channels = this.controller.containers.get("ve-timeline-channels")
-          channels.offset.y = this.offset.y
-          
-          if (Optional.is(channels.updateTimer)) {
-            ///@updateTimerNow
-            channels.updateTimer.time = channels.updateTimer.duration + random(channels.updateTimer.duration / 2.0)
+          if (Optional.is(channels)) {
+            channels.offset.y = this.offset.y
+            channels.finishUpdateTimer()
           }
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
-          if (Optional.is(this.updateTimer)) {
-            ///@updateTimerNow
-            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-          }
+          this.finishUpdateTimer()
 
           var channels = this.controller.containers.get("ve-timeline-channels")
-          channels.offset.y = this.offset.y
-          
-          if (Optional.is(channels.updateTimer)) {
-            ///@updateTimerNow
-            channels.updateTimer.time = channels.updateTimer.duration + random(channels.updateTimer.duration / 2.0)
+          if (Optional.is(channels)) {
+            channels.offset.y = this.offset.y
+            channels.finishUpdateTimer()
           }
         },
         handleMouseDropSelectEvent: new BindIntent(function(selectEvent) {
@@ -1579,18 +1551,13 @@ function VETimeline(_editor) constructor {
             store.getValue("selected-events").add(newEvent, key)
           }, contextEvent.name)
 
-          var inspector = Beans.get(BeanVisuEditorController).uiService
-            .find("ve-event-inspector-properties")
-          if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-            ///@updateTimerNow
-            inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
+          var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
+          if (Optional.is(inspector)) {
+            inspector.finishUpdateTimer()
           }
         }),
         onMouseDropLeft: function(event) {
-          if (Optional.is(this.updateTimer)) {
-            ///@updateTimerNow
-            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-          }
+          this.finishUpdateTimer()
 
           var mouse = Beans.get(BeanVisuEditorIO).mouse
           var dropEvent = mouse.getClipboard()
@@ -1606,22 +1573,17 @@ function VETimeline(_editor) constructor {
         },
 
         onMousePressedLeft: function(event) {
-          ///@updateTimerNow
-          this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+          this.finishUpdateTimer()
         },
 
         onMousePressedRight: function(event) {
-          ///@updateTimerNow
-          this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+          this.finishUpdateTimer()
         },
         
         onMouseReleasedLeft: function(event) {
           try {
-            if (Optional.is(this.updateTimer)) {
-              ///@updateTimerNow
-              this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-            }
-
+            this.finishUpdateTimer()
+            
             var initialized = this.controller.containers
               .get("ve-timeline-events").state
               .get("initialized")
@@ -1656,12 +1618,11 @@ function VETimeline(_editor) constructor {
                   data: uiItem.state.get("event"),
                 }, keyboard_check(vk_control))
 
-                var inspector = Beans.get(BeanVisuEditorController).uiService
-                  .find("ve-event-inspector-properties")
-                if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                  ///@updateTimerNow
-                  inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
+                var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
+                if (Optional.is(inspector)) {
+                  inspector.finishUpdateTimer()
                 }
+                
                 break
               case ToolType.CLONE:
                 var selectedEvent = store.getValue("selected-event")
@@ -1804,11 +1765,9 @@ function VETimeline(_editor) constructor {
                   store.getValue("selected-events").add(newEvent, key)
                 }, contextEvent.name)
 
-                var inspector = Beans.get(BeanVisuEditorController).uiService
-                  .find("ve-event-inspector-properties")
-                if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                  ///@updateTimerNow
-                  inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
+                var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
+                if (Optional.is(inspector)) {
+                  inspector.finishUpdateTimer()
                 }
             
                 break
@@ -1821,10 +1780,7 @@ function VETimeline(_editor) constructor {
         },
 
         onMouseReleasedRight: function(event) {
-          if (Optional.is(this.updateTimer)) {
-            ///@updateTimerNow
-            this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
-          }
+          this.finishUpdateTimer()
           
           var initialized = this.controller.containers
             .get("ve-timeline-events").state
@@ -2094,12 +2050,11 @@ function VETimeline(_editor) constructor {
                       data: trackEvent,
                     }, keyboard_check(vk_control))
                     
-                    var inspector = Beans.get(BeanVisuEditorController).uiService
-                      .find("ve-event-inspector-properties")
-                    if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                      ///@updateTimerNow
-                      inspector.updateTimer.time = inspector.updateTimer.duration + random(inspector.updateTimer.duration / 2.0)
+                    var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
+                    if (Optional.is(inspector)) {
+                      inspector.finishUpdateTimer()
                     }
+
                     break
                 }
               },
@@ -2154,8 +2109,7 @@ function VETimeline(_editor) constructor {
               this.data.name = uiItem.name
               this.data.uiItem = uiItem
               this.data.event = trackEvent
-              ///@updateTimerNow
-              this.data.context.updateTimer.time = this.data.context.updateTimer.duration + random(this.data.context.updateTimer.duration / 2.0)
+              this.data.context.finishUpdateTimer()
 
               ///@description select
               this.data.context.select({
@@ -2179,8 +2133,7 @@ function VETimeline(_editor) constructor {
                 data: this.data.event,
               })
 
-              ///@updateTimerNow
-              this.data.context.updateTimer.time = this.data.context.updateTimer.duration + random(this.data.context.updateTimer.duration / 2.0)
+              this.data.context.finishUpdateTimer()
 
               return this
             },
@@ -2224,8 +2177,7 @@ function VETimeline(_editor) constructor {
                 data: this.data.event,
               })
 
-              ///@updateTimerNow
-              this.data.context.updateTimer.time = this.data.context.updateTimer.duration + random(this.data.context.updateTimer.duration / 2.0)
+              this.data.context.finishUpdateTimer()
 
               return this
             },
@@ -2245,8 +2197,8 @@ function VETimeline(_editor) constructor {
               this.data.name = uiItem.name
               this.data.uiItem = uiItem
               this.data.event = trackEvent
-              ///@updateTimerNow
-              this.data.context.updateTimer.time = this.data.context.updateTimer.duration + random(this.data.context.updateTimer.duration / 2.0)
+              
+              this.data.context.finishUpdateTimer()
 
               ///@description select
               this.data.context.select({
@@ -2425,11 +2377,8 @@ function VETimeline(_editor) constructor {
           this.offset.x = -1 * camera
 
           var events = this.controller.containers.get("ve-timeline-events")
-          if (Core.isType(events, UI)) {
-            if (camera != cameraPrevious && Core.isType(events.updateTimer, Timer)) {
-              ///@updateTimerNow
-              events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
-            }
+          if (Optional.is(events) && camera != cameraPrevious) {
+            events.finishUpdateTimer()
           }
 
           if (Optional.is(mouseX) && !mouse_check_button(mb_left)) {

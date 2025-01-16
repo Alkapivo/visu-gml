@@ -345,44 +345,16 @@ function VEEventInspector(_editor) constructor {
                       data: data,
                     },
                     "load-components": function(task) {
-                      static factoryComponent = function(component, index, acc) {
-                        static add = function(item, index, acc) {
-                          if (item.type == UITextField) {
-                            var textField = item.textField
-                            if (Optional.is(acc.textField)) {
-                              acc.textField.setNext(textField)
-                              textField.setPrevious(acc.textField)
-                            }
-                            acc.textField = textField
-                          }
-                  
-                          acc.context.add(item, item.name)
-                          //if (Optional.is(item.updateArea)) {
-                          //  item.updateArea()
-                          //}
-                        }
-                  
-                        acc.layout = component
-                          .toUIItems(acc.layout)
-                          .forEach(add, acc)
-                          .getLast().layout.context
-                      }
-
                       repeat (EVENT_INSPECTOR_ENTRY_STEP) {
                         var index = task.state.componentsQueue.pop()
                         if (!Optional.is(index)) {
                           task.state.stage = "set-subscribers"
-                          if (Optional.is(task.state.context.updateTimer)) {
-    
-                            ///@updateTimerNow
-                            task.state.context.updateTimer.time = task.state.context.updateTimer.duration + random(task.state.context.updateTimer.duration / 2.0)
-                          }
-
+                          task.state.context.finishUpdateTimer()
                           break
                         }
       
                         var component = new UIComponent(task.state.components.get(index))
-                        factoryComponent(component, index, task.state.componentsConfig)
+                        task.state.context.addUIComponent(component, index, task.state.componentsConfig)
                       }
                     },
                     "set-subscribers": function(task) {

@@ -1201,11 +1201,10 @@ function GridRenderer() constructor {
 
     ///@description Render support-grid
     if (properties.renderSupportGrid 
-      && size >= properties.renderSupportGridTreshold) {
+        && size >= properties.supportGridTreshold) {
 
-      //GPU.set.blendMode(BlendMode.ADD)
-      this.gridSurface.renderStretched(width, height, 0, 0, properties.renderSupportGridAlpha)
-      //GPU.reset.blendMode()
+      this.gridSurface.renderStretched(width, height, 0, 0, properties.supportGridAlpha,
+        properties.supportGridBlendColor.toGMColor(), properties.supportGridBlendConfig)
     }
 
     return this
@@ -1363,7 +1362,7 @@ function GridRenderer() constructor {
   ///@private
   ///@param {UILayout} layout
   ///@return {GridRenderer}
-  renderGlitch = function(layout) {
+  renderGameplay = function(layout) {
     var width = layout.width()
     var height = layout.height()
     var _x = layout.x()
@@ -1492,9 +1491,9 @@ function GridRenderer() constructor {
 
     var playerService = Beans.get(BeanVisuController).playerService
     if (Visu.settings.getValue("visu.graphics.bkt-glitch")) {
-      this.glitchService.renderOn(this.renderGlitch, layout)
+      this.glitchService.renderOn(this.renderGameplay, layout)
     } else {
-      this.renderGlitch(layout)
+      this.renderGameplay(layout)
     }
 
     if (Visu.settings.getValue("visu.interface.player-hint")) {
