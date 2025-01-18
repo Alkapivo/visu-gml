@@ -25,6 +25,13 @@ function VEStatusBar(_editor) constructor {
             margin: { left: 4 },
             width: function() { return 58 },
           },
+          topLine: {
+            name: "status-bar.topLine",
+            x: function() { return 0 },
+            y: function() { return 0 },
+            width: function() { return this.context.width() },
+            height: function() { return 1 },
+          },
           stateLabel: {
             name: "status-bar.stateLabel",
             x: function() { return this.context.nodes.stateValue.left() 
@@ -604,11 +611,11 @@ function VEStatusBar(_editor) constructor {
                 layout: { 
                   type: UILayoutType.HORIZONTAL,
                   width: function() { return 36 },
-                  margin: { left: 2, right: 2 },
+                  //height: function() { return 24 },
+                  margin: { left: 2, right: 2, top: 2, bottom: 2 },
                 },
                 field: {
-                  text: "60",
-                  config: { key: "bpm" },
+                  GMTF_DECIMAL: 0,
                   store: {
                     key: "bpm",
                     callback: function(value, data) { 
@@ -621,7 +628,8 @@ function VEStatusBar(_editor) constructor {
                       if (!Core.isType(bpm, Number)) {
                         return 
                       }
-                      data.textField.setText(string(bpm))
+
+                      data.textField.setText(bpm)
                     },
                     set: function(value) {
                       var item = this.get()
@@ -633,12 +641,11 @@ function VEStatusBar(_editor) constructor {
                       if (parsedValue == null) {
                         return
                       }
+
                       item.set(parsedValue)
-          
                       Struct.set(Beans.get(BeanVisuController).track, "bpm", parsedValue)
                     },
                   },
-                  margin: { left: 2, right: 2 },
                 },
               },
             },
@@ -669,7 +676,8 @@ function VEStatusBar(_editor) constructor {
                 layout: { 
                   type: UILayoutType.HORIZONTAL,
                   width: function() { return 36 },
-                  margin: { left: 2, right: 2 },
+                  //height: function() { return 24 },
+                  margin: { left: 2, right: 2, top: 2, bottom: 2},
                 },
                 field: {
                   text: "10",
@@ -734,7 +742,8 @@ function VEStatusBar(_editor) constructor {
                 layout: { 
                   type: UILayoutType.HORIZONTAL,
                   width: function() { return 36 },
-                  margin: { left: 2, right: 2 },
+                  //height: function() { return 24 },
+                  margin: { left: 2, right: 2, top: 2, bottom: 2 },
                 },
                 field: {
                   text: "10",
@@ -785,8 +794,7 @@ function VEStatusBar(_editor) constructor {
               config: { 
                 layout: { 
                   type: UILayoutType.HORIZONTAL,
-                  width: function() { return 24 },
-                  margin: { left: 1, right: 1, bottom: 1, top: 1 },
+                  width: function() { return 28 },
                 },
                 checkbox: {
                   spriteOn: { name: "visu_texture_checkbox_on" },
@@ -829,8 +837,7 @@ function VEStatusBar(_editor) constructor {
               config: { 
                 layout: { 
                   type: UILayoutType.HORIZONTAL,
-                  width: function() { return 24 },
-                  margin: { left: 1, right: 1, bottom: 1, top: 1 },
+                  width: function() { return 28 },
                 },
                 checkbox: {
                   value: updateServices,
@@ -869,144 +876,6 @@ function VEStatusBar(_editor) constructor {
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
         items: {
-          /*
-          "text_ve-status-bar_fpsLabel": factoryLabel({
-            text: "FPS:",
-            layout: layout.nodes.fpsLabel,
-          }),
-          "text_ve-status-bar_fpsValue": factoryValue({
-            layout: layout.nodes.fpsValue,
-            updateCustom: Core.getProperty("visu.editor.status-bar.render-average-fps", true)
-              ? function() {
-                this.label.text = string(fps)
-              }
-              :
-              function() {
-                this.label.text = string(clamp(ceil(fps_real + 1), 0, 60))
-              }
-              ,
-          }),
-          "text_ve-status-bar_timestampLabel": factoryLabel({
-            text: "Time:",
-            layout: layout.nodes.timestampLabel,
-          }),
-          "text_ve-status-bar_timestampValue": factoryValue({
-            layout: layout.nodes.timestampValue,
-            updateCustom: function() {
-              try {
-                this.label.text = String.formatTimestamp(Beans.get(BeanVisuController).trackService.time)
-              } catch (exception) {
-                this.label.text = "N/A"
-              }
-            },
-          }),
-          "text_ve-status-bar_durationLabel": factoryLabel({
-            text: "Duration:",
-            layout: layout.nodes.durationLabel,
-          }),
-          "text_ve-status-bar_durationValue": factoryValue({
-            layout: layout.nodes.durationValue,
-            updateCustom: function() {
-              try {
-                this.label.text = String.formatTimestamp(Beans
-                  .get(BeanVisuController).trackService.duration)
-              } catch (exception) {
-                this.label.text = "N/A"
-              }
-            },
-          }),
-          "text_ve-status-bar_bpmLabel": factoryLabel({
-            text: "BPM:",
-            layout: layout.nodes.bpmLabel,
-          }),
-          "text_ve-status-bar_bpmValue": factoryBPMField({
-            layout: layout.nodes.bpmValue,
-          }),
-          "text_ve-status-bar_bpmCountLabel": factoryLabel({
-            text: "Count:",
-            layout: layout.nodes.bpmCountLabel,
-          }),
-          "text_ve-status-bar_bpmCountValue": factoryCountField({
-            layout: layout.nodes.bpmCountValue,
-          }),
-          "text_ve-status-bar_bpmSubLabel": factoryLabel({
-            text: "Sub:",
-            layout: layout.nodes.bpmSubLabel,
-          }),
-          "text_ve-status-bar_bpmSubValue": factorySubField({
-            layout: layout.nodes.bpmSubValue,
-          }),
-          "text_ve-status-bar_gameModeLabel": factoryLabel({
-            text: "Mode:",
-            layout: layout.nodes.gameModeLabel,
-            onMouseReleasedLeft: function() {
-              var controller = Beans.get(BeanVisuController)
-              var gameMode = GameMode.RACING
-              switch (controller.gameMode) {
-                case GameMode.RACING: gameMode = GameMode.BULLETHELL
-                  break
-                case GameMode.BULLETHELL: gameMode = GameMode.PLATFORMER
-                  break
-                case GameMode.PLATFORMER: gameMode = GameMode.RACING
-                  break
-                default:
-                  throw new Exception($"Found unsupported gameMode: {controller.gameMode}")
-              }
-              controller.send(new Event("change-gamemode").setData(gameMode))
-            },
-          }),
-          "text_ve-status-bar_gameModeValue": factoryValue({
-            layout: layout.nodes.gameModeValue,
-            updateCustom: function() {
-              this.label.text = Beans.get(BeanVisuController).gameMode
-            },
-            align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            backgroundColor: VETheme.color.primaryShadow,
-            onMouseReleasedLeft: function() {
-              var controller = Beans.get(BeanVisuController)
-              var gameMode = GameMode.RACING
-              switch (controller.gameMode) {
-                case GameMode.RACING: gameMode = GameMode.BULLETHELL
-                  break
-                case GameMode.BULLETHELL: gameMode = GameMode.PLATFORMER
-                  break
-                case GameMode.PLATFORMER: gameMode = GameMode.RACING
-                  break
-                default:
-                  throw new Exception($"Found unsupported gameMode: {controller.gameMode}")
-              }
-              controller.send(new Event("change-gamemode").setData(gameMode))
-            },
-          }),
-          "text_ve-status-bar_autosaveLabel": factoryLabel({
-            text: "Autosave:",
-            layout: layout.nodes.autosaveLabel,
-          }),
-          "text_ve-status-bar_autosaveCheckbox": factoryCheckbox({
-            layout: layout.nodes.autosaveCheckbox,
-            value: autosaveEnabled,
-            callback: function() {
-              var editor = Beans.get(BeanVisuEditorController)
-              editor.autosave.value = this.value
-              Visu.settings.setValue("visu.editor.autosave", this.value).save()
-              if (!editor.autosave.value) {
-                editor.autosave.timer.time = 0
-              }
-            },
-          }),
-          "text_ve-status-bar_updateLabel": factoryLabel({
-            text: "Update:",
-            layout: layout.nodes.updateLabel,
-          }),
-          "text_ve-status-bar_updateCheckbox": factoryCheckbox({
-            layout: layout.nodes.updateCheckbox,
-            value: updateServices,
-            callback: function() {
-              var editor = Beans.get(BeanVisuEditorController)
-              editor.updateServices = !editor.updateServices
-            },
-          }),
-          */
           "text_ve-status-ws": factoryValue({
             layout: layout.nodes.ws,
             updateCustom: function() {
@@ -1052,6 +921,13 @@ function VEStatusBar(_editor) constructor {
               }
             },
           }),
+          "line_ve-status-bar_topLine": {
+            type: UIImage,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            layout: layout.nodes.topLine,
+            backgroundColor: VETheme.color.accentShadow,
+            backgroundAlpha: 0.85,
+          },
         },
         onInit: function() {
           var components = this.state.get("components")

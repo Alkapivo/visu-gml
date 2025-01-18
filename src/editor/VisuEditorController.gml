@@ -439,7 +439,7 @@ function VisuEditorController() constructor {
       nodes: {
         "title-bar": {
           name: "visu-editor.title-bar",
-          height: function() { return 20 },
+          height: function() { return 24 },
         },
         "accordion": {
           name: "visu-editor.accordion",
@@ -476,7 +476,7 @@ function VisuEditorController() constructor {
           name: "visu-editor.track-control",
           percentageHeight: 1.0,
           width: function() { return Struct.get(this.context.nodes, "preview").width() },
-          height: function() { return round(76.0 * this.percentageHeight) },
+          height: function() { return round(86 * this.percentageHeight) },
           x: function() { return this.context.nodes.preview.x() },
           y: function() { return this.context.nodes.preview.bottom()
             - this.height() },
@@ -510,7 +510,7 @@ function VisuEditorController() constructor {
         },
         "status-bar": {
           name: "visu-editor.status-bar",
-          height: function() { return 24 },
+          height: function() { return 28 },
           y: function() { return this.context.height() - this.height() },
         },
       },

@@ -17,6 +17,13 @@ function VETitleBar(_editor) constructor {
       {
         name: "title-bar",
         nodes: {
+          bottomLine: {
+            name: "title-bar.bottomLine",
+            x: function() { return 0 },
+            y: function() { return this.context.height() - this.height() },
+            width: function() { return this.context.width() },
+            height: function() { return 1 },
+          },
           file: {
             name: "title-bar.file",
             x: function() { return this.context.x() + this.margin.left },
@@ -62,35 +69,35 @@ function VETitleBar(_editor) constructor {
             x: function() { return this.context.nodes.event.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           },
           event: {
             name: "title-bar.event",
             x: function() { return this.context.nodes.timeline.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           },
           timeline: {
             name: "title-bar.timeline",
             x: function() { return this.context.nodes.brush.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           },
           brush: {
             name: "title-bar.brush",
             x: function() { return this.context.nodes.fullscreen.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           },
           fullscreen: {
             name: "title-bar.fullscreen",
             x: function() { return this.context.x() + this.context.width()
                - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           }
         }
       }, 
@@ -107,6 +114,7 @@ function VETitleBar(_editor) constructor {
         {
           type: UIButton,
           layout: json.layout,
+          backgroundMargin: { top: 2, bottom: 2, left: 2, right: 2 },
           label: { text: json.text },
           options: json.options,
           callback: Struct.getDefault(json, "callback", function() { }),
@@ -115,7 +123,33 @@ function VETitleBar(_editor) constructor {
             this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
           },
           onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            var item = this
+            var controller = Beans.get(BeanVisuController)
+            controller.executor.tasks.forEach(function(task, iterator, item) {
+              if (Struct.get(task.state, "item") == item) {
+                task.fullfill()
+              }
+            }, item)
+            
+            var task = new Task($"onMouseHoverOut_{item.name}")
+              .setTimeout(10.0)
+              .setState({
+                item: item,
+                transformer: new ColorTransformer({
+                  value: item.backgroundColorSelected,
+                  target: item.backgroundColorOut,
+                  factor: 0.026,
+                })
+              })
+              .whenUpdate(function(executor) {
+                if (this.state.transformer.update().finished) {
+                  this.fullfill()
+                }
+
+                this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+              })
+
+              controller.executor.add(task)
           },
         },
         VEStyles.get("ve-title-bar").menu,
@@ -352,6 +386,13 @@ function VETitleBar(_editor) constructor {
               displayService.setFullscreen(!fullscreen)
             },
           }),
+          "line_ve-title-bottomLine": {
+            type: UIImage,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            layout: layout.nodes.bottomLine,
+            backgroundColor: VETheme.color.accentShadow,
+            backgroundAlpha: 0.85,
+          },
         },
       }),
     })

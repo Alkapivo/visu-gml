@@ -228,6 +228,7 @@ function VEAccordion(_editor, config = null) constructor {
               layout: VELayouts.get("vertical-item"),
               config: {
                 backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                backgroundAlpha: 1.0,
                 callback: function() { 
                   var store = this.context.state.get("store")
                   var item = store.get("render-template-toolbar")
@@ -254,6 +255,7 @@ function VEAccordion(_editor, config = null) constructor {
               layout: VELayouts.get("vertical-item"),
               config: {
                 backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
+                backgroundAlpha: 1.0,
                 callback: function() { 
                   var store = this.context.state.get("store")
                   var item = store.get("render-event-inspector")
@@ -357,8 +359,8 @@ function VEAccordion(_editor, config = null) constructor {
   send = method(this, EventPumpUtil.send())
 
   ///@private
-  ///@param {Struct} context
-  ///@param {Boolean} enable
+  ///@params {Struct} context
+  ///@params {Boolean} enable
   updateContainerObject = function(context, enable) {
     static updateContainer = function(container) {
       static updateItem = function(item) {
