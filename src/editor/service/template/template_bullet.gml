@@ -169,9 +169,8 @@ function template_bullet(json = null) {
       "bullet_on-death-speed": {
         type: Number,
         value: Struct.getIfType(json, "onDeathSpeed", Number, 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -99.9, 99.9)
-        },
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(-99.9, 99.9),
       },
       "bullet_on-death-speed-merge": {
         type: Boolean,
@@ -180,9 +179,8 @@ function template_bullet(json = null) {
       "bullet_on-death-rng-speed": {
         type: Number,
         value: Struct.getIfType(json, "onDeathRngSpeed", Number, 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 99.9)
-        },
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
       },
     }),
     components: new Array(Struct, [

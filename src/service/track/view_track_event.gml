@@ -214,16 +214,23 @@ global.__view_track_event = {
         "vw-layer_change-dir": Struct.parse.boolean(data, "vw-layer_change-dir"),
         "vw-layer_use-scale-x": Struct.parse.boolean(data, "vw-layer_use-scale-x"),
         "vw-layer_scale-x": Struct.parse.numberTransformer(data, "vw-layer_scale-x", {
+          value: 1.0,
           clampValue: { from: -99.9, to: 99.9 },
-          clampTarget: { from: 99.9, to: 99.9 },
+          clampTarget: { from: -99.9, to: 99.9 },
         }),
         "vw-layer_change-scale-x": Struct.parse.boolean(data, "vw-layer_change-scale-x"),
         "vw-layer_use-scale-y": Struct.parse.boolean(data, "vw-layer_use-scale-y"),
-        "vw-layer_scale-y": Struct.parse.numberTransformer(data, "vw-layer_scale-x", {
+        "vw-layer_scale-y": Struct.parse.numberTransformer(data, "vw-layer_scale-y", {
+          value: 1.0,
           clampValue: { from: -99.9, to: 99.9 },
-          clampTarget: { from: 99.9, to: 99.9 },
+          clampTarget: { from: -99.9, to: 99.9 },
         }),
         "vw-layer_change-scale-y": Struct.parse.boolean(data, "vw-layer_change-scale-y"),
+        "vw-layer_use-texture-tiled": Struct.parse.boolean(data, "vw-layer_use-texture-tiled", true),
+        "vw-layer_use-texture-replace": Struct.parse.boolean(data, "vw-layer_use-texture-replace", true),
+        "vw-layer_texture-reset-pos": Struct.parse.boolean(data, "vw-layer_texture-reset-pos", true),
+        "vw-layer_texture-use-lifespawn": Struct.parse.boolean(data, "vw-layer_texture-use-lifespawn"),
+        "vw-layer_texture-lifespawn": Struct.parse.number(data, "vw-layer_texture-lifespawn", 0.0, 0.0, 9999.9),
       }
     },
     run: function(data) {
@@ -285,23 +292,75 @@ global.__view_track_event = {
       var lastAngle = 0.0
       var lastXScale = 1.0
       var lastYScale = 1.0
+      var lastX = 0.0
+      var lastY = 0.0
       if (Core.isType(lastTask, Task) && Core.isType(lastTask.state, Map)) {
-        var speedTransformer = lastTask.state.get("speedTransformer")
-        lastSpeed = Optional.is(speedTransformer) ? speedTransformer.value : lastTask.state.get("speed")
-        lastSpeed = Core.isType(lastSpeed, Number) ? lastSpeed : 0.0
+        var _angleTransformer = lastTask.state.get("angleTransformer")
+        lastAngle = Math.normalizeAngle(lastTask.state.get("angle") + (Optional.is(_angleTransformer) ? _angleTransformer.value : lastAngle))
 
-        var angleTransformer = lastTask.state.get("angleTransformer")
-        lastAngle = Optional.is(angleTransformer) ? angleTransformer.value : lastTask.state.get("angle")
-        lastAngle = Core.isType(lastAngle, Number) ? lastAngle : 0.0
+        var _speedTransformer = lastTask.state.get("speedTransformer")
+        lastSpeed = Optional.is(_speedTransformer) ? _speedTransformer.value : lastTask.state.get("speed")
 
-        var xScaleTransformer = lastTask.state.get("xScaleTransformer")
-        lastXScale = Optional.is(xScaleTransformer) ? xScaleTransformer.value : lastTask.state.get("xScale")
-        lastXScale = Core.isType(lastXScale, Number) ? lastXScale : 1.0
+        var _xScaleTransformer = lastTask.state.get("xScaleTransformer")
+        lastXScale = Optional.is(_xScaleTransformer) ? _xScaleTransformer.value : lastTask.state.get("xScale")
 
-        var yScaleTransformer = lastTask.state.get("yScaleTransformer")
-        lastYScale = Optional.is(yScaleTransformer) ? yScaleTransformer.value : lastTask.state.get("yScale")
-        lastYScale = Core.isType(lastYScale, Number) ? lastYScale : 1.0
+        var _yScaleTransformer = lastTask.state.get("yScaleTransformer")
+        lastYScale = Optional.is(_yScaleTransformer) ? _yScaleTransformer.value : lastTask.state.get("yScale")
+
+        lastX = lastTask.state.get("x")
+        lastY = lastTask.state.get("y")
       }
+
+      var useAngleTransformer = Struct.get(data, "vw-layer_use-dir")
+      var changeAngleTransformer = Struct.get(data, "vw-layer_change-dir")
+      var angleTransformer = Struct.get(data, "vw-layer_dir")
+      var angleTarget = Math.fetchPointsAngleDiff(
+        Math.normalizeAngle(changeAngleTransformer 
+          ? angleTransformer.target 
+          : (useAngleTransformer 
+            ? angleTransformer.value 
+            : lastAngle)),
+        Math.normalizeAngle(useAngleTransformer 
+          ? angleTransformer.value 
+          : lastAngle))
+
+      angleTransformer = new NumberTransformer({
+        value: 0.0,
+        target: angleTarget,
+        factor: (changeAngleTransformer ? angleTransformer.factor : angleTarget),
+        increase: (changeAngleTransformer ? angleTransformer.increase : 0.0),
+      })
+
+      var useSpeedTransformer = Struct.get(data, "vw-layer_use-spd")
+      var changeSpeedTransformer = Struct.get(data, "vw-layer_change-spd")
+      var speedTransformer = Struct.get(data, "vw-layer_spd")
+      speedTransformer = new NumberTransformer({
+        value: useSpeedTransformer ? speedTransformer.value : lastSpeed,
+        target: changeSpeedTransformer ? speedTransformer.target : (useSpeedTransformer ? speedTransformer.value : lastSpeed),
+        factor: changeSpeedTransformer ? speedTransformer.factor : (useSpeedTransformer ? abs(speedTransformer.value) : 99.9),
+        increase: changeSpeedTransformer ? speedTransformer.increase : 0.0,
+      })
+
+      var useXScaleTransformer = Struct.get(data, "vw-layer_use-scale-x")
+      var changeXScaleTransformer = Struct.get(data, "vw-layer_change-scale-x")
+      var xScaleTransformer = Struct.get(data, "vw-layer_scale-x")
+      xScaleTransformer = new NumberTransformer({
+        value: useXScaleTransformer ? xScaleTransformer.value : lastXScale,
+        target: changeXScaleTransformer ? xScaleTransformer.target : (useXScaleTransformer ? xScaleTransformer.value : lastXScale),
+        factor: changeXScaleTransformer ? xScaleTransformer.factor : (useXScaleTransformer ? abs(xScaleTransformer.value) : 99.9),
+        increase: changeXScaleTransformer ? xScaleTransformer.increase : 0.0,
+      })
+
+      var useYScaleTransformer = Struct.get(data, "vw-layer_use-scale-y")
+      var changeYScaleTransformer = Struct.get(data, "vw-layer_change-scale-y")
+      var yScaleTransformer = Struct.get(data, "vw-layer_scale-y")
+      yScaleTransformer = new NumberTransformer({
+        value: useYScaleTransformer ? yScaleTransformer.value : lastYScale,
+        target: changeYScaleTransformer ? yScaleTransformer.target : (useYScaleTransformer ? yScaleTransformer.value : lastYScale),
+        factor: changeYScaleTransformer ? yScaleTransformer.factor : (useYScaleTransformer ? abs(yScaleTransformer.value) : 99.9),
+        increase: changeYScaleTransformer ? yScaleTransformer.increase : 0.0,
+      })
+      
       ///@description feature TODO view.layer.texture
       Visu.resolveSendEventTrackEvent(data,
         "vw-layer_use-texture",
@@ -319,31 +378,18 @@ global.__view_track_event = {
           angle: Struct.get(data, "vw-layer_use-dir") 
             ? Struct.get(data, "vw-layer_dir").value 
             : lastAngle,
-          angleTransformer: (Struct.get(data, "vw-layer_use-dir") 
-            && Struct.get(data, "vw-layer_change-dir"))
-              ? Struct.get(data, "vw-layer_dir")
-              : null,
-          speed: Struct.get(data, "vw-layer_use-spd")
-            ? Struct.get(data, "vw-layer_spd").value
-            : lastSpeed,
-          speedTransformer: (Struct.get(data, "vw-layer_use-spd")
-            && Struct.get(data, "vw-layer_change-spd"))
-              ? Struct.get(data, "vw-layer_spd")
-              : null,
-          xScale: Struct.get(data, "vw-layer_use-scale-x")
-            ? Struct.get(data, "vw-layer_scale-x").value
-            : lastXScale,
-          xScaleTransformer: (Struct.get(data, "vw-layer_use-scale-x")
-            && Struct.get(data, "vw-layer_change-scale-x"))
-              ? Struct.get(data, "vw-layer_scale-x")
-              : null,
-          yScale: Struct.get(data, "vw-layer_use-scale-y")
-            ? Struct.get(data, "vw-layer_scale-y").value
-            : lastYScale,
-          yScaleTransformer: (Struct.get(data, "vw-layer_use-scale-y")
-            && Struct.get(data, "vw-layer_change-scale-y"))
-              ? Struct.get(data, "vw-layer_scale-y")
-              : null,
+          angleTransformer: angleTransformer,
+          speed: speedTransformer.value,
+          speedTransformer: speedTransformer,
+          xScale: xScaleTransformer.value,
+          xScaleTransformer: xScaleTransformer,
+          yScale: yScaleTransformer.value,
+          yScaleTransformer: yScaleTransformer,
+          x: Struct.get(data, "vw-layer_texture-reset-pos") ? null : lastX,
+          y: Struct.get(data, "vw-layer_texture-reset-pos") ? null : lastY,
+          tiled: Struct.get(data, "vw-layer_use-texture-tiled"),
+          replace: Struct.get(data, "vw-layer_use-texture-replace"),
+          lifespawn: Struct.get(data, "vw-layer_texture-use-lifespawn") ? Struct.get(data, "vw-layer_texture-lifespawn") : null,
         },
         pump)
     },

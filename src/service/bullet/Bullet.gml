@@ -1,6 +1,6 @@
 ///@package io.alkapivo.visu.service.bullet
 
-#macro TAU 6.28
+#macro TAU 6.28318530
 
 ///@param {String}
 ///@param {Struct} json
@@ -189,6 +189,12 @@ function BulletTemplate(_name, json) constructor {
 ///@param {BulletTemplate} template
 function Bullet(template): GridItem(template) constructor {
 
+  ///@param {Number}
+  startAngle = this.angle
+
+  ///@param {Number}
+  startSpeed = this.speed
+  
   ///@type {Player|Shroom}
   producer = template.producer
   Assert.isTrue(this.producer == Player || this.producer == Shroom)
@@ -229,22 +235,14 @@ function Bullet(template): GridItem(template) constructor {
     ? choose(1, -1) * this.wiggleFrequency
     : this.wiggleFrequency
 
-
-  if (Optional.is(Struct.get(template, "angleOffset"))) {
-    if (!template.useAngleOffset) {
-      Struct.set(template.angleOffset, "value", this.angle)
-    }
-
-    if (!template.changeAngleOffset) {
-      Struct.set(template.angleOffset, "target", template.angleOffset.value)
-      Struct.set(template.angleOffset, "factor", abs(template.angleOffset.value))
-      Struct.set(template.angleOffset, "increase", 0.0)
-    }
-  }
-
   ///@type {?NumberTransformer}
-  angleOffset = Optional.is(Struct.getIfType(template, "angleOffset", Struct))
-    ? new NumberTransformer(template.angleOffset)
+  angleOffset = Optional.is(Struct.get(template, "angleOffset"))
+    ? new NumberTransformer({
+      value: template.useAngleOffset ? template.angleOffset.value : 0.0,
+      target: template.changeAngleOffset ? template.angleOffset.target : (template.useAngleOffset ? template.angleOffset.value : 0.0),
+      factor: template.changeAngleOffset ? template.angleOffset.factor : (template.useAngleOffset ? abs(template.angleOffset.value) : 999.9),
+      increase: template.changeAngleOffset ? template.angleOffset.increase : 0.0,
+    })
     : null
 
   ///@type {Boolean}
@@ -253,24 +251,16 @@ function Bullet(template): GridItem(template) constructor {
   ///@param {Number}
   angleOffsetDir = this.angleOffsetRng ? choose(1, -1) : 1
 
-
-  if (Optional.is(Struct.get(template, "speedOffset"))) {
-    if (!template.useSpeedOffset) {
-      Struct.set(template.speedOffset, "value", this.speed * 1000.0)
-    }
-
-    if (!template.changeSpeedOffset) {
-      Struct.set(template.speedOffset, "target", template.speedOffset.value)
-      Struct.set(template.speedOffset, "factor", abs(template.speedOffset.value))
-      Struct.set(template.speedOffset, "increase", 0.0)
-    }
-  }
-
   ///@type {?NumberTransformer}
   speedOffset = Optional.is(Struct.get(template, "speedOffset"))
-    ? new NumberTransformer(template.speedOffset)
+    ? new NumberTransformer({
+      value: template.useSpeedOffset ? template.speedOffset.value : 0.0,
+      target: template.changeSpeedOffset ? template.speedOffset.target : (template.useSpeedOffset ? template.speedOffset.value : 0.0),
+      factor: template.changeSpeedOffset ? template.speedOffset.factor : (template.useSpeedOffset ? abs(template.speedOffset.value) : 999.9),
+      increase: template.changeSpeedOffset ? template.speedOffset.increase : 0.0,
+    })
     : null
-
+  
   ///@type {?String}
   onDeath = Struct.getIfType(template, "onDeath", String)
 
@@ -297,12 +287,6 @@ function Bullet(template): GridItem(template) constructor {
 
   ///@type {?Number}
   onDeathRngSpeed = Struct.getIfType(template, "onDeathRngSpeed", Number)
-
-  ///@param {Number}
-  startAngle = this.angle
-
-  ///@param {Number}
-  startSpeed = this.speed
 
   ///@param {VisuController} controller
   ///@return {Bullet}
