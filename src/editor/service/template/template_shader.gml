@@ -875,7 +875,9 @@ function template_shader(json) {
     Struct.set(template, "inherit", inherit)
   }
 
-  shader.uniforms.forEach(function(uniform, key, template) {
+  GMArray.forEach(GMArray.sort(shader.uniforms.keys().getContainer()), function(key, index, acc) {
+    var uniform = acc.uniforms.get(key)
+    var template = acc.template
     var type = ShaderUniformType.findKey(Callable.get(Core.getTypeName(uniform)))
     var properties = Struct.getDefault(template.json, "properties", {})
     var config = Struct.get(VE_SHADER_CONFIGS.get(template.shader), key)
@@ -902,7 +904,10 @@ function template_shader(json) {
         })
       }
     }
-  }, template)
+  }, {
+    uniforms: shader.uniforms,
+    template: template,
+  })
 
   Struct.remove(template, "json") ///@todo investigate
   
