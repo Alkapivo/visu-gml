@@ -438,8 +438,8 @@ function VisuEditorIO() constructor {
       if (this.keyboard.keys.previewBrush.pressed) {
         var brush = editor.brushToolbar.store.getValue("brush")
         if (Core.isType(brush, VEBrush)) {
-          var handler = controller.trackService.handlers.get(brush.type)
-          handler(brush.toTemplate().properties)
+          var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)
+          handler.run(handler.parse(brush.toTemplate().properties))
         }
       }
     }
