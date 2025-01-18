@@ -47,6 +47,34 @@ function template_particle(json = null) {
     }),
     components: new Array(Struct, [
       {
+        name: "particle_use-preview",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Emit particle preview",
+            enable: { key: "particle_use-preview" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "particle_use-preview" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: {
+            backgroundColor: VETheme.color.accentShadow,
+          }
+        },
+      },
+      {
+        name: "particle_use-preview-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
         name: "particle_shape-title",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -282,39 +310,6 @@ function template_particle(json = null) {
             //font: "font_inter_10_regular",
             enable: { key: "particle-use-sprite" },
           },
-        },
-      },
-      {
-        name: "particle-sprite-blend-stretch-line-h",
-        template: VEComponents.get("line-h"),
-        layout: VELayouts.get("line-h"),
-        config: { 
-          layout: {
-            type: UILayoutType.VERTICAL,
-            margin: { top: 4, bottom: 3 },
-          },
-        },
-      },
-      {
-        name: "particle_use-preview",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Emitt current particle",
-            enable: { key: "particle_use-preview" },
-            backgroundColor: VETheme.color.accentShadow,
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "particle_use-preview" },
-            backgroundColor: VETheme.color.accentShadow,
-          },
-          input: {
-            backgroundColor: VETheme.color.accentShadow,
-          }
         },
       },
       {
@@ -870,7 +865,44 @@ function template_particle(json = null) {
               }
             },
           },
-          checkbox: { },
+          checkbox: { 
+            store: { 
+              key: "particle-template",
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+            render: function() {
+              var template = this.store.getValue()
+              if (!Optional.is(template)) {
+                return this
+              }
+
+              var sprite = Struct.get(this, "sprite")
+              if (!Core.isType(sprite, Sprite)) {
+                sprite = SpriteUtil.parse({ name: "visu_texture_ui_angle_arrow" })
+                Struct.set(this, "sprite", sprite)
+              }
+
+              sprite.scaleToFit(this.area.getWidth() * 2, this.area.getHeight() * 2)
+                .setAngle(template.angle.minValue)
+                .render(
+                  this.context.area.getX() + this.area.getX() + 2 + sprite.texture.offsetX * sprite.getScaleX(),
+                  this.context.area.getY() + this.area.getY() + 4 + sprite.texture.offsetY * sprite.getScaleY()
+                )
+
+              var alpha = sprite.getAlpha()
+              sprite.setAngle(template.angle.maxValue)
+                .setAlpha(alpha * 0.66)
+                .render(
+                  this.context.area.getX() + this.area.getX() + 2 + sprite.texture.offsetX * sprite.getScaleX(),
+                  this.context.area.getY() + this.area.getY() + 4 + sprite.texture.offsetY * sprite.getScaleY()
+                )
+                .setAngle(template.angle.minValue)
+                .setAlpha(alpha)
+
+              return this
+            },
+          },
         },
       },
       {
