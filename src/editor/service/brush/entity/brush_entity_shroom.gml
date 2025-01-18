@@ -343,7 +343,7 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_use-rng-x" },
           },
           title: { 
-            text: "Enable",
+            text: "E.",
             enable: { key: "en-shr_use-rng-x" },
           },
         },
@@ -602,7 +602,7 @@ function brush_entity_shroom(json) {
               callback: function(value, data) { 
                 var sprite = Struct.get(data, "sprite")
                 if (!Core.isType(sprite, Sprite)) {
-                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
+                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_angle_arrow" })
                   Struct.set(data, "sprite", sprite)
                 }
                 sprite.setAngle(value)
@@ -624,7 +624,7 @@ function brush_entity_shroom(json) {
 
               var sprite = Struct.get(this, "sprite")
               if (!Core.isType(sprite, Sprite)) {
-                sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
+                sprite = SpriteUtil.parse({ name: "visu_texture_ui_angle_arrow" })
                 Struct.set(this, "sprite", sprite)
               }
 
@@ -635,10 +635,10 @@ function brush_entity_shroom(json) {
               }
               
               sprite
-                .scaleToFit(this.area.getWidth(), this.area.getHeight())              
+                .scaleToFit(this.area.getWidth() * 2, this.area.getHeight() * 2)              
                 .render(
-                  this.context.area.getX() + this.area.getX() + sprite.texture.offsetX * sprite.getScaleX(),
-                  this.context.area.getY() + this.area.getY() + sprite.texture.offsetY * sprite.getScaleY()
+                  24 + this.context.area.getX() + this.area.getX() + sprite.texture.offsetX * sprite.getScaleX(),
+                  this.context.area.getY() + this.area.getY() + sprite.texture.offsetY * sprite.getScaleY() - 4
                 )
                 .setAngle(angle)
               
@@ -686,7 +686,7 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_use-dir-rng" },
           },
           title: { 
-            text: "Enable",
+            text: "",
             enable: { key: "en-shr_use-dir-rng" },
           },
         },

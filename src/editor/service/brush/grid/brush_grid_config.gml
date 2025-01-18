@@ -1036,7 +1036,7 @@ function brush_grid_config(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Clear frame",
+            text: "Clear grid surface frame",
             backgroundColor: VETheme.color.accentShadow,
             enable: { key: "gr-cfg_use-cls-frame" },
           },

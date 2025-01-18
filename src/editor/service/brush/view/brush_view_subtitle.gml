@@ -1003,6 +1003,58 @@ function brush_view_subtitle(json = null) {
               enable: { key: "vw-sub_change-dir" },
               factor: 1.0,
             },
+            checkbox: { 
+              store: { 
+                key: "vw-sub_dir",
+                callback: function(value, data) { 
+                  if (!Core.isType(value, NumberTransformer)) {
+                    return
+                  }
+
+                  var sprite = Struct.get(data, "sprite")
+                  if (!Core.isType(sprite, Sprite)) {
+                    sprite = SpriteUtil.parse({ name: "visu_texture_ui_angle_arrow" })
+                    Struct.set(data, "sprite", sprite)
+                  }
+
+                  sprite.setAngle(value.value)
+                },
+                set: function(value) { return },
+              },
+              render: function() {
+                var sprite = Struct.get(this, "sprite")
+                if (!Core.isType(sprite, Sprite)) {
+                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_angle_arrow" })
+                  Struct.set(this, "sprite", sprite)
+                }
+
+                sprite.scaleToFit(this.area.getWidth() * 2, this.area.getHeight() * 2)
+
+                var itemUse = this.store.getStore().get("vw-sub_use-dir")
+                if (Optional.is(itemUse) && itemUse.get()) {
+                  sprite.render(
+                    this.context.area.getX() + this.area.getX() + 2 + sprite.texture.offsetX * sprite.getScaleX(),
+                    this.context.area.getY() + this.area.getY() + 4 + sprite.texture.offsetY * sprite.getScaleY()
+                  )
+                }
+
+                var transformer = this.store.getValue()
+                var itemChange = this.store.getStore().get("vw-sub_change-dir")
+                if (Optional.is(itemChange) && itemChange.get() && Optional.is(transformer)) {
+                  var alpha = sprite.getAlpha()
+                  sprite.setAngle(transformer.target)
+                    .setAlpha(alpha * 0.66)
+                    .render(
+                      this.context.area.getX() + this.area.getX() + 2 + sprite.texture.offsetX * sprite.getScaleX(),
+                      this.context.area.getY() + this.area.getY() + 4 + sprite.texture.offsetY * sprite.getScaleY()
+                    )
+                    .setAngle(transformer.value)
+                    .setAlpha(alpha)
+                }
+                
+                return this
+              },
+            },
           },
           increase: {
             label: {
