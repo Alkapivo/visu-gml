@@ -350,7 +350,7 @@ function brush_effect_config(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Clear frame",
+            text: "Clear shader surface frame",
             enable: { key: "ef-cfg_use-cls-frame" },
             backgroundColor: VETheme.color.accentShadow 
           },

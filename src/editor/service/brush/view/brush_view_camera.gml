@@ -949,6 +949,7 @@ function brush_view_camera(json) {
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
+      /*
       {
         name: "vw-cam_move-title",
         template: VEComponents.get("property"),
@@ -1188,6 +1189,7 @@ function brush_view_camera(json) {
           },
         },
       },
+      */
     ]),
   }
 }

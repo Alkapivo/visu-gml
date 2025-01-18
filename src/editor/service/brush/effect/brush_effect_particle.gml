@@ -184,7 +184,7 @@ function brush_effect_particle(json) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Remder emitter area",
+            text: "Render emitter area",
             enable: { key: "ef-part_preview" },
             backgroundColor: VETheme.color.accentShadow,
             updateCustom: function() {
