@@ -40,6 +40,8 @@ function GridOverlayRenderer() constructor {
     }
 
     static renderBackground = function(task, index, acc) {
+      task.state.set("surfaceWidth", acc.width)
+      task.state.set("surfaceHeight", acc.height)
       var sprite = task.state.get("sprite")
       sprite.scaleToFill(acc.width, acc.height)
         .setScaleX(sprite.scaleX * task.state.get("xScale"))
@@ -48,7 +50,9 @@ function GridOverlayRenderer() constructor {
       var _y = ceil(((sprite.texture.height * sprite.getScaleY()) - acc.height) / 2.0) + task.state.get("y")
       GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
       GPU.set.blendEquation(task.state.get("blendEquation"))
-      sprite.renderTiled(
+      
+      var render = task.state.get("tiled") ? sprite.renderTiled : sprite.render
+      render(
         ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
         ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
       )
@@ -77,6 +81,8 @@ function GridOverlayRenderer() constructor {
     }
 
     static renderForeground = function(task, index, acc) {
+      task.state.set("surfaceWidth", acc.width)
+      task.state.set("surfaceHeight", acc.height)
       var sprite = task.state.get("sprite")
       sprite.scaleToFill(acc.width, acc.height)
         .setScaleX(sprite.scaleX * task.state.get("xScale"))
@@ -85,7 +91,9 @@ function GridOverlayRenderer() constructor {
       var _y = ceil(((sprite.texture.height * sprite.getScaleY()) - acc.height) / 2.0) + task.state.get("y")
       GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
       GPU.set.blendEquation(task.state.get("blendEquation"))
-      sprite.renderTiled(
+
+      var render = task.state.get("tiled") ? sprite.renderTiled : sprite.render
+      render(
         ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
         ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
       )
