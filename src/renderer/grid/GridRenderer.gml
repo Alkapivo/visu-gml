@@ -997,6 +997,7 @@ function GridRenderer() constructor {
     var width = layout.width()
     var height = layout.height()
     var debugMode = Visu.settings.getValue("visu.debug.render-entities-mask", false)
+    var renderDebugChunks = Visu.settings.getValue("visu.debug.render-debug-chunks", false)
     var _renderPlayer = this.renderPlayer
     var _renderShrooms = this.renderShrooms
     var _renderBullets = this.renderBullets
@@ -1097,40 +1098,42 @@ function GridRenderer() constructor {
     //  1, 1, 1
     //))
     //draw_sprite(texture_baron, 0, x2d, y2d)
-    /*
-    shroomService.chunkService.chunks.forEach(function(chunk, key, view) {
-      var arr = String.split(key, "_")
-      var xx = ((real(arr.get(0)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.x) * GRID_SERVICE_PIXEL_WIDTH
-      var yy = ((real(arr.get(1)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      draw_sprite_ext(
-        texture_white, 
-        0.0, 
-        xx,
-        yy, 
-        ((GRID_SERVICE_PIXEL_WIDTH * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
-        ((GRID_SERVICE_PIXEL_HEIGHT * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
-        0.0,
-        chunk.size() > 0 ? c_red : c_white,
-        0.4
-      )
-    }, gridService.view)
-    bulletService.chunkService.chunks.forEach(function(chunk, key, view) {
-      var arr = String.split(key, "_")
-      var xx = ((real(arr.get(0)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.x) * GRID_SERVICE_PIXEL_WIDTH
-      var yy = ((real(arr.get(1)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      draw_sprite_ext(
-        texture_white, 
-        0.0, 
-        xx + 128, 
-        yy + 128, 
-        ((GRID_SERVICE_PIXEL_WIDTH * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.75,
-        ((GRID_SERVICE_PIXEL_HEIGHT * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.75,
-        0.0,
-        chunk.size() > 0 ? c_lime : c_white,
-        0.4
-      )
-    }, gridService.view)
-    */
+    
+    if (renderDebugChunks) {
+      shroomService.chunkService.chunks.forEach(function(chunk, key, view) {
+        var arr = String.split(key, "_")
+        var xx = ((real(arr.get(0)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.x) * GRID_SERVICE_PIXEL_WIDTH
+        var yy = ((real(arr.get(1)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        draw_sprite_ext(
+          texture_white, 
+          0.0, 
+          xx,
+          yy, 
+          ((GRID_SERVICE_PIXEL_WIDTH * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
+          ((GRID_SERVICE_PIXEL_HEIGHT * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
+          0.0,
+          chunk.size() > 0 ? c_red : c_white,
+          0.6
+        )
+      }, gridService.view)
+
+      bulletService.chunkService.chunks.forEach(function(chunk, key, view) {
+        var arr = String.split(key, "_")
+        var xx = ((real(arr.get(0)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.x) * GRID_SERVICE_PIXEL_WIDTH
+        var yy = ((real(arr.get(1)) * GRID_ITEM_CHUNK_SERVICE_SIZE) - view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        draw_sprite_ext(
+          texture_white, 
+          0.0, 
+          xx + 128, 
+          yy + 128, 
+          ((GRID_SERVICE_PIXEL_WIDTH * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.75,
+          ((GRID_SERVICE_PIXEL_HEIGHT * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.75,
+          0.0,
+          chunk.size() > 0 ? c_lime : c_white,
+          0.6
+        )
+      }, gridService.view)
+    }
     
     this.renderSpawners(gridService, shroomService)
     gpu_set_alphatestenable(false)
@@ -1193,13 +1196,20 @@ function GridRenderer() constructor {
         .reset.blendMode()
     }
 
+    controller.shaderPipeline
+      .setWidth(width)
+      .setHeight(height)
+      .render(renderGridShader, this)
+
+    return this;
+    /* 
     var size = controller.shaderPipeline
       .setWidth(width)
       .setHeight(height)
       .render(renderGridShader, this).executor.tasks
       .size()
 
-    ///@description Render support-grid
+    ///@description Render focus-grid
     if (properties.renderSupportGrid 
         && size >= properties.supportGridTreshold) {
 
@@ -1208,6 +1218,7 @@ function GridRenderer() constructor {
     }
 
     return this
+    */
   }
 
   ///@private
@@ -1374,10 +1385,34 @@ function GridRenderer() constructor {
     if (!properties.renderCombinedShaders 
         || !Visu.settings.getValue("visu.graphics.combined-shaders")
         || controller.shaderCombinedPipeline.executor.tasks.size() == 0) {
+
+      ///@description Render focus-grid
+      var size = controller.shaderPipeline.executor.tasks.size()
+      if (properties.renderSupportGrid 
+          && size >= properties.supportGridTreshold) {
+  
+        this.gridSurface.renderStretched(width, height, _x, _y, properties.supportGridAlpha,
+          properties.supportGridBlendColor.toGMColor(), properties.supportGridBlendConfig)
+      }
+    
       return this
     }
 
     this.shaderCombinedSurface.renderStretched(width, height, _x, _y)
+
+    ///@description Render focus-grid
+    var size = max(
+      controller.shaderPipeline.executor.tasks.size(), 
+      controller.shaderCombinedPipeline.executor.tasks.size()
+    )
+    
+    if (properties.renderSupportGrid 
+        && size >= properties.supportGridTreshold) {
+
+      this.gridSurface.renderStretched(width, height, _x, _y, properties.supportGridAlpha,
+        properties.supportGridBlendColor.toGMColor(), properties.supportGridBlendConfig)
+    }
+
     return this
   }
 
