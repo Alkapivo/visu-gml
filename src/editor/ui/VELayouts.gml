@@ -263,8 +263,8 @@ global.__VELayouts = new Map(String, Callable, {
   "label": function(config = null) {
     return {
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      width: Struct.getIfType(config, "width", Callable, function() { return 72 }),
-      height: Struct.getIfType(config, "height", Callable, function() { return 24 }),
+      width: Struct.getIfType(config, "width", Callable),// function() { return 72 }),
+      height: Struct.getIfType(config, "height", Callable),// function() { return 24 }),
       nodes: {
         label: {
           width: function() { return this.context.width() - this.margin.left - this.margin.right },
@@ -280,13 +280,30 @@ global.__VELayouts = new Map(String, Callable, {
   "checkbox": function(config = null) {
     return {
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      width: Struct.getIfType(config, "width", Callable, function() { return 24 }),
-      height: Struct.getIfType(config, "height", Callable, function() { return 24 }),
+      width: Struct.getIfType(config, "width", Callable),//, function() { return 24 }),
+      height: Struct.getIfType(config, "height", Callable),//, function() { return 24 }),
       nodes: {
         checkbox: {
-          width: function() { return this.context.width() - this.margin.left - this.margin.right },
-          height: function() { return this.context.height() - this.margin.top - this.margin.bottom },
-          margin: Struct.get(config, "margin"),
+          x: function() {
+            this.margin.left = round((this.context.width() - 24) / 2)
+            this.margin.right = this.margin.left
+            return this.context.x() + this.margin.left
+          },
+          y: function() {
+            this.margin.top = round((this.context.height() - 24) / 2)
+            this.margin.bottom = this.margin.top
+            return this.context.y() + this.margin.top
+          },
+          width: function() {
+            this.margin.left = round((this.context.width() - 24) / 2)
+            this.margin.right = this.margin.left
+            return 24
+          },
+          height: function() {
+            this.margin.top = round((this.context.height() - 24) / 2)
+            this.margin.bottom = this.margin.top
+            return 24
+          },
         },
       }
     }
@@ -297,12 +314,21 @@ global.__VELayouts = new Map(String, Callable, {
   "text-field-simple": function(config = null) {
     return {
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      width: Struct.getIfType(config, "width", Callable, function() { return 72 }),
-      height: Struct.getIfType(config, "height", Callable, function() { return 24 }),
+      width: Struct.getIfType(config, "width", Callable),// function() { return 72 }),
+      height: Struct.getIfType(config, "height", Callable),// function() { return 24 }),
       nodes: {
         field: {
+          y: function() {
+            this.margin.top = round((this.context.height() - 24) / 2)
+            this.margin.bottom = this.margin.top
+            return this.context.y() + this.margin.top
+          },
+          height: function() {
+            this.margin.top = round((this.context.height() - 24) / 2)
+            this.margin.bottom = this.margin.top
+            return 24
+          },
           width: function() { return this.context.width() - this.margin.left - this.margin.right },
-          height: function() { return this.context.height() - this.margin.top - this.margin.bottom },
           margin: Struct.get(config, "margin"),
         },
       }
@@ -613,7 +639,7 @@ global.__VELayouts = new Map(String, Callable, {
           x: function() { return this.context.nodes.field.right() + this.margin.left },
           width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
             - this.margin.left - this.margin.right },
-          margin: { top: 4, bottom: 5, right: 15, left: 10 },
+          margin: { top: 4, bottom: 5, right: 16, left: 12 },
         },
       }
     }
@@ -625,6 +651,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "double-checkbox",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      margin: Struct.getIfType(config, "margin", Struct),
       height: function() { return 28 },
       nodes: {
         label: {

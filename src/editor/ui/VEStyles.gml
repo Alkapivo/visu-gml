@@ -100,8 +100,8 @@ global.__VETheme = {
     denyShadow: "#6d3c54",
     ruler: "#E64B3D",
     header: "#963271",
-    stick: "#3B3B53",
-    stickHover: "#878787",
+    stick: "#5f398e",
+    stickHover: "#7742b8",
     stickBackground: "#0D0D0F",
   },
 }

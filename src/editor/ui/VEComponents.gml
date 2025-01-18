@@ -2212,11 +2212,15 @@ global.__VEComponents = new Map(String, Callable, {
 
     var items = new Array(UIItem)
 
-    factoryTitle(
-      $"{name}_title", 
-      layout.nodes.title, 
-      Struct.get(config, "title")
-    ).forEach(addItem, items)
+    if (Optional.is(Struct.get(config, "title"))) {
+      factoryTitle(
+        $"{name}_title", 
+        layout.nodes.title, 
+        Struct.get(config, "title")
+      ).forEach(addItem, items)
+    } else {
+      layout.nodes.title.height = function() { return 0 }
+    }
 
     factoryTextField(
       $"{name}_texture",
@@ -6261,7 +6265,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(Struct.set(transformer, key, parsedValue))
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -6679,7 +6683,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec2Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -7212,7 +7216,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec2Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -7626,7 +7630,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec2Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -8095,7 +8099,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec3Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -8748,7 +8752,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec3Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -9158,7 +9162,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec3Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -9562,7 +9566,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec3Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -10030,7 +10034,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec4Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -10807,7 +10811,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec4Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -11217,7 +11221,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec4Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -11621,7 +11625,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec4Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -12025,7 +12029,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(vec4Transformer)
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
@@ -14388,7 +14392,7 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(Struct.set(vec4, key, parsedValue))
                 },
               },
-              factor: 0.0001,
+              factor: 0.0010,
               base: null,
               _value: 0.0,
               value: 0.25,
