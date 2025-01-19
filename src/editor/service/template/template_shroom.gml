@@ -402,6 +402,7 @@ function template_shroom(json) {
             v_grow: true,
             w_min: 570,
             store: { key: "shroom_game-mode_bullet-hell_features" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       },

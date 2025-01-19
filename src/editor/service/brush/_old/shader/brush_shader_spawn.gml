@@ -184,6 +184,7 @@ function brush_shader_spawn(json = null) {
             w_min: 570,
             store: { key: "shader-spawn_merge-properties" },
             enable: { key: "shader-spawn_use-merge-properties" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       },

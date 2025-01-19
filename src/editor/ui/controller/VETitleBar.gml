@@ -149,7 +149,7 @@ function VETitleBar(_editor) constructor {
                 this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
               })
 
-              controller.executor.add(task)
+            controller.executor.add(task)
           },
         },
         VEStyles.get("ve-title-bar").menu,

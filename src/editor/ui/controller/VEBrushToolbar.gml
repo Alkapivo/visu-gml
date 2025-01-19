@@ -121,7 +121,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
         "components": new Array(Struct, Core.getProperty("visu.editor.migrate", false) 
           ?
             [
@@ -745,6 +745,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           {
             type: UIText,
             text: "Brushes",
+            font: "font_inter_8_bold",
+            offset: { x: 4 },
+            margin: { right: 96 },
             update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
           },
           VEStyles.get("bar-title"),
@@ -926,6 +929,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             || name == "resize_brush_inspector"
             || name == "resize_template_inspector"
             || name == "resize_timeline"
+            || name == "resize_horizontal"
             || name == "resize_event_title") {
           return
         }
@@ -1100,6 +1104,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           {
             type: UIText,
             text: "Brush inspector",
+            font: "font_inter_8_bold",
+            offset: { x: 4 },
             clipboard: {
               name: "resize_brush_inspector",
               drag: function() {
@@ -1192,7 +1198,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+        "background-alpha": 1.0,
         "inspectorType": VEBrushToolbar,
+        "surface-alpha": 1.0,
       }),
       updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.inspector-view.updateTimer", 60), { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
@@ -1201,10 +1209,15 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       scrollbarY: { align: HAlign.RIGHT },
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
-      renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+      renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollableAlpha"))),
       render: function() {
         if (this.executor != null) {
           this.executor.update()
+        }
+
+        var surfaceAlpha = this.state.getIfType("surface-alpha", Number, 1.0)
+        if (surfaceAlpha < 1.0) {
+          this.state.set("surface-alpha", clamp(surfaceAlpha + DeltaTime.apply(0.066), 0.0, 1.0))
         }
 
         this.renderDefaultScrollable()
@@ -1310,7 +1323,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
         "components": new Array(Struct, [
           {
             name: "button_control-preview",
@@ -1325,14 +1338,60 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   return
                 }
                 
-                var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)
+                var controller = Beans.get(BeanVisuController)
+                var handler = controller.trackService.handlers.get(brush.type)
                 handler.run(handler.parse(brush.toTemplate().properties))
-              },
-              onMouseHoverOver: function(event) {
-                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+
+                var item = this
+                controller = Beans.get(BeanVisuEditorController)
+                controller.executor.tasks.forEach(function(task, iterator, item) {
+                  if (Struct.get(task.state, "item") == item) {
+                    task.fullfill()
+                  }
+                }, item)
+                
+                var task = new Task($"onMouseReleasedLeft_{item.name}")
+                  .setTimeout(10.0)
+                  .setState({
+                    item: item,
+                    transformer: new ColorTransformer({
+                      value: VETheme.color.accentLight,
+                      target: item.isHoverOver ? item.colorHoverOver : item.colorHoverOut,
+                      factor: 0.016,
+                    })
+                  })
+                  .whenUpdate(function(executor) {
+                    if (this.state.transformer.update().finished) {
+                      this.fullfill()
+                    }
+    
+                    this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+                  })
+    
+                item.backgroundColor = ColorUtil.parse(VETheme.color.accentLight).toGMColor()
+                controller.executor.add(task)
               },
               onMouseHoverOut: function(event) {
+                var item = this
+                var controller = Beans.get(BeanVisuEditorController)
+                controller.executor.tasks.forEach(function(task, iterator, item) {
+                  if (Struct.get(task.state, "item") == item) {
+                    task.fullfill()
+                  }
+                }, item)
+
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+              onMouseHoverOver: function(event) {
+                var item = this
+                var controller = Beans.get(BeanVisuEditorController)
+                controller.executor.tasks.forEach(function(task, iterator, item) {
+                  if (Struct.get(task.state, "item") == item) {
+                    task.fullfill()
+                  }
+                }, item)
+
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
             },
           },
@@ -1379,7 +1438,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }
 
                 var template = brush.toTemplate()
-                var brushService = Beans.get(BeanVisuController).brushService
+                var controller = Beans.get(BeanVisuController)
+                var brushService = controller.brushService
                 var sizeBefore = brushService.fetchTemplates(template.type).size()
                 brushService.saveTemplate(template, 0)
                 var sizeAfter = brushService.fetchTemplates(template.type).size()
@@ -1401,6 +1461,61 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   item.image.texture = TextureUtil.parse(template.texture)
                   item.image.setBlend(ColorUtil.fromHex(template.color).toGMColor())
                 }
+
+                var item = this
+                controller = Beans.get(BeanVisuEditorController)
+                controller.executor.tasks.forEach(function(task, iterator, item) {
+                  if (Struct.get(task.state, "item") == item) {
+                    task.fullfill()
+                  }
+                }, item)
+                
+                var task = new Task($"onMouseReleasedLeft_{item.name}")
+                  .setTimeout(10.0)
+                  .setState({
+                    item: item,
+                    transformer: new ColorTransformer({
+                      value: VETheme.color.accept,
+                      target: item.isHoverOver ? item.colorHoverOver : item.colorHoverOut,
+                      factor: 0.016,
+                    })
+                  })
+                  .whenUpdate(function(executor) {
+                    if (this.state.transformer.update().finished) {
+                      this.fullfill()
+                    }
+    
+                    this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+                  })
+    
+                item.backgroundColor = ColorUtil.parse(VETheme.color.accept).toGMColor()
+                controller.executor.add(task)
+
+                if (Optional.is(inspector)) {
+                  inspector.state.set("surface-alpha", 0.5)
+                }
+              },
+              onMouseHoverOut: function(event) {
+                var item = this
+                var controller = Beans.get(BeanVisuEditorController)
+                controller.executor.tasks.forEach(function(task, iterator, item) {
+                  if (Struct.get(task.state, "item") == item) {
+                    task.fullfill()
+                  }
+                }, item)
+
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+              onMouseHoverOver: function(event) {
+                var item = this
+                var controller = Beans.get(BeanVisuEditorController)
+                controller.executor.tasks.forEach(function(task, iterator, item) {
+                  if (Struct.get(task.state, "item") == item) {
+                    task.fullfill()
+                  }
+                }, item)
+                
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
             },
           }
@@ -1606,13 +1721,13 @@ function VEBrushToolbar(_editor) constructor {
               + Struct.get(this.context.nodes, "inspector-bar").bottom() },
             height: function() { return ceil((this.context.height() 
               - this.context.staticHeight()) * this.percentageHeight) 
-              - this.margin.top - this.margin.bottom },
+              - this.margin.top - this.margin.bottom - 1},
           },
           "control": {
             name: "brush-toolbar.category",
-            y: function() { return Struct.get(this.context.nodes, "inspector-view").bottom() },
+            y: function() { return Struct.get(this.context.nodes, "inspector-view").bottom() - 1 },
             x: function() { return this.context.x()
-              + this.context.nodes.resize.width() },
+              + this.context.nodes.resize.width() - 1 },
             width: function() { return this.context.width() 
               - this.context.nodes.resize.width() },
             height: function() { return 40 },
@@ -1621,7 +1736,7 @@ function VEBrushToolbar(_editor) constructor {
             name: "brush-toolbar.resize",
             x: function() { return -2 },
             y: function() { return 0 },
-            width: function() { return 7 },
+            width: function() { return 8 },
             height: function() { return this.context.height() },
           }
         }
@@ -1790,7 +1905,7 @@ function VEBrushToolbar(_editor) constructor {
         return
       }
 
-      var button = control.items.get("button_control-save_category-button")
+      var button = control.items.get("button_control-save_type-button")
       if (button == null) {
         return
       }

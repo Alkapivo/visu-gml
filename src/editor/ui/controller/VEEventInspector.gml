@@ -45,13 +45,14 @@ function VEEventInspector(_editor) constructor {
         "view": {
           name: "event-inspector.view",
           margin: { top: 1, bottom: 0, left: 10, right: 1, },
-          height: function() { return this.context.height() - this.context.staticHeight() - this.margin.top - this.margin.bottom },
+          height: function() { return this.context.height() - this.context.staticHeight()
+            - this.margin.top - this.margin.bottom },
           y: function() { return this.margin.top + this.context.nodes.title.bottom() },
         },
         "control": {
           name: "event-inspector.control",
           height: function() { return 28 },
-          margin: { left: 1, right: 1, },
+          margin: { left: 0, right: 1, },
           y: function() { return this.context.nodes.view.bottom() + this.context.nodes.view.margin.bottom },
         }
       }
@@ -81,11 +82,11 @@ function VEEventInspector(_editor) constructor {
           "label_ve-event-inspector-title": {
             type: UIText,
             text: "Event inspector",
-            font: "font_inter_8_regular",
+            font: "font_inter_8_bold",
             color: VETheme.color.textShadow,
             align: { v: VAlign.CENTER, h: HAlign.LEFT },
             offset: { x: 4 },
-            backgroundColor: VETheme.color.sideShadow,
+            backgroundColor: VETheme.color.sideDark,
             clipboard: {
               name: "label_ve-event-inspector-title",
               drag: function() {

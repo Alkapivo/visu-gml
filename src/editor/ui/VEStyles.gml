@@ -176,16 +176,16 @@ function generateVEStyles() {
       },
     },
     "bar-title": {
-      backgroundColor: VETheme.color.sideShadow,
+      backgroundColor: VETheme.color.sideDark,
       align: { v: VAlign.CENTER, h: HAlign.LEFT },
-      font: "font_inter_8_regular",
+      font: "font_inter_8_bold",
       color: VETheme.color.textShadow,
       offset: { x: 4 },
     },
     "bar-button": {
-      backgroundColor: VETheme.color.sideShadow,
+      backgroundColor: VETheme.color.sideDark,
       colorHoverOver: VETheme.color.primaryShadow,
-      colorHoverOut: VETheme.color.sideShadow,
+      colorHoverOut: VETheme.color.sideDark,
       label: {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
         font: "font_inter_8_regular",
@@ -226,12 +226,12 @@ function generateVEStyles() {
     },
     "type-button": {
       backgroundColorSelected: VETheme.color.accentShadow,
-      backgroundColor: VETheme.color.primaryShadow,
+      backgroundColor: VETheme.color.primaryDark,
       backgroundColorHover: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
       backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
       backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
-      colorHoverOver: VETheme.color.primary,
-      colorHoverOut: VETheme.color.primaryShadow,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.primaryDark,
       label: {
         font: "font_inter_8_regular",
         color: VETheme.color.textFocus,
@@ -239,10 +239,10 @@ function generateVEStyles() {
       },
     },
     "template-add-button": {
-      backgroundColor: VETheme.color.button,
+      backgroundColor: VETheme.color.primaryDark,
       backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-      colorHoverOver: VETheme.color.buttonHover,
-      colorHoverOut: VETheme.color.button,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.primaryDark,
       label: {
         font: "font_inter_10_bold",
         color: VETheme.color.textFocus,
@@ -250,10 +250,10 @@ function generateVEStyles() {
       },
     },
     "collection-button": {
-      backgroundColor: VETheme.color.button,
+      backgroundColor: VETheme.color.primaryDark,
       backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-      colorHoverOver: VETheme.color.buttonHover,
-      colorHoverOut: VETheme.color.button,
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.primaryDark,
       label: {
         font: "font_inter_10_bold",
         color: VETheme.color.textFocus,

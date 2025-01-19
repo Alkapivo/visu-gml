@@ -751,8 +751,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           type: UIText,
           text: "Templates",
           update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
-          backgroundColor: VETheme.color.sideShadow,
-          font: "font_inter_8_regular",
+          backgroundColor: VETheme.color.sideDark,
+          font: "font_inter_8_bold",
           color: VETheme.color.textShadow,
           align: { v: VAlign.CENTER, h: HAlign.LEFT },
           offset: { x: 4 },
@@ -2237,6 +2237,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       state: new Map(String, any, {
         "background-alpha": 1.0,
         "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+        "surface-alpha": 1.0,
       }),
       updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.template-toolbar.inspector-view.updateTimer", 30), { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -2254,10 +2255,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         }
       },
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
-      renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+      renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollableAlpha"))),
       render: function() {
         if (this.executor != null) {
           this.executor.update()
+        }
+
+        var surfaceAlpha = this.state.getIfType("surface-alpha", Number, 1.0)
+        if (surfaceAlpha < 1.0) {
+          this.state.set("surface-alpha", clamp(surfaceAlpha + DeltaTime.apply(0.066), 0.0, 1.0))
         }
 
         this.renderDefaultScrollable()
@@ -2363,7 +2369,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
         "components": new Array(Struct, [
           {
             name: "button_control-save",
@@ -2375,6 +2381,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 height: function() { return 28 },
                 margin: { top: 0 },
               },
+              backgroundMargin: { top: 1, bottom: 1, right: 1, left: 0 },
               callback: function() { 
                 if (Core.isType(GMTFContext.get(), GMTF)) {
                   if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
@@ -2383,12 +2390,39 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   GMTFContext.get().unfocus()
                 }
 
+                var template = this.context.templateToolbar.store.getValue("template")
+                if (!Core.isType(template, VETemplate)) {
+                  return
+                }
+                
                 this.context.templateToolbar.send(new Event("save-template"))
 
                 var accordion = Beans.get(BeanVisuEditorController).accordion
                 accordion.containers.forEach(accordion.resetUpdateTimer)
                 accordion.templateToolbar.containers.forEach(accordion.resetUpdateTimer)
                 accordion.eventInspector.containers.forEach(accordion.resetUpdateTimer)
+              },
+              onMouseHoverOut: function(event) {
+                var item = this
+                var controller = Beans.get(BeanVisuEditorController)
+                controller.executor.tasks.forEach(function(task, iterator, item) {
+                  if (Struct.get(task.state, "item") == item) {
+                    task.fullfill()
+                  }
+                }, item)
+
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+              onMouseHoverOver: function(event) {
+                var item = this
+                var controller = Beans.get(BeanVisuEditorController)
+                controller.executor.tasks.forEach(function(task, iterator, item) {
+                  if (Struct.get(task.state, "item") == item) {
+                    task.fullfill()
+                  }
+                }, item)
+
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
             },
           }
@@ -2558,7 +2592,7 @@ function VETemplateToolbar(_editor) constructor {
             y: function() { return this.margin.top + this.context.nodes.title.bottom() },
             height: function() { return ceil((this.context.height() 
               - this.context.staticHeight()) * this.percentageHeight)
-              - this.margin.top - this.margin.bottom },
+              },//- this.margin.top - this.margin.bottom },
           },
           "inspector-bar": {
             name: "template-toolbar.inspector-bar",
@@ -2791,7 +2825,51 @@ function VETemplateToolbar(_editor) constructor {
       if (sizeBefore != sizeAfter) {
         this.store.get("type").set(template.type)
       }
-      this.store.get("template").set(template)
+
+      var inspectorView = this.containers.get("ve-template-toolbar_inspector-view")
+      if (Optional.is(inspectorView)) {
+        inspectorView.state.set("surface-alpha", 0.5)
+      }
+      //this.store.get("template").set(template)
+
+      var control = this.containers.get("ve-template-toolbar_control")
+      if (control == null) {
+        return
+      }
+
+      var button = control.items.get("button_control-save_type-button")
+      if (button == null) {
+        return
+      }
+
+      controller = Beans.get(BeanVisuEditorController)
+      var item = button
+      controller.executor.tasks.forEach(function(task, iterator, item) {
+        if (Struct.get(task.state, "item") == item) {
+          task.fullfill()
+        }
+      }, item)
+      
+      var task = new Task($"onMouseReleasedLeft_{item.name}")
+        .setTimeout(10.0)
+        .setState({
+          item: item,
+          transformer: new ColorTransformer({
+            value: VETheme.color.accept,
+            target: item.isHoverOver ? item.colorHoverOver : item.colorHoverOut,
+            factor: 0.016,
+          })
+        })
+        .whenUpdate(function(executor) {
+          if (this.state.transformer.update().finished) {
+            this.fullfill()
+          }
+
+          this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+        })
+
+      item.backgroundColor = ColorUtil.parse(VETheme.color.accept).toGMColor()
+      controller.executor.add(task)
     },
   }), { 
     enableLogger: false, 
