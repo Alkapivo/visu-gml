@@ -1393,6 +1393,28 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
               },
+              postRender: function() {
+                var keyLabel = Struct.get(this, "keyLabel")
+                if (!Optional.is(keyLabel)) {
+                  keyLabel = Struct.set(this, "keyLabel", new UILabel({
+                    font: "font_inter_8_regular",
+                    text: "CTRL + D",
+                    useScale: false,
+                    color: VETheme.color.textShadow,
+                    align: {
+                      v: VAlign.BOTTOM,
+                      h: HAlign.CENTER,
+                    },
+                  }))
+                }
+
+                keyLabel.render(
+                  this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
+                  this.context.area.getY() + this.area.getY() + this.area.getHeight(),
+                  this.area.getWidth(),
+                  this.area.getHeight()
+                )
+              },
             },
           },
           {
@@ -1516,6 +1538,28 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 }, item)
                 
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              postRender: function() {
+                var keyLabel = Struct.get(this, "keyLabel")
+                if (!Optional.is(keyLabel)) {
+                  keyLabel = Struct.set(this, "keyLabel", new UILabel({
+                    font: "font_inter_8_regular",
+                    text: "CTRL + SHIFT + D",
+                    useScale: false,
+                    color: VETheme.color.textShadow,
+                    align: {
+                      v: VAlign.BOTTOM,
+                      h: HAlign.CENTER,
+                    },
+                  }))
+                }
+
+                keyLabel.render(
+                  this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
+                  this.context.area.getY() + this.area.getY() + this.area.getHeight(),
+                  this.area.getWidth(),
+                  this.area.getHeight()
+                )
               },
             },
           }

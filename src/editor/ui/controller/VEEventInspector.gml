@@ -51,7 +51,7 @@ function VEEventInspector(_editor) constructor {
         },
         "control": {
           name: "event-inspector.control",
-          height: function() { return 28 },
+          height: function() { return 40 },
           margin: { left: 0, right: 1, },
           y: function() { return this.context.nodes.view.bottom() + this.context.nodes.view.margin.bottom },
         }
@@ -411,7 +411,7 @@ function VEEventInspector(_editor) constructor {
               config: {
                 label: { text: "Preview" },
                 layout: {
-                  height: function() { return 28 },
+                  height: function() { return 40 },
                   margin: { top: 0 },
                 },
                 callback: function() { 
@@ -421,8 +421,82 @@ function VEEventInspector(_editor) constructor {
                     return
                   }
 
-                  var handler = Beans.get(BeanVisuController).trackService.handlers.get(event.type)
+                  var controller = Beans.get(BeanVisuController)
+                  var handler = controller.trackService.handlers.get(event.type)
                   handler.run(handler.parse(event.toTemplate().event.data))
+
+                  var item = this
+                  controller = Beans.get(BeanVisuEditorController)
+                  controller.executor.tasks.forEach(function(task, iterator, item) {
+                    if (Struct.get(task.state, "item") == item) {
+                      task.fullfill()
+                    }
+                  }, item)
+                  
+                  var task = new Task($"onMouseReleasedLeft_{item.name}")
+                    .setTimeout(10.0)
+                    .setState({
+                      item: item,
+                      transformer: new ColorTransformer({
+                        value: VETheme.color.accentLight,
+                        target: item.isHoverOver ? item.colorHoverOver : item.colorHoverOut,
+                        factor: 0.016,
+                      })
+                    })
+                    .whenUpdate(function(executor) {
+                      if (this.state.transformer.update().finished) {
+                        this.fullfill()
+                      }
+      
+                      this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+                    })
+      
+                  item.backgroundColor = ColorUtil.parse(VETheme.color.accentLight).toGMColor()
+                  controller.executor.add(task)
+                },
+                onMouseHoverOut: function(event) {
+                  var item = this
+                  var controller = Beans.get(BeanVisuEditorController)
+                  controller.executor.tasks.forEach(function(task, iterator, item) {
+                    if (Struct.get(task.state, "item") == item) {
+                      task.fullfill()
+                    }
+                  }, item)
+
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                },
+                onMouseHoverOver: function(event) {
+                  var item = this
+                  var controller = Beans.get(BeanVisuEditorController)
+                  controller.executor.tasks.forEach(function(task, iterator, item) {
+                    if (Struct.get(task.state, "item") == item) {
+                      task.fullfill()
+                    }
+                  }, item)
+
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                },
+                postRender: function() {
+                  var keyLabel = Struct.get(this, "keyLabel")
+                  if (!Optional.is(keyLabel)) {
+                    keyLabel = Struct.set(this, "keyLabel", new UILabel({
+                      font: "font_inter_8_regular",
+                      text: "CTRL + A",
+                      useScale: false,
+                      color: VETheme.color.textShadow,
+                      align: {
+                        v: VAlign.BOTTOM,
+                        h: HAlign.CENTER,
+                      },
+                    }))
+                  }
+  
+                  keyLabel.render(
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
+                    this.context.area.getY() + this.area.getY() + this.area.getHeight() + 1,
+                    this.area.getWidth(),
+                    this.area.getHeight()
+                  )
                 },
               },
             },

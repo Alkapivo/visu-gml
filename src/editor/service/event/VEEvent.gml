@@ -39,10 +39,12 @@ function VEEvent(_context, json = null) constructor {
     },
     "event-texture": {
       type: String,
-      value: Struct.get(json, "event-texture"),
-      validate: function(value) {
-        Assert.isType(TextureUtil.parse(value), Texture)
-        Assert.areEqual(true, this.data.contains(value))
+      value: Struct.getIfType(json, "event-texture", String, "texture_missing"),
+      passthrough: function(value) {
+        return Core.isType(TextureUtil.parse(value), Texture)
+            && GMArray.contains(BRUSH_TEXTURES, value)
+              ? value
+              : this.value
       },
       data: new Array(String, BRUSH_TEXTURES),
     },

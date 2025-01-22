@@ -2378,7 +2378,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             config: {
               label: { text: "Save template" },
               layout: { 
-                height: function() { return 28 },
+                height: function() { return 40 },
                 margin: { top: 0 },
               },
               backgroundMargin: { top: 1, bottom: 1, right: 1, left: 0 },
@@ -2423,6 +2423,28 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 }, item)
 
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              postRender: function() {
+                var keyLabel = Struct.get(this, "keyLabel")
+                if (!Optional.is(keyLabel)) {
+                  keyLabel = Struct.set(this, "keyLabel", new UILabel({
+                    font: "font_inter_8_regular",
+                    text: "CTRL + SHIFT + A",
+                    useScale: false,
+                    color: VETheme.color.textShadow,
+                    align: {
+                      v: VAlign.BOTTOM,
+                      h: HAlign.CENTER,
+                    },
+                  }))
+                }
+
+                keyLabel.render(
+                  this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
+                  this.context.area.getY() + this.area.getY() + this.area.getHeight() + 1,
+                  this.area.getWidth(),
+                  this.area.getHeight()
+                )
               },
             },
           }
@@ -2615,7 +2637,7 @@ function VETemplateToolbar(_editor) constructor {
             y: function() {
               return Struct.get(this.context.nodes, "inspector-view").bottom()
             },
-            height: function() { return 28 },
+            height: function() { return 40 },
             margin: { left: 1, right: 1 },
           }
         }

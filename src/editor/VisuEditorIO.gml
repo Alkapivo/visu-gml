@@ -410,6 +410,40 @@ function VisuEditorIO() constructor {
         if (Core.isType(event, VEEvent)) {
           var handler = controller.trackService.handlers.get(event.type)
           handler.run(handler.parse(event.toTemplate().event.data))
+
+          var control = editor.accordion.eventInspector.containers.get("ve-event-inspector-control")
+          if (Optional.is(control)) {
+            var preview = control.items.get("button_control-preview_type-button")
+            if (Optional.is(preview)) {
+              var item = preview
+              editor.executor.tasks.forEach(function(task, iterator, item) {
+                if (Struct.get(task.state, "item") == item) {
+                  task.fullfill()
+                }
+              }, item)
+              
+              var task = new Task($"onMouseReleasedLeft_{item.name}")
+                .setTimeout(10.0)
+                .setState({
+                  item: item,
+                  transformer: new ColorTransformer({
+                    value: VETheme.color.accentLight,
+                    target: item.isHoverOver ? item.colorHoverOver : item.colorHoverOut,
+                    factor: 0.016,
+                  })
+                })
+                .whenUpdate(function(executor) {
+                  if (this.state.transformer.update().finished) {
+                    this.fullfill()
+                  }
+  
+                  this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+                })
+  
+              item.backgroundColor = ColorUtil.parse(VETheme.color.accent).toGMColor()
+              editor.executor.add(task)
+            }
+          }
         }
       }
     }

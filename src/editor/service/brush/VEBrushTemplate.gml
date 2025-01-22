@@ -15,10 +15,10 @@ function VEBrushTemplate(json) constructor {
     : "#ffffff"
   
   ///@type {String}
-  texture = Core.isType(Struct.get(json, "texture"), String)
-    ? json.texture
-    : BRUSH_TEXTURES[0]
-  Assert.isTrue(GMArray.contains(BRUSH_TEXTURES, this.texture))
+  texture = (Core.isType(Struct.get(json, "texture"), String) 
+    && GMArray.contains(BRUSH_TEXTURES, json.texture)) 
+      ? json.texture
+      : BRUSH_TEXTURES[0]
 
   ///@type {?Struct}
   properties = Core.isType(Struct.get(json, "properties"), Struct) 

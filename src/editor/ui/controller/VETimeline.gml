@@ -1248,6 +1248,18 @@ function VETimeline(_editor) constructor {
             }
           }
 
+          // items
+          var areaX = this.area.x
+          var areaY = this.area.y
+          var delta = DeltaTime.deltaTime
+          DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
+          this.surfaceTick.previous = this.updateTimer.finished
+          this.area.x = this.offset.x
+          this.area.y = this.offset.y
+          this.items.forEach(this.renderItem, this.area)
+          this.area.x = areaX
+          this.area.y = areaY
+
           // lines
           var linesSize = this.state.get("amount") + 1
           if (linesSize <= 1.0) {
@@ -1262,18 +1274,6 @@ function VETimeline(_editor) constructor {
             //GPU.render.texturedLine(0, linesY, areaWidth, linesY, thickness, alpha, color)
           }
           draw_set_alpha(_alpha)
-
-          // items
-          var areaX = this.area.x
-          var areaY = this.area.y
-          var delta = DeltaTime.deltaTime
-          DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
-          this.surfaceTick.previous = this.updateTimer.finished
-          this.area.x = this.offset.x
-          this.area.y = this.offset.y
-          this.items.forEach(this.renderItem, this.area)
-          this.area.x = areaX
-          this.area.y = areaY
 
           /// bpm
           var bpmX = 0
