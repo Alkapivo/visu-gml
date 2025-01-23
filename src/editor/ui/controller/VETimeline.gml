@@ -1904,9 +1904,10 @@ function VETimeline(_editor) constructor {
             return
           }
 
+          var context = this
           Beans.get(BeanVisuEditorIO).mouse.setClipboard(new Promise()
             .setState({
-              handler: this.handleMouseDropSelectEvent,
+              handler: context.handleMouseDropSelectEvent,
               event: new Event("mouse-select-event", {
                 timestampFrom: timestampFrom,
                 channelIndexFrom: channelIndexFrom,
