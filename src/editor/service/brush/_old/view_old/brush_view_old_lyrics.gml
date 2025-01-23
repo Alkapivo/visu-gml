@@ -148,9 +148,9 @@ function brush_view_old_lyrics(json = null) {
       },
       "view-lyrics_line-delay": {
         type: Number,
-        value: Struct.getDefault(json, "view-lyrics_line-delay", 1),
+        value: Struct.getDefault(json, "view-lyrics_line-delay", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 999.0)
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.0)
         },
       },
       "view-lyrics_use-finish-delay": {
@@ -159,9 +159,9 @@ function brush_view_old_lyrics(json = null) {
       },
       "view-lyrics_finish-delay": {
         type: Number,
-        value: Struct.getDefault(json, "view-lyrics_finish-delay", 1),
+        value: Struct.getDefault(json, "view-lyrics_finish-delay", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 999.0)
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.0)
         },
       },
       "view-lyrics_use-transform-angle": {

@@ -237,7 +237,7 @@ function VisuMenu(_config = null) constructor {
                       break
                     case VisuMenuEntryEventType.LOAD_TRACK:
                       controller.send(new Event("load", {
-                        manifest: event.data.path,
+                        manifest: $"{working_directory}{event.data.path}",
                         autoplay: true,
                       }))
                       controller.sfxService.play("menu-select-entry")

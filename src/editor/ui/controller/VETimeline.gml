@@ -1654,7 +1654,7 @@ function VETimeline(_editor) constructor {
         },
 
         onMousePressedLeft: function(event) {
-          //this.finishUpdateTimer()
+          this.finishUpdateTimer()
         },
 
         onMousePressedRight: function(event) {

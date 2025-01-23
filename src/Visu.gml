@@ -714,6 +714,10 @@ function _Visu() constructor {
     var override = Struct.get(data, useKey)
     var change = Struct.get(data, changeKey)
     var transformer = Struct.get(data, transformerKey)
+    if (override) {
+      Struct.set(container, containerKey, transformer.value)
+    }
+
     if (change) {
       pump.send(new Event("transform-property", {
         key: containerKey,
@@ -721,14 +725,11 @@ function _Visu() constructor {
         executor: executor,
         transformer: new NumberTransformer({
           value: override ? transformer.value : Struct.get(container, containerKey),
-          //value: Struct.get(container, containerKey),
           target: transformer.target,
           factor: transformer.factor,
           increase: transformer.increase,
         })
       }))
-    } else if (override) {
-      Struct.set(container, containerKey, transformer.value)
     }
   }
 

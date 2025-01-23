@@ -62,7 +62,7 @@ function brush_grid_config(json) {
         type: Number,
         value: Struct.get(json, "gr-cfg_cls-frame-col-spd"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.000001, 1.0),
+        data: new Vector2(0.0, 999.9),
       },
       "gr-cfg_use-cls-frame-alpha": {
         type: Boolean,
@@ -1195,12 +1195,12 @@ function brush_grid_config(json) {
             decrease: { 
               store: { key: "gr-cfg_cls-frame-alpha" },
               enable: { key: "gr-cfg_use-cls-frame-alpha" },
-              factor: -1.0,
+              factor: -0.1,
             },
             increase: { 
               store: { key: "gr-cfg_cls-frame-alpha" },
               enable: { key: "gr-cfg_use-cls-frame-alpha" },
-              factor: 1.0,
+              factor: 0.1,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -1224,12 +1224,12 @@ function brush_grid_config(json) {
             decrease: { 
               store: { key: "gr-cfg_cls-frame-alpha" },
               enable: { key: "gr-cfg_change-cls-frame-alpha"},
-              factor: -1.0,
+              factor: -0.1,
             },
             increase: { 
               store: { key: "gr-cfg_cls-frame-alpha" },
               enable: { key: "gr-cfg_change-cls-frame-alpha" },
-              factor: 1.0,
+              factor: 0.1,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -1253,12 +1253,12 @@ function brush_grid_config(json) {
             decrease: { 
               store: { key: "gr-cfg_cls-frame-alpha" },
               enable: { key: "gr-cfg_change-cls-frame-alpha" },
-              factor: -1.0,
+              factor: -0.1,
             },
             increase: { 
               store: { key: "gr-cfg_cls-frame-alpha" },
               enable: { key: "gr-cfg_change-cls-frame-alpha" },
-              factor: 1.0,
+              factor: 0.1,
             },
           },
           increase: {

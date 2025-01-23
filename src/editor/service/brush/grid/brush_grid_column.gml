@@ -42,7 +42,7 @@ function brush_grid_column(json) {
         type: Number,
         value: Struct.get(json, "gr-c_main-col-spd"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.000001, 1.0),
+        data: new Vector2(0.0, 999.9),
       },
       "gr-c_use-main-alpha": {
         type: Boolean,

@@ -255,7 +255,7 @@ function VETrackControl(_editor) constructor {
             name: "track-control.brushIconPreview",
             width: function() { return 32 },
             height: function() { return 32 },
-            margin: { right: 2, top: 1, bottom: 2, left: 0 },
+            margin: { right: 2, top: 1, bottom: 2, left: 12 },
             x: function() { return this.context.width() 
               - this.margin.right
               - this.width() },

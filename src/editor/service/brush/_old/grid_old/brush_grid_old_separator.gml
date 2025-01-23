@@ -83,7 +83,7 @@ function brush_grid_old_separator(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-separator_primary-color-speed", 0.01),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.9) 
         },
       },
       "grid-separator_use-transform-primary-alpha": {
@@ -121,7 +121,7 @@ function brush_grid_old_separator(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-separator_secondary-color-speed", 0.01),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.9) 
         },
       },
       "grid-separator_use-transform-secondary-alpha": {

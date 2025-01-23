@@ -202,7 +202,7 @@ function brush_grid_old_config(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-config_border-bottom-color-speed", 0.01),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.9) 
         },
       },
       "grid-config_use-border-bottom-alpha": {
@@ -239,7 +239,7 @@ function brush_grid_old_config(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-config_border-horizontal-color-speed", 0.01),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.9) 
         },
       },
       "grid-config_use-border-horizontal-alpha": {
