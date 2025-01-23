@@ -385,8 +385,8 @@ function brush_view_old_wallpaper(json = null) {
       },
       {
         name: "view-wallpaper_texture",
-        template: VEComponents.get("__texture-field"),
-        layout: VELayouts.get("__texture-field"),
+        template: VEComponents.get("texture-field"),
+        layout: VELayouts.get("texture-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {

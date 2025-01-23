@@ -536,7 +536,7 @@ function VEProjectModal(_config = null) constructor {
         x: editTheme
           ? function() { return 48 }
           : function() { return (GuiWidth() - this.width()) / 2.0 },
-        y: function() { return this.context.y() + 20 },
+        y: function() { return this.context.y() + 24 },
         width: function() { return 640 },
         height: editTheme
           ? function() { return GuiHeight() - 48 }

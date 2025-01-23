@@ -752,8 +752,21 @@ function VisuTrackLoader(_controller): Service() constructor {
         update: function(fsm) {
           try {
             var timer = this.state.get("cooldown-timer")
+            var editorIO = Beans.get(BeanVisuEditorIO)
             if (timer.update().finished) {
               fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
+            } else if (Optional.is(editorIO) && editorIO.keyboard.keys.renderUI.pressed) {
+              fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
+
+              var controller = Beans.get(BeanVisuController)
+              var editor = Beans.get(BeanVisuEditorController)
+              if (Optional.is(editor)) {
+                editor.renderUI = !editor.renderUI
+                var fsmState = controller.fsm.currentState
+                if (editor.renderUI && Optional.is(fsmState) && fsmState.name == "load") {
+                  fsmState.state.set("autoplay", false)
+                }
+              }
             }
           } catch (exception) {
             var message = $"'cooldown' fatal error: {exception.message}"

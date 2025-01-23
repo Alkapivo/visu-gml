@@ -1338,7 +1338,7 @@ function VENewProjectModal(_config = null) constructor {
       {
         name: "visu-new-project-modal",
         x: function() { return (GuiWidth() - this.width()) / 2 },
-        y: function() { return this.context.y() + 20.0 },
+        y: function() { return this.context.y() + 24},
         width: function() { return 480 },
         height: function() { return 374 },
       },

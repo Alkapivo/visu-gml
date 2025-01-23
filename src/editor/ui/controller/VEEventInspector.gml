@@ -71,7 +71,7 @@ function VEEventInspector(_editor) constructor {
         name: "ve-event-inspector-title",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         layout: layout.nodes.title,
@@ -86,6 +86,7 @@ function VEEventInspector(_editor) constructor {
             color: VETheme.color.textShadow,
             align: { v: VAlign.CENTER, h: HAlign.LEFT },
             offset: { x: 4 },
+            margin: { top: 1 },
             backgroundColor: VETheme.color.sideDark,
             clipboard: {
               name: "label_ve-event-inspector-title",
@@ -279,10 +280,16 @@ function VEEventInspector(_editor) constructor {
               name: container.name,
               overrideSubscriber: true,
               callback: function(selectedEvent, data) { 
+                data.executor.tasks.forEach(function(task, iterator, name) {
+                  if (task.name == name) {
+                    task.fullfill()
+                  }
+                }, "init-ui-components")
+
                 if (!Optional.is(selectedEvent)) {
                   data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
                   data.collection.components.clear() ///@todo replace with remove lambda
-                  //data.items.clear() ///@todo replace with remove lambda
+                  data.items.clear() ///@todo replace with remove lambda
                   data.state
                     .set("selectedEvent", null)
                     .set("event", null)
@@ -302,19 +309,14 @@ function VEEventInspector(_editor) constructor {
                 })
                 data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
                 data.collection.components.clear() ///@todo replace with remove lambda
-                //data.items.clear() ///@todo replace with remove lambda
+                data.items.clear() ///@todo replace with remove lambda
                 data.eventInspector.store.get("event").set(event)
                 data.state
                   .set("selectedEvent", selectedEvent)
                   .set("event", event)
                   .set("store", event.store)
 
-                data.executor.tasks.forEach(function(task, iterator, name) {
-                  if (task.name == name) {
-                    task.fullfill()
-                  }
-                }, "init-ui-components")
-
+               
                 var task = new Task("init-ui-components")
                   .setTimeout(60)
                   .setState({

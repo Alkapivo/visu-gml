@@ -248,7 +248,12 @@ function brush_effect_config(json) {
             text: "Clear",
             backgroundColor: VETheme.color.accentShadow,
           },
-          checkbox: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { 
+            backgroundColor: VETheme.color.accentShadow,
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "ef-cfg_use-render-part" },
+          },
           input: { backgroundColor: VETheme.color.accentShadow },
         },
       },
@@ -469,17 +474,17 @@ function brush_effect_config(json) {
           decrease: {
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: -0.1,
+            factor: -1.0,
           },
           increase: {
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: 0.1,
+            factor: 1.0,
           },
           stick: {
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { },
         },
@@ -517,6 +522,11 @@ function brush_effect_config(json) {
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
               factor: 0.01,
             },
+            stick: {
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_use-cls-frame-alpha" },
+              factor: 0.01,
+            },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
@@ -546,6 +556,11 @@ function brush_effect_config(json) {
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
               factor: 0.01,
             },
+            stick: {
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha" },
+              factor: 0.01,
+            },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
@@ -568,9 +583,14 @@ function brush_effect_config(json) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: -0.001,
+              factor: -0.01,
             },
             increase: { 
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha" },
+              factor: 0.01,
+            },
+            stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
               factor: 0.001,
@@ -588,11 +608,16 @@ function brush_effect_config(json) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.0001,
+              factor: 0.001,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
-              enable: { key: "ef-cfg_change-cls-frame-alpha"} ,
+              enable: { key: "ef-cfg_change-cls-frame-alpha" },
+              factor: 0.001,
+            },
+            stick: {
+              store: { key: "ef-cfg_cls-frame-alpha" },
+              enable: { key: "ef-cfg_change-cls-frame-alpha" },
               factor: 0.0001,
             },
           },

@@ -71,6 +71,10 @@ function GridRenderer() constructor {
   textureLine = new Texture(texture_grid_line_alpha)
 
   ///@private
+  ///@param {Texture}
+  textureLineSpawners = new Texture(texture_grid_line_default)
+
+  ///@private
   ///@type {?Number}
   channelXStart = null
 
@@ -1010,7 +1014,10 @@ function GridRenderer() constructor {
     }
     
     if (properties.gridClearFrame) {
+      var tempAlpha = properties.gridClearColor.alpha
+      properties.gridClearColor.alpha = properties.gridClearFrameAlpha
       GPU.render.clear(properties.gridClearColor)
+      properties.gridClearColor.alpha = tempAlpha
     } else {
       GPU.set.blendMode(BlendMode.SUBTRACT)
         .render.fillColor(
@@ -1184,7 +1191,10 @@ function GridRenderer() constructor {
     var height = this.shaderSurface.height
 
     if (properties.shaderClearFrame) {
+      var tempAlpha = properties.shaderClearColor.alpha
+      properties.shaderClearColor.alpha = properties.shaderClearFrameAlpha
       GPU.render.clear(properties.shaderClearColor)
+      properties.shaderClearColor.alpha = tempAlpha
     } else {
       GPU.set.blendMode(BlendMode.SUBTRACT)
         .render.fillColor(
@@ -1395,6 +1405,12 @@ function GridRenderer() constructor {
           properties.supportGridBlendColor.toGMColor(), properties.supportGridBlendConfig)
       }
     
+      ///@description Render subtitles area (editor)
+      var editor = Beans.get(BeanVisuEditorController)
+      if (Optional.is(editor)) {
+        this.renderSubtitlesArea(_x, _y, width, height, controller.shroomService)
+      }
+      
       return this
     }
 
@@ -1413,7 +1429,112 @@ function GridRenderer() constructor {
         properties.supportGridBlendColor.toGMColor(), properties.supportGridBlendConfig)
     }
 
+    ///@description Render subtitles area (editor)
+    var editor = Beans.get(BeanVisuEditorController)
+    if (Optional.is(editor)) {
+      this.renderSubtitlesArea(_x, _y, width, height, controller.shroomService)
+    }
+
     return this
+  }
+
+  renderSubtitlesArea = function(x, y, width, height, shroomService) {
+
+    var subtitlesArea = shroomService.subtitlesArea
+    if (Core.isType(subtitlesArea, Struct)) {
+      GPU.render.rectangle(
+        x + subtitlesArea.topLeft.x * width, 
+        y + subtitlesArea.topLeft.y * height, 
+        x + subtitlesArea.bottomRight.x * width,
+        y + subtitlesArea.bottomRight.y * height,
+        false, c_lime, c_lime, c_lime, c_lime, 0.33
+      )
+
+      GPU.render.texturedLine(
+        x + subtitlesArea.topLeft.x * width, 
+        y + subtitlesArea.topLeft.y * height, 
+        x + subtitlesArea.topRight.x * width, 
+        y + subtitlesArea.topRight.y * height, 
+        4.0, 0.66, c_lime
+      )
+
+      GPU.render.texturedLine(
+        x + subtitlesArea.topRight.x * width, 
+        y + subtitlesArea.topRight.y * height, 
+        x + subtitlesArea.bottomRight.x * width,
+        y + subtitlesArea.bottomRight.y * height,
+        4.0, 0.66, c_lime
+      )
+
+      GPU.render.texturedLine(
+        x + subtitlesArea.bottomRight.x * width,
+        y + subtitlesArea.bottomRight.y * height,
+        x + subtitlesArea.bottomLeft.x * width,
+        y + subtitlesArea.bottomLeft.y * height,
+        4.0, 0.66, c_lime
+      )
+
+      GPU.render.texturedLine(
+        x + subtitlesArea.topLeft.x * width, 
+        y + subtitlesArea.topLeft.y * height, 
+        x + subtitlesArea.bottomLeft.x * width,
+        y + subtitlesArea.bottomLeft.y * height,
+        4.0, 0.66, c_lime
+      )
+
+      shroomService.subtitlesArea.timeout--
+      if (shroomService.subtitlesArea.timeout <= 0) {
+        shroomService.subtitlesArea = null
+      }
+    }
+
+    var subtitlesAreaEvent = shroomService.subtitlesAreaEvent
+    if (Core.isType(subtitlesAreaEvent, Struct)) {
+      GPU.render.rectangle(
+        x + subtitlesAreaEvent.topLeft.x * width, 
+        y + subtitlesAreaEvent.topLeft.y * height, 
+        x + subtitlesAreaEvent.bottomRight.x * width,
+        y + subtitlesAreaEvent.bottomRight.y * height,
+        false, c_red, c_red, c_red, c_red, 0.33
+      )
+
+      GPU.render.texturedLine(
+        x + subtitlesAreaEvent.topLeft.x * width, 
+        y + subtitlesAreaEvent.topLeft.y * height, 
+        x + subtitlesAreaEvent.topRight.x * width, 
+        y + subtitlesAreaEvent.topRight.y * height, 
+        4.0, 0.66, c_red
+      )
+
+      GPU.render.texturedLine(
+        x + subtitlesAreaEvent.topRight.x * width, 
+        y + subtitlesAreaEvent.topRight.y * height, 
+        x + subtitlesAreaEvent.bottomRight.x * width,
+        y + subtitlesAreaEvent.bottomRight.y * height,
+        4.0, 0.66, c_red
+      )
+
+      GPU.render.texturedLine(
+        x + subtitlesAreaEvent.bottomRight.x * width,
+        y + subtitlesAreaEvent.bottomRight.y * height,
+        x + subtitlesAreaEvent.bottomLeft.x * width,
+        y + subtitlesAreaEvent.bottomLeft.y * height,
+        4.0, 0.66, c_red
+      )
+
+      GPU.render.texturedLine(
+        x + subtitlesAreaEvent.topLeft.x * width, 
+        y + subtitlesAreaEvent.topLeft.y * height, 
+        x + subtitlesAreaEvent.bottomLeft.x * width,
+        y + subtitlesAreaEvent.bottomLeft.y * height,
+        4.0, 0.66, c_red
+      )
+
+      shroomService.subtitlesAreaEvent.timeout--
+      if (shroomService.subtitlesAreaEvent.timeout <= 0) {
+        shroomService.subtitlesAreaEvent = null
+      }
+    }
   }
 
   ///@private

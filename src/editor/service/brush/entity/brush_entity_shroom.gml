@@ -325,15 +325,15 @@ function brush_entity_shroom(json) {
           decrease: {
             store: { key: "en-shr_rng-x" },
             enable: { key: "en-shr_use-rng-x" },
-            factor: -1.0,
+            factor: -0.25,
           },
           increase: {
             store: { key: "en-shr_rng-x" },
             enable: { key: "en-shr_use-rng-x" },
-            factor: 1.0,
+            factor: 0.25,
           },
           stick: {
-            factor: 0.1,
+            factor: 0.001,
             store: { key: "en-shr_rng-x" },
             enable: { key: "en-shr_use-rng-x" },
           },
@@ -343,7 +343,7 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_use-rng-x" },
           },
           title: { 
-            text: "E.",
+            text: "Enable",
             enable: { key: "en-shr_use-rng-x" },
           },
         },
@@ -427,15 +427,15 @@ function brush_entity_shroom(json) {
           decrease: {
             store: { key: "en-shr_rng-y" },
             enable: { key: "en-shr_use-rng-y" },
-            factor: -1.0,
+            factor: -0.25,
           },
           increase: {
             store: { key: "en-shr_rng-y" },
             enable: { key: "en-shr_use-rng-y" },
-            factor: 1.0,
+            factor: 0.25,
           },
           stick: {
-            factor: 0.1,
+            factor: 0.001,
             store: { key: "en-shr_rng-y" },
             enable: { key: "en-shr_use-rng-y" },
           },
@@ -472,8 +472,8 @@ function brush_entity_shroom(json) {
           },
           slider: {
             mminValue: 0.0,
-            maxValue: 99.0,
-            snapValue: 1.0 / 99.0,
+            maxValue: 99.9,
+            snapValue: 1.0 / 99.9,
             store: { key: "en-shr_spd" },
           },
         },
@@ -494,11 +494,11 @@ function brush_entity_shroom(json) {
           field: { store: { key: "en-shr_spd" } },
           decrease: { 
             store: { key: "en-shr_spd" },
-            factor: -0.25,
+            factor: -0.1,
           },
           increase: { 
             store: { key: "en-shr_spd" },
-            factor: 0.25,
+            factor: 0.1,
           },
           checkbox: { },
         },
@@ -531,7 +531,7 @@ function brush_entity_shroom(json) {
             factor: 0.25,
           },
           stick: {
-            factor: 0.1,
+            factor: 0.001,
             store: { key: "en-shr_spd-rng" },
             enable: { key: "en-shr_use-spd-rng" },
           },
@@ -590,11 +590,11 @@ function brush_entity_shroom(json) {
           field: { store: { key: "en-shr_dir" } },
           decrease: {
             store: { key: "en-shr_dir" },
-            factor: -0.25,
+            factor: -0.1,
           },
           increase: {
             store: { key: "en-shr_dir" },
-            factor: 0.25,
+            factor: 0.1,
           },
           checkbox: { 
             store: { 
@@ -678,7 +678,7 @@ function brush_entity_shroom(json) {
           stick: {
             store: { key: "en-shr_dir-rng" },
             enable: { key: "en-shr_use-dir-rng" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -686,7 +686,7 @@ function brush_entity_shroom(json) {
             store: { key: "en-shr_use-dir-rng" },
           },
           title: { 
-            text: "",
+            text: "E.",
             enable: { key: "en-shr_use-dir-rng" },
           },
         },

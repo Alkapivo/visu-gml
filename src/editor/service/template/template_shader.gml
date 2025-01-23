@@ -362,28 +362,40 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
             target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
             factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
             increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, config, false),
         }
@@ -415,13 +427,14 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       components: new Array(Struct, [
         {
           name: $"shader-uniform_{uniform.name}-x",
-          template: VEComponents.get("transform-vec2-x-uniform"),
-          layout: VELayouts.get("transform-vec2-x-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
             label: { text: uniform.name },
             title: { label: { text: $"[VEC2]  {uniform.name}" } },
-            valueX: {
+            vectorProperty: "x",
+            value: {
               label: {
                 text: "X",
                 font: "font_inter_10_bold",
@@ -429,38 +442,51 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: { 
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetX: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: { 
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorX: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: { 
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseX: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: { 
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, Struct.get(config, "vec2x"), false),
         },
         {
           name: $"shader-uniform_{uniform.name}-y",
-          template: VEComponents.get("transform-vec2-y-uniform"),
-          layout: VELayouts.get("transform-vec2-y-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
-            valueY: {
+            vectorProperty: "y",
+            value: {
               label:{
                 text: "Y",
                 font: "font_inter_10_bold",
@@ -468,28 +494,40 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetY: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorY: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseY: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, Struct.get(config, "vec2y"), false),
         },
@@ -527,13 +565,14 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       components: new Array(Struct, [
         {
           name: $"shader-uniform_{uniform.name}-x",
-          template: VEComponents.get("transform-vec3-x-uniform"),
-          layout: VELayouts.get("transform-vec3-x-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
+            vectorProperty: "x",
             label: { text: uniform.name },
             title: { label: { text: $"[VEC3]  {uniform.name}" } },
-            valueX: {
+            value: {
               label: {
                 text: "X",
                 font: "font_inter_10_bold",
@@ -541,38 +580,51 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetX: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorX: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseX: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, Struct.get(config, "vec3x"), false),
         },
         {
           name: $"shader-uniform_{uniform.name}-y",
-          template: VEComponents.get("transform-vec3-y-uniform"),
-          layout: VELayouts.get("transform-vec3-y-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
-            valueY: {
+            vectorProperty: "y",
+            value: {
               label: {
                 text: "Y",
                 font: "font_inter_10_bold",
@@ -580,38 +632,51 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetY: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorY: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseY: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, Struct.get(config, "vec3y"), false),
         },
         {
           name: $"shader-uniform_{uniform.name}-z",
-          template: VEComponents.get("transform-vec3-z-uniform"),
-          layout: VELayouts.get("transform-vec3-z-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
-            valueZ: {
+            vectorProperty: "z",
+            value: {
               label: {
                 text: "Z",
                 font: "font_inter_10_bold",
@@ -619,28 +684,40 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetZ: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorZ: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseZ: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, Struct.get(config, "vec3z"), false),
         }
@@ -684,14 +761,15 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       components: new Array(Struct, [
         {
           name: $"shader-uniform_{uniform.name}-x",
-          template: VEComponents.get("transform-vec4-x-uniform"),
-          layout: VELayouts.get("transform-vec4-x-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
             label: { text: uniform.name },
+            vectorProperty: "x",
             title: { label: { text: $"[VEC4]  {uniform.name}" } 
             },
-            valueX: {
+            value: {
               label: {
                 text: "X",
                 font: "font_inter_10_bold",
@@ -699,38 +777,51 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetX: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorX: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseX: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, Struct.get(config, "vec4x"), false),
         },
         {
           name: $"shader-uniform_{uniform.name}-y",
-          template: VEComponents.get("transform-vec4-y-uniform"),
-          layout: VELayouts.get("transform-vec4-y-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
-            valueY: {
+            vectorProperty: "y",
+            value: {
               label: {
                 text: "Y",
                 font: "font_inter_10_bold",
@@ -738,38 +829,51 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetY: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorY: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseY: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, Struct.get(config, "vec4y"), false),
         },
         {
           name: $"shader-uniform_{uniform.name}-z",
-          template: VEComponents.get("transform-vec4-z-uniform"),
-          layout: VELayouts.get("transform-vec4-z-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
-            valueZ: {
+            vectorProperty: "z",
+            value: {
               label: {
                 text: "Z",
                 font: "font_inter_10_bold",
@@ -777,38 +881,51 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetZ: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorZ: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseZ: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             }
           }, Struct.get(config, "vec4z"), false),
         },
         {
           name: $"shader-uniform_{uniform.name}-a",
-          template: VEComponents.get("transform-vec4-a-uniform"),
-          layout: VELayouts.get("transform-vec4-a-uniform"),
+          template: VEComponents.get("transform-vec-property-uniform"),
+          layout: VELayouts.get("transform-vec-property-uniform"),
           config: Struct.appendRecursive({
             layout: { type: UILayoutType.VERTICAL },
-            valueA: {
+            vectorProperty: "a",
+            value: {
               label: {
                 text: "A",
                 font: "font_inter_10_bold",
@@ -816,28 +933,40 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            targetA: {
+            target: {
               label: { text: "Target" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.01,
+              },
             },
-            factorA: {
+            factor: {
               label: { text: "Factor" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.001,
+              },
             },
-            increaseA: {
+            increase: {
               label: { text: "Increase" },
               field: { store: { key: uniform.name } },
               increase: { store: { key: uniform.name } },
               decrease: { store: { key: uniform.name } },
-              slider: { store: { key: uniform.name } },
+              slider: {
+                store: { key: uniform.name },
+                factor: 0.0001,
+              },
             },
           }, Struct.get(config, "vec4a"), false),
         }

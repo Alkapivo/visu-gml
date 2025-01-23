@@ -763,8 +763,8 @@ function _Visu() constructor {
       container: container,
       executor: executor,
       transformer: new ColorTransformer({
-        value: Struct.get(container, containerKey).toHex(true),
-        target: Struct.get(data, colorKey).toHex(true),
+        value: Struct.get(container, containerKey).toHex(false),
+        target: Struct.get(data, colorKey).toHex(false),
         factor: factor,
         increase: 0.0,
       })

@@ -457,6 +457,99 @@ function brush_view_subtitle(json = null) {
             text: "Render subtitles area",
             backgroundColor: VETheme.color.accentShadow,
             enable: { key: "vw-sub_use-area-preview" },
+            updateCustom: function() {
+              this.preRender()
+              if (Core.isType(this.context.updateTimer, Timer)) {
+                var inspectorType = this.context.state.get("inspectorType")
+                switch (inspectorType) {
+                  case VEEventInspector:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.subtitlesAreaEvent != null) {
+                      shroomService.subtitlesAreaEvent.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                  case VEBrushToolbar:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.subtitlesArea != null) {
+                      shroomService.subtitlesArea.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                }
+              }
+            },
+            preRender: function() {
+              var store = null
+              if (Core.isType(this.context.state.get("brush"), VEBrush)) {
+                store = this.context.state.get("brush").store
+              }
+              
+              if (Core.isType(this.context.state.get("event"), VEEvent)) {
+                store = this.context.state.get("event").store
+              }
+
+              if (!Optional.is(store) || !store.getValue("vw-sub_use-area-preview")) {
+                return
+              }
+
+              var subX = store.getValue("vw-sub_x")
+              var subY = store.getValue("vw-sub_y")
+              var subWidth = store.getValue("vw-sub_w")
+              var subHeight = store.getValue("vw-sub_h")
+              if (!Optional.is(subX)
+                  || !Optional.is(subY)
+                  || !Optional.is(subWidth)
+                  || !Optional.is(subHeight)) {
+                return
+              }
+              
+              var inspectorType = this.context.state.get("inspectorType")
+              switch (inspectorType) {
+                case VEEventInspector: 
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.subtitlesAreaEvent = {
+                    topLeft: {
+                      x: subX,
+                      y: subY,
+                    },
+                    topRight: {
+                      x: subX + subWidth,
+                      y: subY,
+                    },
+                    bottomLeft: {
+                      x: subX,
+                      y: subY + subHeight,
+                    },
+                    bottomRight: {
+                      x: subX + subWidth,
+                      y: subY + subHeight,
+                    },
+                    timeout: 5.0,
+                  }
+                  break
+                case VEBrushToolbar:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.subtitlesArea = {
+                    topLeft: {
+                      x: subX,
+                      y: subY,
+                    },
+                    topRight: {
+                      x: subX + subWidth,
+                      y: subY,
+                    },
+                    bottomLeft: {
+                      x: subX,
+                      y: subY + subHeight,
+                    },
+                    bottomRight: {
+                      x: subX + subWidth,
+                      y: subY + subHeight,
+                    },
+                    timeout: 5.0,
+                  }
+                  break
+              }
+            }
           },
           input: { backgroundColor: VETheme.color.accentShadow },
           checkbox: { 

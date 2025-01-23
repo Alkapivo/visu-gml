@@ -130,12 +130,12 @@ function brush_effect_glitch(json = null) {
             enable: { key: "ef-glt_use-fade-out" },
           },
           increase: {
-            factor: 0.01,
+            factor: 0.001,
             store: { key: "ef-glt_fade-out" },
             enable: { key: "ef-glt_use-fade-out" },
           },
           decrease: {
-            factor: -0.01,
+            factor: -0.001,
             store: { key: "ef-glt_fade-out" },
             enable: { key: "ef-glt_use-fade-out" },
           },
@@ -160,7 +160,7 @@ function brush_effect_glitch(json = null) {
           slider: {
             minValue: 0.0,
             maxValue: 1.0,
-            snapValue: 0.01 / 1.0,
+            snapValue: 0.001 / 1.0,
             store: { key: "ef-glt_fade-out" },
             enable: { key: "ef-glt_use-fade-out" },
           },

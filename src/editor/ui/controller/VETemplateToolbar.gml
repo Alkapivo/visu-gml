@@ -2345,6 +2345,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           name: container.name,
           overrideSubscriber: true,
           callback: function(template, data) {
+            data.executor.tasks.forEach(function(task, iterator, name) {
+              if (task.name == name) {
+                task.fullfill()
+              }
+            }, "init-ui-components")
 
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
             data.collection.components.clear() ///@todo replace with remove lambda
@@ -2406,11 +2411,6 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               })
             
             data.state.set("previousOffset", task.state.previousOffset)
-            data.executor.tasks.forEach(function(task, iterator, name) {
-              if (task.name == name) {
-                task.fullfill()
-              }
-            }, "init-ui-components")
             data.executor.add(task)
           },
           data: container

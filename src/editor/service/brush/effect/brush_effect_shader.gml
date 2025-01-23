@@ -115,11 +115,11 @@ function brush_effect_shader(json) {
           },
           decrease: {
             store: { key: "ef-shd_alpha" },
-            factor: -0.001,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-shd_alpha" },
-            factor: 0.001,
+            factor: 0.01,
           },
         },
       },
@@ -137,15 +137,15 @@ function brush_effect_shader(json) {
           },
           decrease: {
             store: { key: "ef-shd_duration" },
-            factor: -0.1,
+            factor: -1.0,
           },
           increase: {
             store: { key: "ef-shd_duration" },
-            factor: 0.1,
+            factor: 1.0,
           },
           stick: {
             store: { key: "ef-shd_duration" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { },
         },
@@ -170,15 +170,15 @@ function brush_effect_shader(json) {
           },
           decrease: {
             store: { key: "ef-shd_fade-in" },
-            factor: -0.1,
+            factor: -1.0,
           },
           increase: {
             store: { key: "ef-shd_fade-in" },
-            factor: 0.1,
+            factor: 1.0,
           },
           stick: {
             store: { key: "ef-shd_fade-in" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { },
         },
@@ -197,15 +197,15 @@ function brush_effect_shader(json) {
           },
           decrease: {
             store: { key: "ef-shd_fade-out" },
-            factor: -0.1,
+            factor: -1.0,
           },
           increase: {
             store: { key: "ef-shd_fade-out" },
-            factor: 0.1,
+            factor: 1.0,
           },
           stick: {
             store: { key: "ef-shd_fade-out" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { },
         },

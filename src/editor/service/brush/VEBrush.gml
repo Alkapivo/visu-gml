@@ -75,7 +75,7 @@ global.__VEBrushTypeNames = {
   "brush_entity_shroom": "Entity shroom",
   "brush_entity_coin": "Entity coin",
   "brush_entity_player": "Entity player",
-  "brush_entity_config": "Enttiy config",
+  "brush_entity_config": "Entity config",
   "brush_grid_area": "Grid area",
   "brush_grid_column": "Grid column",
   "brush_grid_row": "Grid row",

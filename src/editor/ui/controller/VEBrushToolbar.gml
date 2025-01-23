@@ -1013,6 +1013,18 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             this.finishUpdateTimer()
             this.areaWatchdog.signal()
           }
+        } else {
+          Core.print("asd")
+          var mouse = Beans.get(BeanVisuEditorIO).mouse
+          var dropEvent = mouse.getClipboard()
+          if (Core.isType(dropEvent, Promise)) {
+            dropEvent.fullfill()
+          }
+
+          if (Core.isType(Struct.get(dropEvent, "drop"), Callable)) {
+            dropEvent.drop()
+          }
+          mouse.clearClipboard()
         }
       },
       onInit: function() {
@@ -1242,6 +1254,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           name: this.name,
           overrideSubscriber: true,
           callback: function(template, data) {
+            data.executor.tasks.forEach(function(task, iterator, name) {
+              if (task.name == name) {
+                task.fullfill()
+              }
+            }, "init-ui-components")
+            
             if (!Optional.is(template)) {
               data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
               data.collection.components.clear() ///@todo replace with remove lambda
@@ -1260,12 +1278,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               .set("template", template)
               .set("brush", brush)
               .set("store", brush.store)
-
-            data.executor.tasks.forEach(function(task, iterator, name) {
-              if (task.name == name) {
-                task.fullfill()
-              }
-            }, "init-ui-components")
 
             var task = new Task("init-ui-components")
               .setTimeout(60)

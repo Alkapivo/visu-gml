@@ -22,7 +22,7 @@ function VEPopupQueue(_editor) constructor {
       name: "ve-popup-queue_item",
       index: Assert.isType(Struct.getDefault(config, "index", 0), Number),
       _x: 0,
-      _y: 32,
+      _y: 24 + 16,
       _width: 300,
       _height: 32,
       _margin: 8,

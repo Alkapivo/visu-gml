@@ -247,8 +247,13 @@ function template_particle(json = null) {
               spriteOff: { name: "visu_texture_checkbox_off" },
               enable: { key: "particle-use-sprite" },
             },
-            title: { enable: { key: "particle-use-sprite" } },
-            stick: { store: { key: "particle-sprite" } },
+            title: { 
+              enable: { key: "particle-use-sprite" }
+            },
+            stick: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
           },
           speed: {
             label: {
@@ -273,8 +278,13 @@ function template_particle(json = null) {
               spriteOff: { name: "visu_texture_checkbox_off" },
               enable: { key: "particle-use-sprite" },
             },
-            title: { enable: { key: "particle-use-sprite" } },
-            stick: { store: { key: "particle-sprite" } },
+            title: {
+              enable: { key: "particle-use-sprite" },
+            },
+            stick: {
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
           },
         },
       },

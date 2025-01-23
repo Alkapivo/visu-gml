@@ -475,7 +475,7 @@ function VEStatusBar(_editor) constructor {
                   width: function() { return 36 },
                   margin: { left: 2, right: 2 },
                 },
-                label: { text: "FPS:" },
+                label: { text: "FPS" },
               },
             },
             {
@@ -512,7 +512,7 @@ function VEStatusBar(_editor) constructor {
                   width: function() { return 42 },
                   margin: { left: 2, right: 2 },
                 },
-                label: { text: "Time:" },
+                label: { text: "Time" },
               },
             },
             {
@@ -556,7 +556,7 @@ function VEStatusBar(_editor) constructor {
                   width: function() { return 64 },
                   margin: { left: 2, right: 2 },
                 },
-                label: { text: "Duration:" },
+                label: { text: "Duration" },
               },
             },
             {
@@ -600,7 +600,7 @@ function VEStatusBar(_editor) constructor {
                   width: function() { return 38 },
                   margin: { left: 2, right: 2 },
                 },
-                label: { text: "BPM:" },
+                label: { text: "BPM" },
               },
             },
             {
@@ -665,7 +665,7 @@ function VEStatusBar(_editor) constructor {
                   width: function() { return 48 },
                   margin: { left: 2, right: 2 },
                 },
-                label: { text: "Count:" },
+                label: { text: "Meter" },
               },
             },
             {
@@ -731,7 +731,7 @@ function VEStatusBar(_editor) constructor {
                   width: function() { return 36 },
                   margin: { left: 2, right: 2 },
                 },
-                label: { text: "Sub:" },
+                label: { text: "Sub" },
               },
             },
             {
@@ -889,7 +889,7 @@ function VEStatusBar(_editor) constructor {
             },
           }),
           "text_ve-status-bar_stateLabel": factoryLabel({
-            text: "State:",
+            text: "State",
             layout: layout.nodes.stateLabel,
           }),
           "text_ve-status-bar_stateValue": factoryValue({
@@ -905,7 +905,7 @@ function VEStatusBar(_editor) constructor {
             },
           }),
           "text_ve-status-bar_videoLabel": factoryLabel({
-            text: "Video:",
+            text: "Video",
             layout: layout.nodes.videoLabel,
           }),
           "text_ve-status-bar_videoValue": factoryValue({

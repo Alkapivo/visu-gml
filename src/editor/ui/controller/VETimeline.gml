@@ -644,10 +644,14 @@ function VETimeline(_editor) constructor {
           } else {
             var mouse = Beans.get(BeanVisuEditorIO).mouse
             var dropEvent = mouse.getClipboard()
-            mouse.clearClipboard()
+            if (Core.isType(dropEvent, Promise)) {
+              dropEvent.fullfill()
+            }
+
             if (Core.isType(Struct.get(dropEvent, "drop"), Callable)) {
               dropEvent.drop()
             }
+            mouse.clearClipboard()
           }
         },
         onInit: function() {
@@ -1643,8 +1647,7 @@ function VETimeline(_editor) constructor {
           var mouse = Beans.get(BeanVisuEditorIO).mouse
           var dropEvent = mouse.getClipboard()
           mouse.clearClipboard()
-          if (Core.isType(dropEvent, Promise) && 
-            Struct.get(Struct.get(dropEvent.state, "event"), "name") == "mouse-select-event") {
+          if (Core.isType(dropEvent, Promise)) {
             dropEvent.fullfill()
           } else if (Core.isType(dropEvent, TrackEvent)) {
             this.handleMouseDropTrackEvent(event, dropEvent)
@@ -1697,7 +1700,7 @@ function VETimeline(_editor) constructor {
                   name: uiItem.name,
                   channel: channel,
                   data: uiItem.state.get("event"),
-                }, !keyboard_check(vk_control))
+                }, keyboard_check(vk_control))
 
                 var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
                 if (Optional.is(inspector)) {
@@ -2128,7 +2131,7 @@ function VETimeline(_editor) constructor {
                       name: context.name,
                       channel: channel,
                       data: trackEvent,
-                    }, !keyboard_check(vk_control))
+                    }, keyboard_check(vk_control))
                     
                     var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
                     if (Optional.is(inspector)) {
@@ -2196,7 +2199,7 @@ function VETimeline(_editor) constructor {
                 name: uiItem.name,
                 channel: this.data.channelName,
                 data: this.data.event,
-              }, !keyboard_check(vk_control))
+              }, keyboard_check(vk_control))
 
               return this
             },
@@ -2285,7 +2288,7 @@ function VETimeline(_editor) constructor {
                 name: uiItem.name,
                 channel: this.data.channelName,
                 data: this.data.event,
-              }, !keyboard_check(vk_control))
+              }, keyboard_check(vk_control))
 
               return this
             },

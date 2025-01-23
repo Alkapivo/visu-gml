@@ -550,12 +550,17 @@ function template_bullet(json = null) {
             decrease: {
               store: { key: "bullet_speed-offset" },
               enable: { key: "bullet_use-speed-offset" },
-              factor: -0.25,
+              factor: -1.0,
             },
             increase: {
               store: { key: "bullet_speed-offset" },
               enable: { key: "bullet_use-speed-offset" },
-              factor: 0.25,        
+              factor: 1.0,        
+            },
+            stick: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_use-speed-offset" },
+              factor: 0.001,        
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -579,12 +584,17 @@ function template_bullet(json = null) {
             decrease: {
               store: { key: "bullet_speed-offset" },
               enable: { key: "bullet_change-speed-offset" },
-              factor: -0.25,
+              factor: -1.0,
             },
             increase: {
               store: { key: "bullet_speed-offset" },
               enable: { key: "bullet_change-speed-offset" },
-              factor: 0.25,
+              factor: 1.0,
+            },
+            stick: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: 0.001,        
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -615,6 +625,11 @@ function template_bullet(json = null) {
               enable: { key: "bullet_change-speed-offset" },
               factor: 0.01,
             },
+            stick: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: 0.001,        
+            },
           },
           increase: {
             label: {
@@ -634,6 +649,11 @@ function template_bullet(json = null) {
               store: { key: "bullet_speed-offset" },
               enable: { key: "bullet_change-speed-offset" },
               factor: 0.001,      
+            },
+            stick: {
+              store: { key: "bullet_speed-offset" },
+              enable: { key: "bullet_change-speed-offset" },
+              factor: 0.0001,        
             },
           },
         },
@@ -670,6 +690,11 @@ function template_bullet(json = null) {
               store: { key: "bullet_angle-offset" },
               enable: { key: "bullet_use-angle-offset" },
               factor: 0.25,        
+            },
+            stick: {
+              store: { key: "bullet_angle-offset" },
+              enable: { key: "bullet_use-angle-offset" },
+              factor: 0.001,        
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -898,6 +923,7 @@ function template_bullet(json = null) {
             enable: { key: "bullet_use-wiggle" },
             factor: 0.01,
           },
+          checkbox: { },
         },
       },
       {

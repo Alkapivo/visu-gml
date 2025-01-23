@@ -274,7 +274,7 @@ function brush_entity_coin(json) {
           stick: {
             store: { key: "en-coin_rng-x" },
             enable: { key: "en-coin_use-rng-x" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -371,7 +371,7 @@ function brush_entity_coin(json) {
           stick: {
             store: { key: "en-coin_rng-y" },
             enable: { key: "en-coin_use-rng-y" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },

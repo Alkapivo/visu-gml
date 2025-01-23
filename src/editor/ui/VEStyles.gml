@@ -617,11 +617,11 @@ function generateVEStyles() {
         name: "texture_slider_pointer_simple",
         scaleX: 0.125,
         scaleY: 0.125,
-        blend: VETheme.color.primary,
+        blend: VETheme.color.accent,
       },
       progress: {
         thickness: 0.9,
-        blend: VETheme.color.accent,
+        blend: VETheme.color.primary,
         line: { name: "texture_grid_line_bold" },
       },
       background: {
@@ -694,21 +694,7 @@ function generateVEStyles() {
         align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
       }
     },
-    "transform-vec2-uniform": {
-      label: {
-        font: "font_inter_10_regular",
-        color: VETheme.color.textShadow,
-        align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
-      }
-    },
-    "transform-vec3-uniform": {
-      label: {
-        font: "font_inter_10_regular",
-        color: VETheme.color.textShadow,
-        align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
-      }
-    },
-    "transform-vec4-uniform": {
+    "transform-vec-uniform": {
       label: {
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,

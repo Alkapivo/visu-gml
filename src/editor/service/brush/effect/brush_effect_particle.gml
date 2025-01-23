@@ -120,7 +120,7 @@ function brush_effect_particle(json) {
           increase: { store: { key: "ef-part_amount" } },
           stick: {
             store: { key: "ef-part_amount" },
-            factor: 0.01,
+            factor: 0.1,
           },
           checkbox: { },
         },
@@ -135,15 +135,15 @@ function brush_effect_particle(json) {
           field: { store: { key: "ef-part_duration" } },
           decrease: {
             store: { key: "ef-part_duration" },
-            factor: -0.25,
+            factor: -1.0,
           },
           increase: {
             store: { key: "ef-part_duration" },
-            factor: 0.25,
+            factor: 1.0,
           },
           stick: {
             store: { key: "ef-part_duration" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { },
         },
@@ -158,15 +158,15 @@ function brush_effect_particle(json) {
           field: { store: { key: "ef-part_interval" } },
           decrease: {
             store: { key: "ef-part_interval" },
-            factor: -1.0 * FRAME_MS,
+            factor: -1.0 * 0.016, //FRAME_MS
           },
           increase: {
             store: { key: "ef-part_interval" },
-            factor: FRAME_MS,
+            factor: 0.016, //FRAME_MS
           },
           stick: {
             store: { key: "ef-part_interval" },
-            factor: 0.01,
+            factor: 0.001,
           },
           checkbox: { },
         },
