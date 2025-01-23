@@ -1001,8 +1001,11 @@ function VETimeline(_editor) constructor {
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
           var store = Beans.get(BeanVisuEditorController).store
-          if ((mouse_check_button(mb_right) && !keyboard_check(vk_control))
-              || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
+          //if ((mouse_check_button(mb_right) && !keyboard_check(vk_control))
+          //    || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
+          if ((mouse_check_button(mb_right))
+              || (mouse_check_button(mb_left) 
+              && store.getValue("tool") == ToolType.ERASE)) {
             var mouseX = device_mouse_x_to_gui(0)
             var mouseY = device_mouse_y_to_gui(0)
             var areaX = this.area.getX()
@@ -1173,7 +1176,7 @@ function VETimeline(_editor) constructor {
           
           var label = new UILabel({
             text: $"{(timestamp - trackEvent.timestamp > 0 ? "+" : "-")} {String.formatTimestampMilisecond(abs(timestamp - trackEvent.timestamp))}",
-            font: "font_inter_10_regular",
+            font: "font_inter_10_bold",
             color: VETheme.color.textFocus,
             align: { v: VAlign.CENTER, h: HAlign.CENTER },
             outline: true,
@@ -1371,7 +1374,7 @@ function VETimeline(_editor) constructor {
               context: context, 
               index: 0, 
               name: selectedEvent.name, 
-              color: selectedEvents.size() > 1 ? c_lime : c_white,
+              color: c_lime,//selectedEvents.size() > 1 ? c_lime : c_white,
             })
           }
 
@@ -1694,7 +1697,7 @@ function VETimeline(_editor) constructor {
                   name: uiItem.name,
                   channel: channel,
                   data: uiItem.state.get("event"),
-                }, keyboard_check(vk_control))
+                }, !keyboard_check(vk_control))
 
                 var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
                 if (Optional.is(inspector)) {
@@ -2084,7 +2087,7 @@ function VETimeline(_editor) constructor {
                   name: this.name,
                   channel: channelName,
                   data: trackEvent,
-                }, keyboard_check(vk_control))
+                }, !keyboard_check(vk_control))
               },
               onMouseReleasedLeft: function(event) {
                 var context = this
@@ -2124,7 +2127,7 @@ function VETimeline(_editor) constructor {
                       name: context.name,
                       channel: channel,
                       data: trackEvent,
-                    }, keyboard_check(vk_control))
+                    }, !keyboard_check(vk_control))
                     
                     var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
                     if (Optional.is(inspector)) {
@@ -2192,7 +2195,7 @@ function VETimeline(_editor) constructor {
                 name: uiItem.name,
                 channel: this.data.channelName,
                 data: this.data.event,
-              }, keyboard_check(vk_control))
+              }, !keyboard_check(vk_control))
 
               return this
             },
@@ -2281,7 +2284,7 @@ function VETimeline(_editor) constructor {
                 name: uiItem.name,
                 channel: this.data.channelName,
                 data: this.data.event,
-              }, keyboard_check(vk_control))
+              }, !keyboard_check(vk_control))
 
               return this
             },

@@ -481,7 +481,8 @@ function VEEventInspector(_editor) constructor {
                   if (!Optional.is(keyLabel)) {
                     keyLabel = Struct.set(this, "keyLabel", new UILabel({
                       font: "font_inter_8_regular",
-                      text: "CTRL + A",
+                      text: "[CTRL + A]",
+                      alpha: 1.0,
                       useScale: false,
                       color: VETheme.color.textShadow,
                       align: {
@@ -493,9 +494,10 @@ function VEEventInspector(_editor) constructor {
   
                   keyLabel.render(
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
-                    this.context.area.getY() + this.area.getY() + this.area.getHeight() + 1,
+                    this.context.area.getY() + this.area.getY() + this.area.getHeight(),
                     this.area.getWidth(),
-                    this.area.getHeight()
+                    this.area.getHeight(),
+                    0.9
                   )
                 },
               },

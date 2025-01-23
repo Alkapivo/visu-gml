@@ -46,9 +46,9 @@ global.__effect_track_event = {
       return {
         "icon": Struct.parse.sprite(data, "icon"),
         "ef-shd_template": template,
-        "ef-shd_duration": Struct.parse.number(data, "ef-shd_duration", 0.0, 0.0, 9999.9),
-        "ef-shd_fade-in": Struct.parse.number(data, "ef-shd_fade-in", 0.0, 0.0, 9999.9),
-        "ef-shd_fade-out": Struct.parse.number(data, "ef-shd_fade-out", 0.0, 0.0, 9999.9),
+        "ef-shd_duration": Struct.parse.number(data, "ef-shd_duration", 5.0, 0.0, 9999.9),
+        "ef-shd_fade-in": Struct.parse.number(data, "ef-shd_fade-in", 1.0, 0.0, 9999.9),
+        "ef-shd_fade-out": Struct.parse.number(data, "ef-shd_fade-out", 1.0, 0.0, 9999.9),
         "ef-shd_alpha": Struct.parse.normalizedNumber(data, "ef-shd_alpha", 1.0),
         "ef-shd_pipeline": Struct.parse.enumerable(data, "ef-shd_pipeline", ShaderPipelineType, ShaderPipelineType.BACKGROUND),
         "ef-shd_use-merge-cfg": Struct.parse.boolean(data, "ef-shd_use-merge-cfg"),

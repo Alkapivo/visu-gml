@@ -262,7 +262,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("bar-title"),
             layout: VELayouts.get("bar-title"),
             config: {
-              label: { text: "New shader template" },
+              label: { 
+                text: "New shader template",
+                postRender: function() {
+                  var _x = this.context.area.getX() + this.area.getX()
+                  var _y = this.context.area.getY() + this.area.getY() - 1
+                  var color = ColorUtil.parse(VETheme.color.accentShadow).toGMColor()
+                  draw_line_color(_x, _y, _x + this.area.getWidth(), _y, color, color)
+                },
+              },
               layout: { type: UILayoutType.VERTICAL },
             },
           },
@@ -331,7 +339,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("bar-title"),
             layout: VELayouts.get("bar-title"),
             config: {
-              label: { text: "New shroom template" },
+              label: {
+                text: "New shroom template",
+                postRender: function() {
+                  var _x = this.context.area.getX() + this.area.getX()
+                  var _y = this.context.area.getY() + this.area.getY() - 1
+                  var color = ColorUtil.parse(VETheme.color.accentShadow).toGMColor()
+                  draw_line_color(_x, _y, _x + this.area.getWidth(), _y, color, color)
+                },
+              },
               layout: { type: UILayoutType.VERTICAL },
             },
           },
@@ -379,7 +395,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("bar-title"),
             layout: VELayouts.get("bar-title"),
             config: {
-              label: { text: "New bullet template" },
+              label: {
+                text: "New bullet template",
+                postRender: function() {
+                  var _x = this.context.area.getX() + this.area.getX()
+                  var _y = this.context.area.getY() + this.area.getY() - 1
+                  var color = ColorUtil.parse(VETheme.color.accentShadow).toGMColor()
+                  draw_line_color(_x, _y, _x + this.area.getWidth(), _y, color, color)
+                },
+              },
               layout: { type: UILayoutType.VERTICAL },
             },
           },
@@ -427,7 +451,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("bar-title"),
             layout: VELayouts.get("bar-title"),
             config: {
-              label: { text: "New coin template" },
+              label: {
+                text: "New coin template",
+                postRender: function() {
+                  var _x = this.context.area.getX() + this.area.getX()
+                  var _y = this.context.area.getY() + this.area.getY() - 1
+                  var color = ColorUtil.parse(VETheme.color.accentShadow).toGMColor()
+                  draw_line_color(_x, _y, _x + this.area.getWidth(), _y, color, color)
+                },
+              },
               layout: { type: UILayoutType.VERTICAL },
             },
           },
@@ -475,7 +507,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("bar-title"),
             layout: VELayouts.get("bar-title"),
             config: {
-              label: { text: "New subtitle asset" },
+              label: {
+                text: "New subtitle asset",
+                postRender: function() {
+                  var _x = this.context.area.getX() + this.area.getX()
+                  var _y = this.context.area.getY() + this.area.getY() - 1
+                  var color = ColorUtil.parse(VETheme.color.accentShadow).toGMColor()
+                  draw_line_color(_x, _y, _x + this.area.getWidth(), _y, color, color)
+                },
+              },
               layout: { type: UILayoutType.VERTICAL },
             },
           },
@@ -524,7 +564,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("bar-title"),
             layout: VELayouts.get("bar-title"),
             config: {
-              label: { text: "New particle template" },
+              label: {
+                text: "New particle template",
+                postRender: function() {
+                  var _x = this.context.area.getX() + this.area.getX()
+                  var _y = this.context.area.getY() + this.area.getY() - 1
+                  var color = ColorUtil.parse(VETheme.color.accentShadow).toGMColor()
+                  draw_line_color(_x, _y, _x + this.area.getWidth(), _y, color, color)
+                },
+              },
               layout: { type: UILayoutType.VERTICAL },
             },
           },
@@ -572,7 +620,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("bar-title"),
             layout: VELayouts.get("bar-title"),
             config: {
-              label: { text: "New texture asset" },
+              label: {
+                text: "New texture asset",
+                postRender: function() {
+                  var _x = this.context.area.getX() + this.area.getX()
+                  var _y = this.context.area.getY() + this.area.getY() - 1
+                  var color = ColorUtil.parse(VETheme.color.accentShadow).toGMColor()
+                  draw_line_color(_x, _y, _x + this.area.getWidth(), _y, color, color)
+                },
+              },
               layout: { type: UILayoutType.VERTICAL },
             },
           },
@@ -739,7 +795,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -756,7 +812,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           color: VETheme.color.textShadow,
           align: { v: VAlign.CENTER, h: HAlign.LEFT },
           offset: { x: 4 },
-          margin: { right: 96 },
+          margin: { right: 96, top: 1 },
         },
         "button_template-load": Struct.appendRecursiveUnique(
           {
@@ -767,6 +823,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             },
             align: { v: VAlign.CENTER, h: HAlign.RIGHT },
             group: { index: 1, size: 2, width: 48 },
+            margin: { top: 1 },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
             onMouseHoverOver: function(event) {
               var type = this.context.templateToolbar.store.getValue("type")
@@ -787,16 +844,16 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               this.enable.value = type != this.enable.key
             },
             render: function() {
+              if (Optional.is(this.preRender)) {
+                this.preRender()
+              }
+              this.renderBackgroundColor()
+
               var type = this.context.templateToolbar.store.getValue("type")
               if (type == this.enable.key) {
                 return
               }
 
-              if (Optional.is(this.preRender)) {
-                this.preRender()
-              }
-              this.renderBackgroundColor()
-        
               if (this.sprite != null) {
                 var alpha = this.sprite.getAlpha()
                 this.sprite
@@ -1027,6 +1084,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               font: "font_inter_8_regular",
               text: "Export",
             },
+            margin: { top: 1 },
             onMouseHoverOver: function(event) {
               this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
             },
@@ -2102,7 +2160,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-alpha": 1.0,
-        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
@@ -2123,6 +2181,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
               }
             },
+            margin: { top: 1 },
             __percentage: null,
             __update: new BindIntent(Callable.run(UIUtil.updateAreaTemplates.get("applyMargin"))),
             updateCustom: function() {
@@ -2429,7 +2488,8 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 if (!Optional.is(keyLabel)) {
                   keyLabel = Struct.set(this, "keyLabel", new UILabel({
                     font: "font_inter_8_regular",
-                    text: "CTRL + SHIFT + A",
+                    text: "[CTRL + SHIFT + A]",
+                    alpha: 1.0,
                     useScale: false,
                     color: VETheme.color.textShadow,
                     align: {
@@ -2441,9 +2501,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
                 keyLabel.render(
                   this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
-                  this.context.area.getY() + this.area.getY() + this.area.getHeight() + 1,
+                  this.context.area.getY() + this.area.getY() + this.area.getHeight(),
                   this.area.getWidth(),
-                  this.area.getHeight()
+                  this.area.getHeight(),
+                  0.9
                 )
               },
             },

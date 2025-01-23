@@ -196,7 +196,7 @@ function VEEvent(_context, json = null) constructor {
               texture.render(
                 beginX + (idx * (width + margin)) + (texture.offsetX * scale),
                 beginY + (texture.offsetY * scale),
-                0.0, scale, scale, 0.15
+                0.0, scale, scale, 0.33
               )
             }
           },

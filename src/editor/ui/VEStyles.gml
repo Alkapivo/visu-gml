@@ -140,16 +140,16 @@ function generateVEStyles() {
         backgroundColorOut: VETheme.color.sideDark,  
         backgroundColor: VETheme.color.sideDark,  
         label: {
-          font: "font_inter_10_regular",
-          color: VETheme.color.text,
+          font: "font_inter_10_bold",
+          color: VETheme.color.textShadow,
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         }
       },
       version: {
-        font: "font_inter_10_regular",
-        color: VETheme.color.text,
+        font: "font_inter_8_regular",
+        color: VETheme.color.textShadow,
         outline: true,
-        outlineColor: VETheme.color.sideDark,
+        outlineColor: VETheme.color.primaryDark,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
       checkbox: {}
@@ -633,14 +633,14 @@ function generateVEStyles() {
     "spin-select": {
       previous: {
         label: {
-          font: "font_inter_8_bold",
+          font: "font_inter_10_bold",
           color: VETheme.color.textFocus,
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         },
       },
       next: {
         label: {
-          font: "font_inter_8_bold",        
+          font: "font_inter_10_bold",        
           color: VETheme.color.textFocus,
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
         },

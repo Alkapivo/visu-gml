@@ -136,10 +136,55 @@ global.__BRUSH_TEXTURES = [
   "texture_coin_bomb",
   "texture_coin_force",
   "texture_coin_point",
+  "texture_missing",
+  "texture_white",
   "texture_baron",
   "texture_bazyl"
 ]
 #macro BRUSH_TEXTURES global.__BRUSH_TEXTURES
+
+
+///@static
+///@type {Struct}
+global.__BRUSH_TEXTURE_MIGRATION = {
+  "texture_bullet": "texture_ve_icon_event_10",
+  "texture_bullet_circle": "texture_ve_icon_event_4",
+  "texture_visu_editor_icon_event_shader": "texture_ve_icon_effect",
+  "texture_visu_editor_icon_event_shader_spawn": "texture_ve_icon_effect_shader",
+  "texture_visu_editor_icon_event_shader_overlay": "texture_ve_icon_effect_config",
+  "texture_visu_editor_icon_event_shader_clear": "texture_ve_icon_effect",
+  "texture_visu_editor_icon_event_shader_config": "texture_ve_icon_effect_config",
+  "texture_visu_editor_icon_event_shroom": "texture_ve_icon_entity",
+  "texture_visu_editor_icon_event_shroom_spawn": "texture_ve_icon_entity_shroom",
+  "texture_visu_editor_icon_event_shroom_clear": "texture_ve_icon_entity",
+  "texture_visu_editor_icon_event_shroom_config": "texture_ve_icon_entity_config",
+  "texture_visu_editor_icon_event_grid": "texture_ve_icon_grid",
+  "texture_visu_editor_icon_event_grid_channel": "texture_ve_icon_grid_column",
+  "texture_visu_editor_icon_event_grid_separator": "texture_ve_icon_grid_row",
+  "texture_visu_editor_icon_event_grid_particle": "texture_ve_icon_effect_particle",
+  "texture_visu_editor_icon_event_grid_player": "texture_ve_icon_entity_player",
+  "texture_visu_editor_icon_event_grid_config": "texture_ve_icon_grid_config",
+  "texture_visu_editor_icon_event_view": "texture_ve_icon_view",
+  "texture_visu_editor_icon_event_view_background": "texture_ve_icon_view_layer",
+  "texture_visu_editor_icon_event_view_foreground": "texture_ve_icon_view_layer",
+  "texture_visu_editor_icon_event_view_camera": "texture_ve_icon_view_camera",
+  "texture_visu_editor_icon_event_view_config": "texture_ve_icon_view_config",
+  "texture_button_next": "texture_ve_icon_event_14",
+  "texture_button_previous": "texture_ve_icon_event_18",
+  "visu_texture_checkbox_on": "texture_ve_icon_event_7",
+  "visu_texture_checkbox_off": "texture_ve_icon_event_12",
+  "visu_texture_checkbox_muted_on": "texture_ve_icon_event_2",
+  "visu_texture_checkbox_muted_off": "texture_ve_icon_event_3",
+  "texture_ve_trackcontrol_button_pause": "texture_ve_icon_event_5",
+  "texture_ve_trackcontrol_button_play": "texture_ve_icon_event_6",
+  "texture_ve_trackcontrol_button_rewind_left": "texture_ve_icon_event_18",
+  "texture_ve_trackcontrol_button_rewind_right": "texture_ve_icon_event_14",
+  migrate: function(value) {
+    var result = Struct.get(BRUSH_TEXTURE_MIGRATION, value)
+    return Optional.is(result) ? result : value
+  }
+}
+#macro BRUSH_TEXTURE_MIGRATION global.__BRUSH_TEXTURE_MIGRATION
 
 
 ///@param {VEBrushTemplate} template
@@ -310,7 +355,7 @@ function VEBrush(template) constructor {
               texture.render(
                 beginX + (idx * (width + margin)) + (texture.offsetX * scale),
                 beginY + (texture.offsetY * scale),
-                0.0, scale, scale, 0.15
+                0.0, scale, scale, 0.33
               )
             }
           },

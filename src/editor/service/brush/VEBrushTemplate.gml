@@ -1,5 +1,6 @@
 ///@package io.alkapivo.visu.editor.service.brush
 
+
 ///@param {Struct} json
 function VEBrushTemplate(json) constructor {
   

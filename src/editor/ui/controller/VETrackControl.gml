@@ -81,17 +81,17 @@ function VETrackControl(_editor) constructor {
           },
           clearShaderBkg: {
             name: "track-control.clearShaderBkg",
-            width: function() { return 32 },
+            width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 0, right: 0 },
-            x: function() { return this.margin.left + 24 },
+            margin: { top: 1, bottom: 1, left: 1, right: 0 },
+            x: function() { return this.margin.left },
             y: function() { return this.context.height()
               - this.margin.bottom 
               - this.height() },
           },
           clearShaderGrid: {
             name: "track-control.clearShaderGrid",
-            width: function() { return 32 },
+            width: function() { return 20 },
             height: function() { return 20 },
             margin: { top: 1, bottom: 1, left: 0, right: 0 },
             x: function() { return this.context.nodes.clearShaderBkg.right() 
@@ -102,9 +102,9 @@ function VETrackControl(_editor) constructor {
           },
           clearShaderCombined: {
             name: "track-control.clearShaderCombined",
-            width: function() { return 32 },
+            width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 0, right: 0 },
+            margin: { top: 1, bottom: 1, left: 0, right: 1 },
             x: function() { return this.context.nodes.clearShaderGrid.right() 
               + this.margin.left },
             y: function() { return this.context.height()
@@ -113,9 +113,9 @@ function VETrackControl(_editor) constructor {
           },
           clearBkg: {
             name: "track-control.clearBkg",
-            width: function() { return 32 },
+            width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 8, right: 0 },
+            margin: { top: 1, bottom: 1, left: 2, right: 0 },
             x: function() { return this.context.nodes.clearShaderCombined.right() 
               + this.margin.left },
             y: function() { return this.context.height()
@@ -124,9 +124,9 @@ function VETrackControl(_editor) constructor {
           },
           clearFrg: {
             name: "track-control.clearFrg",
-            width: function() { return 32 },
+            width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 0, right: 0 },
+            margin: { top: 1, bottom: 1, left: 0, right: 1 },
             x: function() { return this.context.nodes.clearBkg.right() 
               + this.margin.left },
             y: function() { return this.context.height()
@@ -135,9 +135,9 @@ function VETrackControl(_editor) constructor {
           },
           clearShroom: {
             name: "track-control.clearShroom",
-            width: function() { return 32 },
+            width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 8, right: 0 },
+            margin: { top: 1, bottom: 1, left: 2, right: 0 },
             x: function() { return this.context.nodes.clearFrg.right() 
               + this.margin.left },
             y: function() { return this.context.height()
@@ -146,9 +146,9 @@ function VETrackControl(_editor) constructor {
           },
           clearBullet: {
             name: "track-control.clearBullet",
-            width: function() { return 32 },
+            width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 0, right: 0 },
+            margin: { top: 1, bottom: 1, left: 0, right: 1 },
             x: function() { return this.context.nodes.clearShroom.right() 
               + this.margin.left },
             y: function() { return this.context.height()
@@ -168,10 +168,10 @@ function VETrackControl(_editor) constructor {
               - this.height() },
           },
           zoomOut: {
-            name: "track-control.zoomIn",
+            name: "track-control.zoomOut",
             width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 0, right: 0 },
+            margin: { top: 1, bottom: 1, left: 1, right: 0 },
             x: function() { return this.context.nodes.zoomIn.left() 
               - this.margin.right
               - this.width() },
@@ -181,10 +181,10 @@ function VETrackControl(_editor) constructor {
             },
           },
           zoomIn: {
-            name: "track-control.zoomOut",
+            name: "track-control.zoomIn",
             width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 0, right: 8 },
+            margin: { top: 1, bottom: 1, left: 0, right: 1 },
             x: function() { return this.context.nodes.snap.left() 
               - this.margin.right
               - this.width() },
@@ -195,9 +195,9 @@ function VETrackControl(_editor) constructor {
           },
           snap: {
             name: "track-control.snap",
-            width: function() { return 36 },
+            width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 0, right: 8 },
+            margin: { top: 1, bottom: 1, left: 1, right: 3 },
             //x: function() { return this.context.width() 
             //  - this.margin.right
             //  - this.width() },
@@ -212,12 +212,38 @@ function VETrackControl(_editor) constructor {
               - this.height()
             },
           },
+          redo: {
+            name: "track-control.redo",
+            width: function() { return 20 },
+            height: function() { return 20 },
+            margin: { top: 1, bottom: 1, left: 0, right: 1 },
+            x: function() { return this.context.nodes.zoomOut.left() 
+              - this.margin.right
+              - this.width() },
+            y: function() { return this.context.height()
+              - this.margin.bottom 
+              - this.height()
+            },
+          },
+          undo: {
+            name: "track-control.undo",
+            width: function() { return 20 },
+            height: function() { return 20 },
+            margin: { top: 1, bottom: 1, left: 1, right: 1 },
+            x: function() { return this.context.nodes.redo.left() 
+              - this.margin.right
+              - this.width() },
+            y: function() { return this.context.height()
+              - this.margin.bottom 
+              - this.height()
+            },
+          },
 
           toolbar: {
             name: "track-control.toolbar",
-            width: function() { return 96 },
-            height: function() { return 32 },
-            margin: { top: 1, bottom: 1, left: 0, right: 1 },
+            width: function() { return 80 },
+            height: function() { return 20 },
+            margin: { top: 1, bottom: 1, left: 0, right: 3 },
             x: function() { return this.context.nodes.brushIconPreview.left() 
               - this.margin.right
               - this.width() },
@@ -229,6 +255,7 @@ function VETrackControl(_editor) constructor {
             name: "track-control.brushIconPreview",
             width: function() { return 32 },
             height: function() { return 32 },
+            margin: { right: 2, top: 1, bottom: 2, left: 0 },
             x: function() { return this.context.width() 
               - this.margin.right
               - this.width() },
@@ -400,18 +427,24 @@ function VETrackControl(_editor) constructor {
     }
 
     static factoryButton = function(json) {
-      return Struct.appendRecursiveUnique(
+      var button = Struct.appendRecursiveUnique(
         {
           type: UIButton,
           layout: json.layout,
           sprite: json.sprite,
           callback: json.callback,
+          label: {
+            text: "",
+            color: VETheme.color.textShadow,
+            align: { v: VAlign.TOP, h: HAlign.CENTER },
+            font: "font_inter_8_bold",
+          },
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: Struct.contains(json, "updateCustom") 
              ? json.updateCustom
              : function() {},
           onMouseHoverOver: function(event) {
-            this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accentLight).toGMColor())
+            this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
           },
           onMouseHoverOut: function(event) {
             this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.textShadow).toGMColor())
@@ -420,6 +453,12 @@ function VETrackControl(_editor) constructor {
         VEStyles.get("ve-track-control").button,
         false
       )
+
+      if (Optional.is(Struct.getIfType(json, "postRender", Callable))) {
+        Struct.set(button, "postRender", json.postRender)
+      }
+
+      return button
     }
 
     static factoryLabel = function(json) {
@@ -544,25 +583,25 @@ function VETrackControl(_editor) constructor {
             factoryToolItem({ 
               name: "ve-track-control_tool_brush", 
               text: "B", 
-              description: "Brush", 
+              description: "Brush [B]", 
               tool: "tool_brush",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_eraser", 
               text: "E", 
-              description: "Erase", 
+              description: "Erase [E]", 
               tool: "tool_erase",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_clone", 
               text: "C", 
-              description: "Clone", 
+              description: "Clone [C]", 
               tool: "tool_clone",
             }),
             factoryToolItem({ 
               name: "ve-track-control_tool_select", 
               text: "S", 
-              description: "Select", 
+              description: "Select [V]", 
               tool: "tool_select",
             }),
           ])
@@ -807,10 +846,24 @@ function VETrackControl(_editor) constructor {
               var controller = Beans.get(BeanVisuController)
               controller.send(new Event("rewind").setData({
                 timestamp: clamp(
-                  controller.trackService.time - 10.0, 
+                  controller.trackService.time - 5.0, 
                   0, 
                   controller.trackService.duration),
               }))
+            },
+            postRender: function() {
+              if (!this.isHoverOver) {
+                return
+              }
+              
+              var text = this.label.text
+              this.label.text = "Rewind forward 5 sec [CTRL + ,]"
+              this.label.render(
+                // todo VALIGN HALIGN
+                this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1) + 1
+              )
+              this.label.text = text
             },
           }),
           "button_ve-track-control_play": factoryButton({
@@ -823,6 +876,20 @@ function VETrackControl(_editor) constructor {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               Beans.get(BeanVisuController).send(new Event("play"))
             },
+            postRender: function() {
+              if (!this.isHoverOver) {
+                return
+              }
+              
+              var text = this.label.text
+              this.label.text = "Play [SPACE]"
+              this.label.render(
+                // todo VALIGN HALIGN
+                this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1) + 1
+              )
+              this.label.text = text
+            },
           }),
           "button_ve-track-control_pause": factoryButton({
             layout: layout.nodes.pause,
@@ -833,6 +900,20 @@ function VETrackControl(_editor) constructor {
             callback: function() {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               Beans.get(BeanVisuController).send(new Event("pause"))
+            },
+            postRender: function() {
+              if (!this.isHoverOver) {
+                return
+              }
+              
+              var text = this.label.text
+              this.label.text = "Pause [SPACE]"
+              this.label.render(
+                // todo VALIGN HALIGN
+                this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1) + 1
+              )
+              this.label.text = text
             },
           }),
           "button_ve-track-control_forward": factoryButton({
@@ -846,10 +927,24 @@ function VETrackControl(_editor) constructor {
               var controller = Beans.get(BeanVisuController)
               controller.send(new Event("rewind").setData({
                 timestamp: clamp(
-                  controller.trackService.time + 10.0, 
+                  controller.trackService.time + 5.0, 
                   0, 
                   controller.trackService.duration),
               }))
+            },
+            postRender: function() {
+              if (!this.isHoverOver) {
+                return
+              }
+              
+              var text = this.label.text
+              this.label.text = "Fast forward 5 sec [CTRL + .]"
+              this.label.render(
+                // todo VALIGN HALIGN
+                this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1) + 1
+              )
+              this.label.text = text
             },
           }),
           "text_ve-track-control_timestamp": factoryLabel({
@@ -920,7 +1015,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth() - 4.0,
+                    this.area.getHeight()
                   )
                 }
     
@@ -930,7 +1027,7 @@ function VETrackControl(_editor) constructor {
                   this.label.align.h = HAlign.LEFT
                   this.label.render(
                     // todo VALIGN HALIGN
-                    this.context.area.getX() + this.area.getX() - 24,
+                    this.context.area.getX() + this.area.getX(),
                     this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 20.0000
                   )
                   this.label.align.h = HAlign.CENTER
@@ -989,7 +1086,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth() - 4.0,
+                    this.area.getHeight()
                   )
                 }
     
@@ -998,7 +1097,7 @@ function VETrackControl(_editor) constructor {
                   this.label.text = this.description
                   this.label.render(
                     // todo VALIGN HALIGN
-                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2) + 20,
                     this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 20.0000
                   )
                   this.label.text = text
@@ -1056,7 +1155,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth() - 4.0,
+                    this.area.getHeight()
                   )
                 }
     
@@ -1065,7 +1166,7 @@ function VETrackControl(_editor) constructor {
                   this.label.text = this.description
                   this.label.render(
                     // todo VALIGN HALIGN
-                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 1),
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 1) + 8,
                     this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 20.0000
                   )
                   this.label.text = text
@@ -1123,7 +1224,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth() - 4.0,
+                    this.area.getHeight()
                   )
                 }
     
@@ -1190,7 +1293,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth() - 4.0,
+                    this.area.getHeight()
                   )
                 }
     
@@ -1257,7 +1362,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth() - 4.0,
+                    this.area.getHeight()
                   )
                 }
     
@@ -1324,7 +1431,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth() - 4.0,
+                    this.area.getHeight()
                   )
                 }
     
@@ -1353,7 +1462,7 @@ function VETrackControl(_editor) constructor {
               label: {
                 text: "Snap",
                 font: "font_inter_8_bold",
-                color: VETheme.color.text,
+                color: VETheme.color.textShadow,
                 align: { v: VAlign.CENTER, h: HAlign.CENTER },
               },
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -1375,6 +1484,20 @@ function VETrackControl(_editor) constructor {
                 this.backgroundColor = this.context.state.get("store").getValue("snap")
                   ? ColorUtil.fromHex(VETheme.color.accent).toGMColor()
                   : ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor()
+              },
+              postRender: function() {
+                if (!this.isHoverOver) {
+                  return
+                }
+
+                var text = this.label.text
+                this.label.text = "Snap [Q]"
+                this.label.render(
+                  // todo VALIGN HALIGN
+                  this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                  this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 20.0000
+                )
+                this.label.text = text
               },
             },
             null,//VEStyles.get("ve-track-control"),
@@ -1406,7 +1529,7 @@ function VETrackControl(_editor) constructor {
               onMouseHoverOut: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
               },
-              description: "Zoom in",
+              description: "Zoom in [+]",
               render: function() {
                 if (Optional.is(this.preRender)) {
                   this.preRender()
@@ -1474,7 +1597,7 @@ function VETrackControl(_editor) constructor {
               onMouseHoverOut: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
               },
-              description: "Zoom out",
+              description: "Zoom out [-]",
               render: function() {
                 if (Optional.is(this.preRender)) {
                   this.preRender()
@@ -1501,6 +1624,180 @@ function VETrackControl(_editor) constructor {
                 }
     
                 if (this.isHoverOver) {
+                  var text = this.label.text
+                  this.label.text = this.description
+                  this.label.render(
+                    // todo VALIGN HALIGN
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 20.0000
+                  )
+                  this.label.text = text
+                }
+                return this
+              },
+            },
+            null,//VEStyles.get("ve-track-control").button,
+            false
+          ),
+          "button-ve-track-control_redo": Struct.appendRecursiveUnique(
+            {
+              type: UIButton,
+              label: { 
+                text: "Redo",
+                color: VETheme.color.textShadow,
+                align: { v: VAlign.CENTER, h: HAlign.CENTER },
+                font: "font_inter_8_bold",
+              },
+              layout: layout.nodes.redo,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              callback: function() { 
+                if (Struct.get(this.enable, "value") == false) {
+                  return
+                }
+
+                var editor = Beans.get(BeanVisuEditorController)
+                editor.store.get("selected-event").set(null)
+                editor.store.getValue("selected-events").clear()
+                editor.timeline.transactionService.redo()
+              },
+              backgroundMargin: { top: 1, bottom: 1, left: 0, right: 1 },
+              backgroundColor: VETheme.color.sideDark,
+              backgroundColorSelected: VETheme.color.accentShadow,
+              backgroundColorOut: VETheme.color.sideDark,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                  return
+                }
+
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },
+              description: "[CTRL + SHIFT + Z]",
+              render: function() {
+                if (!Core.isType(this.enable, Struct)) {
+                  this.enable = { value: false }
+                }
+                Struct.set(this.enable, "value", Beans.get(BeanVisuEditorController).timeline.transactionService.reverted.size() > 0)
+                backgroundAlpha = this.enable.value ? 1.0 : 0.33
+
+                if (Optional.is(this.preRender)) {
+                  this.preRender()
+                }
+                this.renderBackgroundColor()
+          
+                if (this.sprite != null) {
+                  var alpha = this.sprite.getAlpha()
+                  this.sprite
+                    .setAlpha(alpha * (Struct.get(this.enable, "value") == false ? 0.5 : 1.0))
+                    .scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+                    .render(
+                      this.context.area.getX() + this.area.getX(),
+                      this.context.area.getY() + this.area.getY())
+                    .setAlpha(alpha)
+                }
+          
+                if (this.label != null) {
+                  this.label.alpha = this.backgroundAlpha
+                  this.label.render(
+                    // todo VALIGN HALIGN
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth(), 
+                    this.area.getHeight()
+                  )
+                }
+    
+                if (this.isHoverOver && this.enable.value) {
+                  var text = this.label.text
+                  this.label.text = this.description
+                  this.label.render(
+                    // todo VALIGN HALIGN
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2) - 20.0000
+                  )
+                  this.label.text = text
+                }
+                return this
+              },
+            },
+            null,//VEStyles.get("ve-track-control").button,
+            false
+          ),
+          "button-ve-track-control_undo": Struct.appendRecursiveUnique(
+            {
+              type: UIButton,
+              label: { 
+                text: "Undo",
+                color: VETheme.color.textShadow,
+                align: { v: VAlign.CENTER, h: HAlign.CENTER },
+                font: "font_inter_8_bold",
+              },
+              layout: layout.nodes.undo,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+              callback: function() { 
+                if (Struct.get(this.enable, "value") == false) {
+                  return
+                }
+
+                var editor = Beans.get(BeanVisuEditorController)
+                editor.store.get("selected-event").set(null)
+                editor.store.getValue("selected-events").clear()
+                editor.timeline.transactionService.undo()
+              },
+              backgroundMargin: { top: 1, bottom: 1, left: 0, right: 1 },
+              backgroundColor: VETheme.color.sideDark,
+              backgroundColorSelected: VETheme.color.accentShadow,
+              backgroundColorOut: VETheme.color.sideDark,
+              onMouseHoverOver: function(event) {
+                if (Struct.get(this.enable, "value") == false) {
+                  this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                  return
+                }
+
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+              },
+              description: "[CTRL + Z]",
+              render: function() {
+                if (!Core.isType(this.enable, Struct)) {
+                  this.enable = { value: false }
+                }
+                Struct.set(this.enable, "value", Beans.get(BeanVisuEditorController).timeline.transactionService.applied.size() > 0)
+                backgroundAlpha = this.enable.value ? 1.0 : 0.33
+
+                if (Optional.is(this.preRender)) {
+                  this.preRender()
+                }
+                this.renderBackgroundColor()
+          
+                if (this.sprite != null) {
+                  var alpha = this.sprite.getAlpha()
+                  this.sprite
+                    .setAlpha(alpha * (Struct.get(this.enable, "value") == false ? 0.5 : 1.0))
+                    .scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+                    .render(
+                      this.context.area.getX() + this.area.getX(),
+                      this.context.area.getY() + this.area.getY())
+                    .setAlpha(alpha)
+                }
+          
+                if (this.label != null) {
+                  this.label.alpha = this.backgroundAlpha
+                  this.label.render(
+                    // todo VALIGN HALIGN
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                    this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                    this.area.getWidth(), 
+                    this.area.getHeight()
+                  )
+                }
+    
+                if (this.isHoverOver && this.enable.value) {
                   var text = this.label.text
                   this.label.text = this.description
                   this.label.render(

@@ -1132,7 +1132,7 @@ global.__VEComponents = new Map(String, Callable, {
             factor: -1.0,
             label: {
               text: "-",
-              font: "font_inter_10_regular",
+              font: "font_inter_10_bold",
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1175,7 +1175,7 @@ global.__VEComponents = new Map(String, Callable, {
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_regular",
+              font: "font_inter_10_bold",
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1258,7 +1258,7 @@ global.__VEComponents = new Map(String, Callable, {
             factor: -1.0,
             label: {
               text: "-",
-              font: "font_inter_10_regular",
+              font: "font_inter_10_bold",
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1302,7 +1302,7 @@ global.__VEComponents = new Map(String, Callable, {
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_regular",
+              font: "font_inter_10_bold",
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1411,7 +1411,7 @@ global.__VEComponents = new Map(String, Callable, {
             factor: -1.0,
             label: {
               text: "-",
-              font: "font_inter_10_regular",
+              font: "font_inter_10_bold",
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1455,7 +1455,7 @@ global.__VEComponents = new Map(String, Callable, {
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_regular",
+              font: "font_inter_10_bold",
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -4583,7 +4583,7 @@ global.__VEComponents = new Map(String, Callable, {
             factor: -1.0,
             label: {
               text: "-",
-              font: "font_inter_10_regular",
+              font: "font_inter_10_bold",
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -4626,7 +4626,7 @@ global.__VEComponents = new Map(String, Callable, {
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_regular",
+              font: "font_inter_10_bold",
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },

@@ -733,7 +733,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+        "background-alpha": 1.0,
       }),
       updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
@@ -747,7 +748,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             text: "Brushes",
             font: "font_inter_8_bold",
             offset: { x: 4 },
-            margin: { right: 96 },
+            margin: { right: 96, top: 1 },
             update: Callable.run(UIUtil.updateAreaTemplates.get("applyMargin")),
           },
           VEStyles.get("bar-title"),
@@ -761,6 +762,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               font: "font_inter_8_regular",
               text: "Import",
             },
+            margin: { top: 1 },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
             callback: function(event) {
               var type = this.context.brushToolbar.store.getValue("type")
@@ -817,6 +819,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               font: "font_inter_8_regular",
               text: "Export",
             },
+            margin: { top: 1 },
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("groupByXWidth")),
             callback: function(event) {
               var path = FileUtil.getPathToSaveWithDialog({ 
@@ -1091,7 +1094,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
     return {
       name: name,
       state: new Map(String, any, {
-        "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
+        "background-color": ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+        "background-alpha": 1.0,
       }),
       updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.brush-toolbar.inspector-bar.updateTimer", 10.0), { loop: Infinity, shuffle: true }),
       updateTimerCooldown: Core.getProperty("visu.editor.ui.brush-toolbar.inspector-bar.updateTimer.cooldown", 4.0),
@@ -1106,6 +1110,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             text: "Brush inspector",
             font: "font_inter_8_bold",
             offset: { x: 4 },
+            margin: { top: 1 },
             clipboard: {
               name: "resize_brush_inspector",
               drag: function() {
@@ -1398,7 +1403,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 if (!Optional.is(keyLabel)) {
                   keyLabel = Struct.set(this, "keyLabel", new UILabel({
                     font: "font_inter_8_regular",
-                    text: "CTRL + D",
+                    text: "[CTRL + D]",
+                    alpha: 1.0,
                     useScale: false,
                     color: VETheme.color.textShadow,
                     align: {
@@ -1412,7 +1418,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
                   this.context.area.getY() + this.area.getY() + this.area.getHeight(),
                   this.area.getWidth(),
-                  this.area.getHeight()
+                  this.area.getHeight(),
+                  0.9
                 )
               },
             },
@@ -1544,7 +1551,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                 if (!Optional.is(keyLabel)) {
                   keyLabel = Struct.set(this, "keyLabel", new UILabel({
                     font: "font_inter_8_regular",
-                    text: "CTRL + SHIFT + D",
+                    text: "[CTRL + SHIFT + D]",
+                    alpha: 1.0,
                     useScale: false,
                     color: VETheme.color.textShadow,
                     align: {
@@ -1558,7 +1566,8 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
                   this.context.area.getY() + this.area.getY() + this.area.getHeight(),
                   this.area.getWidth(),
-                  this.area.getHeight()
+                  this.area.getHeight(),
+                  0.9
                 )
               },
             },

@@ -110,7 +110,7 @@ function VETitleBar(_editor) constructor {
   ///@return {Map<String, UI>}
   factoryContainers = function(parent) {
     static factoryTextButton = function(json) {
-      return Struct.appendRecursiveUnique(
+      var button = Struct.appendRecursiveUnique(
         {
           type: UIButton,
           layout: json.layout,
@@ -155,6 +155,12 @@ function VETitleBar(_editor) constructor {
         VEStyles.get("ve-title-bar").menu,
         false
       )
+
+      if (Optional.is(Struct.getIfType(json, "postRender", Callable))) {
+        Struct.set(button, "postRender", json.postRender)
+      }
+
+      return button
     }
 
     static factoryCheckboxButton = function(json) {
@@ -225,7 +231,7 @@ function VETitleBar(_editor) constructor {
                     height: function() { return GuiHeight() },
                   }),
                 }))
-            }
+            },
           }),
           "button_ve-title-bar_edit": factoryTextButton({
             text: "Edit",
