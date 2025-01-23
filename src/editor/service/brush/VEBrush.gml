@@ -192,7 +192,7 @@ function VEBrush(template) constructor {
       config: { 
         layout: { 
           type: UILayoutType.VERTICAL,
-          margin: { top: 4 }
+          margin: { top: 4, bottom: 4 },
         },
         label: { text: "Name" },
         field: { store: { key: "brush-name" } },
@@ -206,7 +206,7 @@ function VEBrush(template) constructor {
         layout: { 
           type: UILayoutType.VERTICAL,
           height: function() { return 32 },
-          margin: { top: 2, bottom: 2 },
+          margin: { top: 4, bottom: 4 },
         },
         label: { text: "Icon" },
         previous: { store: { key: "brush-texture" } },
@@ -232,6 +232,147 @@ function VEBrush(template) constructor {
             }
             this.image.blend = item.get().toGMColor()
           },
+          postRender: function() {
+            if (!Optional.is(this.store)) {
+              return
+            }
+
+            var item = this.store.get()
+            if (!Optional.is(item)) {
+              return
+            }
+
+            var data = item.data
+            if (!Core.isType(data, Collection)) {
+              return
+            }
+
+            var index = data.findIndex(Lambda.equal, item.get())
+            if (!Optional.is(index)) {
+              return
+            }
+
+            var margin = 5.0
+            var width = 32.0
+            var spinButtonsWidth = 2.0 * (16.0 + 5.0)
+            var size = floor((this.area.getWidth() - spinButtonsWidth) / (width + margin))
+            if (size <= 3.0) {
+              return
+            }
+
+            if (size mod 2.0 == 0.0) {
+              size -= 1.0
+            }
+
+            var from = -1.0 * floor(size / 2.0)
+            var to = abs(from)
+            var beginX = round(this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0) - (width / 2.0))
+            var beginY = this.context.area.getY() + this.area.getY(),
+            var color = ColorUtil.parse(VETheme.color.primaryLight).toGMColor()
+            for (var idx = from; idx <= to; idx += 1.0) {
+              if (idx == 0.0) {
+                GPU.render.rectangle(
+                  beginX - 1,
+                  beginY - 1,
+                  beginX + width + 0,
+                  beginY + width + 0,
+                  true,
+                  color,
+                  color,
+                  color,
+                  color,
+                  0.75
+                )
+
+                continue
+              }
+
+              if (data.size() + idx < 0.0 || idx >= data.size()) {
+                continue
+              }
+
+              var textureName = (index + idx < 0.0) || (index + idx >= data.size())
+                ? (idx < 0.0 
+                  ? data.get(data.size() + idx) 
+                  : data.get(idx))
+                : data.get(index + idx)
+              
+              if (!Optional.is(textureName)) {
+                continue
+              }
+
+              var texture = TextureUtil.parse(textureName)
+              if (!Optional.is(texture)) {
+                continue
+              }
+
+              var scale = width / texture.width
+              texture.render(
+                beginX + (idx * (width + margin)) + (texture.offsetX * scale),
+                beginY + (texture.offsetY * scale),
+                0.0, scale, scale, 0.15
+              )
+            }
+          },
+          onMouseReleasedLeft: function(event) {
+            if (!Optional.is(this.store)) {
+              return
+            }
+
+            var item = this.store.get()
+            if (!Optional.is(item)) {
+              return
+            }
+
+            var data = item.data
+            if (!Core.isType(data, Collection)) {
+              return
+            }
+
+            var index = data.findIndex(Lambda.equal, item.get())
+            if (!Optional.is(index)) {
+              return
+            }
+
+            var margin = 5.0
+            var width = 32.0
+            var spinButtonsWidth = 2.0 * (16.0 + 5.0)
+            var size = floor((this.area.getWidth() - spinButtonsWidth) / (width + margin))
+            if (size <= 3.0) {
+              return
+            }
+
+            if (size mod 2.0 == 0.0) {
+              size -= 1.0
+            }
+
+            var from = -1.0 * floor(size / 2.0)
+            var to = abs(from)
+            var mouseX = event.data.x - this.context.area.getX() - this.context.offset.x
+            var beginX = this.area.getX() + (this.area.getWidth() / 2.0) - (width / 2.0)
+            for (var idx = from; idx <= to; idx += 1.0) {
+              if (idx == 0.0 || data.size() + idx < 0.0 || idx >= data.size()) {
+                continue
+              }
+
+              var textureName = (index + idx < 0.0) || (index + idx >= data.size())
+                ? (idx < 0.0 
+                  ? data.get(data.size() + idx) 
+                  : data.get(idx))
+                : data.get(index + idx)
+              
+              if (!Optional.is(textureName)) {
+                continue
+              }
+
+              var textureX = beginX + (idx * (width + margin)) 
+              if (mouseX < textureX || mouseX > textureX + width) {
+                continue
+              }
+
+              item.set(textureName)
+            }
+          },
         }, Struct.get(VEStyles.get("spin-select-image"), "preview"), false),
         next: { store: { key: "brush-texture" } },
       }
@@ -243,7 +384,7 @@ function VEBrush(template) constructor {
       config: {
         layout: { 
           type: UILayoutType.VERTICAL,
-          hex: { margin: { top: 0 } },
+          hex: { margin: { top: 4 } },
         },
         //title: { 
         //  label: { text: "Icon" },

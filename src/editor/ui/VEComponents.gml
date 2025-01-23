@@ -5654,12 +5654,7 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.get(VEStyles.get("spin-select"), "previous"),
           false
         )
-      ),
-      factoryPreview(
-        $"{name}_preview",
-        layout.nodes.preview,
-        Struct.get(config, "preview")
-      ),
+      ),  
       factoryButton(
         $"{name}_next",
         layout.nodes.next,
@@ -5688,6 +5683,11 @@ global.__VEComponents = new Map(String, Callable, {
           Struct.get(VEStyles.get("spin-select"), "next"),
           false
         )
+      ),
+      factoryPreview(
+        $"{name}_preview",
+        layout.nodes.preview,
+        Struct.get(config, "preview")
       ),
     ])
   },

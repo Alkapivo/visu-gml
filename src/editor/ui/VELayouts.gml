@@ -1540,8 +1540,10 @@ global.__VELayouts = new Map(String, Callable, {
         previous: {
           name: "spin-select.previous",
           x: function() { return this.context.nodes.label.right() + this.margin.left },
+          y: function() { return this.context.y() + round((this.context.height() - this.height()) / 2.0) },
           width: function() { return 16 },
-          margin: { top: 6, bottom: 6, right: 0, left: 5 },
+          height: function() { return 16 },
+          margin: { top: 0, bottom: 0, right: 0, left: 5 },
         },
         preview: {
           name: "spin-select.preview",
@@ -1554,8 +1556,10 @@ global.__VELayouts = new Map(String, Callable, {
           name: "spin-select.next",
           x: function() { return this.context.x() + this.context.width()
             - this.width() - this.margin.right },
+          y: function() { return this.context.y() + round((this.context.height() - this.height()) / 2.0) },
           width: function() { return 16 },
-          margin: { top: 6, bottom: 6, right: 5, left: 0 },
+          height: function() { return 16 },
+          margin: { top: 0, bottom: 0, right: 5, left: 0 },
         },
       }
     }
