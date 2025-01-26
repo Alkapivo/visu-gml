@@ -288,7 +288,7 @@ function VETemplate(json) constructor {
       var sprite = this.store.getValue("particle-sprite")
       Struct.set(template, "sprite", {
         name: sprite.getName(),
-        animate: sprite.getAnimate,
+        animate: sprite.getAnimate(),
         randomValue: sprite.getRandomFrame(),
         stretch: this.store.getValue("particle-sprite-stretch"),
       })
