@@ -364,6 +364,30 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
+  "text": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"text_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      )
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "bar-title": function(name, layout, config = null) {
     return new Array(UIItem, [
       UIText(

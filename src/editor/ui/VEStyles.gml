@@ -192,6 +192,15 @@ function generateVEStyles() {
         color: VETheme.color.textShadow,
       }
     },
+    "text": {
+      label: {
+        align: { v: VAlign.BOTTOM, h: HAlign.LEFT },
+        font: "font_consolas_10_bold",
+        color: VETheme.color.textFocus,
+        outline: true,
+        outlineColor: VETheme.color.accent,
+      },
+    },
     "checkbox": {
       spriteOn: { name: "visu_texture_checkbox_on" },
       spriteOff: { name: "visu_texture_checkbox_off" },

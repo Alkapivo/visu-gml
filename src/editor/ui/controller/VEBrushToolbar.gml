@@ -1014,7 +1014,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             this.areaWatchdog.signal()
           }
         } else {
-          Core.print("asd")
           var mouse = Beans.get(BeanVisuEditorIO).mouse
           var dropEvent = mouse.getClipboard()
           if (Core.isType(dropEvent, Promise)) {

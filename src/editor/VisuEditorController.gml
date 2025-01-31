@@ -21,6 +21,9 @@ function VisuEditorController() constructor {
   ///@type {VEBrushToolbar}
   brushToolbar = new VEBrushToolbar(this)
 
+  ///@type {VESceneConfigPrevie}
+  sceneConfigPreview = new VESceneConfigPreview(this)
+
   ///@type {VEStatusBar}
   statusBar = new VEStatusBar(this)
 
@@ -115,6 +118,14 @@ function VisuEditorController() constructor {
     "_render-trackControl": {
       type: Boolean,
       value: Assert.isType(Visu.settings.getValue("visu.editor.render-track-control", false), Boolean)
+    },
+    "render-sceneConfigPreview": {
+      type: Boolean,
+      value: false,
+    },
+    "_render-sceneConfigPreview": {
+      type: Boolean,
+      value: Assert.isType(Visu.settings.getValue("visu.editor.render-scene-config-preview", false), Boolean)
     },
     "new-channel-name": {
       type: String,
@@ -212,6 +223,8 @@ function VisuEditorController() constructor {
       this.store.get("render-brush").set(false)
       this.store.get("_render-trackControl").set(this.store.getValue("render-trackControl"))
       this.store.get("render-trackControl").set(false)
+      this.store.get("_render-sceneConfigPreview").set(this.store.getValue("render-sceneConfigPreview"))
+      this.store.get("render-sceneConfigPreview").set(false)
       this.store.get("selected-event").set(null)
       this.store.getValue("selected-events").clear()
 
@@ -220,6 +233,7 @@ function VisuEditorController() constructor {
         "trackControl": this.trackControl.send(new Event("close")),
         "brushToolbar": this.brushToolbar.send(new Event("close")),
         "timeline": this.timeline.send(new Event("close")),
+        "sceneConfigPreview": this.sceneConfigPreview.send(new Event("close"))
       }
     },
     "spawn-popup": function(event) {
@@ -243,6 +257,7 @@ function VisuEditorController() constructor {
     "trackControl",
     "brushToolbar",
     "timeline",
+    "sceneConfigPreview",
     "popupQueue",
     "exitModal",
     "newProjectModal",
@@ -332,6 +347,16 @@ function VisuEditorController() constructor {
             callback: function(editor) {
               editor.store.get("render-timeline").set(editor.store.getValue("_render-timeline"))
             },
+          },
+          {
+            handler: this.sceneConfigPreview,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "preview-editor")
+            }),
+            cooldown: 0.064,
+            callback: function(editor) {
+              editor.store.get("render-sceneConfigPreview").set(editor.store.getValue("_render-sceneConfigPreview"))
+            },
           }
         ]),
       })
@@ -387,6 +412,12 @@ function VisuEditorController() constructor {
           event: new Event("open").setData({ 
             layout: Struct.get(this.layout.nodes, "timeline")
           }),
+        },
+        {
+          handler: this.sceneConfigPreview,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "preview-editor")
+          }),
         }
       ]))
       .whenUpdate(function() {
@@ -401,6 +432,7 @@ function VisuEditorController() constructor {
         editor.store.get("render-timeline").set(editor.store.getValue("_render-timeline"))
         editor.store.get("render-brush").set(editor.store.getValue("_render-brush"))
         editor.store.get("render-trackControl").set(editor.store.getValue("_render-trackControl"))
+        editor.store.get("render-sceneConfigPreview").set(editor.store.getValue("_render-sceneConfigPreview"))
         entry.handler.send(entry.event)
       })
   }
@@ -415,6 +447,7 @@ function VisuEditorController() constructor {
     this.store.get("render-event").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-event"))
     this.store.get("render-timeline").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-timeline"))
     this.store.get("render-trackControl").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-track-control"))
+    this.store.get("render-sceneConfigPreview").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-sceneConfigPreview"))
     this.store.get("render-brush").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-brush"))
     this.store.get("timeline-zoom").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.timeline-zoom"))
 
@@ -569,6 +602,11 @@ function VisuEditorController() constructor {
     this.trackControl.containers.forEach(function(container, key, enable) {
       container.enable = enable
     }, renderTrackControl)
+
+    var renderSceneConfigPreview = this.store.getValue("render-sceneConfigPreview")
+    this.sceneConfigPreview.containers.forEach(function(container, key, enable) {
+      container.enable = enable
+    }, renderSceneConfigPreview)
     
     Struct.set(
       this.layout.nodes, 

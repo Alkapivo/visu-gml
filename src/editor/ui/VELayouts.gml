@@ -456,6 +456,19 @@ global.__VELayouts = new Map(String, Callable, {
   
   ///@param {?Struct} [config]
   ///@return {Struct}
+  "text": function(config = null) {
+    return {
+      name: "text",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      margin: Struct.getIfType(config, "margin", Struct),
+      store: { height: 96 },
+      height: function() { return this.store.height },
+      nodes: { label: { name: "label"} },
+    }
+  },
+  
+  ///@param {?Struct} [config]
+  ///@return {Struct}
   "text-field": function(config = null) {
     return {
       name: "text-field",

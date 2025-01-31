@@ -64,6 +64,12 @@ function VETitleBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 256 },
           },
+          sceneConfigPreview: {
+            x: function() { return this.context.nodes.trackControl.left() 
+              - this.width() - this.margin.right },
+            y: function() { return 0 },
+            width: function() { return this.context.height() },
+          },
           trackControl: {
             name: "title-bar.trackControl",
             x: function() { return this.context.nodes.event.left() 
@@ -358,6 +364,12 @@ function VETitleBar(_editor) constructor {
             VEStyles.get("ve-title-bar").version,
             false
           ),
+          "button_ve-title-bar_scene-config-preview": factoryCheckboxButton({
+            layout: layout.nodes.sceneConfigPreview,
+            spriteOn: { name: "texture_ve_title_bar_icons", frame: 5 },
+            spriteOff: { name: "texture_ve_title_bar_icons", frame: 5, alpha: 0.5 },
+            store: { key: "render-sceneConfigPreview" },
+          }),
           "button_ve-title-bar_track-control": factoryCheckboxButton({
             layout: layout.nodes.trackControl,
             spriteOn: { name: "texture_ve_title_bar_icons", frame: 4 },

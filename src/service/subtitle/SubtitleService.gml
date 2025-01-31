@@ -38,6 +38,7 @@ function SubtitleService(config = null) constructor {
       })
 
       var subtitle = new Subtitle({
+        template: event.data.template,
         lines: lines,
         font: event.data.font,
         fontHeight: event.data.fontHeight,

@@ -416,7 +416,7 @@ function VisuProjectForm(json = null) constructor {
       GMArray.forEach(THEME_COLOR_ORDER, function(colorName, index, store) {
         var key = $"theme-color-{colorName}"
         if (!store.contains(key)) {
-          Core.print("Color store item not found", key)
+          Logger.error("VisuProjectForm", $"Color store item not found: {key}")
           return
         }
 

@@ -41,6 +41,7 @@ function VisuEditorIO() constructor {
     renderBottomPane: KeyboardKeyType.F2,
     renderRightPane: KeyboardKeyType.F3,
     renderTrackControl: KeyboardKeyType.F4,
+    renderSceneConfigPreview: KeyboardKeyType.F12,
     renderUI: KeyboardKeyType.F5,
     renderEventInspector: KeyboardKeyType.F6,
     renderTemplateToolbar: KeyboardKeyType.F7,
@@ -198,6 +199,11 @@ function VisuEditorIO() constructor {
     if (this.keyboard.keys.renderTrackControl.pressed) {
       editor.store.get("render-trackControl")
         .set(!editor.store.getValue("render-trackControl"))
+    }
+
+    if (this.keyboard.keys.renderSceneConfigPreview.pressed) {
+      editor.store.get("render-sceneConfigPreview")
+        .set(!editor.store.getValue("render-sceneConfigPreview"))
     }
 
     if (this.keyboard.keys.renderLeftPane.pressed) {

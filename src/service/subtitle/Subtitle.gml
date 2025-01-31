@@ -27,6 +27,9 @@ function SubtitleTemplate(_name, json) constructor {
 ///@param {Struct} json
 function Subtitle(json) constructor {
 
+  ///@type {String}
+  template = Assert.isType(json.template, String)
+
   ///@type {Array<String>}
   lines = Assert.isType(json.lines, Array)
 
