@@ -19,6 +19,7 @@ function VisuEditorIO() constructor {
 
     previewEvent: "A", // + ctrl
     saveTemplate: "A", // + ctrl + shift
+    toBrush: "B", // + ctrl
 
     previewBrush: "D", // + ctrl
     saveBrush: "D", // + ctrl + shift
@@ -143,7 +144,8 @@ function VisuEditorIO() constructor {
       editor.store.get("tool").set("tool_erase")
     }
 
-    if (this.keyboard.keys.brushTool.pressed) {
+    if (!this.keyboard.keys.controlLeft.on 
+      && this.keyboard.keys.brushTool.pressed) {
       editor.store.get("tool").set("tool_brush")
     }
 
@@ -404,10 +406,18 @@ function VisuEditorIO() constructor {
       return this
     }
 
+    var control = editor.accordion.eventInspector.containers.get("ve-event-inspector-control")
+    if (this.keyboard.keys.toBrush.pressed) {
+      if (Optional.is(control)) {
+        var toBrush = control.items.get("button_control-to-brush_type-button")
+        if (Optional.is(toBrush)) {
+          toBrush.callback()
+        }
+      }
+    }
+
     if (this.keyboard.keys.shiftLeft.on) {
-      if (this.keyboard.keys.saveTemplate.pressed 
-        && editor.store.getValue("render-event")) {
-        
+      if (this.keyboard.keys.saveTemplate.pressed && editor.store.getValue("render-event")) {
         editor.accordion.templateToolbar.send(new Event("save-template"))
       }
     } else {
@@ -416,8 +426,6 @@ function VisuEditorIO() constructor {
         if (Core.isType(event, VEEvent)) {
           var handler = controller.trackService.handlers.get(event.type)
           handler.run(handler.parse(event.toTemplate().event.data))
-
-          var control = editor.accordion.eventInspector.containers.get("ve-event-inspector-control")
           if (Optional.is(control)) {
             var preview = control.items.get("button_control-preview_type-button")
             if (Optional.is(preview)) {

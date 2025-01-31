@@ -100,6 +100,12 @@ function brush_view_wallpaper(json = null) {
         passthrough: UIUtil.passthrough.getArrayValue(),
         data: BlendEquation.keys(),
       },
+      "vw-layer_blend-eq-alpha": {
+        type: String,
+        value: Struct.get(json, "vw-layer_blend-eq-alpha"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: BlendEquation.keys(),
+      },
       "vw-layer_use-spd": {
         type: Boolean,
         value: Struct.get(json, "vw-layer_use-spd"),
@@ -241,6 +247,13 @@ function brush_view_wallpaper(json = null) {
           preview: Struct.appendRecursive({ 
             store: { key: "vw-layer_blend-src" },
             enable: { key: "vw-layer_use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { 
             store: { key: "vw-layer_blend-src" },
@@ -265,6 +278,13 @@ function brush_view_wallpaper(json = null) {
           preview: Struct.appendRecursive({ 
             store: { key: "vw-layer_blend-dest" },
             enable: { key: "vw-layer_use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { 
             store: { key: "vw-layer_blend-dest" },
@@ -289,6 +309,13 @@ function brush_view_wallpaper(json = null) {
           preview: Struct.appendRecursive({ 
             store: { key: "vw-layer_blend-eq" },
             enable: { key: "vw-layer_use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: {
             store: { key: "vw-layer_blend-eq" },
@@ -297,7 +324,38 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
-        name: "vw-layer_blend-eq-line-h",
+        name: "vw-layer_blend-eq-alpha",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Eq. alpha",
+            enable: { key: "vw-layer_use-blend" },
+          },
+          previous: {
+            store: { key: "vw-layer_blend-eq-alpha" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-layer_blend-eq-alpha" },
+            enable: { key: "vw-layer_use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "vw-layer_blend-eq-alpha" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_blend-eq-alpha-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },

@@ -14,17 +14,22 @@ function factoryVEBrushToolbarTypeItem(config, index) {
     config: {
       backgroundMargin: { top: 1, bottom: 2, left: (index == 0 ? 0 : 1), right: 1 },
       callback: function() {
-        this.context.brushToolbar.store.get("type").set(this.brushType)
-        this.context.brushToolbar.store.get("template").set(null)
-        this.context.brushToolbar.store.get("brush").set(null)
+        var brushToolbar = this.context.brushToolbar
+        var templatesCache = brushToolbar.templatesCache
+        var store = brushToolbar.store
+        var template = store.getValue("template")
+        if (Optional.is(template)) {
+          templatesCache.set(template.type, template.toStruct())
+        }
 
-        var view = this.context.brushToolbar.containers.get("ve-brush-toolbar_inspector-view")
-        view.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
-        view.collection.components.clear() ///@todo replace with remove lambda
-        view.state
-          .set("template", null)
-          .set("brush", null)
-          .set("store", null)
+        if (store.getValue("type") != this.brushType) {
+          store.get("type").set(this.brushType)
+          var templateCached = templatesCache.get(this.brushType)
+          if (Optional.is(templateCached)) {
+            template = new VEBrushTemplate(templateCached)
+            store.get("template").set(template)
+          }
+        }
       },
       updateCustom: function() {
         this.backgroundColor = this.brushType == this.context.brushToolbar.store.getValue("type")
@@ -1118,7 +1123,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         "label_inspector-control-title": Struct.appendRecursiveUnique(
           {
             type: UIText,
-            text: "Brush inspector",
+            text: "Tools",
             font: "font_inter_8_bold",
             offset: { x: 4 },
             margin: { top: 1 },
@@ -1154,11 +1159,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   var titleBar = uiService.find("ve-title-bar")
                   var statusBar = uiService.find("ve-status-bar")
                   var brushNode = Struct.get(this.context.layout.context.nodes, "brush-view")
+                  var toolNode = Struct.get(this.context.layout.context.nodes, "inspector-tool")
                   var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
                   var typeNode = Struct.get(this.context.layout.context.nodes, "type")
                   var controlNode = Struct.get(this.context.layout.context.nodes, "control")
                   var top = titleBar.layout.height() + typeNode.height() + typeNode.margin.top + typeNode.margin.bottom
-                  var bottom = GuiHeight() - statusBar.layout.height() - (controlNode.height() + controlNode.margin.top + controlNode.margin.bottom)
+                  var bottom = GuiHeight() - statusBar.layout.height() - (controlNode.height() + controlNode.margin.top + controlNode.margin.bottom) - (toolNode.height() + toolNode.margin.top + toolNode.margin.bottom)
                   var length = bottom - top
                   var before = inspectorNode.percentageHeight
                   inspectorNode.percentageHeight = clamp(inspectorNode.percentageHeight, 4.0 / length, 1.0 - (48.0 / length))
@@ -1176,10 +1182,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               var statusBar = uiService.find("ve-status-bar")
               var brushNode = Struct.get(this.context.layout.context.nodes, "brush-view")
               var inspectorNode = Struct.get(this.context.layout.context.nodes, "inspector-view")
+              var toolNode = Struct.get(this.context.layout.context.nodes, "inspector-tool")
               var typeNode = Struct.get(this.context.layout.context.nodes, "type")
               var controlNode = Struct.get(this.context.layout.context.nodes, "control")
               var top = titleBar.layout.height() + typeNode.height() + typeNode.margin.top + typeNode.margin.bottom
-              var bottom = GuiHeight() - statusBar.layout.height() - (controlNode.height() + controlNode.margin.top + controlNode.margin.bottom)
+              var bottom = GuiHeight() - statusBar.layout.height() - (controlNode.height() + controlNode.margin.top + controlNode.margin.bottom) - (toolNode.height() + toolNode.margin.top + toolNode.margin.bottom)
               var length = bottom - top
               var position = clamp(_position - top, 4.0, length - 4.0)
               var before = inspectorNode.percentageHeight
@@ -1207,6 +1214,342 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           false
         ),
       }
+    }
+  },
+  "inspector-tool": function(name, brushToolbar, layout) {
+    static factoryToolItem = function(json) {
+      return {
+        name: json.name,
+        template: VEComponents.get("category-button"),
+        layout: function(config = null) {
+          return {
+            name: "horizontal-item",
+            type: UILayoutType.HORIZONTAL,
+            collection: true,
+            margin: { right: 2, left: 2 },
+            width: function() { return this.context.height() },
+            x: function() { return this.context.x()
+              + (this.collection.getIndex() * this.width())
+              + (this.collection.getIndex() * this.margin.right)
+              + ((this.collection.getIndex() + 1) * this.margin.left) },
+          }
+        },
+        config: {
+          backgroundColorSelected: VETheme.color.primary,
+          backgroundColor: VETheme.color.sideDark,
+          backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+          backgroundColorOn: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          backgroundColorOff: ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
+          //backgroundMargin: { top: 1, bottom: 1, right: 1, left: 1 },
+          callback: function() { 
+            this.context.state.get("store")
+              .get("tool")
+              .set(this.tool)
+          },
+          updateCustom: function() {
+            this.backgroundColor = this.tool == this.context.state.get("store").getValue("tool")
+              ? this.backgroundColorOn
+              : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+          },
+          onMouseHoverOver: function(event) { },
+          onMouseHoverOut: function(event) { },
+          label: {
+            text: json.text,
+            color: VETheme.color.textFocus,
+            align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            useScale: false,
+            outline: true,
+            outlineColor: VETheme.color.sideDark,
+            font: "font_inter_8_bold",
+          },
+          sprite: json.sprite,
+          tool: json.tool,
+          description: json.description,
+          render: function() {
+            if (Optional.is(this.preRender)) {
+              this.preRender()
+            }
+            this.renderBackgroundColor()
+      
+            if (this.sprite != null) {
+              var alpha = this.sprite.getAlpha()
+              this.sprite
+                .setAlpha(alpha * (Struct.get(this.enable, "value") == false ? 0.5 : 1.0))
+                .scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+                .render(
+                  this.context.area.getX() + this.area.getX(),
+                  this.context.area.getY() + this.area.getY())
+                .setAlpha(alpha)
+            }
+      
+            if (this.label != null) {
+              this.label.render(
+                // todo VALIGN HALIGN
+                this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+              )
+            }
+
+            if (this.isHoverOver) {
+              var text = this.label.text
+              this.label.text = this.description
+              this.label.render(
+                // todo VALIGN HALIGN
+                this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+              )
+              this.label.text = text
+            }
+            return this
+          },
+        },
+      }
+    }
+
+    return {
+      name: name,
+      state: new Map(String, any, {
+        "background-color": ColorUtil.fromHex(VETheme.color.primaryDark).toGMColor(),
+        "store": Beans.get(BeanVisuEditorController).store,
+        "tools": new Array(Struct, [
+          factoryToolItem({ 
+            name: "ve-track-control_tool_select", 
+            text: "", 
+            description: "Select\n\n[V]", 
+            tool: "tool_select",
+            sprite: { name: "texture_ve_brush_toolbar_icon_tool_select"},
+          }),
+          factoryToolItem({ 
+            name: "ve-track-control_tool_brush", 
+            text: "", 
+            description: "Brush\n\n[B]", 
+            tool: "tool_brush",
+            sprite: { name: "texture_ve_brush_toolbar_icon_tool_brush"},
+          }),
+          factoryToolItem({ 
+            name: "ve-track-control_tool_clone", 
+            text: "", 
+            description: "Clone\n\n[C]", 
+            tool: "tool_clone",
+            sprite: { name: "texture_ve_brush_toolbar_icon_tool_clone"},
+          }),
+          factoryToolItem({ 
+            name: "ve-track-control_tool_erase", 
+            text: "", 
+            description: "Erase\n\n[E]", 
+            tool: "tool_erase",
+            sprite: { name: "texture_ve_brush_toolbar_icon_tool_erase"},
+          }),
+        ])
+      }),
+      updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+      brushToolbar: brushToolbar,
+      layout: layout,
+      updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+      render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
+      items: {
+        "brush_ve-brush-toolbar_brush-icon-preview": {
+          type: UIImage,
+          layout: layout.nodes.brushIconPreview,
+          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          backgroundColor: VETheme.color.sideShadow,
+          backgroundAlpha: 1.0,
+          state: new Map(String, any),
+          updateCustom: function() {
+            try {
+              var editor = Beans.get(BeanVisuEditorController)
+              if (!Optional.is(editor)) {
+                return
+              }
+            
+              var events = editor.timeline.containers.get("ve-timeline-events")
+              if (!Optional.is(events)) {
+                return
+              }
+
+              var initialized = events.state.get("initialized")
+              if (!initialized) {
+                return
+              }
+              
+              var tool = editor.store.getValue("tool")
+              if (tool != this.state.get("tool")) {
+                this.state.set("brush-color", null)
+                this.state.set("brush-sprite-name", null)
+                this.state.set("brush-sprite", null)
+                this.state.set("tool", tool)
+              }
+
+              switch (tool) {
+                case ToolType.SELECT:
+                  this.state.set("brush-color", null)
+                  this.state.set("brush-sprite-name", null)
+                  this.state.set("brush-sprite", null)
+                  break
+                case ToolType.ERASE:
+                  this.state.set("brush-color", null)
+                  this.state.set("brush-sprite-name", null)
+                  this.state.set("brush-sprite", null)
+                  break
+                case ToolType.BRUSH:
+                  var brush = editor.brushToolbar.store.getValue("brush")
+                  if (!Optional.is(brush)) {
+                    this.state.set("brush-color", null)
+                    this.state.set("brush-sprite-name", null)
+                    this.state.set("brush-sprite", null)
+                    break
+                  }
+            
+                  var colorItem = brush.store.get("brush-color")
+                  if (!Optional.is(colorItem)) {
+                    this.state.set("brush-color", null)
+                    this.state.set("brush-sprite-name", null)
+                    this.state.set("brush-sprite", null)
+                    break
+                  }
+            
+                  var textureItem = brush.store.get("brush-texture")
+                  if (!Optional.is(textureItem)) {
+                    this.state.set("brush-color", null)
+                    this.state.set("brush-sprite-name", null)
+                    this.state.set("brush-sprite", null)
+                    break
+                  }
+            
+                  if (this.state.get("brush-color") == colorItem.get().toHex()
+                      && this.state.get("brush-sprite-name") == textureItem.get()) {
+                    break
+                  }
+
+                  this.state.set("brush-color", null)
+                  this.state.set("brush-sprite-name", null)
+                  this.state.set("brush-sprite", null)
+            
+                  var sprite = SpriteUtil.parse({ name: textureItem.get() })
+                  sprite.setBlend(colorItem.get().toGMColor())
+            
+                  this.state.set("brush-color", colorItem.get().toHex())
+                  this.state.set("brush-sprite-name", textureItem.get())
+                  this.state.set("brush-sprite", sprite)
+            
+                  break
+                case ToolType.CLONE:
+                  var selectedEvent = editor.store.getValue("selected-event")
+                  if (!Optional.is(selectedEvent)) {
+                    this.state.set("brush-color", null)
+                    this.state.set("brush-sprite-name", null)
+                    this.state.set("brush-sprite", null)
+                    break
+                  }
+            
+                  var trackEvent = selectedEvent.data
+                  if (!Core.isType(trackEvent, TrackEvent)) {
+                    this.state.set("brush-color", null)
+                    this.state.set("brush-sprite-name", null)
+                    this.state.set("brush-sprite", null)
+                    break
+                  }
+            
+                  var icon = Struct.get(trackEvent.data, "icon")
+                  if (!Optional.is(icon)) {
+                    this.state.set("brush-color", null)
+                    this.state.set("brush-sprite-name", null)
+                    this.state.set("brush-sprite", null)
+                    break
+                  }
+
+                  if (this.state.get("brush-color") == Struct.get(icon, "blend")
+                      && this.state.get("brush-sprite-name") == Struct.get(icon, "name")) {
+                    break
+                  }
+                  
+                  this.state.set("brush-color", null)
+                  this.state.set("brush-sprite-name", null)
+                  this.state.set("brush-sprite", null)
+                  
+                  var sprite = SpriteUtil.parse(icon)
+
+                  this.state.set("brush-color", ColorUtil.fromGMColor(sprite.getBlend()).toHex())
+                  this.state.set("brush-sprite-name", sprite.getName())
+                  this.state.set("brush-sprite", sprite)
+                  
+                  break
+              }
+            } catch (exception) {
+              var message = $"exception!!!: {exception.message}"
+              Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+              Logger.error("VETrackControl", message)
+            }
+          },
+          render: function() {
+            if (Optional.is(this.preRender)) {
+              this.preRender()
+            }
+            this.renderBackgroundColor()
+
+            var sprite = this.state.get("brush-sprite")
+            if (Optional.is(sprite)) {
+              sprite
+                .scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+                .render(
+                  this.context.area.getX() + this.area.getX(),
+                  this.context.area.getY() + this.area.getY()
+                )
+            }
+
+            return this
+          },
+        },
+        "checkbox_ve-brush-toolbar_snap": {
+          type: UICheckbox,
+          layout: layout.nodes.snapCheckbox,
+          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          store: { key: "snap" },
+          spriteOn: { name: "visu_texture_checkbox_on" },
+          spriteOff: { name: "visu_texture_checkbox_off" },
+        },
+        "text_ve-brush-toolbar_snap": {
+          type: UIText,
+          layout: layout.nodes.snapLabel,
+          text: "Snap",
+          font: "font_inter_8_bold",
+          color: VETheme.color.textFocus,
+          align: { v: VAlign.CENTER, h: HAlign.LEFT },
+          outline: true,
+          outlineColor: VETheme.color.sideDark,
+          store: { key: "snap" },
+          updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          preRender: function() {
+            var value = this.store.getValue()
+            if (!Optional.is(value)) {
+              return
+            }
+
+            var alpha = this.label.alpha
+            this.label.alpha = value ? alpha : alpha * 0.5
+            Struct.set(this, "_alpha", alpha)
+          },
+          postRender: function() {
+            this.label.alpha = this._alpha
+          },
+          onMouseReleasedLeft: function(event) {
+            var item = this.store.get()
+            if (!Optional.is(item)) {
+              return
+            }
+            
+            item.set(!item.get())
+          }
+        },
+      },
+      onInit: function() {
+        var container = this
+        this.collection = new UICollection(this, { layout: container.layout.nodes.toolbar })
+        this.state.get("tools")
+          .forEach(function(component, index, collection) {
+            collection.add(new UIComponent(component))
+          }, this.collection)
+      },
     }
   },
   "inspector-view": function(name, brushToolbar, layout) {
@@ -1703,6 +2046,16 @@ function VEBrushToolbar(_editor) constructor {
     #endregion
   }
 
+  ///@param {VEBrushType}
+  ///@return {?String}
+  getCategoryFromType = function(type) {
+    static find = function(types, category, type) {
+      return Optional.is(types.find(Lambda.equal, type))
+    }
+
+    return this.categories.findKey(find, type)
+  }
+  
   ///@private
   ///@param {UIlayout} parent
   ///@return {UILayout}
@@ -1714,8 +2067,9 @@ function VEBrushToolbar(_editor) constructor {
           var type = Struct.get(this.nodes, "type")
           var brushBar = Struct.get(this.nodes, "brush-bar")
           var inspectorBar = Struct.get(this.nodes, "inspector-bar")
+          var inspectorTool = Struct.get(this.nodes, "inspector-tool")
           var control = Struct.get(this.nodes, "control")
-          return type.height() + brushBar.height() + inspectorBar.height() + control.height()
+          return type.height() + brushBar.height() + inspectorBar.height() + control.height() + inspectorTool.height()
         }),
         nodes: {
           "accordion": {
@@ -1770,6 +2124,45 @@ function VEBrushToolbar(_editor) constructor {
               - this.context.nodes.resize.width() },
             height: function() { return 16 },
           },
+          "inspector-tool": {
+            name: "brush-toolbar.inspector-tool",
+            y: function() { return Struct.get(this.context.nodes, "inspector-bar").bottom() },
+            x: function() { return this.context.x()
+              + this.context.nodes.resize.width() - 1 },
+            width: function() { return this.context.width() 
+              - this.context.nodes.resize.width() },
+            height: function() { return 40 },
+            nodes: {
+              brushIconPreview: {
+                name: "brush-toolbar.iinspector-tool.brushIconPreview",
+                x: function() { return 4 },
+                y: function() { return 4 },
+                width: function() { return 32 },
+                height: function() { return 32 },
+              },
+              toolbar: {
+                name: "brush-toolbar.inspector-tool.toolbar",
+                width: function() { return 32.0 * 4.0 + 16.0 },
+                height: function() { return 32.0 },
+                x: function() { return this.context.nodes.brushIconPreview.right() + 4.0 },
+                y: function() { return round((this.context.height() - this.height()) / 2.0) },
+              },
+              snapCheckbox: {
+                name: "brush-toolbar.inspector-tool.snapCheckbox",
+                width: function() { return 28 },
+                height: function() { return 28 },
+                x: function() { return this.context.nodes.toolbar.right() + 2.0 },
+                y: function() { return round((this.context.height() - this.height()) / 2.0) },
+              },
+              snapLabel: {
+                name: "brush-toolbar.inspector-tool.snapLabel",
+                width: function() { return 40 },
+                height: function() { return 28 },
+                x: function() { return this.context.nodes.snapCheckbox.right() + 0.0 },
+                y: function() { return round((this.context.height() - this.height()) / 2.0) },
+              }
+            }
+          },
           "inspector-view": {
             name: "brush-toolbar.inspector-view",
             percentageHeight: 0.77,
@@ -1782,7 +2175,7 @@ function VEBrushToolbar(_editor) constructor {
               - this.margin.left 
               - this.margin.right },
             y: function() { return this.margin.top
-              + Struct.get(this.context.nodes, "inspector-bar").bottom() },
+              + Struct.get(this.context.nodes, "inspector-tool").bottom() },
             height: function() { return ceil((this.context.height() 
               - this.context.staticHeight()) * this.percentageHeight) 
               - this.margin.top - this.margin.bottom - 1},

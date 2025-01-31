@@ -676,9 +676,10 @@ function _Visu() constructor {
   ///@param {String} useKey
   ///@param {String} sourceKey
   ///@param {String} targetKey
-  ///@param {String} equationKey
+  ///@param {String} equationKey 
   ///@param {BlendConfig} blendConfig
-  static resolveBlendConfigTrackEvent = function(data, useKey, sourceKey, targetKey, equationKey, blendConfig) {
+  ///@param {?String} [equationAlphaKey] 
+  static resolveBlendConfigTrackEvent = function(data, useKey, sourceKey, targetKey, equationKey, blendConfig, equationAlphaKey = null) {
     if (!Struct.get(data, useKey)) {
       return
     }
@@ -687,6 +688,10 @@ function _Visu() constructor {
       .setSource(BlendModeExt.get(Struct.get(data, sourceKey)))
       .setTarget(BlendModeExt.get(Struct.get(data, targetKey)))
       .setEquation(BlendEquation.get(Struct.get(data, equationKey)))
+
+    if (Optional.is(equationAlphaKey)) {
+      blendConfig.setEquationAlpha(BlendEquation.get(Struct.get(data, equationAlphaKey)))
+    }
   }
 
   ///@param {Struct} data

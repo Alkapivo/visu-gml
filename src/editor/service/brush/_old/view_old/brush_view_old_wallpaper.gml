@@ -26,6 +26,7 @@ function migrateViewOldWallpaperEvent(json) {
     "vw-layer_blend-src": Struct.getIfType(json, "view-wallpaper_blend-mode-source", String, BlendModeExt.getKey(BlendModeExt.SRC_ALPHA)),
     "vw-layer_blend-dest": Struct.getIfType(json, "view-wallpaper_blend-mode-target", String, BlendModeExt.getKey(BlendModeExt.INV_SRC_ALPHA)),
     "vw-layer_blend-eq": Struct.getIfType(json, "view-wallpaper_blend-equation", String, BlendEquation.getKey(BlendEquation.ADD)),
+    "vw-layer_blend-eq-alpha": Struct.getIfType(json, "view-wallpaper_blend-equation", String, BlendEquation.getKey(BlendEquation.ADD)),
     "vw-layer_use-spd": true,
     "vw-layer_spd": {
       value: Struct.getIfType(json, "view-wallpaper_speed", Number, 0.0),
@@ -242,6 +243,13 @@ function brush_view_old_wallpaper(json = null) {
           previous: { store: { key: "view-wallpaper_blend-mode-source" } },
           preview: Struct.appendRecursive({ 
             store: { key: "view-wallpaper_blend-mode-source" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { store: { key: "view-wallpaper_blend-mode-source" } },
         },
@@ -256,6 +264,13 @@ function brush_view_old_wallpaper(json = null) {
           previous: { store: { key: "view-wallpaper_blend-mode-target" } },
           preview: Struct.appendRecursive({ 
             store: { key: "view-wallpaper_blend-mode-target" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { store: { key: "view-wallpaper_blend-mode-target" } },
         },
@@ -270,6 +285,13 @@ function brush_view_old_wallpaper(json = null) {
           previous: { store: { key: "view-wallpaper_blend-equation" } },
           preview: Struct.appendRecursive({ 
             store: { key: "view-wallpaper_blend-equation" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { store: { key: "view-wallpaper_blend-equation" } },
         },

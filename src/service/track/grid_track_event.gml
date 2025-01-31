@@ -383,10 +383,12 @@ global.__grid_track_event = {
         "gr-cfg_grid-blend-src": Struct.parse.enumerableKey(data, "gr-cfg_grid-blend-src", BlendModeExt, BlendModeExt.SRC_ALPHA),
         "gr-cfg_grid-blend-dest": Struct.parse.enumerableKey(data, "gr-cfg_grid-blend-dest", BlendModeExt, BlendModeExt.INV_SRC_ALPHA),
         "gr-cfg_grid-blend-eq": Struct.parse.enumerableKey(data, "gr-cfg_grid-blend-eq", BlendEquation, BlendEquation.ADD),
+        "gr-cfg_grid-blend-eq-alpha": Struct.parse.enumerableKey(data, "gr-cfg_grid-blend-eq-alpha", BlendEquation, BlendEquation.ADD),
         "gr-cfg_focus-grid-use-blend": Struct.parse.boolean(data, "gr-cfg_focus-grid-use-blend"),
         "gr-cfg_focus-grid-blend-src": Struct.parse.enumerableKey(data, "gr-cfg_focus-grid-blend-src", BlendModeExt, BlendModeExt.SRC_ALPHA),
         "gr-cfg_focus-grid-blend-dest": Struct.parse.enumerableKey(data, "gr-cfg_focus-grid-blend-dest", BlendModeExt, BlendModeExt.INV_SRC_ALPHA),
         "gr-cfg_focus-grid-blend-eq": Struct.parse.enumerableKey(data, "gr-cfg_focus-grid-blend-eq", BlendEquation, BlendEquation.ADD),
+        "gr-cfg_focus-grid-blend-eq-alpha": Struct.parse.enumerableKey(data, "gr-cfg_focus-grid-blend-eq-alpha", BlendEquation, BlendEquation.ADD),
         "gr-cfg_focus-grid-use-blend-col": Struct.parse.boolean(data, "gr-cfg_focus-grid-use-blend-col"),
         "gr-cfg_focus-grid-blend-col": Struct.parse.color(data, "gr-cfg_focus-grid-blend-col", "#ffffff"),
         "gr-cfg_focus-grid-blend-col-spd": Struct.parse.number(data, "gr-cfg_focus-grid-blend-col-spd", 1.0, 0.0, 999.9),
@@ -450,7 +452,8 @@ global.__grid_track_event = {
         "gr-cfg_grid-blend-src",
         "gr-cfg_grid-blend-dest",
         "gr-cfg_grid-blend-eq",
-        properties.gridBlendConfig)
+        properties.gridBlendConfig,
+        "gr-cfg_grid-blend-eq-alpha")
 
       ///@description feature TODO focus-grid.render
       Visu.resolveBooleanTrackEvent(data,
@@ -490,7 +493,8 @@ global.__grid_track_event = {
         "gr-cfg_focus-grid-blend-src",
         "gr-cfg_focus-grid-blend-dest",
         "gr-cfg_focus-grid-blend-eq",
-        properties.supportGridBlendConfig)
+        properties.supportGridBlendConfig,
+        "gr-cfg_focus-grid-blend-eq-alpha")
     },
   },
 }

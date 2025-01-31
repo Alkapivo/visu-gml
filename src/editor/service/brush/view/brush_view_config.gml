@@ -99,6 +99,12 @@ function brush_view_config(json = null) {
         passthrough: UIUtil.passthrough.getArrayValue(),
         data: BlendEquation.keys(),
       },
+      "vw-cfg_video-blend-eq-alpha": {
+        type: String,
+        value: Struct.get(json, "vw-cfg_video-blend-eq-alpha"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: BlendEquation.keys(),
+      },
       "vw-cfg_use-render-video-after": {
         type: Boolean,
         value: Struct.get(json, "vw-cfg_use-render-video-after"),
@@ -377,6 +383,13 @@ function brush_view_config(json = null) {
           preview: Struct.appendRecursive({ 
             store: { key: "vw-cfg_video-blend-src" },
             enable: { key: "vw-cfg_video-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { 
             store: { key: "vw-cfg_video-blend-src" },
@@ -401,6 +414,13 @@ function brush_view_config(json = null) {
           preview: Struct.appendRecursive({ 
             store: { key: "vw-cfg_video-blend-dest" },
             enable: { key: "vw-cfg_video-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { 
             store: { key: "vw-cfg_video-blend-dest" },
@@ -425,9 +445,47 @@ function brush_view_config(json = null) {
           preview: Struct.appendRecursive({ 
             store: { key: "vw-cfg_video-blend-eq" },
             enable: { key: "vw-cfg_video-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: {
             store: { key: "vw-cfg_video-blend-eq" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-cfg_video-blend-eq-alpha",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Eq. alpha",
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          previous: {
+            store: { key: "vw-cfg_video-blend-eq-alpha" },
+            enable: { key: "vw-cfg_video-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-cfg_video-blend-eq-alpha" },
+            enable: { key: "vw-cfg_video-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "vw-cfg_video-blend-eq-alpha" },
             enable: { key: "vw-cfg_video-use-blend" },
           },
         },

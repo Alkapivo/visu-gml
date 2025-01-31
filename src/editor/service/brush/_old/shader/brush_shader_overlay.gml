@@ -28,6 +28,7 @@ function migrateShaderOverlayEvent(json) {
     "gr-cfg_focus-grid-blend-src": BlendModeExt.getKey(BlendModeExt.SRC_ALPHA),
     "gr-cfg_focus-grid-blend-dest": BlendModeExt.getKey(BlendModeExt.ONE),
     "gr-cfg_focus-grid-blend-eq": BlendEquation.getKey(BlendEquation.ADD),
+    "gr-cfg_focus-grid-blend-eq-alpha": BlendEquation.getKey(BlendEquation.ADD),
   }
 }
 

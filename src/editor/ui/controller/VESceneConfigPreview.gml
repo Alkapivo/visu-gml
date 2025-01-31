@@ -172,7 +172,11 @@ function VESceneConfigPreview(_config = null) constructor {
         + $"    Source: {BlendModeExt.getKey(properties.gridBlendConfig.source)}\n"
         + $"    Target: {BlendModeExt.getKey(properties.gridBlendConfig.target)}\n"
         + $"    Equation: {BlendEquation.getKey(properties.gridBlendConfig.equation)}\n"
-        + $"  Z: {properties.depths.gridZ}\n"
+      if (Optional.is(properties.gridBlendConfig.equationAlpha)) {
+        grid = $"{grid}    EquationAlpha: {BlendEquation.getKey(properties.gridBlendConfig.equationAlpha)}\n"
+      }
+
+      grid = $"{grid}  Z: {properties.depths.gridZ}\n"
         + $"  ClearFrame: \n"
         + $"    Enabled: {properties.gridClearFrame}\n"
         + $"    Color: {properties.gridClearColor.toHex(false)}\n"
@@ -216,7 +220,11 @@ function VESceneConfigPreview(_config = null) constructor {
         + $"      Source: {BlendModeExt.getKey(properties.supportGridBlendConfig.source)}\n"
         + $"      Target: {BlendModeExt.getKey(properties.supportGridBlendConfig.target)}\n"
         + $"      Equation: {BlendEquation.getKey(properties.supportGridBlendConfig.equation)}\n"
-        + $"    BlendColor: {properties.supportGridBlendColor.toHex(false)}\n"
+      if (Optional.is(properties.supportGridBlendConfig.equationAlpha)) {
+        grid = $"{grid}      EquationAlpha: {BlendEquation.getKey(properties.supportGridBlendConfig.equationAlpha)}\n"
+      }
+  
+      grid = $"{grid}    BlendColor: {properties.supportGridBlendColor.toHex(false)}\n"
         + $"    Treshold: {properties.supportGridTreshold}\n"
         + $"    Alpha: {properties.supportGridAlpha}\n"
 
@@ -239,6 +247,7 @@ function VESceneConfigPreview(_config = null) constructor {
           var source = BlendModeExt.getKey(task.state.get("blendModeSource"))
           var target = BlendModeExt.getKey(task.state.get("blendModeTarget"))
           var equation = BlendEquation.getKey(task.state.get("blendEquation"))
+          var equationAlpha = task.state.get("blendEquationAlpha")
           stringBuilder.append($"        - Color: {color.toHex(false)}\n"
             + $"            Alpha: {alpha}\n"
             + $"          Layer: \n"
@@ -248,6 +257,9 @@ function VESceneConfigPreview(_config = null) constructor {
             + $"              Source: {source}\n"
             + $"              Target: {target}\n"
             + $"              Equation: {equation}\n")
+          if (Optional.is(equationAlpha)) {
+            stringBuilder.append($"              EquationAlpha: {BlendEquation.getKey(equationAlpha)}\n")
+          }
         }, stringBuilder)
 
         return stringBuilder.get()
@@ -286,6 +298,7 @@ function VESceneConfigPreview(_config = null) constructor {
           var source = BlendModeExt.getKey(task.state.get("blendModeSource"))
           var target = BlendModeExt.getKey(task.state.get("blendModeTarget"))
           var equation = BlendEquation.getKey(task.state.get("blendEquation"))
+          var equationAlpha = task.state.get("blendEquationAlpha")
           stringBuilder.append($"        - Texture:\n"
             + $"            Name: {sprite.getName()}\n"
             + $"            Speed: {sprite.getSpeed()}\n"
@@ -307,6 +320,9 @@ function VESceneConfigPreview(_config = null) constructor {
             + $"              Source: {source}\n"
             + $"              Target: {target}\n"
             + $"              Equation: {equation}\n")
+          if (Optional.is(equationAlpha)) {
+            stringBuilder.append($"              EquationAlpha: {BlendEquation.getKey(equationAlpha)}\n")
+          }
         }, stringBuilder)
 
         return stringBuilder.get()
@@ -394,7 +410,11 @@ function VESceneConfigPreview(_config = null) constructor {
         + $"      Source: {BlendModeExt.getKey(properties.videoBlendConfig.source)}\n"
         + $"      Target: {BlendModeExt.getKey(properties.videoBlendConfig.target)}\n"
         + $"      Equation: {BlendEquation.getKey(properties.videoBlendConfig.equation)}\n"
-        + $"    BlendColor: {properties.videoBlendColor.toHex(false)}\n"
+      if (Optional.is(properties.videoBlendConfig.equationAlpha)) {
+        view = + $"{view}      EquationAlpha: {BlendEquation.getKey(properties.videoBlendConfig.equationAlpha)}\n"
+      }
+
+      view = $"{view}    BlendColor: {properties.videoBlendColor.toHex(false)}\n"
         + $"    Alpha: {properties.videoAlpha}\n"
       return view
     },

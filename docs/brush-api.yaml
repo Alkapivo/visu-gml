@@ -256,10 +256,12 @@ brushes:
         - gr-cfg_grid-blend-src
         - gr-cfg_grid-blend-dest
         - gr-cfg_grid-blend-eq
+        - gr-cfg_grid-blend-eq-alpha
         - gr-cfg_focus-grid-use-blend
         - gr-cfg_focus-grid-blend-src
         - gr-cfg_focus-grid-blend-dest
         - gr-cfg_focus-grid-blend-eq
+        - gr-cfg_focus-grid-blend-eq-alpha
         - gr-cfg_focus-grid-use-blend-col
         - gr-cfg_focus-grid-blend-col
         - gr-cfg_focus-grid-blend-col-spd
@@ -317,6 +319,7 @@ brushes:
         - vw-layer_blend-src
         - vw-layer_blend-dest
         - vw-layer_blend-eq
+        - vw-layer_blend-eq-alpha
         - vw-layer_use-spd
         - vw-layer_spd
         - vw-layer_change-spd
@@ -389,5 +392,6 @@ brushes:
       - vw-cfg_video-blend-src
       - vw-cfg_video-blend-dest
       - vw-cfg_video-blend-eq
+      - vw-cfg_video-blend-eq-alpha
       - vw-cfg_use-render-video-after
       - vw-cfg_render-video-after

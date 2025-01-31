@@ -504,6 +504,133 @@ function VEEventInspector(_editor) constructor {
                 },
               },
             },
+            {
+              name: "button_control-to-brush",
+              template: VEComponents.get("collection-button"),
+              layout: VELayouts.get("horizontal-item"),
+              config: {
+                label: { text: "To brush" },
+                layout: {
+                  height: function() { return 40 },
+                  margin: { top: 0 },
+                },
+                callback: function() { 
+                  var eventInspector = this.context.eventInspector
+                  var event = eventInspector.store.getValue("event")
+                  if (!Core.isType(event, VEEvent)) {
+                    return
+                  }
+
+                  var editor = Beans.get(BeanVisuEditorController)
+                  var brushToolbar = editor.brushToolbar
+                  var store = brushToolbar.store
+                  var category = brushToolbar.getCategoryFromType(event.type)
+                  if (!Optional.is(category)) {
+                    return
+                  }
+
+                  var eventTemplate = event.toTemplate()
+                  var icon = Struct.get(eventTemplate.event.data, "icon")
+                  var template = new VEBrushTemplate({
+                    name: "no name brush",
+                    type: event.type,
+                    color: Struct.getIfType(icon, "blend", String, "#ffffff"),
+                    texture: Struct.getIfType(icon, "name", String, "texture_baron"),
+                    properties: eventTemplate.event.data,
+                  })
+
+                  if (store.getValue("category") != category) {
+                    store.get("category").set(category)
+                  }
+                  
+                  if (store.getValue("type") != template.type) {
+                    var currentTemplate = store.getValue("template")
+                    if (Optional.is(currentTemplate)) {
+                      var templatesCache = brushToolbar.templatesCache
+                      templatesCache.set(store.getValue("type"), currentTemplate.toStruct())
+                    }
+                    store.get("type").set(template.type)
+                  }
+                  
+                  store.get("template").set(template)
+
+                  var item = this
+                  controller = Beans.get(BeanVisuEditorController)
+                  controller.executor.tasks.forEach(function(task, iterator, item) {
+                    if (Struct.get(task.state, "item") == item) {
+                      task.fullfill()
+                    }
+                  }, item)
+                  
+                  var task = new Task($"onMouseReleasedLeft_{item.name}")
+                    .setTimeout(10.0)
+                    .setState({
+                      item: item,
+                      transformer: new ColorTransformer({
+                        value: VETheme.color.accentLight,
+                        target: item.isHoverOver ? item.colorHoverOver : item.colorHoverOut,
+                        factor: 0.016,
+                      })
+                    })
+                    .whenUpdate(function(executor) {
+                      if (this.state.transformer.update().finished) {
+                        this.fullfill()
+                      }
+      
+                      this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+                    })
+      
+                  item.backgroundColor = ColorUtil.parse(VETheme.color.accentLight).toGMColor()
+                  controller.executor.add(task)
+                },
+                onMouseHoverOut: function(event) {
+                  var item = this
+                  var controller = Beans.get(BeanVisuEditorController)
+                  controller.executor.tasks.forEach(function(task, iterator, item) {
+                    if (Struct.get(task.state, "item") == item) {
+                      task.fullfill()
+                    }
+                  }, item)
+
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                },
+                onMouseHoverOver: function(event) {
+                  var item = this
+                  var controller = Beans.get(BeanVisuEditorController)
+                  controller.executor.tasks.forEach(function(task, iterator, item) {
+                    if (Struct.get(task.state, "item") == item) {
+                      task.fullfill()
+                    }
+                  }, item)
+
+                  this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                },
+                postRender: function() {
+                  var keyLabel = Struct.get(this, "keyLabel")
+                  if (!Optional.is(keyLabel)) {
+                    keyLabel = Struct.set(this, "keyLabel", new UILabel({
+                      font: "font_inter_8_regular",
+                      text: "[CTRL + B]",
+                      alpha: 1.0,
+                      useScale: false,
+                      color: VETheme.color.textShadow,
+                      align: {
+                        v: VAlign.BOTTOM,
+                        h: HAlign.CENTER,
+                      },
+                    }))
+                  }
+  
+                  keyLabel.render(
+                    this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2.0),
+                    this.context.area.getY() + this.area.getY() + this.area.getHeight(),
+                    this.area.getWidth(),
+                    this.area.getHeight(),
+                    0.9
+                  )
+                },
+              },
+            },
           ]),
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),

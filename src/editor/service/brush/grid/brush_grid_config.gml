@@ -134,6 +134,12 @@ function brush_grid_config(json) {
         passthrough: UIUtil.passthrough.getArrayValue(),
         data: BlendEquation.keys(),
       },
+      "gr-cfg_grid-blend-eq-alpha": {
+        type: String,
+        value: Struct.get(json, "gr-cfg_grid-blend-eq-alpha"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: BlendEquation.keys(),
+      },
       "gr-cfg_focus-grid-use-blend": {
         type: Boolean,
         value: Struct.get(json, "gr-cfg_focus-grid-use-blend"),
@@ -153,6 +159,12 @@ function brush_grid_config(json) {
       "gr-cfg_focus-grid-blend-eq": {
         type: String,
         value: Struct.get(json, "gr-cfg_focus-grid-blend-eq"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: BlendEquation.keys(),
+      },
+      "gr-cfg_focus-grid-blend-eq-alpha": {
+        type: String,
+        value: Struct.get(json, "gr-cfg_focus-grid-blend-eq-alpha"),
         passthrough: UIUtil.passthrough.getArrayValue(),
         data: BlendEquation.keys(),
       },
@@ -255,6 +267,13 @@ function brush_grid_config(json) {
           preview: Struct.appendRecursive({ 
             store: { key: "gr-cfg_grid-blend-src" },
             enable: { key: "gr-cfg_grid-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { 
             store: { key: "gr-cfg_grid-blend-src" },
@@ -279,6 +298,13 @@ function brush_grid_config(json) {
           preview: Struct.appendRecursive({ 
             store: { key: "gr-cfg_grid-blend-dest" },
             enable: { key: "gr-cfg_grid-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { 
             store: { key: "gr-cfg_grid-blend-dest" },
@@ -303,6 +329,13 @@ function brush_grid_config(json) {
           preview: Struct.appendRecursive({ 
             store: { key: "gr-cfg_grid-blend-eq" },
             enable: { key: "gr-cfg_grid-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: {
             store: { key: "gr-cfg_grid-blend-eq" },
@@ -311,7 +344,38 @@ function brush_grid_config(json) {
         },
       },
       {
-        name: "gr-cfg_blend-eq-line-h",
+        name: "gr-cfg_grid-blend-eq-alpha",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Eq. alpha",
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          previous: {
+            store: { key: "gr-cfg_grid-blend-eq-alpha" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "gr-cfg_grid-blend-eq-alpha" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "gr-cfg_grid-blend-eq-alpha" },
+            enable: { key: "gr-cfg_grid-use-blend" },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_blend-eq-alpha-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -627,6 +691,13 @@ function brush_grid_config(json) {
           preview: Struct.appendRecursive({ 
             store: { key: "gr-cfg_focus-grid-blend-src" },
             enable: { key: "gr-cfg_focus-grid-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { 
             store: { key: "gr-cfg_focus-grid-blend-src" },
@@ -651,6 +722,13 @@ function brush_grid_config(json) {
           preview: Struct.appendRecursive({ 
             store: { key: "gr-cfg_focus-grid-blend-dest" },
             enable: { key: "gr-cfg_focus-grid-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { 
             store: { key: "gr-cfg_focus-grid-blend-dest" },
@@ -675,9 +753,47 @@ function brush_grid_config(json) {
           preview: Struct.appendRecursive({ 
             store: { key: "gr-cfg_focus-grid-blend-eq" },
             enable: { key: "gr-cfg_focus-grid-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: {
             store: { key: "gr-cfg_focus-grid-blend-eq" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+        },
+      },
+      {
+        name: "gr-cfg_focus-grid-blend-eq-alpha",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Eq. alpha",
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          previous: {
+            store: { key: "gr-cfg_focus-grid-blend-eq-alpha" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "gr-cfg_focus-grid-blend-eq-alpha" },
+            enable: { key: "gr-cfg_focus-grid-use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "gr-cfg_focus-grid-blend-eq-alpha" },
             enable: { key: "gr-cfg_focus-grid-use-blend" },
           },
         },

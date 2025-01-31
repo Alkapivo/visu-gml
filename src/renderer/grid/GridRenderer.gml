@@ -1012,7 +1012,11 @@ function GridRenderer() constructor {
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   renderBackgroundSurface = function(layout) {
-    var properties = Beans.get(BeanVisuController).gridService.properties
+    var controller = Beans.get(BeanVisuController)
+    var gridService = controller.gridService
+    var shroomService = controller.shroomService
+    var particleService = controller.particleService
+    var properties = gridService.properties
     var width = layout.width()
     var height = layout.height()
     GPU.render.clear(ColorUtil.BLACK_TRANSPARENT)
@@ -1040,6 +1044,49 @@ function GridRenderer() constructor {
         }
         break
     }
+
+    if (!Visu.settings.getValue("visu.graphics.particle")) {
+      return this
+    }
+    
+    var depths = properties.depths
+    var camera = this.camera
+    var cameraAngle = camera.angle
+    var cameraPitch = camera.pitch
+    var xto = camera.x
+    var yto = camera.y
+    var zto = camera.z + camera.zoom
+    var xfrom = xto + dcos(cameraAngle) * dcos(cameraPitch)
+    var yfrom = yto - dsin(cameraAngle) * dcos(cameraPitch)
+    var zfrom = zto - dsin(cameraPitch)
+    var baseX = GRID_SERVICE_PIXEL_WIDTH + GRID_SERVICE_PIXEL_WIDTH * 0.5
+    var baseY = GRID_SERVICE_PIXEL_HEIGHT + GRID_SERVICE_PIXEL_HEIGHT * 0.5
+    camera.viewMatrix = matrix_build_lookat(
+      xfrom, yfrom, zfrom, 
+      xto, yto, zto, 
+      0, 0, 1
+    )
+    ///@todo extract parameters
+    camera.projectionMatrix = matrix_build_projection_perspective_fov(
+      -60, 
+      -1 * (width / height), 
+      1, 
+      32000 
+    ) 
+
+    camera_set_view_mat(camera.gmCamera, camera.viewMatrix)
+    camera_set_proj_mat(camera.gmCamera, camera.projectionMatrix)
+    camera_apply(camera.gmCamera)
+    
+    matrix_set(matrix_world, matrix_build(
+      baseX, baseY, depths.particleZ, 
+      0, 0, 0, 
+      1, 1, 1
+    ))
+    this.renderParticleArea(gridService, shroomService)
+    this.renderParticles(gridService, particleService)
+
+    matrix_set(matrix_world, matrix_build_identity())
 
     return this
   }
@@ -1129,15 +1176,15 @@ function GridRenderer() constructor {
     ))
     this.renderSeparators(gridService)
 
-    if (Visu.settings.getValue("visu.graphics.particle")) {
-      matrix_set(matrix_world, matrix_build(
-        baseX, baseY, depths.particleZ, 
-        0, 0, 0, 
-        1, 1, 1
-      ))
-      this.renderParticleArea(gridService, shroomService)
-      this.renderParticles(gridService, particleService)
-    }
+    //if (Visu.settings.getValue("visu.graphics.particle")) {
+    //  matrix_set(matrix_world, matrix_build(
+    //    baseX, baseY, depths.particleZ, 
+    //    0, 0, 0, 
+    //    1, 1, 1
+    //  ))
+    //  this.renderParticleArea(gridService, shroomService)
+    //  this.renderParticles(gridService, particleService)
+    //}
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.coinZ, 

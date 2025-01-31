@@ -200,6 +200,7 @@ global.__view_track_event = {
         "vw-layer_blend-src": Struct.parse.enumerableKey(data, "vw-layer_blend-src", BlendModeExt, BlendModeExt.SRC_ALPHA),
         "vw-layer_blend-dest": Struct.parse.enumerableKey(data, "vw-layer_blend-dest", BlendModeExt, BlendModeExt.INV_SRC_ALPHA),
         "vw-layer_blend-eq": Struct.parse.enumerableKey(data, "vw-layer_blend-eq", BlendEquation, BlendEquation.ADD),
+        "vw-layer_blend-eq-alpha": Struct.parse.enumerableKey(data, "vw-layer_blend-eq-alpha", BlendEquation, BlendEquation.ADD),
         "vw-layer_use-spd": Struct.parse.boolean(data, "vw-layer_use-spd"),
         "vw-layer_spd": Struct.parse.numberTransformer(data, "vw-layer_spd", {
           clampValue: { from: 0.0, to: 99.9 },
@@ -275,6 +276,7 @@ global.__view_track_event = {
           blendModeSource: BlendModeExt.get(Struct.get(data, "vw-layer_blend-src")),
           blendModeTarget: BlendModeExt.get(Struct.get(data, "vw-layer_blend-dest")),
           blendEquation: BlendEquation.get(Struct.get(data, "vw-layer_blend-eq")),
+          blendEquationAlpha: BlendEquation.get(Struct.get(data, "vw-layer_blend-eq-alpha")),
         },
         pump)
       
@@ -375,6 +377,7 @@ global.__view_track_event = {
           blendModeSource: BlendModeExt.get(Struct.get(data, "vw-layer_blend-src")),
           blendModeTarget: BlendModeExt.get(Struct.get(data, "vw-layer_blend-dest")),
           blendEquation: BlendEquation.get(Struct.get(data, "vw-layer_blend-eq")),
+          blendEquationAlpha: BlendEquation.get(Struct.get(data, "vw-layer_blend-eq-alpha")),
           angle: Struct.get(data, "vw-layer_use-dir") 
             ? Struct.get(data, "vw-layer_dir").value 
             : lastAngle,
@@ -532,6 +535,7 @@ global.__view_track_event = {
         "vw-cfg_video-blend-src": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-src", BlendModeExt, BlendModeExt.SRC_ALPHA),
         "vw-cfg_video-blend-dest": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-dest", BlendModeExt, BlendModeExt.INV_SRC_ALPHA),
         "vw-cfg_video-blend-eq": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-eq", BlendEquation, BlendEquation.ADD),
+        "vw-cfg_video-blend-eq-alpha": Struct.parse.enumerableKey(data, "vw-cfg_video-blend-eq-alpha", BlendEquation, BlendEquation.ADD),
         "vw-cfg_use-render-video-after": Struct.parse.boolean(data, "vw-cfg_use-render-video-after"),
         "vw-cfg_render-video-after": Struct.parse.boolean(data, "vw-cfg_render-video-after"),
       }
@@ -621,7 +625,8 @@ global.__view_track_event = {
         "vw-cfg_video-blend-src",
         "vw-cfg_video-blend-dest",
         "vw-cfg_video-blend-eq",
-        properties.videoBlendConfig)
+        properties.videoBlendConfig,
+        "vw-cfg_video-blend-eq-alpha")
     },
   },
 }

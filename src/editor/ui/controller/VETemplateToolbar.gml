@@ -2899,6 +2899,7 @@ function VETemplateToolbar(_editor) constructor {
             sizeBefore = textureService.templates.size()
             sizeAfter = textureService.templates.set(name, serialized).size()
           }
+          this.store.get("template").set(template)
           break
         default:
           throw new Exception($"Dispatcher for type '{template.type}' wasn't found")
