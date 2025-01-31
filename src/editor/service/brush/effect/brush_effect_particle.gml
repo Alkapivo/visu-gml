@@ -51,7 +51,7 @@ function brush_effect_particle(json) {
         type: String,
         value: Struct.get(json, "ef-part_distribution"),
         passthrough: UIUtil.passthrough.getArrayValue(),
-        data: ParticleEmitterShape.keys(),
+        data: ParticleEmitterDistribution.keys(),
       },
     }),
     components: new Array(Struct, [

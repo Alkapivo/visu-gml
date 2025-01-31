@@ -1492,7 +1492,7 @@ function template_particle(json = null) {
                 item.set(item.get())
               },
             },
-            factor: 0.2,
+            factor: 0.01,
             updateValue: function(mouseX, mouseY) {
               var isUIStore = Core.isType(this.store, UIStore)
               this.base = !Core.isType(this.base, Number) 
@@ -1589,7 +1589,7 @@ function template_particle(json = null) {
                 item.set(item.get())
               },
             },
-            factor: 0.2,
+            factor: 0.01,
             updateValue: function(mouseX, mouseY) {
               var isUIStore = Core.isType(this.store, UIStore)
               this.base = !Core.isType(this.base, Number) 

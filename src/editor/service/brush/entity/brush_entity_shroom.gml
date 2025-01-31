@@ -220,6 +220,11 @@ function brush_entity_shroom(json) {
                 _y = _y - (view.y - floor(view.y / view.height) * view.height)
               }
 
+              var angle = store.getValue("en-shr_dir")
+              if (store.getValue("en-shr_use-dir-rng")) {
+                angle += choose(1.0, -1.0) * (store.getValue("en-shr_dir-rng") / 2.0)
+              }
+
               var inspectorType = this.context.state.get("inspectorType")
               switch (inspectorType) {
                 case VEEventInspector:
@@ -227,7 +232,11 @@ function brush_entity_shroom(json) {
                   shroomService.spawnerEvent = shroomService.factorySpawner({ 
                     x: _x, 
                     y: _y, 
-                    sprite: SpriteUtil.parse({ name: "texture_bazyl" })
+                    sprite: SpriteUtil.parse({ 
+                      name: "texture_visu_shroom_spawner", 
+                      blend: "#43abfa",
+                      angle: angle,
+                    })
                   })
                   break
                 case VEBrushToolbar:
@@ -235,7 +244,11 @@ function brush_entity_shroom(json) {
                   shroomService.spawner = shroomService.factorySpawner({ 
                     x: _x, 
                     y: _y, 
-                    sprite: SpriteUtil.parse({ name: "texture_baron" })
+                    sprite: SpriteUtil.parse({
+                      name: "texture_visu_shroom_spawner",
+                      blend: "#f757ef",
+                      angle: angle,
+                    })
                   })
                   break
               }

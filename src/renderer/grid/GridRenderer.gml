@@ -557,8 +557,8 @@ function GridRenderer() constructor {
     var spawner = shroomService.spawner
     if (Core.isType(spawner, Struct)) {
       spawner.sprite.render(
-        (spawner.x * GRID_SERVICE_PIXEL_WIDTH) - ((spawner.sprite.getWidth() * spawner.sprite.getScaleX()) / 2.0), 
-        (spawner.y * GRID_SERVICE_PIXEL_HEIGHT) - ((spawner.sprite.getHeight() * spawner.sprite.getScaleY()) / 2.0)
+        spawner.x * GRID_SERVICE_PIXEL_WIDTH, 
+        spawner.y * GRID_SERVICE_PIXEL_HEIGHT
       )
 
       shroomService.spawner.timeout--
@@ -570,8 +570,8 @@ function GridRenderer() constructor {
     var spawnerEvent = shroomService.spawnerEvent
     if (Core.isType(spawnerEvent, Struct)) {
       spawnerEvent.sprite.render(
-        (spawnerEvent.x * GRID_SERVICE_PIXEL_WIDTH) - ((spawnerEvent.sprite.getWidth() * spawnerEvent.sprite.getScaleX()) / 2.0), 
-        (spawnerEvent.y * GRID_SERVICE_PIXEL_HEIGHT) - ((spawnerEvent.sprite.getHeight() * spawnerEvent.sprite.getScaleY()) / 2.0)
+        spawnerEvent.x * GRID_SERVICE_PIXEL_WIDTH,
+        spawnerEvent.y * GRID_SERVICE_PIXEL_HEIGHT
       )
 
       shroomService.spawnerEvent.timeout--
@@ -580,56 +580,7 @@ function GridRenderer() constructor {
       }
     }
 
-    // Render particleArea
-    var particleArea = shroomService.particleArea
-    if (Core.isType(particleArea, Struct)) {
-      particleArea.topLeft.sprite.render(
-        particleArea.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
-        particleArea.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
-      )
-      particleArea.topRight.sprite.render(
-        particleArea.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
-        particleArea.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
-      )
-      particleArea.bottomLeft.sprite.render(
-        particleArea.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
-        particleArea.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
-      )
-      particleArea.bottomRight.sprite.render(
-        particleArea.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
-        particleArea.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
-      )
-
-      shroomService.particleArea.timeout--
-      if (shroomService.particleArea.timeout <= 0) {
-        shroomService.particleArea = null
-      }
-    }
-
-    var particleAreaEvent = shroomService.particleAreaEvent
-    if (Core.isType(particleAreaEvent, Struct)) {
-      particleAreaEvent.topLeft.sprite.render(
-        particleAreaEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
-        particleAreaEvent.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
-      )
-      particleAreaEvent.topRight.sprite.render(
-        particleAreaEvent.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
-        particleAreaEvent.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
-      )
-      particleAreaEvent.bottomLeft.sprite.render(
-        particleAreaEvent.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
-        particleAreaEvent.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
-      )
-      particleAreaEvent.bottomRight.sprite.render(
-        particleAreaEvent.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
-        particleAreaEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
-      )
-
-      shroomService.particleAreaEvent.timeout--
-      if (shroomService.particleAreaEvent.timeout <= 0) {
-        shroomService.particleAreaEvent = null
-      }
-    }
+    return null;//
 
     // Render playerBorder
     var playerBorder = shroomService.playerBorder
@@ -679,6 +630,113 @@ function GridRenderer() constructor {
       shroomService.playerBorderEvent.timeout--
       if (shroomService.playerBorderEvent.timeout <= 0) {
         shroomService.playerBorderEvent = null
+      }
+    }
+  }
+
+  ///@private
+  ///@param {GridService} gridService
+  ///@param {ShroomService} shroomService
+  ///@return {GridRenderer}
+  renderParticleArea = function(gridService, shroomService) {
+    var lineThickness = 5.0
+    var lineAlpha = 0.8
+    var backgroundAlpha = 0.6
+    var colorBrush = c_fuchsia
+    var colorEvent = c_blue
+    var particleArea = shroomService.particleArea
+    if (Core.isType(particleArea, Struct)) {
+      GPU.render.rectangle(
+        particleArea.topLeft.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleArea.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        particleArea.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+        false, colorBrush, colorBrush, colorBrush, colorBrush, backgroundAlpha
+      )
+
+      GPU.render.texturedLine(
+        particleArea.topLeft.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleArea.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        particleArea.topRight.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleArea.topRight.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        lineThickness, lineAlpha, colorBrush
+      )
+
+      GPU.render.texturedLine(
+        particleArea.topRight.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleArea.topRight.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        particleArea.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+        lineThickness, lineAlpha, colorBrush
+      )
+
+      GPU.render.texturedLine(
+        particleArea.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+        particleArea.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+        lineThickness, lineAlpha, colorBrush
+      )
+
+      GPU.render.texturedLine(
+        particleArea.topLeft.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleArea.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        particleArea.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleArea.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+        lineThickness, lineAlpha, colorBrush
+      )
+
+      shroomService.particleArea.timeout--
+      if (shroomService.particleArea.timeout <= 0) {
+        shroomService.particleArea = null
+      }
+    }
+
+    var particleAreaEvent = shroomService.particleAreaEvent
+    if (Core.isType(particleAreaEvent, Struct)) {
+      GPU.render.rectangle(
+        particleAreaEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleAreaEvent.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        particleAreaEvent.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+        false, colorEvent, colorEvent, colorEvent, colorEvent, backgroundAlpha
+      )
+
+      GPU.render.texturedLine(
+        particleAreaEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleAreaEvent.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        particleAreaEvent.topRight.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleAreaEvent.topRight.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        lineThickness, lineAlpha, colorEvent
+      )
+
+      GPU.render.texturedLine(
+        particleAreaEvent.topRight.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleAreaEvent.topRight.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        particleAreaEvent.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+        lineThickness, lineAlpha, colorEvent
+      )
+
+      GPU.render.texturedLine(
+        particleAreaEvent.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+        particleAreaEvent.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+        lineThickness, lineAlpha, colorEvent
+      )
+
+      GPU.render.texturedLine(
+        particleAreaEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH, 
+        particleAreaEvent.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT, 
+        particleAreaEvent.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+        lineThickness, lineAlpha, colorEvent
+      )
+
+      shroomService.particleAreaEvent.timeout--
+      if (shroomService.particleAreaEvent.timeout <= 0) {
+        shroomService.particleAreaEvent = null
       }
     }
   }
@@ -1077,6 +1135,7 @@ function GridRenderer() constructor {
         0, 0, 0, 
         1, 1, 1
       ))
+      this.renderParticleArea(gridService, shroomService)
       this.renderParticles(gridService, particleService)
     }
 
