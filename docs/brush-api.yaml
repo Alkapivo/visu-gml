@@ -342,7 +342,7 @@ brushes:
       properties:
         - vw-sub_template
         - vw-sub_font
-        - vw-sub-fh
+        - vw-sub_fh
         - vw-sub_use-timeout
         - vw-sub_timeout
         - vw-sub_col
@@ -354,7 +354,7 @@ brushes:
         - vw-sub_y
         - vw-sub_w
         - vw-sub_h
-        - vw-sub-char-spd
+        - vw-sub_char-spd
         - vw-sub_use-nl-delay
         - vw-sub_nl-delay
         - vw-sub_use-end-delay
@@ -365,8 +365,8 @@ brushes:
         - vw-sub_use-spd
         - vw-sub_spd
         - vw-sub_change-spd
-        - vw-sub-fade-in
-        - vw-sub-fade-out
+        - vw-sub_fade-in
+        - vw-sub_fade-out
         - vw-sub_use-area-preview
     Config:
     name: brush_view_config

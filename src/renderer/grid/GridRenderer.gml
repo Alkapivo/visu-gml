@@ -1019,7 +1019,7 @@ function GridRenderer() constructor {
     var properties = gridService.properties
     var width = layout.width()
     var height = layout.height()
-    GPU.render.clear(ColorUtil.BLACK_TRANSPARENT)
+    GPU.render.clear(c_black, 0.0)
 
     switch (properties.renderVideoAfter) {
       case true:
@@ -1048,7 +1048,6 @@ function GridRenderer() constructor {
     if (!Visu.settings.getValue("visu.graphics.particle")) {
       return this
     }
-    
     var depths = properties.depths
     var camera = this.camera
     var cameraAngle = camera.angle
@@ -1360,7 +1359,7 @@ function GridRenderer() constructor {
 
     var width = this.shaderSurface.width
     var height = this.shaderSurface.height
-    draw_clear_alpha(c_white, 0.0)
+    GPU.render.clear(properties.gridClearColor, 0.0)
 
     controller.shaderBackgroundPipeline
       .setWidth(width)
@@ -1444,7 +1443,7 @@ function GridRenderer() constructor {
   ///@return {GridRenderer}
   renderGameSurface = function(layout) {
     var gridService = Beans.get(BeanVisuController).gridService
-    GPU.render.clear(gridService.properties.clearColor)
+    GPU.render.clear(gridService.properties.gridClearColor)
     this.renderBackground(gridService, layout) 
     this.gridSurface.render()
     this.shaderSurface.renderStretched(layout.width(), layout.height())
@@ -1476,7 +1475,7 @@ function GridRenderer() constructor {
 
     var width = this.shaderCombinedSurface.width
     var height = this.shaderCombinedSurface.height
-    draw_clear_alpha(c_white, 0.0)
+    GPU.render.clear(properties.shaderClearColor, 0.0)
 
     controller.shaderCombinedPipeline
       .setWidth(width)
@@ -1742,8 +1741,9 @@ function GridRenderer() constructor {
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   renderGUI = function(layout) {
+    var controller = Beans.get(BeanVisuController)
     if (Visu.settings.getValue("visu.debug.render-surfaces")) {
-      draw_clear_alpha(c_fuchsia, 1.0)
+      GPU.render.clear(controller.gridService.properties.gridClearColor, 1.0)
       this.backgroundSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, 0.0, 0.0)
       this.gridSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, GuiWidth() / 2.0, 0.0)
       this.shaderBackgroundSurface.renderStretched(GuiWidth() / 2.0, GuiHeight() / 2.0, 0.0, GuiHeight() / 2.0)
@@ -1751,7 +1751,7 @@ function GridRenderer() constructor {
       return this
     }
 
-    var playerService = Beans.get(BeanVisuController).playerService
+    var playerService = controller.playerService
     if (Visu.settings.getValue("visu.graphics.bkt-glitch")) {
       this.glitchService.renderOn(this.renderGameplay, layout)
     } else {

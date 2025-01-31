@@ -248,12 +248,7 @@ function brush_effect_config(json) {
             text: "Clear",
             backgroundColor: VETheme.color.accentShadow,
           },
-          checkbox: { 
-            backgroundColor: VETheme.color.accentShadow,
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "ef-cfg_use-render-part" },
-          },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
           input: { backgroundColor: VETheme.color.accentShadow },
         },
       },

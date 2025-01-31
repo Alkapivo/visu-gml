@@ -62,9 +62,9 @@ function brush_view_subtitle(json = null) {
         passthrough: UIUtil.passthrough.getArrayValue(),
         data: new Array(String, VISU_FONT),
       },
-      "vw-sub-fh": {
+      "vw-sub_fh": {
         type: Number,
-        value: Struct.get(json, "vw-sub-fh"),
+        value: Struct.get(json, "vw-sub_fh"),
         passthrough: UIUtil.passthrough.getClampedStringInteger(),
         data: new Vector2(0, 999),
       },
@@ -130,9 +130,9 @@ function brush_view_subtitle(json = null) {
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
         data: new Vector2(0.0, 10.0),
       },
-      "vw-sub-char-spd": {
+      "vw-sub_char-spd": {
         type: Number,
-        value: Struct.get(json, "vw-sub-char-spd"),
+        value: Struct.get(json, "vw-sub_char-spd"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
         data: new Vector2(0.00001, 999.9),
       },
@@ -186,15 +186,15 @@ function brush_view_subtitle(json = null) {
         type: Boolean,
         value: Struct.get(json, "vw-sub_change-spd"),
       },
-      "vw-sub-fade-in": {
+      "vw-sub_fade-in": {
         type: Number,
-        value: Struct.get(json, "vw-sub-fade-in"),
+        value: Struct.get(json, "vw-sub_fade-in"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
         data: new Vector2(0.0, 999.9),
       },
-      "vw-sub-fade-out": {
+      "vw-sub_fade-out": {
         type: Number,
-        value: Struct.get(json, "vw-sub-fade-out"),
+        value: Struct.get(json, "vw-sub_fade-out"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
         data: new Vector2(0.0, 999.9),
       },
@@ -257,7 +257,7 @@ function brush_view_subtitle(json = null) {
         },
       },
       {
-        name: "vw-sub-char-spd",  
+        name: "vw-sub_char-spd",  
         template: VEComponents.get("numeric-input"),
         layout: VELayouts.get("div"),
         config: { 
@@ -266,17 +266,17 @@ function brush_view_subtitle(json = null) {
             text: "Char spd.",
             font: "font_inter_10_regular",
           },
-          field: { store: { key: "vw-sub-char-spd" } },
+          field: { store: { key: "vw-sub_char-spd" } },
           decrease: { 
-            store: { key: "vw-sub-char-spd" },
+            store: { key: "vw-sub_char-spd" },
             factor: -0.1,
           },
           increase: { 
-            store: { key: "vw-sub-char-spd" },
+            store: { key: "vw-sub_char-spd" },
             factor: 0.1,
           },
           stick: {
-            store: { key: "vw-sub-char-spd" },
+            store: { key: "vw-sub_char-spd" },
             factor: 0.005,
           },
           checkbox: { },
@@ -289,7 +289,7 @@ function brush_view_subtitle(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "vw-sub-fade-in",  
+        name: "vw-sub_fade-in",  
         template: VEComponents.get("numeric-input"),
         layout: VELayouts.get("div"),
         config: { 
@@ -298,24 +298,24 @@ function brush_view_subtitle(json = null) {
             text: "Fade in",
             font: "font_inter_10_regular",
           },
-          field: { store: { key: "vw-sub-fade-in" } },
+          field: { store: { key: "vw-sub_fade-in" } },
           decrease: { 
-            store: { key: "vw-sub-fade-in" },
+            store: { key: "vw-sub_fade-in" },
             factor: -0.25,
           },
           increase: { 
-            store: { key: "vw-sub-fade-in" },
+            store: { key: "vw-sub_fade-in" },
             factor: 0.25,
           },
           stick: {
-            store: { key: "vw-sub-fade-in" },
+            store: { key: "vw-sub_fade-in" },
             factor: 0.01,
           },
           checkbox: { },
         },
       },
       {
-        name: "vw-sub-fade-out",  
+        name: "vw-sub_fade-out",  
         template: VEComponents.get("numeric-input"),
         layout: VELayouts.get("div"),
         config: { 
@@ -324,17 +324,17 @@ function brush_view_subtitle(json = null) {
             text: "Fade out",
             font: "font_inter_10_regular",
           },
-          field: { store: { key: "vw-sub-fade-out" } },
+          field: { store: { key: "vw-sub_fade-out" } },
           decrease: { 
-            store: { key: "vw-sub-fade-out" },
+            store: { key: "vw-sub_fade-out" },
             factor: -0.25,
           },
           increase: { 
-            store: { key: "vw-sub-fade-out" },
+            store: { key: "vw-sub_fade-out" },
             factor: 0.25,
           },
           stick: {
-            store: { key: "vw-sub-fade-out" },
+            store: { key: "vw-sub_fade-out" },
             factor: 0.01,
           },
           checkbox: { },
@@ -618,7 +618,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Width" },
-          field: { store: { key: "vw-sub_y" } },
+          field: { store: { key: "vw-sub_w" } },
           slider: { 
             minValue: -1.0,
             maxValue: 2.0,
@@ -642,7 +642,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Height" },
-          field: { store: { key: "vw-sub_y" } },
+          field: { store: { key: "vw-sub_h" } },
           slider: { 
             minValue: -1.0,
             maxValue: 2.0,
@@ -701,7 +701,7 @@ function brush_view_subtitle(json = null) {
         },
       },
       {
-        name: "vw-sub-fh",  
+        name: "vw-sub_fh",  
         template: VEComponents.get("numeric-input"),
         layout: VELayouts.get("div"),
         config: { 
@@ -710,24 +710,24 @@ function brush_view_subtitle(json = null) {
             text: "Spacing",
             font: "font_inter_10_regular",
           },
-          field: { store: { key: "vw-sub-fh" } },
+          field: { store: { key: "vw-sub_fh" } },
           decrease: { 
-            store: { key: "vw-sub-fh" },
+            store: { key: "vw-sub_fh" },
             factor: -1.0,
           },
           increase: { 
-            store: { key: "vw-sub-fh" },
+            store: { key: "vw-sub_fh" },
             factor: 1.0,
           },
           stick: {
-            store: { key: "vw-sub-fh" },
+            store: { key: "vw-sub_fh" },
             factor: 0.01,
           },
           checkbox: { },
         },
       },
       {
-        name: "vw-sub-fh-line-h",
+        name: "vw-sub_fh-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -1196,8 +1196,8 @@ function brush_view_subtitle(json = null) {
     .setData({
       template: Struct.get(data, "vw-sub_template"),
       font: FontUtil.fetch(Struct.get(data, "vw-sub_font")),
-      fontHeight: Struct.get(data, "vw-sub-fh"),
-      charSpeed: Struct.get(data, "vw-sub-char-spd"),
+      fontHeight: Struct.get(data, "vw-sub_fh"),
+      charSpeed: Struct.get(data, "vw-sub_char-spd"),
       color: ColorUtil.fromHex(Struct.get(data, "vw-sub_col")).toGMColor(),
       outline: Struct.get(data, "vw-sub_use-outline")
         ? ColorUtil.fromHex(Struct.get(data, "vw-sub_outline")).toGMColor()
@@ -1224,8 +1224,8 @@ function brush_view_subtitle(json = null) {
       speedTransformer: Struct.get(data, "vw-sub_use-spd")
         ? new NumberTransformer(Struct.get(data, "vw-sub_spd"))
         : null,
-      fadeIn: Struct.get(data, "vw-sub-fade-in"),
-      fadeOut: Struct.get(data, "vw-sub-fade-out"),
+      fadeIn: Struct.get(data, "vw-sub_fade-in"),
+      fadeOut: Struct.get(data, "vw-sub_fade-out"),
     }))
 },
 */

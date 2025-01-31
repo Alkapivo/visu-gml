@@ -7,7 +7,7 @@ function migrateViewOldLyricsEvent(json) {
     "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
     "vw-sub_template": Struct.getIfType(json, "view-lyrics_template", String, "subtitle-default"),
     "vw-sub_font": Struct.getIfType(json, "view-lyrics_font", String, "font_basic"),
-    "vw-sub-fh": Struct.getIfType(json, "view-lyrics_font-height", Number, 22.0),
+    "vw-sub_fh": Struct.getIfType(json, "view-lyrics_font-height", Number, 22.0),
     "vw-sub_use-timeout": Struct.getIfType(json, "view-lyrics_use-timeout", Boolean, false),
     "vw-sub_timeout": Struct.getIfType(json, "view-lyrics_timeout", Number, 60.0),
     "vw-sub_col": Struct.getIfType(json, "view-lyrics_color", String, "#ffffff"),
@@ -19,7 +19,7 @@ function migrateViewOldLyricsEvent(json) {
     "vw-sub_y": Struct.getIfType(json, "view-lyrics_y", Number, 0.0),
     "vw-sub_w": Struct.getIfType(json, "view-lyrics_width", Number, 1.0),
     "vw-sub_h": Struct.getIfType(json, "view-lyrics_height", Number, 1.0),
-    "vw-sub-char-spd": Struct.getIfType(json, "view-lyrics_char-speed", Number, 1.0),
+    "vw-sub_char-spd": Struct.getIfType(json, "view-lyrics_char-speed", Number, 1.0),
     "vw-sub_use-nl-delay": Struct.getIfType(json, "view-lyrics_use-line-delay", Boolean, false),
     "vw-sub_nl-delay": Struct.getIfType(json, "view-lyrics_line-delay", Number, 1.0),
     "vw-sub_use-end-delay": Struct.getIfType(json, "view-lyrics_use-finish-delay", Boolean, false),
@@ -30,8 +30,8 @@ function migrateViewOldLyricsEvent(json) {
     "vw-sub_use-spd": false,
     "vw-sub_spd": Struct.getIfType(json, "view-lyrics_transform-speed", Struct),
     "vw-sub_change-spd": Struct.getIfType(json, "view-lyrics_use-transform-speed", Boolean, false),
-    "vw-sub-fade-in": Struct.getIfType(json, "view-lyrics_fade-in", Number, 1.0),
-    "vw-sub-fade-out": Struct.getIfType(json, "view-lyrics_fade-out", Number, 1.0),
+    "vw-sub_fade-in": Struct.getIfType(json, "view-lyrics_fade-in", Number, 1.0),
+    "vw-sub_fade-out": Struct.getIfType(json, "view-lyrics_fade-out", Number, 1.0),
     "vw-sub_use-area-preview": true,
   }
 }

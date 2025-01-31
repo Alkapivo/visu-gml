@@ -1950,8 +1950,8 @@ function VisuMenu(_config = null) constructor {
           GPU.set.surface(this.surface)
           var color = this.state.get("background-color")
           var alpha = this.state.getDefault("background-alpha", 1.0)
-          if (color != null) {
-            draw_clear_alpha(color, uiAlpha * alpha)
+          if (Optional.is(color)) {
+            GPU.render.clear(color, uiAlpha * alpha)
           }
           
           var areaX = this.area.x
@@ -2299,15 +2299,11 @@ function VisuMenu(_config = null) constructor {
         },
         renderSurface: function() {
           var color = this.state.get("background-color")
-          var alpha = this.state.get("background-alpha")
-          //GPU.render.clear(Core.isType(color, GMColor) 
-          //  ? ColorUtil.fromGMColor(color) 
-          //  : ColorUtil.BLACK_TRANSPARENT)
-          draw_clear_alpha(
-            (Core.isType(color, GMColor) ? color : c_black),
-            (Core.isType(alpha, Number) ? alpha * this.state.get("uiAlpha") : 0.0)
-          )
-    
+          var alpha = this.state.getDefault("background-alpha", 1.0)
+          if (Optional.is(color)) {
+            GPU.render.clear(color, alpha * this.state.get("uiAlpha"))
+          }
+          
           var areaX = this.area.x
           var areaY = this.area.y
           //var delta = DeltaTime.deltaTime

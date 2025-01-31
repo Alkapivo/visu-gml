@@ -268,7 +268,7 @@ function VisuRenderer() constructor {
     this.renderDebugGUI()
 
     if (!this.initTimer.finished) {
-      GPU.render.clear(ColorUtil.BLACK)
+      GPU.render.clear(c_black, 1.0)
     }
 
     return this

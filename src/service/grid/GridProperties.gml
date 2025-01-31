@@ -3,18 +3,6 @@
 ///@param {Struct} [config]
 function GridProperties(config = {}) constructor {
 
-  ///@type {Color}
-  clearColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.clearColor", "#00000000")), Color)
-
-  ///@type {Boolean}
-  clearFrame = Assert.isType(Struct
-    .getDefault(config, "properties.clearFrame", true), Boolean)
-
-  ///@type {Number}
-  clearFrameAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.clearFrameAlpha", 0.0), Number)
-
   ///@type {Number}
   speed = Assert.isType(Struct
     .getDefault(config, "properties.speed", (FRAME_MS / 4) * 1000), Number)
@@ -267,7 +255,6 @@ function GridProperties(config = {}) constructor {
     this.separatorTimer.update()
     this.separatorTimer.amount = (this.speed / 1000) - DeltaTime.apply(gridService.view.derivativeY)
 
-    this.clearColor.alpha = this.clearFrameAlpha
     this.gridClearColor.alpha = this.gridClearFrameAlpha
     this.shaderClearColor.alpha = this.shaderClearFrameAlpha
     return this

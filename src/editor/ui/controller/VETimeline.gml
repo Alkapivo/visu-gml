@@ -1225,9 +1225,10 @@ function VETimeline(_editor) constructor {
 
           // background
           var color = this.state.get("background-color")
-          GPU.render.clear(Core.isType(color, GMColor) 
-            ? ColorUtil.fromGMColor(color) 
-            : ColorUtil.BLACK_TRANSPARENT)
+          var alpha = this.state.getDefault("background-alpha", 1.0)
+          if (Optional.is(color)) {
+            GPU.render.clear(color, alpha)
+          }
 
           var offsetX = this.offset.x
           var offsetY = this.offset.y
@@ -2484,9 +2485,10 @@ function VETimeline(_editor) constructor {
         },
         renderSurface: function() {
           var bkgColor = this.state.get("background-color")
-          GPU.render.clear(Core.isType(bkgColor, GMColor) 
-            ? ColorUtil.fromGMColor(bkgColor) 
-            : ColorUtil.BLACK_TRANSPARENT)
+          var alpha = this.state.getDefault("background-alpha", 1.0)
+          if (Optional.is(bkgColor)) {
+            GPU.render.clear(bkgColor, alpha)
+          }
 
           var _x = this.area.x
           var _y = this.area.y

@@ -235,7 +235,7 @@ global.__view_track_event = {
       }
     },
     run: function(data) {
-      static fadeOutTask = function(task, iterator, type) {
+      static fadeOutColorTask = function(task, iterator, type) {
         if (task.name != "fade-color" || task.state.get("type") != type) {
           return
         }
@@ -248,6 +248,20 @@ global.__view_track_event = {
         task.state.set("stage", "fade-out")
       }
 
+      static fadeOutSpriteTask = function(task, iterator, type) {
+        if (task.name != "fade-sprite" && task.state.get("type") != type) {
+          return
+        }
+
+        if (task.state.get("stage") == "fade-out") {
+          task.fullfill()
+          return
+        }
+        
+        task.state.set("stage", "fade-out")
+      }
+      
+
       var controller = Beans.get(BeanVisuController)
       var gridService = controller.gridService
       var pump = gridService.dispatcher
@@ -257,7 +271,7 @@ global.__view_track_event = {
 
       ///@description feature TODO view.layer.color.clear
       if (Struct.get(data, "vw-layer_cls-col")) {
-        executor.tasks.forEach(fadeOutTask, type)
+        executor.tasks.forEach(fadeOutColorTask, type)
       }
 
       ///@description feature TODO view.layer.color
@@ -283,7 +297,7 @@ global.__view_track_event = {
 
       ///@description feature TODO view.layer.texture.clear
       if (Struct.get(data, "vw-layer_cls-texture")) {
-        executor.tasks.forEach(fadeOutTask, type)
+        executor.tasks.forEach(fadeOutSpriteTask, type)
       }
 
       var collection = type == WallpaperType.BACKGROUND
@@ -403,7 +417,7 @@ global.__view_track_event = {
         "icon": Struct.parse.sprite(data, "icon"),
         "vw-sub_template": Struct.parse.text(data, "vw-sub_template"),
         "vw-sub_font": Struct.parse.text(data, "vw-sub_font", VISU_FONT[0]),
-        "vw-sub-fh": Struct.parse.number(data, "vw-sub-fh", 12, 0, 999),
+        "vw-sub_fh": Struct.parse.number(data, "vw-sub_fh", 12, 0, 999),
         "vw-sub_use-timeout": Struct.parse.boolean(data, "vw-sub_use-timeout"),
         "vw-sub_timeout": Struct.parse.number(data, "vw-sub_timeout", 0.0, 0.0, 999.9),
         "vw-sub_col": Struct.parse.color(data, "vw-sub_col"),
@@ -415,7 +429,7 @@ global.__view_track_event = {
         "vw-sub_y": Struct.parse.normalizedNumber(data, "vw-sub_y", 0.0),
         "vw-sub_w": Struct.parse.number(data, "vw-sub_w", 1.0, 0.0, 10.0),
         "vw-sub_h": Struct.parse.number(data, "vw-sub_h", 1.0, 0.0, 10.0),
-        "vw-sub-char-spd": Struct.parse.number(data, "vw-sub-char-spd", 1.0, 0.000001, 999.9),
+        "vw-sub_char-spd": Struct.parse.number(data, "vw-sub_char-spd", 1.0, 0.000001, 999.9),
         "vw-sub_use-nl-delay": Struct.parse.boolean(data, "vw-sub_use-nl-delay"),
         "vw-sub_nl-delay": Struct.parse.number(data, "vw-sub_nl-delay", 1.0, 0.0, 999.9),
         "vw-sub_use-end-delay": Struct.parse.boolean(data, "vw-sub_use-end-delay"),
@@ -432,8 +446,8 @@ global.__view_track_event = {
           clampTarget: { from: 0.0, to: 999.9 },
         }),
         "vw-sub_change-spd": Struct.parse.boolean(data, "vw-sub_change-spd"),
-        "vw-sub-fade-in": Struct.parse.number(data, "vw-sub_fade-in", 0.0, 999.9),
-        "vw-sub-fade-out": Struct.parse.number(data, "vw-sub_fade-out", 0.0, 999.9),
+        "vw-sub_fade-in": Struct.parse.number(data, "vw-sub_fade-in", 0.0, 999.9),
+        "vw-sub_fade-out": Struct.parse.number(data, "vw-sub_fade-out", 0.0, 999.9),
         "vw-sub_use-area-preview": Struct.parse.boolean(data, "vw-sub_use-area-preview"),
       }
     },
@@ -444,7 +458,7 @@ global.__view_track_event = {
       subtitleService.send(new Event("add", {
         template: Struct.get(data, "vw-sub_template"),
         font: FontUtil.fetch(Struct.get(data, "vw-sub_font")),
-        fontHeight: Struct.get(data, "vw-sub-fh"),
+        fontHeight: Struct.get(data, "vw-sub_fh"),
         timeout: Struct.get(data, "vw-sub_use-timeout")
           ? Struct.get(data, "vw-sub_timeout")
           : null,
@@ -462,7 +476,7 @@ global.__view_track_event = {
           width: Struct.get(data, "vw-sub_w"),
           height: Struct.get(data, "vw-sub_h"),
         }),
-        charSpeed: Struct.get(data, "vw-sub-char-spd"),
+        charSpeed: Struct.get(data, "vw-sub_char-spd"),
         lineDelay: Struct.get(data, "vw-sub_use-nl-delay")
           ? new Timer(Struct.get(data, "vw-sub_nl-delay"))
           : null,
@@ -505,8 +519,8 @@ global.__view_track_event = {
             ? Struct.get(data, "vw-sub_spd").increase
             : 0.0),
         }),
-        fadeIn: Struct.get(data, "vw-sub-fade-in"),
-        fadeOut: Struct.get(data, "vw-sub-fade-out"),
+        fadeIn: Struct.get(data, "vw-sub_fade-in"),
+        fadeOut: Struct.get(data, "vw-sub_fade-out"),
       }))
     },
   },
