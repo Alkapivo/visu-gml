@@ -1224,11 +1224,9 @@ function VETimeline(_editor) constructor {
           var trackEvent = Beans.get(BeanVisuEditorIO).mouse.getClipboard()
 
           // background
-          var color = this.state.get("background-color")
-          var alpha = this.state.getDefault("background-alpha", 1.0)
-          if (Optional.is(color)) {
-            GPU.render.clear(color, alpha)
-          }
+          var color = this.state.getDefault("background-color", c_black)
+          var alpha = this.state.getDefault("background-alpha", 0.0)
+          GPU.render.clear(color, alpha)
 
           var offsetX = this.offset.x
           var offsetY = this.offset.y
@@ -2484,11 +2482,9 @@ function VETimeline(_editor) constructor {
           }
         },
         renderSurface: function() {
-          var bkgColor = this.state.get("background-color")
-          var alpha = this.state.getDefault("background-alpha", 1.0)
-          if (Optional.is(bkgColor)) {
-            GPU.render.clear(bkgColor, alpha)
-          }
+          var bkgColor = this.state.getDefault("background-color", c_black)
+          var alpha = this.state.getDefault("background-alpha", 0.0)
+          GPU.render.clear(bkgColor, alpha)
 
           var _x = this.area.x
           var _y = this.area.y

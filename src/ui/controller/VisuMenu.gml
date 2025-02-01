@@ -1949,9 +1949,8 @@ function VisuMenu(_config = null) constructor {
           
           GPU.set.surface(this.surface)
           var color = this.state.get("background-color")
-          var alpha = this.state.getDefault("background-alpha", 1.0)
-          if (Optional.is(color)) {
-            GPU.render.clear(color, uiAlpha * alpha)
+          if (Core.isType(color, GMColor)) {
+            GPU.render.clear(color, uiAlpha * this.state.getIfType("background-alpha", Number, 1.0))
           }
           
           var areaX = this.area.x
@@ -2298,11 +2297,9 @@ function VisuMenu(_config = null) constructor {
           this.renderDefaultScrollable()
         },
         renderSurface: function() {
-          var color = this.state.get("background-color")
-          var alpha = this.state.getDefault("background-alpha", 1.0)
-          if (Optional.is(color)) {
-            GPU.render.clear(color, alpha * this.state.get("uiAlpha"))
-          }
+          var color = this.state.getIfType("background-color", GMColor, c_black)
+          var alpha = this.state.getIfType("background-alpha", Number, 0.0)
+          GPU.render.clear(color, alpha * this.state.get("uiAlpha"))
           
           var areaX = this.area.x
           var areaY = this.area.y

@@ -185,7 +185,7 @@ global.__view_track_event = {
       
       return {
         "icon": Struct.parse.sprite(data, "icon"),
-        "vw-layer_type": Struct.parse.enumerable(data, "vw-layer_type", WallpaperType, WallpaperType.BACKGROUND),
+        "vw-layer_type": Struct.parse.enumerableKey(data, "vw-layer_type", WallpaperType, WallpaperType.BACKGROUND),
         "vw-layer_fade-in": Struct.parse.number(data, "vw-layer_fade-in", 0.0, 0.0, 999.9),
         "vw-layer_fade-out": Struct.parse.number(data, "vw-layer_fade-out", 0.0, 0.0, 999.9),
         "vw-layer_use-texture": Struct.parse.boolean(data, "vw-layer_use-texture"),
@@ -249,7 +249,7 @@ global.__view_track_event = {
       }
 
       static fadeOutSpriteTask = function(task, iterator, type) {
-        if (task.name != "fade-sprite" && task.state.get("type") != type) {
+        if (task.name != "fade-sprite" || task.state.get("type") != type) {
           return
         }
 

@@ -78,6 +78,7 @@ function VisuController(layerName) constructor {
             audio_stop_all()
             Beans.get(BeanSoundService).free()
             Beans.get(BeanTextureService).free()
+            controller.trackService.dispatcher.execute(new Event("close-track"))
           },
         },
         update: function(fsm) {

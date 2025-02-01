@@ -116,11 +116,9 @@ function VEPopupQueue(_editor) constructor {
       },
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       renderSurface: function() {
-        var color = this.state.get("background-color")
-        var alpha = this.state.getDefault("background-alpha", 1.0)
-        if (Optional.is(color)) {
-          GPU.render.clear(color, alpha)
-        }
+        var color = this.state.getDefault("background-color", c_black)
+        var alpha = this.state.getDefault("background-alpha", 0.0)
+        GPU.render.clear(color, alpha)
 
         if (Core.isType(this.timeout, Timer)) {
           var lineY = this.area.getHeight() / 2.0

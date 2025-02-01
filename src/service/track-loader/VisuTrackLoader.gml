@@ -74,15 +74,13 @@ function VisuTrackLoader(_controller): Service() constructor {
             controller.videoService.dispatcher.execute(new Event("close-video"))
             controller.gridService.dispatcher.execute(new Event("clear-grid"))
             controller.playerService.dispatcher.execute(new Event("clear-player"))
-            controller.shaderPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
-            controller.shaderBackgroundPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
             controller.shroomService.dispatcher.execute(new Event("clear-shrooms")).execute(new Event("reset-templates"))
             controller.bulletService.dispatcher.execute(new Event("clear-bullets")).execute(new Event("reset-templates"))
             controller.coinService.dispatcher.execute(new Event("clear-coins")).execute(new Event("reset-templates"))
             controller.subtitleService.dispatcher.execute(new Event("clear-subtitle")).execute(new Event("reset-templates"))
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
             controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
-              if (task.name == "fade-color" 
+              if ((task.name == "fade-color" || task.name == "fade-sprite")
                   && task.state.get("type") == type 
                   && task.status != TaskStatus.FULLFILLED 
                   && task.status != TaskStatus.REJECTED) {
@@ -97,8 +95,9 @@ function VisuTrackLoader(_controller): Service() constructor {
                 task.fullfill()
               }
             }, WallpaperType.FOREGROUND)
-            
-
+            controller.shaderPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
+            controller.shaderBackgroundPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
+            controller.shaderCombinedPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
             Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
 
             fsmState.state.set("promise", Beans.get(BeanFileService).send(
