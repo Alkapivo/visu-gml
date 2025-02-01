@@ -436,12 +436,6 @@ function VisuController(layerName) constructor {
     handlers: new Map(String, Struct)
       .merge(
         DEFAULT_TRACK_EVENT_HANDLERS,
-        #region Old API
-        new Map(String, Struct, grid_old_track_event),
-        new Map(String, Struct, shader_track_event),
-        new Map(String, Struct, shroom_track_event),
-        new Map(String, Struct, view_old_track_event),
-        #endregion
         new Map(String, Struct, effect_track_event),
         new Map(String, Struct, entity_track_event),
         new Map(String, Struct, grid_track_event),
