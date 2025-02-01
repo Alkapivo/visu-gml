@@ -213,12 +213,12 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   })
   ///@description (set camera on middle bottom)
   this.view.x = (this.width - this.view.width) / 2.0
-	this.view.y = this.height - (this.view.height * 2.0)
+  this.view.y = this.height - this.view.height
 
   ///@type {Struct}
-  targetLocked = {
-    x: this.view.x,
-    y: this.view.y,
+  this.targetLocked = {
+    x: this.view.x + (this.view.width / 2.0),
+    y: this.view.y + (this.view.height / 2.0),
     isLockedX: false,
     isLockedY: false,
     setX: function(x) {
@@ -323,8 +323,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       this.view.y = this.height - this.view.height
       
       this.targetLocked = {
-        x: this.view.x,
-        y: this.view.y,
+        x: this.view.x + (this.view.width / 2.0),
+        y: this.view.y + (this.view.height / 2.0),
         isLockedX: false,
         isLockedY: false,
         setX: function(x) {
