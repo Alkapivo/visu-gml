@@ -90,6 +90,7 @@ function BulletService(_controller, config = {}): Service() constructor {
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 
@@ -142,15 +143,13 @@ function BulletService(_controller, config = {}): Service() constructor {
   ///@override
   ///@return {BulletService}
   update = function() { 
-    //if (controller.gameMode != this.gameMode) {
-    //  this.gameMode = this.controller.gameMode
-    //  this.bullets.forEach(this.updateGameMode, this.gameMode)
-    //}
+    if (controller.gameMode != this.gameMode) {
+      this.gameMode = this.controller.gameMode
+      this.bullets.forEach(this.updateGameMode, this.gameMode)
+    }
 
     this.dispatcher.update()
     this.bullets.forEach(this.updateBullet, this).runGC()
     return this
   }
-
-  this.send(new Event("reset-templates"))
 }

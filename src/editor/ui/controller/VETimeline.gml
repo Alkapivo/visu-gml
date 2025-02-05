@@ -1398,28 +1398,20 @@ function VETimeline(_editor) constructor {
             var tool = Beans.get(BeanVisuEditorController).store.getValue("tool")
             switch (tool) {
               case ToolType.SELECT:
-                if (cursor == Cursor.DEFAULT) {
-                  displayService.setCursor(Cursor.NONE)
-                  cursor_sprite = texture_ve_cursor_tool_select
-                }
+                displayService.setCursor(Cursor.NONE)
+                cursor_sprite = texture_ve_cursor_tool_select
                 break
               case ToolType.CLONE:
-                if (cursor == Cursor.DEFAULT) {
-                  displayService.setCursor(Cursor.NONE)
-                  cursor_sprite = texture_ve_cursor_tool_clone
-                }
+                displayService.setCursor(Cursor.NONE)
+                cursor_sprite = texture_ve_cursor_tool_clone
                 break
               case ToolType.BRUSH:
-                if (cursor == Cursor.DEFAULT) {
-                  displayService.setCursor(Cursor.NONE)
-                  cursor_sprite = texture_ve_cursor_tool_brush
-                }
+                displayService.setCursor(Cursor.NONE)
+                cursor_sprite = texture_ve_cursor_tool_brush
                 break
               case ToolType.ERASE:
-                if (cursor == Cursor.DEFAULT) {
-                  displayService.setCursor(Cursor.NONE)
-                  cursor_sprite = texture_ve_cursor_tool_erase
-                }
+                displayService.setCursor(Cursor.NONE)
+                cursor_sprite = texture_ve_cursor_tool_erase
                 break
             }
           } else {

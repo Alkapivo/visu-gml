@@ -120,6 +120,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 

@@ -498,10 +498,15 @@ function VisuProjectForm(json = null) constructor {
       visuTrack.video = null
     }
     
-    Beans.get(BeanVisuEditorController).autosave.save()
+    var editor = Beans.get(BeanVisuEditorController)
+    editor.autosave.save()
 
-    Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-      { message: $"Project '{track.name}' updated successfully at: '{path}'" }))
+    controller.send(new Event("load", {
+      manifest: $"{path}manifest.visu",
+      autoplay: false
+    }))
+
+    editor.projectModal.send(new Event("close"))
 
     return this
   }

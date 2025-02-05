@@ -82,7 +82,7 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   borderVerticalAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.borderVerticalAlpha", 1.0), Number)
+    .getDefault(config, "properties.borderVerticalAlpha", 0.0), Number)
 
   ///@type {Number}
   borderVerticalThickness = Assert.isType(Struct

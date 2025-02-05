@@ -116,10 +116,11 @@ function SubtitleService(config = null) constructor {
       this.executor.add(task)
     },
     "clear-subtitle": function(event) {
-      this.executor.tasks.clear()
+      this.executor.tasks.forEach(TaskUtil.fullfill).clear()
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 

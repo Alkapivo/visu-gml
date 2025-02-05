@@ -72,29 +72,18 @@ function VisuTrackLoader(_controller): Service() constructor {
 
             controller.trackService.dispatcher.execute(new Event("close-track"))
             controller.videoService.dispatcher.execute(new Event("close-video"))
+            
             controller.gridService.dispatcher.execute(new Event("clear-grid"))
+            controller.gridService.executor.tasks.forEach(TaskUtil.fullfill).clear()
+            controller.gridService.init()
+            
             controller.playerService.dispatcher.execute(new Event("clear-player"))
             controller.shroomService.dispatcher.execute(new Event("clear-shrooms")).execute(new Event("reset-templates"))
             controller.bulletService.dispatcher.execute(new Event("clear-bullets")).execute(new Event("reset-templates"))
             controller.coinService.dispatcher.execute(new Event("clear-coins")).execute(new Event("reset-templates"))
             controller.subtitleService.dispatcher.execute(new Event("clear-subtitle")).execute(new Event("reset-templates"))
+            
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
-            controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
-              if ((task.name == "fade-color" || task.name == "fade-sprite")
-                  && task.state.get("type") == type 
-                  && task.status != TaskStatus.FULLFILLED 
-                  && task.status != TaskStatus.REJECTED) {
-                task.fullfill()
-              }
-            }, WallpaperType.BACKGROUND)
-            controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
-              if ((task.name == "fade-color" || task.name == "fade-sprite")
-                  && task.state.get("type") == type 
-                  && task.status != TaskStatus.FULLFILLED 
-                  && task.status != TaskStatus.REJECTED) {
-                task.fullfill()
-              }
-            }, WallpaperType.FOREGROUND)
             controller.shaderPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
             controller.shaderBackgroundPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
             controller.shaderCombinedPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
@@ -600,6 +589,70 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState) {
             fsmState.state.set("cooldown-timer", new Timer(1.0))
+
+            var controller = Beans.get(BeanVisuController)
+            controller.executor.tasks.forEach(function(task) {
+              if (task.name != "fade-color" && task.name != "fade-sprite") {
+                return
+              }
+      
+              if (task.state.get("stage") == "fade-out") {
+                task.fullfill()
+                return
+              }
+              
+              task.state.set("stage", "fade-out")
+            })
+
+            var gridService = controller.gridService
+            var properties = gridService.properties
+            gridService.send(new Event("transform-property", {
+              key: "channelsPrimaryAlpha",
+              container: properties,
+              executor: gridService.executor,
+              transformer: new NumberTransformer({
+                value: properties.channelsPrimaryAlpha,
+                target: 0.0,
+                factor: 0.01,
+                increase: 0.0,
+              })
+            }))
+            
+            gridService.send(new Event("transform-property", {
+              key: "channelsSecondaryAlpha",
+              container: properties,
+              executor: gridService.executor,
+              transformer: new NumberTransformer({
+                value: properties.channelsSecondaryAlpha,
+                target: 0.0,
+                factor: 0.01,
+                increase: 0.0,
+              })
+            }))
+            
+            gridService.send(new Event("transform-property", {
+              key: "separatorsPrimaryAlpha",
+              container: properties,
+              executor: gridService.executor,
+              transformer: new NumberTransformer({
+                value: properties.separatorsPrimaryAlpha,
+                target: 0.0,
+                factor: 0.01,
+                increase: 0.0,
+              })
+            }))
+            
+            gridService.send(new Event("transform-property", {
+              key: "separatorsSecondaryAlpha",
+              container: properties,
+              executor: gridService.executor,
+              transformer: new NumberTransformer({
+                value: properties.separatorsSecondaryAlpha,
+                target: 0.0,
+                factor: 0.01,
+                increase: 0.0,
+              })
+            }))
           },
         },
         update: function(fsm) {

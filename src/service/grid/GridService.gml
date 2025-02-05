@@ -370,7 +370,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       .whenUpdate(function(executor) {
         var controller = Beans.get(BeanVisuController)
         controller.send(new Event("fade-sprite", {
-          sprite: SpriteUtil.parse({ name: "texture_hechan_3" }),
+          sprite: SpriteUtil.parse({ name: "texture_hechan_3", alpha: 0.8 }),
           collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
           type: WallpaperType.FOREGROUND,
           fadeInDuration: 0.5,

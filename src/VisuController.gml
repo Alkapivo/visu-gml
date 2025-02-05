@@ -424,7 +424,7 @@ function VisuController(layerName) constructor {
   })
 
   ///@type {ParticleService}
-  particleService = new ParticleService(this, { 
+  particleService = new ParticleService({ 
     layerName: layerName,
     getStaticTemplates: function() {
       return Visu.assets().particleTemplates

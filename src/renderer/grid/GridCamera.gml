@@ -16,7 +16,7 @@ function GridCamera(config = null) constructor {
 	angle = Struct.getIfType(config, "angle", Number, 270.0)
 
     ///@type {Number}
-	pitch = Struct.getIfType(config, "pitch", Number, 70.0)
+	pitch = Struct.getIfType(config, "pitch", Number, -60.0)
 
   ///@type {?GMMatrix}
   viewMatrix = null
@@ -34,11 +34,12 @@ function GridCamera(config = null) constructor {
 	moveSpeed = Struct.getIfType(config, "moveSpeed", Number, 16.0)
 
 	///@type {?GMCamera}
-	gmCamera = null
+	gmCamera = camera_create()
 
   ///@return {GMCamera}
   get = function() {
     if (!Core.isType(this.gmCamera, GMCamera)) {
+      Core.print("ddddddd")
       this.gmCamera = camera_create()
     }
 
@@ -55,8 +56,6 @@ function GridCamera(config = null) constructor {
     if (Core.isType(matrix, GMMatrix)) {
       this.viewMatrix = matrix
       camera_set_view_mat(this.gmCamera, matrix)
-    } else {
-      this.viewMatrix = null
     }
     
     return this
@@ -72,9 +71,8 @@ function GridCamera(config = null) constructor {
     if (Core.isType(matrix, GMMatrix)) {
       this.projectionMatrix = matrix
       camera_set_proj_mat(this.gmCamera, matrix)
-    } else {
-      this.projectionMatrix = null
     }
+
     return this
   }
 
