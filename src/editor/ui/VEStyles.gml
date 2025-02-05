@@ -219,20 +219,6 @@ function generateVEStyles() {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
     },
-    "category-button": {
-      backgroundColorSelected: VETheme.color.accent,
-      backgroundColor: VETheme.color.accentDark,
-      backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-      backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-      backgroundColorOff: ColorUtil.fromHex(VETheme.color.accentDark).toGMColor(),
-      colorHoverOver: VETheme.color.accentShadow,
-      colorHoverOut: VETheme.color.accentDark,
-      label: {
-        font: "font_inter_8_regular",
-        color: VETheme.color.textFocus,
-        align: { v: VAlign.CENTER, h: HAlign.CENTER },
-      },
-    },
     "type-button": {
       backgroundColorSelected: VETheme.color.accentShadow,
       backgroundColor: VETheme.color.primaryDark,

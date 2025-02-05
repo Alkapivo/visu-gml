@@ -211,7 +211,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("vertical-item"),
             config: {
-              backgroundMargin: { top: 1, bottom: 0, left: 1, right: 1 },
+              backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
               callback: function() { 
                 var category = this.context.brushToolbar.store.get("category")
                 if (category.get() != this.category) {
@@ -1022,129 +1022,125 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           backgroundAlpha: 1.0,
           state: new Map(String, any),
           updateCustom: function() {
-            try {
-              var editor = Beans.get(BeanVisuEditorController)
-              if (!Optional.is(editor)) {
-                return
-              }
-            
-              var events = editor.timeline.containers.get("ve-timeline-events")
-              if (!Optional.is(events)) {
-                return
-              }
+            var editor = Beans.get(BeanVisuEditorController)
+            var tool = editor.store.getValue("tool")
+            if (tool != this.state.get("tool")) {
+              this.state.set("brush-color", null)
+              this.state.set("brush-sprite-name", null)
+              this.state.set("brush-sprite", null)
+              editor.brushToolbar.store.get("brush-sprite").set(null)
+              this.state.set("tool", tool)
+            }
 
-              var initialized = events.state.get("initialized")
-              if (!initialized) {
-                return
-              }
-              
-              var tool = editor.store.getValue("tool")
-              if (tool != this.state.get("tool")) {
+            switch (tool) {
+              case ToolType.SELECT:
                 this.state.set("brush-color", null)
                 this.state.set("brush-sprite-name", null)
                 this.state.set("brush-sprite", null)
-                this.state.set("tool", tool)
-              }
-
-              switch (tool) {
-                case ToolType.SELECT:
+                editor.brushToolbar.store.get("brush-sprite").set(null)
+                break
+              case ToolType.ERASE:
+                this.state.set("brush-color", null)
+                this.state.set("brush-sprite-name", null)
+                this.state.set("brush-sprite", null)
+                editor.brushToolbar.store.get("brush-sprite").set(null)
+                break
+              case ToolType.BRUSH:
+                var brush = editor.brushToolbar.store.getValue("brush")
+                if (!Optional.is(brush)) {
                   this.state.set("brush-color", null)
                   this.state.set("brush-sprite-name", null)
                   this.state.set("brush-sprite", null)
+                  editor.brushToolbar.store.get("brush-sprite").set(null)
                   break
-                case ToolType.ERASE:
+                }
+          
+                var colorItem = brush.store.get("brush-color")
+                if (!Optional.is(colorItem)) {
                   this.state.set("brush-color", null)
                   this.state.set("brush-sprite-name", null)
                   this.state.set("brush-sprite", null)
+                  editor.brushToolbar.store.get("brush-sprite").set(null)
                   break
-                case ToolType.BRUSH:
-                  var brush = editor.brushToolbar.store.getValue("brush")
-                  if (!Optional.is(brush)) {
-                    this.state.set("brush-color", null)
-                    this.state.set("brush-sprite-name", null)
-                    this.state.set("brush-sprite", null)
-                    break
-                  }
-            
-                  var colorItem = brush.store.get("brush-color")
-                  if (!Optional.is(colorItem)) {
-                    this.state.set("brush-color", null)
-                    this.state.set("brush-sprite-name", null)
-                    this.state.set("brush-sprite", null)
-                    break
-                  }
-            
-                  var textureItem = brush.store.get("brush-texture")
-                  if (!Optional.is(textureItem)) {
-                    this.state.set("brush-color", null)
-                    this.state.set("brush-sprite-name", null)
-                    this.state.set("brush-sprite", null)
-                    break
-                  }
-            
-                  if (this.state.get("brush-color") == colorItem.get().toHex()
-                      && this.state.get("brush-sprite-name") == textureItem.get()) {
-                    break
-                  }
-
+                }
+          
+                var textureItem = brush.store.get("brush-texture")
+                if (!Optional.is(textureItem)) {
                   this.state.set("brush-color", null)
                   this.state.set("brush-sprite-name", null)
                   this.state.set("brush-sprite", null)
-            
-                  var sprite = SpriteUtil.parse({ name: textureItem.get() })
-                  sprite.setBlend(colorItem.get().toGMColor())
-            
-                  this.state.set("brush-color", colorItem.get().toHex())
-                  this.state.set("brush-sprite-name", textureItem.get())
-                  this.state.set("brush-sprite", sprite)
-            
+                  editor.brushToolbar.store.get("brush-sprite").set(null)
                   break
-                case ToolType.CLONE:
-                  var selectedEvent = editor.store.getValue("selected-event")
-                  if (!Optional.is(selectedEvent)) {
-                    this.state.set("brush-color", null)
-                    this.state.set("brush-sprite-name", null)
-                    this.state.set("brush-sprite", null)
-                    break
-                  }
-            
-                  var trackEvent = selectedEvent.data
-                  if (!Core.isType(trackEvent, TrackEvent)) {
-                    this.state.set("brush-color", null)
-                    this.state.set("brush-sprite-name", null)
-                    this.state.set("brush-sprite", null)
-                    break
-                  }
-            
-                  var icon = Struct.get(trackEvent.data, "icon")
-                  if (!Optional.is(icon)) {
-                    this.state.set("brush-color", null)
-                    this.state.set("brush-sprite-name", null)
-                    this.state.set("brush-sprite", null)
-                    break
-                  }
+                }
+          
+                if (this.state.get("brush-color") == colorItem.get().toHex()
+                    && this.state.get("brush-sprite-name") == textureItem.get()) {
+                  break
+                }
 
-                  if (this.state.get("brush-color") == Struct.get(icon, "blend")
-                      && this.state.get("brush-sprite-name") == Struct.get(icon, "name")) {
-                    break
-                  }
-                  
+                this.state.set("brush-color", null)
+                this.state.set("brush-sprite-name", null)
+                this.state.set("brush-sprite", null)
+                editor.brushToolbar.store.get("brush-sprite").set(null)
+          
+                var sprite = SpriteUtil.parse({ name: textureItem.get() })
+                sprite.setBlend(colorItem.get().toGMColor())
+                var brushSprite = SpriteUtil.parse({ name: textureItem.get()})
+                brushSprite.setBlend(colorItem.get().toGMColor())
+          
+                this.state.set("brush-color", colorItem.get().toHex())
+                this.state.set("brush-sprite-name", textureItem.get())
+                this.state.set("brush-sprite", sprite)
+                editor.brushToolbar.store.get("brush-sprite").set(brushSprite)
+          
+                break
+              case ToolType.CLONE:
+                var selectedEvent = editor.store.getValue("selected-event")
+                if (!Optional.is(selectedEvent)) {
                   this.state.set("brush-color", null)
                   this.state.set("brush-sprite-name", null)
                   this.state.set("brush-sprite", null)
-                  
-                  var sprite = SpriteUtil.parse(icon)
-
-                  this.state.set("brush-color", ColorUtil.fromGMColor(sprite.getBlend()).toHex())
-                  this.state.set("brush-sprite-name", sprite.getName())
-                  this.state.set("brush-sprite", sprite)
-                  
+                  editor.brushToolbar.store.get("brush-sprite").set(null)
                   break
-              }
-            } catch (exception) {
-              var message = $"exception!!!: {exception.message}"
-              Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-              Logger.error("VETrackControl", message)
+                }
+          
+                var trackEvent = selectedEvent.data
+                if (!Core.isType(trackEvent, TrackEvent)) {
+                  this.state.set("brush-color", null)
+                  this.state.set("brush-sprite-name", null)
+                  this.state.set("brush-sprite", null)
+                  editor.brushToolbar.store.get("brush-sprite").set(null)
+                  break
+                }
+          
+                var icon = Struct.get(trackEvent.data, "icon")
+                if (!Optional.is(icon)) {
+                  this.state.set("brush-color", null)
+                  this.state.set("brush-sprite-name", null)
+                  this.state.set("brush-sprite", null)
+                  editor.brushToolbar.store.get("brush-sprite").set(null)
+                  break
+                }
+
+                if (this.state.get("brush-color") == Struct.get(icon, "blend")
+                    && this.state.get("brush-sprite-name") == Struct.get(icon, "name")) {
+                  break
+                }
+                
+                this.state.set("brush-color", null)
+                this.state.set("brush-sprite-name", null)
+                this.state.set("brush-sprite", null)
+                editor.brushToolbar.store.get("brush-sprite").set(null)
+                
+                var sprite = SpriteUtil.parse(icon)
+                var brushSprite = SpriteUtil.parse(icon)
+
+                this.state.set("brush-color", ColorUtil.fromGMColor(sprite.getBlend()).toHex())
+                this.state.set("brush-sprite-name", sprite.getName())
+                this.state.set("brush-sprite", sprite)
+                editor.brushToolbar.store.get("brush-sprite").set(brushSprite)
+                
+                break
             }
           },
           render: function() {
@@ -1164,6 +1160,24 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             }
 
             return this
+          },
+          onMouseReleasedLeft: function() {
+            this.state.set("brush-color", null)
+            this.state.set("brush-sprite-name", null)
+            this.state.set("brush-sprite", null)
+
+            var store = Beans.get(BeanVisuEditorController).brushToolbar.store
+            if (Optional.is(store.getValue("template"))) {
+              store.get("template").set(null)
+            }
+
+            if (Optional.is(store.getValue("brush"))) {
+              store.get("brush").set(null)
+            }
+
+            if (Optional.is(store.getValue("brush-sprite"))) {
+              store.get("brush-sprite").set(null)
+            }
           },
         },
         "checkbox_ve-brush-toolbar_snap": {
@@ -1644,7 +1658,11 @@ function VEBrushToolbar(_editor) constructor {
     "brush": {
       type: Optional.of(VEBrush),
       value: null,
-    }
+    },
+    "brush-sprite": {
+      type: Optional.of(Sprite),
+      value: null,
+    },
   })
 
   ///@type {Map<String, Struct>}

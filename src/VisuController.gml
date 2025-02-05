@@ -767,19 +767,31 @@ function VisuController(layerName) constructor {
     var size = this.menu.containers.size()
     var editor = Beans.get(BeanVisuEditorController)
     if (Optional.is(editor)) {
-      if (editor.renderUI && cursor == Cursor.NONE) {
+      if (editor.renderUI && cursor == Cursor.NONE && cursor_sprite == -1) {
         displayService.setCursor(Cursor.DEFAULT)
       } else if (!editor.renderUI && size == 0 && cursor != Cursor.NONE) {
         displayService.setCursor(Cursor.NONE)
       } else if (!editor.renderUI && size > 0 && cursor == Cursor.NONE) {
         displayService.setCursor(Cursor.DEFAULT)
       }
+
+      if (!editor.renderUI && cursor_sprite != -1) {
+        cursor_sprite = -1
+      }
     } else {
+      if (cursor_sprite != -1) {
+        cursor_sprite = -1
+      }
+      
       if (size == 0 && cursor != Cursor.NONE) {
         displayService.setCursor(Cursor.NONE)
       } else if (size > 0 && cursor == Cursor.NONE) {
         displayService.setCursor(Cursor.DEFAULT)
       }
+    }
+
+    if (cursor_sprite != -1 && this.displayService.getCursor() != Cursor.NONE) {
+      cursor_sprite = -1
     }
 
     return this

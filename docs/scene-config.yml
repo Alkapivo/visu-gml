@@ -1,0 +1,252 @@
+Effect:
+  Shader:
+    ClearFrame: 
+      Enabled: <value>
+      Color: <value>
+    Background:
+      Enabled: <value>
+      ShaderTemplates: 
+        - Name: <value>
+          Duration: <value> 
+          Alpha: <value>
+          FadeIn: <value>
+          FadeOut: <value>
+          Uniforms:
+            - <name> <value>
+    Grid:
+      Enabled: <value>
+      ShaderTemplates: 
+        - Name: <value>
+          Duration: <value> 
+          Alpha: <value>
+          FadeIn: <value>
+          FadeOut: <value>
+          Uniforms:
+            - <name> <value>
+    Combined:
+      Enabled: <value>
+      ShaderTemplates: 
+        - Name: <value>
+          Duration: <value> 
+          Alpha: <value>
+          FadeIn: <value>
+          FadeOut: <value>
+          Uniforms:
+            - <name> <value>
+  Glitch: 
+    Enabled: <value>
+    Factor: <value>
+    Config: 
+      Line:
+        Speed: <value>
+        Shift: <value>
+        Resolution: <value>
+        V: shift <value>
+        Drift: <value>
+      Jumble:
+        Speed: <value>
+        Shift: <value>
+        Resolution: <value>
+        Chaos: <value>
+      Shader:
+        Dispersion: <value>
+        Channel shift: <value>
+        Noise level: <value>
+        Shakiness: <value>
+        Rng seed: <value>
+        Intensity: <value>
+  Particle:
+    Enabled: <value>
+    ParticleEmitters:
+      - ParticleTemplate: <value>
+        Amount: <value>
+        Duration: <value>
+        Interval: <value>
+        Area:
+          X: <value>
+          Y: <value>
+          W: <value>
+          H: <value>
+Entity:
+  Shroom:
+    Enabled: <value>
+    Amount: <value>
+    Z: <value>
+  Coin:
+    Enabled: <value>
+    Amount: <value>
+    Z: <value>
+  Player:
+    Enabled: <value>
+    Amount: <value>
+    Z: <value>
+  Bullet:
+    Enabled: <value>
+    Amount: <value>
+    Z: <value>
+Grid:
+  Enabled: <value>
+  BlendMode:
+    Source: <value>
+    Target: <value>
+    Equation: <value>
+  Z: <value>    
+  ClearFrame: 
+    Enabled: <value>
+    Color: <value>
+    Alpha: <value>
+  Area:
+    HorizontalBorder:
+      Length: <value>
+      Thickness: <value>
+      Alpha: <value>
+      Color: <value>
+    VerticalBorder:
+      Length: <value>
+      Thickness: <value>
+      Alpha: <value>
+      Color: <value>
+  Column:
+    RenderMode: <value>
+    Amount: <value>
+    Main:
+      Thickness: <value>
+      Alpha: <value>
+      Color: <value>
+    Side:
+      Thickness: <value>
+      Alpha: <value>
+      Color: <value>
+  Row:
+    RenderMode: <value>
+    Amount: <value>
+    Main:
+      Thickness: <value>
+      Alpha: <value>
+      Color: <value>
+    Side:
+      Thickness: <value>
+      Alpha: <value>
+      Color: <value>
+  Focus:
+    Enabled: <value>
+    BlendMode:
+      Source: <value>
+      Target: <value>
+      Equation: <value>
+    BlendColor: <value>
+    Treshold: <value>
+    Alpha: <value>
+View:
+  HUD: <value>
+  Camera:
+    Lock: 
+      X: <value>
+      Y: <value>
+    FollowPlayer: <value>
+    CameraPosition:
+      X: <value>
+      Y: <value>
+      Z: <value>
+      Angle: <value>
+      Pitch: <value>
+  Layer:
+    Background:
+      Colors:
+        - Color: <value>
+          Alpha: <value>
+          Layer: 
+            Lifespawn: <value>
+            FadeIn: <value>
+            FadeOut: <value>
+            BlendMode:
+              Source: <value>
+              Target: <value>
+              Equation: <value>
+      Textures:
+        - Texture:
+            Name: <value>
+            Speed: <value>
+            Frame: <value>
+            Alpha: <value>
+            BlendColor: <value>
+            Tiled: <value>
+          Movement:
+            Speed: <value>
+            Angle: <value>
+            Scale:
+              X: <value>
+              Y: <value>
+          Layer:
+            Lifespawn: <value>
+            FadeIn: <value>
+            FadeOut: <value>
+            BlendMode:
+              Source: <value>
+              Target: <value>
+              Equation: <value>
+    Foreground:
+      Colors:
+        - Color: <value>
+          Alpha: <value>
+          Layer: 
+            Lifespawn: <value>
+            FadeIn: <value>
+            FadeOut: <value>
+            BlendMode:
+              Source: <value>
+              Target: <value>
+              Equation: <value>
+      Textures:
+        - Texture:
+            Name: <value>
+            Speed: <value>
+            Frame: <value>
+            Alpha: <value>
+            BlendColor: <value>
+            Tiled: <value>
+          Movement:
+            Speed: <value>
+            Angle: <value>
+            Scale:
+              X: <value>
+              Y: <value>
+          Layer:
+            Lifespawn: <value>
+            FadeIn: <value>
+            FadeOut: <value>
+            BlendMode:
+              Source: <value>
+              Target: <value>
+              Equation: <value>
+  Subtitle:
+    Enabled: <value>
+    Subtitles:
+      - SubtitleTemplate: <value>
+        Lifespawn: <value>
+        Char speed: <value>
+        Fade in: <value>
+        Fade out: <value>
+        Wait after:
+          New line: <value>
+          Last line: <value>
+        Font:
+          Face: <value>
+          Spacing: <value>
+          Align:
+            X: <value>
+            Y: <value>
+          Color: <value>
+          Outline: <value>
+        SubtitleMovement:
+          Speed: <value>
+          Angle: <value>
+  Video:
+    Enabled: <value>
+    AfterBackground: <value>
+    BlendMode:
+      Source: <value>
+      Target: <value>
+      Equation: <value>
+    BlendColor: <value>
+    Alpha: <value>

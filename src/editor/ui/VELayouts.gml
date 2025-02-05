@@ -659,21 +659,21 @@ global.__VELayouts = new Map(String, Callable, {
             - 10 - 10 - 7 - this.margin.left - this.margin.right },
           margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 2 },
         },
-        decrease: {
-          name: "text-field-increase-checkbox.decrease",
+        increase: {
+          name: "text-field-increase-checkbox.increase",
           x: function() { return this.context.nodes.field.right() },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 0, right: 0 },
         },
-        increase: {
-          name: "text-field-increase-checkbox.increase",
-          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+        decrease: {
+          name: "text-field-increase-checkbox.decrease",
+          x: function() { return this.context.nodes.increase.right() + this.margin.left },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 2, right: 5 },
         },
         checkbox: {
           name: "text-field-increase-checkbox.checkbox",
-          x: function() { return this.context.nodes.increase.right() },
+          x: function() { return this.context.nodes.decrease.right() },
           width: function() { return 28 - this.margin.top - this.margin.bottom },
           margin: { top: 2, bottom: 2 },
         },
@@ -708,21 +708,21 @@ global.__VELayouts = new Map(String, Callable, {
             - 10 - 10 - 7 - this.margin.left - this.margin.right },
           margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 2 },
         },
-        decrease: {
-          name: "text-field-increase-stick-checkbox.decrease",
+        increase: {
+          name: "text-field-increase-stick-checkbox.increase",
           x: function() { return this.context.nodes.field.right() },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 0, right: 0 },
         },
-        increase: {
-          name: "text-field-increase-stick-checkbox.increase",
-          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+        decrease: {
+          name: "text-field-increase-stick-checkbox.decrease",
+          x: function() { return this.context.nodes.increase.right() + this.margin.left },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 2, right: 5 },
         },
         stick: {
           name: "text-field-increase-stick-checkbox.stick",
-          x: function() { return this.context.nodes.increase.right() + this.margin.left },
+          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
           width: function() { return 14 },
           margin: { top: 0, bottom: 0, left: 5, right: 7 },
         },
@@ -764,21 +764,21 @@ global.__VELayouts = new Map(String, Callable, {
             - 10 - 10 - 7 - this.margin.left - this.margin.right },
           margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 2 },
         },
-        decrease: {
-          name: "text-field-increase-stick-checkbox.decrease",
+        increase: {
+          name: "text-field-increase-stick-checkbox.increase",
           x: function() { return this.context.nodes.field.right() },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 0, right: 0 },
         },
-        increase: {
-          name: "text-field-increase-stick-checkbox.increase",
-          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+        decrease: {
+          name: "text-field-increase-stick-checkbox.decrease",
+          x: function() { return this.context.nodes.increase.right() + this.margin.left },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 2, right: 5 },
         },
         slider: {
           name: "text-field-increase-stick-checkbox.stick",
-          x: function() { return this.context.nodes.increase.right() + this.margin.left },
+          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
           width: function() { return 14 },
           margin: { top: 0, bottom: 0, left: 5, right: 7 },
         },
@@ -819,21 +819,21 @@ global.__VELayouts = new Map(String, Callable, {
             - 10 - 10 - 7 - this.margin.left - this.margin.right },
           margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 2 },
         },
-        decrease: {
-          name: "text-field-increase-slider-checkbox.decrease",
+        increase: {
+          name: "text-field-increase-slider-checkbox.increase",
           x: function() { return this.context.nodes.field.right() },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 0, right: 0 },
         },
-        increase: {
-          name: "text-field-increase-slider-checkbox.increase",
-          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+        decrease: {
+          name: "text-field-increase-slider-checkbox.decrease",
+          x: function() { return this.context.nodes.increase.right() + this.margin.left },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 2, right: 5 },
         },
         slider: {
           name: "text-field-increase-slider-checkbox.slider",
-          x: function() { return this.context.nodes.increase.right() + this.margin.left },
+          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
           width: function() { return 30 - this.margin.left - this.margin.right },
           margin: { top: 2, bottom: 2, left: 5, right: 10 },
         },
@@ -1075,22 +1075,22 @@ global.__VELayouts = new Map(String, Callable, {
             - 10 - 10 - 7 - this.margin.left - this.margin.right },
           margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 2 },
         },
-        decrease: {
-          name: "numeric-slider-increase-field.decrease",
+        increase: {
+          name: "numeric-slider-increase-field.increase",
           x: function() { return this.context.nodes.field.right() },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 0, right: 0 },
         },
-        increase: {
-          name: "numeric-slider-increase-field.increase",
-          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+        decrease: {
+          name: "numeric-slider-increase-field.decrease",
+          x: function() { return this.context.nodes.increase.right() + this.margin.left },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 2, right: 5 },
         },
         slider: {
           name: "numeric-slider-increase-field.slider",
-          x: function() { return this.context.nodes.increase.right() + this.margin.left },
-          width: function() { return this.context.width() - this.context.nodes.increase.right()
+          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+          width: function() { return this.context.width() - this.context.nodes.decrease.right()
             - this.margin.left - this.margin.right },
           margin: { top: 2, bottom: 2, right: 15, left: 12 },
         }
@@ -1118,21 +1118,21 @@ global.__VELayouts = new Map(String, Callable, {
             - 10 - 10 - 8 - 45 - this.margin.left - this.margin.right },
           margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 2 },
         },
-        decrease: {
-          name: "numeric-stick-increase-field.decrease",
+        increase: {
+          name: "numeric-stick-increase-field.increase",
           x: function() { return this.context.nodes.field.right() },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 0, right: 0 },
         },
-        increase: {
-          name: "numeric-stick-increase-field.increase",
-          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+        decrease: {
+          name: "numeric-stick-increase-field.decrease",
+          x: function() { return this.context.nodes.increase.right() + this.margin.left },
           width: function() { return 10 },
           margin: { top: 1.0000, bottom: 1.0000, left: 2, right: 5 },
         },
         slider: {
           name: "numeric-stick-increase-field.slider",
-          x: function() { return this.context.nodes.increase.right() + this.margin.left },
+          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
           width: function() { return 45 - this.margin.left - this.margin.right },
           margin: { top: 2, bottom: 2, right: 15, left: 10 },
         }

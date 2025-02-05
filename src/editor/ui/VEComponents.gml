@@ -1198,57 +1198,14 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIButton(
-        $"{name}_decrease", 
-        Struct.appendRecursive(
-          { 
-            factor: -1.0,
-            label: {
-              text: "-",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            },
-            backgroundColor: VETheme.color.button,
-            backgroundColorSelected: VETheme.color.buttonHover,
-            backgroundColorOut: VETheme.color.button,
-            layout: layout.nodes.decrease,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-              item.set(item.get() + factor)
-            },
-            onMouseHoverOver: function(event) {
-              
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-          },
-          Struct.get(config, "decrease"),
-          false
-        )
-      ),
-      UIButton(
         $"{name}_increase", 
         Struct.appendRecursive(
           { 
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_bold",
+              font: "font_inter_10_regular",
+              useScale: false,
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1282,6 +1239,51 @@ global.__VEComponents = new Map(String, Callable, {
             },
           },
           Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              useScale: false,
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              
+              if (Struct.get(this.enable, "value") == false) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
           false
         )
       ),
@@ -1351,57 +1353,14 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIButton(
-        $"{name}_decrease", 
-        Struct.appendRecursive(
-          { 
-            factor: -1.0,
-            label: {
-              text: "-",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            },
-            backgroundColor: VETheme.color.button,
-            backgroundColorSelected: VETheme.color.buttonHover,
-            backgroundColorOut: VETheme.color.button,
-            layout: layout.nodes.decrease,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-              item.set(item.get() + factor)
-            },
-            onMouseHoverOver: function(event) {
-              
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-          },
-          Struct.get(config, "decrease"),
-          false
-        )
-      ),
-      UIButton(
         $"{name}_increase", 
         Struct.appendRecursive(
           { 
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_bold",
+              font: "font_inter_10_regular",
+              useScale: false,
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1435,6 +1394,51 @@ global.__VEComponents = new Map(String, Callable, {
             },
           },
           Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              useScale: false,
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              
+              if (Struct.get(this.enable, "value") == false) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
           false
         )
       ),
@@ -3802,56 +3806,14 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIButton(
-        $"{name}_decrease", 
-        Struct.appendRecursive(
-          { 
-            factor: -1.0,
-            label: {
-              text: "-",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            },
-            backgroundColor: VETheme.color.button,
-            backgroundColorSelected: VETheme.color.buttonHover,
-            backgroundColorOut: VETheme.color.button,
-            layout: layout.nodes.decrease,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-              item.set(item.get() + factor)
-            },
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-          },
-          Struct.get(config, "decrease"),
-          false
-        )
-      ),
-      UIButton(
         $"{name}_increase", 
         Struct.appendRecursive(
           { 
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_bold",
+              font: "font_inter_10_regular",
+              useScale: false,
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -3885,6 +3847,50 @@ global.__VEComponents = new Map(String, Callable, {
             },
           },
           Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              useScale: false,
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Struct.get(this.enable, "value") == false) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
           false
         )
       ),
