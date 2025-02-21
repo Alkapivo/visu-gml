@@ -10,19 +10,19 @@ function GridProperties(config = {}) constructor {
   #region channels
   ///@type {Number}
   channels = Assert.isType(Struct
-    .getDefault(config, "properties.channels", 3), Number)
+    .getDefault(config, "properties.channels", 5), Number)
 
   ///@type {Color}
   channelsPrimaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.channelsPrimaryColor", "#023ef2")), Color)
+    .getDefault(config, "properties.channelsPrimaryColor", "#1aaaed")), Color)
 
   ///@type {Color}
   channelsSecondaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.channelsSecondaryColor", "#ff11bb")), Color)
+    .getDefault(config, "properties.channelsSecondaryColor", "#c94747")), Color)
 
   ///@type {Number}
   channelsPrimaryAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.channelsPrimaryAlpha", 0.9), Number)
+    .getDefault(config, "properties.channelsPrimaryAlpha", 0.8), Number)
 
   ///@type {Number}
   channelsSecondaryAlpha = Assert.isType(Struct
@@ -30,11 +30,11 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   channelsPrimaryThickness = Assert.isType(Struct
-      .getDefault(config, "properties.channelsPrimaryThickness", 10), Number)
+      .getDefault(config, "properties.channelsPrimaryThickness", 8), Number)
 
   ///@type {Number}
   channelsSecondaryThickness = Assert.isType(Struct
-    .getDefault(config, "properties.channelsSecondaryThickness", 10), Number)
+    .getDefault(config, "properties.channelsSecondaryThickness", 6), Number)
 
   ///@type {String}
   channelsMode = Assert.isType(Struct
@@ -48,11 +48,11 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Color}
   separatorsPrimaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.separatorsPrimaryColor ", "#023ef2")), Color)
+    .getDefault(config, "properties.separatorsPrimaryColor ", "#1aaaed")), Color)
 
   ///@type {Color}
   separatorsSecondaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.separatorsSecondaryColor ", "#4c47cc")), Color)
+    .getDefault(config, "properties.separatorsSecondaryColor ", "#c94747")), Color)
 
   ///@type {Number}
   separatorsPrimaryAlpha = Assert.isType(Struct
@@ -64,7 +64,7 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   separatorsPrimaryThickness = Assert.isType(Struct
-      .getDefault(config, "properties.separatorsPrimaryThickness", 6), Number)
+      .getDefault(config, "properties.separatorsPrimaryThickness", 8), Number)
 
   ///@type {Number}
   separatorsSecondaryThickness = Assert.isType(Struct

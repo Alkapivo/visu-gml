@@ -601,13 +601,15 @@ function VEProjectModal(_config = null) constructor {
                 48 + 640 + 24 + 24,
                 20 + (index * 32) + 16,
                 $"{color.toHex()}: {colorName}",
-                c_black,
-                c_white,
                 1.0,
+                0.0,
+                1.0,
+                c_black,
                 GPU_DEFAULT_FONT_BOLD,
                 HAlign.LEFT,
                 VAlign.CENTER,
-                1.0,
+                c_white,
+                1.0
               )
             }, this)
 

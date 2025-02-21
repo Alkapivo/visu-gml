@@ -96,15 +96,18 @@ function BulletService(_controller, config = {}): Service() constructor {
 
   ///@param {Event} event
   ///@return {?Promise}
-  send = function(event) {
+  static send = function(event) {
+    gml_pragma("forceinline")
     return this.dispatcher.send(event)
   }
 
-  updateGameMode = function(bullet, index, gameMode) {
+  static updateGameMode = function(bullet, index, gameMode) {
+    gml_pragma("forceinline")
     bullet.updateGameMode(gameMode)
   }
 
-  updateBullet = function(bullet, index, context) {
+  static updateBullet = function(bullet, index, context) {
+    gml_pragma("forceinline")
     bullet.update(context.controller)
     if (!bullet.signals.kill) {
       return

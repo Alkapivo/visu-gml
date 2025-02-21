@@ -1,5 +1,13 @@
 ///@package io.alkapivo.visu
 
+///@param {Struct} json
+function VisuSave(json) constructor {
+  
+  ///@type {String}
+  name = Assert.isType(Struct.get(json, "name"), String)
+}
+
+
 #macro BeanVisuController "VisuController"
 ///@param {String} layerName
 function VisuController(layerName) constructor {
@@ -13,6 +21,9 @@ function VisuController(layerName) constructor {
   ///@type {?VisuTrack}
   track = null
   
+  ///@type {?Sound}
+  ostSound = null
+
   ///@type {FSM}
   fsm = new FSM(this, {
     displayName: BeanVisuController,
@@ -21,12 +32,84 @@ function VisuController(layerName) constructor {
       "idle": {
         actions: {
           onStart: function(fsm, fsmState, data) {
+            var controller = Beans.get(BeanVisuController)
+            if (Optional.is(controller.ostSound)) {
+              controller.ostSound.stop()
+              controller.ostSound = null
+            }
+
             if (Core.isType(data, Event)) {
               fsm.context.send(data)
-            }            
+            }
+
+            fsmState.state.set("bkgColorTimer", new Timer(3.0, { loop: Infinity }))
+          },
+          onFinish: function(fsm, fsmState, data) {
+            var controller = Beans.get(BeanVisuController)
+            if (Optional.is(controller.ostSound)) {
+              controller.ostSound.stop()
+              controller.ostSound = null
+            }
           },
         },
-        update: function(fsm) { },
+        update: function(fsm) {
+          var controller = Beans.get(BeanVisuController)
+          if (!Optional.is(controller.ostSound)) {
+            var sound = SoundUtil.fetch("sound_QW1waGV0YW1pbmU", { loop: true })
+            controller.ostSound = Core.isType(sound, Sound)
+              ? sound 
+              : controller.ostSound
+          } else {
+            var ostVolume = Visu.settings.getValue("visu.audio.ost-volume")
+            if (!controller.ostSound.isLoaded()) {
+              controller.ostSound.play(0.0).rewind(random(60.0)).setVolume(ostVolume, 2.0)
+            } else if (controller.ostSound.isPaused()) {
+              controller.ostSound.resume().setVolume(ostVolume, 2.0)
+            } else if (controller.ostSound.isPlaying()
+                && ostVolume != controller.ostSound.getVolume()) {
+              controller.ostSound.setVolume(ostVolume, 2.0)
+            }
+          }
+
+          var bkgColorTimer = this.state.get("bkgColorTimer")
+          if (bkgColorTimer.update().finished) {
+            var controller = Beans.get(BeanVisuController)
+            var gridService = controller.gridService
+            var properties = gridService.properties
+            var pump = controller.dispatcher
+            var executor = controller.executor
+
+            bkgColorTimer.setDuration(4.0 + random(12.0))
+            var color = ColorUtil.parse(GMArray.getRandom([
+              "#000000",
+              "#160e24",
+              "#6e0d27",
+              "#c21772",
+              "#5d2985", 
+              "#c4146c",
+              "#1d6296",
+              "#4550e6",
+              "#d62ce6",
+              "#1082c9",
+              "#1c070a",
+              "#160b24"
+            ]))
+            Visu.resolveColorTransformerTrackEvent(
+              {
+                use: true,
+                col: color,
+                spd: bkgColorTimer.duration * 0.9,
+              }, 
+              "use",
+              "col",
+              "spd",
+              "gridClearColor",
+              properties,
+              pump,
+              executor
+            )
+          }
+        },
         transitions: { 
           "idle": null, 
           "game-over": null,
@@ -75,6 +158,11 @@ function VisuController(layerName) constructor {
             }))
             fsmState.state.set("autoplay", Struct.getDefault(data, "autoplay", false))
             
+            if (Optional.is(controller.ostSound)) {
+              controller.ostSound.stop()
+              controller.ostSound = null
+            }
+
             audio_stop_all()
             Beans.get(BeanSoundService).free()
             Beans.get(BeanTextureService).free()
@@ -542,7 +630,12 @@ function VisuController(layerName) constructor {
         
         Logger.info("VisuController", $"Track finished at {this.trackService.time}")
         this.watchdogPromise = this.send(new Event("pause").setPromise(new Promise()))
-        this.menu.send(this.menu.factoryOpenMainMenuEvent())
+        this.menu.send(this.menu.factoryOpenMainMenuEvent({ disableResume: true }))
+      }
+
+      if (this.fsm.getStateName() != "idle" && Optional.is(this.ostSound)) {
+        this.ostSound.stop()
+        this.ostSound = null
       }
     } catch (exception) {
       var message = $"'watchdog' fatal error: {exception.message}"
@@ -623,7 +716,9 @@ function VisuController(layerName) constructor {
         .get(event.data.callable), Callable)
       callable(event.data.data)
     },
+    "transform-property": Callable.run(Struct.get(EVENT_DISPATCHERS, "transform-property")),
     "fade-sprite": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-sprite")),
+    "fade-color": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-color")),
   }), {
     enableLogger: true,
     catchException: false,
@@ -671,6 +766,42 @@ function VisuController(layerName) constructor {
   ///@private
   ///@return {VisuController}
   init = function() {
+    /*
+    FileUtil.listDirectory($"{game_save_id}save", "*.visu-save.json").forEach(function(path, index) {
+      Core.print(index, "|", path)
+    })
+
+    if (!FileUtil.directoryExists($"{game_save_id}save")) {
+      Core.print("create directory:", $"{game_save_id}save")
+      FileUtil.createDirectory($"{game_save_id}save")
+
+      FileUtil.writeFileSync(new File({ 
+        path: $"{game_save_id}save/1.visu-save.json",
+        data: JSON.stringify({
+          version:"1",
+          model:"io.alkapivo.visu.VisuSave",
+          data: {
+            name: "player 1",
+          },
+        }, { pretty: true })
+      }))
+      
+      FileUtil.writeFileSync(new File({ 
+        path: $"{game_save_id}save/2.visu-save.json",
+        data: JSON.stringify({
+          version:"1",
+          model:"io.alkapivo.visu.VisuSave",
+          data: {
+            name: "player 2",
+          },
+        }, { pretty: true })
+      }))
+    }
+    FileUtil.listDirectory($"{game_save_id}save", "*.visu-save.json").forEach(function(path, index) {
+      Core.print(index, ":", path)
+    })
+    */
+
     this.displayService.setCaption(game_display_name)
     Core.debugOverlay(Assert.isType(Visu.settings.getValue("visu.debug", false), Boolean))
     var fullscreen = Assert.isType(Visu.settings.getValue("visu.fullscreen", false), Boolean)
@@ -738,7 +869,7 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   updateUIService = function() {
     try {
-      if (this.displayService.state == "resized") {
+      if (this.displayService.state == "resized") { 
         ///@description reset UI timers after resize to avoid ghost effect
         this.uiService.containers.forEach(this.resetUITimer)
 
@@ -825,7 +956,6 @@ function VisuController(layerName) constructor {
     }
     this.visuRenderer.update()
     this.watchdog()
-  
     return this
   }
 
@@ -876,12 +1006,13 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   onSceneEnter = function() {
     Logger.info("VisuController", "onSceneEnter")
+    audio_stop_all()
     VideoUtil.runGC()
     if (Core.getProperty("visu.manifest.load-on-start", false)) {
       var task = new Task("load-manifest")
         .setTimeout(3.0)
         .setState({
-          cooldown: new Timer(1.0),
+          cooldown: new Timer(1.8),
           event: new Event("load", {
             manifest: FileUtil.get(Core.getProperty("visu.manifest.path")),
             autoplay: Assert.isType(Core.getProperty("visu.manifest.play-on-start", false), Boolean),
@@ -896,7 +1027,21 @@ function VisuController(layerName) constructor {
       
       this.executor.add(task)
     } else {
-      this.menu.send(this.menu.factoryOpenMainMenuEvent())
+      var event = this.menu.factoryOpenMainMenuEvent()
+      var task = new Task("load-manifest")
+        .setTimeout(3.0)
+        .setState({
+          cooldown: new Timer(1.5),
+          event: event,
+        })
+        .whenUpdate(function() {
+          if (this.state.cooldown.update().finished) {
+            Beans.get(BeanVisuController).menu.send(this.state.event)
+            this.fullfill()
+          }
+        })
+      
+      this.executor.add(task)
     }
     
     return this
@@ -905,6 +1050,7 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   onSceneLeave = function() {
     Logger.info("VisuController", "onSceneLeave")
+    audio_stop_all()
     VideoUtil.runGC()
     return this
   }

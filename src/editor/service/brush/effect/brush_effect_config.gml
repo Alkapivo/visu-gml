@@ -479,7 +479,7 @@ function brush_effect_config(json) {
           stick: {
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: 0.001,
+            factor: NUMBER_STICK_FACTOR_3,
           },
           checkbox: { },
         },
@@ -510,17 +510,17 @@ function brush_effect_config(json) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
-              factor: -0.01,
+              factor: -0.1,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
-              factor: 0.01,
+              factor: 0.1,
             },
             stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
-              factor: 0.01,
+              factor: NUMBER_STICK_FACTOR_2,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -544,17 +544,17 @@ function brush_effect_config(json) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha"},
-              factor: -0.01,
+              factor: -0.1,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.01,
+              factor: 0.1,
             },
             stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.01,
+              factor: NUMBER_STICK_FACTOR_2,
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
@@ -578,17 +578,17 @@ function brush_effect_config(json) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: -0.01,
+              factor: -0.1,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.01,
+              factor: 0.1,
             },
             stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.001,
+              factor: NUMBER_STICK_FACTOR_2,
             },
           },
           increase: {
@@ -603,17 +603,17 @@ function brush_effect_config(json) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.001,
+              factor: 0.1,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.001,
+              factor: 0.1,
             },
             stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.0001,
+              factor: NUMBER_STICK_FACTOR_2,
             },
           },
         },

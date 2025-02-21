@@ -370,16 +370,66 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       .whenUpdate(function(executor) {
         var controller = Beans.get(BeanVisuController)
         controller.send(new Event("fade-sprite", {
-          sprite: SpriteUtil.parse({ name: "texture_hechan_3", alpha: 0.8 }),
+          sprite: SpriteUtil.parse({
+            name: "texture_hechan_3_abstract",
+            alpha: 0.8,
+            blend: "#FF00EE",
+          }),
+          collection: controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds,
+          type: WallpaperType.BACKGROUND,
+          fadeInDuration: 1.5,
+          fadeOutDuration: 1.5,
+          angle: 90.0,
+          speed: 30.0,
+          blendModeSource: BlendModeExt.SRC_ALPHA,
+          blendModeTarget: BlendModeExt.INV_SRC_ALPHA,
+          blendEquation: BlendEquation.ADD,
+          blendEquationAlpha: BlendEquation.ADD,
+          executor: executor,
+          tiled: true,
+          replace: true,
+        }))
+
+        controller.send(new Event("fade-sprite", {
+          sprite: SpriteUtil.parse({
+            name: "texture_hechan_3_background",
+            alpha: 1.0,
+            blend: "#FFFFFF",
+          }),
+          collection: controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds,
+          type: WallpaperType.BACKGROUND,
+          fadeInDuration: 1.5,
+          fadeOutDuration: 1.5,
+          angle: 180.0,
+          speed: 1.25,
+          blendModeSource: BlendModeExt.SRC_ALPHA,
+          blendModeTarget: BlendModeExt.ONE,
+          blendEquation: BlendEquation.ADD,
+          blendEquationAlpha: BlendEquation.ADD,
+          executor: executor,
+          tiled: true,
+          replace: true,
+        }))
+
+        controller.send(new Event("fade-sprite", {
+          sprite: SpriteUtil.parse({
+            name: "texture_hechan_3",
+            alpha: 0.9,
+            blend: "#FFFFFF",
+          }),
           collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
           type: WallpaperType.FOREGROUND,
           fadeInDuration: 0.5,
           fadeOutDuration: 0.5,
-          angle: 3,
-          speed: 0.25,
+          angle: 0,
+          speed: 0.15,
           blendModeSource: BlendModeExt.SRC_ALPHA,
           blendModeTarget: BlendModeExt.ONE,
+          blendEquation: BlendEquation.ADD,
+          blendEquationAlpha: BlendEquation.ADD,
           executor: executor,
+          tiled: true,
+          replace: true,
         }))
         this.fullfill()
       })

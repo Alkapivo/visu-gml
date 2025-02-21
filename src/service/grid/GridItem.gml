@@ -61,13 +61,15 @@ function GridItemSignals() constructor {
   ///@param {String} key
   ///@param {any} value
   ///@return {GridItemSignals}
-  set = function(key, value) {
+  static set = function(key, value) {
+    gml_pragma("forceinline")
     Struct.set(this, key, value)
     return this
   }
 
   ///@return {GridItemSignals}
-  reset = function() {
+  static reset = function() {
+    gml_pragma("forceinline")
     //this.kill = false
     this.damage = false
     this.bulletCollision = null
@@ -142,6 +144,7 @@ function GridItem(config = {}) constructor {
   ///@param {Number} angle
   ///@return {GridItem}
   static setAngle = function(angle) {
+    gml_pragma("forceinline")
     this.angle = angle
     return this
   }
@@ -149,6 +152,7 @@ function GridItem(config = {}) constructor {
   ///@param {Number} speed
   ///@return {GridItem}
   static setSpeed = function(speed) {
+    gml_pragma("forceinline")
     if (speed > 0) {
       this.speed = speed
     }
@@ -158,6 +162,7 @@ function GridItem(config = {}) constructor {
   ///@param {Sprite} sprite
   ///@return {GridItem}
   static setSprite = function(sprite) {
+    gml_pragma("forceinline")
     this.sprite = sprite
     return this
   }
@@ -165,6 +170,7 @@ function GridItem(config = {}) constructor {
   ///@param {Rectangle} mask
   ///@return {GridItem}
   static setMask = function(mask) {
+    gml_pragma("forceinline")
     this.mask = mask
     return this
   }
@@ -172,6 +178,7 @@ function GridItem(config = {}) constructor {
   ///@param {GameMode} mode
   ///@return {GridItem}
   static updateGameMode = function(mode) {
+    gml_pragma("forceinline")
     this.gameMode = this.gameModes.get(mode)
     this.gameMode.onStart(this, Beans.get(BeanVisuController))
     return this
@@ -180,14 +187,16 @@ function GridItem(config = {}) constructor {
   ///@param {any} name
   ///@param {any} [value]
   ///@return {GridItem}
-  static signal = function(name, value = true) { 
+  static signal = function(name, value = true) {
+    gml_pragma("forceinline")
     this.signals.set(name, value)
     return this
   }
 
   ///@param {GridItem} target
   ///@return {Bollean} collide?
-  static collide = function(target) { 
+  static collide = function(target) {
+    gml_pragma("forceinline")
     var halfSourceWidth = (this.mask.z * this.sprite.scaleX) / 2.0
     var halfSourceHeight = (this.mask.a * this.sprite.scaleY) / 2.0
     var halfTargetWidth = (target.mask.z * target.sprite.scaleX) / 2.0
@@ -207,6 +216,7 @@ function GridItem(config = {}) constructor {
   ///@param {VisuController} controller
   ///@return {GridItem}
   static move = function() {
+    gml_pragma("forceinline")
     this.signals.reset()
     this.x += Math.fetchCircleX(DeltaTime.apply(this.speed), this.angle)
     this.y += Math.fetchCircleY(DeltaTime.apply(this.speed), this.angle)
@@ -216,6 +226,7 @@ function GridItem(config = {}) constructor {
   ///@param {VisuController} controller
   ///@return {GridItem}
   static update = function(controller) { 
+    gml_pragma("forceinline")
     if (this.gameMode != null) {
       gameMode.update(this, controller)
     }

@@ -7,16 +7,16 @@ function GridCamera(config = null) constructor {
 	x = Struct.getIfType(config, "x", Number, 4096)
 
   ///@type {Number}
-	y = Struct.getIfType(config, "y", Number, 5356)
+	y = Struct.getIfType(config, "y", Number, 6656)
 
   ///@type {Number}
-	z = Struct.getIfType(config, "z", Number, 5000)
+	z = Struct.getIfType(config, "z", Number, 3840)
 
   ///@type {Number}
 	angle = Struct.getIfType(config, "angle", Number, 270.0)
 
     ///@type {Number}
-	pitch = Struct.getIfType(config, "pitch", Number, -60.0)
+	pitch = Struct.getIfType(config, "pitch", Number, -32.5)
 
   ///@type {?GMMatrix}
   viewMatrix = null

@@ -1,5 +1,11 @@
 ///@package io.alkapivo.visu.editor.ui
 
+#macro NUMBER_STICK_FACTOR_1 0.1
+#macro NUMBER_STICK_FACTOR_2 0.01
+#macro NUMBER_STICK_FACTOR_3 0.001
+#macro NUMBER_STICK_FACTOR_4 0.0001
+#macro NUMBER_STICK_FACTOR_5 0.00001
+
 ///@static
 ///@type {Struct}
 global.__VEComponentsUtil = {
@@ -215,7 +221,8 @@ global.__VEComponentsUtil = {
       ///@return {Struct}
       numberStick: function(config = null) {
         return Struct.appendRecursive({
-          factor: 0.01,
+          factor: 1.0,
+          step: 5,
           value: 0.25,
           minValue: 0.0,
           maxValue: 0.5,
@@ -267,7 +274,8 @@ global.__VEComponentsUtil = {
 
             var deltaX = distanceX - this.mouseX
             var deltaY = distanceY - this.mouseY
-            var distance = abs(deltaX) > abs(deltaY) ? deltaX : deltaY
+            var delta = abs(deltaX) > abs(deltaY) ? deltaX : deltaY
+            var distance = round(delta / this.step) * this.step
 
             this.base = Optional.is(this.base) ? this.base : this.store.getValue()
             this.value = this.base + (distance * this.factor)
@@ -577,7 +585,7 @@ global.__VEComponents = new Map(String, Callable, {
               layout: layout.nodes.label,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             },
-            VEStyles.get("text-field-button").label,
+            VEStyles.get("label").label,
             false
           ),
           Struct.get(config, "label"),
@@ -1049,7 +1057,7 @@ global.__VEComponents = new Map(String, Callable, {
               layout: layout.nodes.field,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
             },
-            VEStyles.get("text-field"),
+            VEStyles.get("text-field").field,
             false
           ),
           Struct.get(config, "field"),
@@ -1073,7 +1081,7 @@ global.__VEComponents = new Map(String, Callable, {
               layout: layout.nodes.field,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
             },
-            VEStyles.get("text-field-simple"),
+            VEStyles.get("text-field-simple").field,
             false
           ),
           Struct.get(config, "field"),
@@ -1097,7 +1105,7 @@ global.__VEComponents = new Map(String, Callable, {
               layout: layout.nodes.field,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
             },
-            VEStyles.get("text-area"),
+            VEStyles.get("text-area").field,
             false
           ),
           Struct.get(config, "field"),
@@ -3742,7 +3750,7 @@ global.__VEComponents = new Map(String, Callable, {
               layout: layout.nodes.field,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
             },
-            VEStyles.get("text-field"),
+            VEStyles.get("text-field").field,
             false
           ),
           Struct.get(config, "field"),
@@ -3798,7 +3806,7 @@ global.__VEComponents = new Map(String, Callable, {
               layout: layout.nodes.field,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
             },
-            VEStyles.get("text-field"),
+            VEStyles.get("text-field").field,
             false
           ),
           Struct.get(config, "field"),

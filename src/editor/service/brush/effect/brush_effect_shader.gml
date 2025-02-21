@@ -52,7 +52,7 @@ function brush_effect_shader(json) {
         type: String,
         value: JSON.stringify(Struct.get(json, "ef-shd_merge-cfg"), { pretty: true }),
         serialize: UIUtil.serialize.getStringStruct(),
-        validate: UIUtil.validate.getStringStruct(),
+        passthrough: UIUtil.passthrough.getStringStruct(),
       },
     }),
     components: new Array(Struct, [

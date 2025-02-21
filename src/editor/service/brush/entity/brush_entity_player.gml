@@ -30,7 +30,7 @@ function brush_entity_player(json = null) {
         type: String,
         value: JSON.stringify(Struct.get(json, "en-pl_stats"), { pretty: true }),
         serialize: UIUtil.serialize.getStringStruct(),
-        validate: UIUtil.validate.getStringStruct(),
+        passthrough: UIUtil.passthrough.getStringStruct(),
       },
       "en-pl_use-bullethell": {
         type: Boolean,
@@ -40,7 +40,7 @@ function brush_entity_player(json = null) {
         type: String,
         value: JSON.stringify(Struct.get(json, "en-pl_bullethell"), { pretty: true }),
         serialize: UIUtil.serialize.getStringStruct(),
-        validate: UIUtil.validate.getStringStruct(),
+        passthrough: UIUtil.passthrough.getStringStruct(),
       },
       "en-pl_use-platformer": {
         type: Boolean,
@@ -50,7 +50,7 @@ function brush_entity_player(json = null) {
         type: String,
         value: JSON.stringify(Struct.get(json, "en-pl_platformer"), { pretty: true }),
         serialize: UIUtil.serialize.getStringStruct(),
-        validate: UIUtil.validate.getStringStruct(),
+        passthrough: UIUtil.passthrough.getStringStruct(),
       },
       "en-pl_use-racing": {
         type: Boolean,
@@ -60,7 +60,7 @@ function brush_entity_player(json = null) {
         type: String,
         value: JSON.stringify(Struct.get(json, "en-pl_racing"), { pretty: true }),
         serialize: UIUtil.serialize.getStringStruct(),
-        validate: UIUtil.validate.getStringStruct(),
+        passthrough: UIUtil.passthrough.getStringStruct(),
       },
     }),
     components: new Array(Struct, [

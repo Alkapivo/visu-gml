@@ -549,6 +549,18 @@ function _Visu() constructor {
       "asset": texture_white,
       "file": ""
     },
+    "texture_hechan_3": {
+      "asset": texture_hechan_3,
+      "file": "",
+    },
+    "texture_hechan_3_background": {
+      "asset": texture_hechan_3_background,
+      "file": "",
+    },
+    "texture_hechan_3_abstract": {
+      "asset": texture_hechan_3_abstract,
+      "file": "",
+    },
   } 
 
   ///@return {Struct}

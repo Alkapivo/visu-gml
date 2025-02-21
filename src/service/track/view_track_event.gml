@@ -19,7 +19,7 @@ global.__view_track_event = {
         "vw-cam_follow-smooth": Struct.parse.number(data, "vw-cam_follow-smooth", 32.0, 1.0, 256.0),
         "vw-cam_use-follow-smooth": Struct.parse.boolean(data, "vw-cam_use-follow-smooth"),
         "vw-cam_use-x": Struct.parse.boolean(data, "vw-cam_use-x"),
-        "vw-cam_x": Struct.parse.numberTransformer(data, "vm-cam_x", {
+        "vw-cam_x": Struct.parse.numberTransformer(data, "vw-cam_x", {
           value: 4096.0,
           clampValue: { from: 0.0, to: 99999.9 },
           clampTarget: { from: 0.0, to: 99999.9 },

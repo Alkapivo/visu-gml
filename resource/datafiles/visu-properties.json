@@ -5,7 +5,7 @@
   "visu.editor.update-services": true,
   "visu.editor.renderEditorMode": false,
   "visu.editor.renderUI": false,
-  "visu.editor.status-bar.render-average-fps": true,
+  "visu.editor.status-bar.render-real-fps": true,
   "visu.editor.ui.brush-toolbar.brush-view.updateTimer": 60.0,
   "visu.editor.ui.brush-toolbar.inspector-view.updateTimer": 60.0,
   "visu.editor.ui.event-inspector.properties.updateTimer": 60.0,

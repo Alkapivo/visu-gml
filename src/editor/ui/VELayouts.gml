@@ -306,7 +306,7 @@ global.__VELayouts = new Map(String, Callable, {
           width: function() { return this.context.width() - this.margin.left - this.margin.right },
           margin: Struct.get(config, "margin"),
         },
-      }
+      },
     }
   },
 
@@ -548,7 +548,7 @@ global.__VELayouts = new Map(String, Callable, {
             - this.margin.left - this.margin.right },
           height: function() { return this.context.height() 
             - this.margin.top - this.margin.bottom },
-          margin: { top: 1.0000, bottom: 1.0000, left: 5, right: 1 },
+          margin: { top: 1.0000, bottom: 2, left: 5, right: 1 },
         },
         button: {
           name: "text-field-button-channel.button",

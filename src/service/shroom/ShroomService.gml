@@ -126,15 +126,18 @@ function ShroomService(_controller, config = {}): Service() constructor {
 
   ///@param {Event} event
   ///@return {?Promise}
-  send = function(event) {
+  static send = function(event) {
+    gml_pragma("forceinline")
     return this.dispatcher.send(event)
   }
 
-  updateGameMode = function(shroom, index, gameMode) {
+  static updateGameMode = function(shroom, index, gameMode) {
+    gml_pragma("forceinline")
     shroom.updateGameMode(gameMode)
   }
 
-  updateShroom = function(shroom, index, context) {
+  static updateShroom = function(shroom, index, context) {
+    gml_pragma("forceinline")
     shroom.update(context.controller)
     if (shroom.signals.kill) {
       context.shrooms.addToGC(index)

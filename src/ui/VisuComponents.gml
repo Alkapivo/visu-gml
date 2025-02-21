@@ -161,10 +161,10 @@ global.__VisuComponents = new Map(String, Callable, {
             { 
               increment: -1,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accentLight).toGMColor())
+                this.sprite.setBlend(ColorUtil.fromHex("#ffffff").toGMColor())
               },
               onMouseHoverOut: function(event) {
-                this.sprite.setBlend(c_white)
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.textFocus).toGMColor())
               },            
             },
             Struct.get(config, "previous"), 
@@ -191,10 +191,10 @@ global.__VisuComponents = new Map(String, Callable, {
             { 
               increment: 1,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accentLight).toGMColor())
+                this.sprite.setBlend(ColorUtil.fromHex("#ffffff").toGMColor())
               },
               onMouseHoverOut: function(event) {
-                this.sprite.setBlend(c_white)
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.textFocus).toGMColor())
               },            
             },
             Struct.get(config, "next"),

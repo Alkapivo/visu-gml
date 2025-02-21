@@ -76,6 +76,7 @@ function Shroom(template): GridItem(template) constructor {
   ///@param {VisuController} controller
   ///@return {Shroom}
   static update = function(controller) {
+    gml_pragma("forceinline")
     if (Optional.is(this.gameMode)) {
       gameMode.update(this, controller)
     }
@@ -93,10 +94,7 @@ function Shroom(template): GridItem(template) constructor {
   }
 
   this.gameModes
-    .set(GameMode.RACING, ShroomRacingGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "racing", {})))
-    .set(GameMode.BULLETHELL, ShroomBulletHellGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
-    .set(GameMode.PLATFORMER, ShroomPlatformerGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "platformer", {})))
+    .set(GameMode.BULLETHELL, ShroomBulletHellGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
+    //.set(GameMode.RACING, ShroomRacingGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "racing", {})))
+    //.set(GameMode.PLATFORMER, ShroomPlatformerGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "platformer", {})))
 }

@@ -291,6 +291,7 @@ function Bullet(template): GridItem(template) constructor {
   ///@param {VisuController} controller
   ///@return {Bullet}
   static update = function(controller) {
+    gml_pragma("forceinline")
     var componentAngle = 0.0
     var componentSpeed = 0.0
 

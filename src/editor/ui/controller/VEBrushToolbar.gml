@@ -952,7 +952,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                this.area.getWidth(),
+                this.area.getHeight()
               )
             }
 
@@ -962,7 +964,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                this.area.getWidth(),
+                this.area.getHeight()
               )
               this.label.text = text
             }
@@ -1728,7 +1732,7 @@ function VEBrushToolbar(_editor) constructor {
           "category": {
             name: "brush-toolbar.category",
             x: function() { return this.context.x() - this.width() - 1 },
-            width: function() { return 24 },
+            width: function() { return 20 },
             height: function() { return 420 },
           },
           "type": {

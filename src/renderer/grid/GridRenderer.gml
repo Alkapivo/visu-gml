@@ -1009,7 +1009,7 @@ function GridRenderer() constructor {
     var properties = gridService.properties
     var width = layout.width()
     var height = layout.height()
-    GPU.render.clear(c_black, 0.0)
+    GPU.render.clear(properties.gridClearColor, 0.0)
 
     switch (properties.renderVideoAfter) {
       case true:
@@ -1674,12 +1674,15 @@ function GridRenderer() constructor {
         configX + _x,
         configY + _y,
         string(length),
-        c_white,
-        c_black,
         1.0,
+        0.0,
+        1.0,
+        c_white,
         this.playerHintFont, 
         HAlign.CENTER,
-        VAlign.CENTER
+        VAlign.CENTER,
+        c_black,
+        1.0
       )
     }
 

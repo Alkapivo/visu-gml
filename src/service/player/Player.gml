@@ -578,6 +578,7 @@ function Player(template): GridItem(template) constructor {
   ///@override
   ///@return {GridItem}
   static update = function(controller) {
+    gml_pragma("forceinline")
     this.keyboard.update()
     
     if (Optional.is(this.gameMode)) {
@@ -627,10 +628,7 @@ function Player(template): GridItem(template) constructor {
   }
 
   this.gameModes
-    .set(GameMode.RACING, PlayerRacingGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "racing", {})))
-    .set(GameMode.BULLETHELL, PlayerBulletHellGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
-    .set(GameMode.PLATFORMER, PlayerPlatformerGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "platformer", {})))
+    .set(GameMode.BULLETHELL, PlayerBulletHellGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
+    //.set(GameMode.RACING, PlayerRacingGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "racing", {})))
+    //.set(GameMode.PLATFORMER, PlayerPlatformerGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "platformer", {})))
 }

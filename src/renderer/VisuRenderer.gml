@@ -47,15 +47,18 @@ function VisuRenderer() constructor {
 
   ///@private
   ///@type {Timer}
-  initTimer = new Timer(0.35)
+  initTimer = new Timer(1.5)
+
+  ///@type {Timer}
+  fadeTimer = new Timer(0.33)
 
   ///@private
   ///@type {NumberTransformer}
   blur = new NumberTransformer({
     value: 0.0,
-    target: 32.0,
-    factor: 0.5,
-    increase: 0.005,
+    target: 24.0,
+    factor: 0.3,
+    increase: 0.002,
   })
 
   ///@private
@@ -128,7 +131,20 @@ function VisuRenderer() constructor {
     var editor = Beans.get(BeanVisuEditorController)
     if (Optional.is(editor)) {
       editor.uiService.containers.forEach(function(container, index) {
-        GPU.render.text(60, 60 + (24 * index), $"#{index}: {container.name}", c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
+        GPU.render.text(
+          60,
+          60 + (24 * index),
+          $"#{index}: {container.name}",
+          1.0,
+          0.0,
+          1.0,
+          c_lime,
+          GPU_DEFAULT_FONT_BOLD,
+          HAlign.LEFT,
+          VAlign.TOP,
+          c_black,
+          1.0
+        )  
       })
     }
     */
@@ -160,7 +176,20 @@ function VisuRenderer() constructor {
         + this.renderGUITimer.getMessage() + "\n"
         + $"Sum: {timeSum}ms" + "\n"
         + $"Avg: {gridService.avgTime.get()}ms" + "\n"
-      GPU.render.text(32, 32, text, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
+      GPU.render.text(
+        32,
+        32,
+        text,
+        1.0,
+        0.0,
+        1.0,
+        c_lime,
+        GPU_DEFAULT_FONT_BOLD,
+        HAlign.LEFT,
+        VAlign.TOP,
+        c_black,
+        1.0
+      )
     }
 
     var gridCamera = this.gridRenderer.camera
@@ -175,7 +204,20 @@ function VisuRenderer() constructor {
     }
     
     if (gridCameraMessage != "") {
-      GPU.render.text(32, GuiHeight() - 32, gridCameraMessage, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(
+        32,
+        GuiHeight() - 32,
+        gridCameraMessage,
+        1.0,
+        0.0,
+        1.0,
+        c_lime,
+        GPU_DEFAULT_FONT_BOLD,
+        HAlign.LEFT,
+        VAlign.BOTTOM,
+        c_black,
+        1.0
+      )
     }
 
     return this
@@ -196,9 +238,8 @@ function VisuRenderer() constructor {
 
   ///@return {VisuRenderer}
   update = function() {
-    if (!this.initTimer.finished) {
-      this.initTimer.update()
-    }
+    this.initTimer.update()
+    this.fadeTimer.update()
 
     var editor = Beans.get(BeanVisuEditorController)
     var _layout = editor == null ? this.layout : editor.layout.nodes.preview
@@ -243,7 +284,20 @@ function VisuRenderer() constructor {
         var xStart = _width * (1.0 - 0.061)
         var yStart = _height * (1.0 - 0.08)
         var text = "EDITOR MODE [F5]"
-        GPU.render.text(_x + xStart, _y + yStart, text, c_white, c_lime, 0.6, this.font, HAlign.RIGHT, VAlign.BOTTOM, 8.0) 
+        GPU.render.text(
+          _x + xStart,
+          _y + yStart,
+          text,
+          1.0,
+          0.0,
+          0.6,
+          c_white,
+          this.font,
+          HAlign.RIGHT,
+          VAlign.BOTTOM,
+          c_lime,
+          8.0
+        ) 
       }
       this.dialogueRenderer.render()
     } else {
@@ -267,7 +321,23 @@ function VisuRenderer() constructor {
     this.renderDebugGUI()
 
     if (!this.initTimer.finished) {
-      GPU.render.clear(c_black, 1.0)
+      GPU.render.rectangle(
+        0, 0, 
+        GuiWidth(), GuiHeight(), 
+        false, 
+        c_black, c_black, c_black, c_black, 
+        clamp(this.initTimer.duration - this.initTimer.time, 0.0, 1.0)
+      )
+    }
+
+    if (!this.fadeTimer.finished) {
+      GPU.render.rectangle(
+        0, 0, 
+        GuiWidth(), GuiHeight(), 
+        false, 
+        c_black, c_black, c_black, c_black, 
+        clamp(this.fadeTimer.duration - this.fadeTimer.time, 0.0, 1.0)
+      )
     }
 
     return this

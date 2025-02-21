@@ -425,7 +425,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-form": {
         name: "ve-timeline-form",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
@@ -448,7 +448,7 @@ function VETimeline(_editor) constructor {
                   button: { 
                     label: { 
                       text: "Add",
-                      font: "font_inter_10_bold",
+                      font: "font_inter_8_bold",
                     },
                     onMouseHoverOver: function(event) {
                       this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -1188,7 +1188,8 @@ function VETimeline(_editor) constructor {
             color: VETheme.color.textFocus,
             align: { v: VAlign.CENTER, h: HAlign.CENTER },
             outline: true,
-            outlineColor: "#000000"
+            outlineColor: "#000000",
+            useScale: false,
           })
 
           //render previous
@@ -1220,7 +1221,7 @@ function VETimeline(_editor) constructor {
           //render timestamp
           label.render(
             16 + this.offset.x + min(previousX, nextX) + (abs(previousX - nextX) / 2),
-            16 + this.offset.y + eventY
+            16 + this.offset.y + eventY,
           )
         }),
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
@@ -1427,6 +1428,7 @@ function VETimeline(_editor) constructor {
           this.renderDefaultScrollable()
         },
         onInit: function() {
+          this.deselect()
           this.scrollbarY = null
           this.lastIndex = 0
           this.state.set("amount", 0)
@@ -2550,9 +2552,9 @@ function VETimeline(_editor) constructor {
           var color = this.state.get("color")
           var textColor = this.state.get("textColor")
           var height = this.area.getHeight()
-          draw_set_font(font_inter_8_bold)
-          draw_set_halign(HAlign.LEFT)
-          draw_set_valign(VAlign.BOTTOM)
+          GPU.set.font(font_inter_8_bold)
+          GPU.set.align.h(HAlign.LEFT)
+          GPU.set.align.v(VAlign.BOTTOM)
           for (var index = 0; index < viewSize; index++) {
             var _beginX = beginX + (spd * index * stepSize)
             draw_line_color(
