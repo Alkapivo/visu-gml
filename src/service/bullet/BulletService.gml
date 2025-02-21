@@ -59,7 +59,7 @@ function BulletService(_controller, config = {}): Service() constructor {
     "spawn-bullet": function(event, dispatcher) {
       var template = new BulletTemplate(event.data.template, this
         .getTemplate(event.data.template)
-        /*.serialize()*/)
+        .serialize())
         
       Struct.set(template, "x", event.data.x)
       Struct.set(template, "y", event.data.y)

@@ -830,7 +830,7 @@ function VisuController(layerName) constructor {
       .set("menu-use-entry", new SFX("sound_sfx_shroom_damage"), 1)
     
 
-    if (Core.getProperty("visu.server.enable", false)) {
+    if (Visu.settings.getValue("visu.server.enable", false)) {
       this.server.run()
     }
     return this

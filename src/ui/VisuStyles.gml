@@ -24,6 +24,20 @@ global.__VisuStyles = new Map(String, Callable, {
       backgroundAlpha: 0.75,
     },
   },
+  "menu-label-entry": {
+    label: {
+      align: { v: VAlign.CENTER, h: HAlign.CENTER },
+      font: "font_kodeo_mono_18_bold",
+      color: VETheme.color.text,
+      //offset: { x: 24 },
+      enableColorWrite: false,
+      //backgroundColor: VETheme.color.side,
+      colorHoverOver: VETheme.color.accentLight,
+      colorHoverOut: VETheme.color.accentShadow,
+      backgroundMargin: { top: 6, left: 6, bottom: 6, right: 6 },
+      backgroundAlpha: 0.01,
+    },
+  },
   "menu-button-input-entry": {
     label: {
       align: { v: VAlign.CENTER, h: HAlign.LEFT },

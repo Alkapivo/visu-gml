@@ -72,7 +72,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
       var view = this.controller.gridService.view
       var template = new ShroomTemplate(event.data.template, this
         .getTemplate(event.data.template)
-        /*.serialize()*/)
+        .serialize())
       
       /*
       var spawnX = Assert.isType(Struct
