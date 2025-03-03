@@ -296,6 +296,8 @@ function VisuMenu(_config = null) constructor {
         quit: this.factoryConfirmationDialog,
         titleLabel: "VISU Project",
         disableResume: false,
+        isTrackLoaded: Beans.get(BeanVisuController).trackService.isTrackLoaded(),
+        stateName: Beans.get(BeanVisuController).fsm.getStateName(),
       }
     )
 
@@ -313,27 +315,6 @@ function VisuMenu(_config = null) constructor {
         },
       },
       content: new Array(Struct, [
-        {
-          name: "main-menu_menu-button-entry_play",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "Play",
-              callback: new BindIntent(function() {
-                var controller = Beans.get(BeanVisuController)
-                var menu = controller.menu
-                menu.send(menu.factoryOpenVisuMenuNode("root.artists"))
-                controller.sfxService.play("menu-select-entry")
-              }),
-              callbackData: config,
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            },
-          }
-        },
         {
           name: "main-menu_menu-button-entry_settings",
           template: VisuComponents.get("menu-button-entry"),
@@ -377,8 +358,31 @@ function VisuMenu(_config = null) constructor {
       ])
     })
 
-    if (!config.disableResume && Beans.get(BeanVisuController).trackService.isTrackLoaded()
-      && Beans.get(BeanVisuController).fsm.getStateName() != "game-over") {
+    if (!config.isTrackLoaded && config.stateName != "game-over") {
+      event.data.content.add({
+        name: "main-menu_menu-button-entry_play",
+        template: VisuComponents.get("menu-button-entry"),
+        layout: VisuLayouts.get("menu-button-entry"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Play",
+            callback: new BindIntent(function() {
+              var controller = Beans.get(BeanVisuController)
+              var menu = controller.menu
+              menu.send(menu.factoryOpenVisuMenuNode("root.artists"))
+              controller.sfxService.play("menu-select-entry")
+            }),
+            callbackData: config,
+            onMouseReleasedLeft: function() {
+              this.callback()
+            },
+          },
+        }
+      }, 0)
+    }
+
+    if (!config.disableResume && config.isTrackLoaded && config.stateName != "game-over") {
       event.data.content.add({
         name: "main-menu_menu-button-entry_resume",
         template: VisuComponents.get("menu-button-entry"),
@@ -400,7 +404,7 @@ function VisuMenu(_config = null) constructor {
       }, 0)
     }
 
-    if (Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
+    if (config.isTrackLoaded) {
       event.data.content.add({
         name: "main-menu_menu-button-entry_retry",
         template: VisuComponents.get("menu-button-entry"),
@@ -2678,7 +2682,7 @@ function VisuMenu(_config = null) constructor {
             config: {
               label: { 
                 //text: $"github.com/Alkapivo | v.{GM_build_date} | {date_datetime_string(GM_build_date)}",
-                text: $"v.{GM_build_date} | Baron Dungeon 2025 (c)",
+                text: $"v.{GM_build_date} | Dungeon of Baron 2025 (c)",
                 font: "font_kodeo_mono_12_bold",
               },
             },
