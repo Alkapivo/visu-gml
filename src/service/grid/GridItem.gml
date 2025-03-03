@@ -81,6 +81,8 @@ function GridItemSignals() constructor {
   }
 }
 
+global.__GRID_ITEM_DEFAULT_SPRITE = { name: "texture_missing" }
+#macro GRID_ITEM_DEFAULT_SPRITE global.__GRID_ITEM_DEFAULT_SPRITE
 
 ///@interface
 ///@param {Struct} [config]
@@ -91,37 +93,35 @@ function GridItem(config = {}) constructor {
   uid = Assert.isType(config.uid, String, "GridItem.uid must be type of String")
 
   ///@type {Number}
-  x = Assert.isType(Struct.get(config, "x"), Number)
+  x = Assert.isType(Struct.get(config, "x"), Number, "GridItem.x must be type of Number")
 
   ///@type {Number}
-  y = Assert.isType(Struct.get(config, "y"), Number)
+  y = Assert.isType(Struct.get(config, "y"), Number, "GridItem.y must be type of Number")
 
   ///@type {Number}
-  z = Assert.isType(Struct.getDefault(config, "z", 0), Number)
+  z = Struct.getIfType(config, "z", Number, 0.0)
 
   ///@type {Sprite}
-  sprite = SpriteUtil.parse(Struct.get(config, "sprite"), { 
-    name: "texture_missing"
-  })
+  sprite = SpriteUtil.parse(Struct.get(config, "sprite"), GRID_ITEM_DEFAULT_SPRITE)
 
   ///@type {Rectangle}
-  mask = Core.isType(Struct.get(config, "mask"), Struct)
-    ? new Rectangle(config.mask)
-    : new Rectangle({ 
+  mask = new Rectangle(Optional.is(Struct.get(config, "mask"))
+    ? config.mask
+    : { 
       x: 0, 
       y: 0, 
       width: this.sprite.getWidth(), 
       height: this.sprite.getHeight()
-  })
+    })
 
   ///@type {Number}
-  speed = Assert.isType(Struct.getDefault(config, "speed", 0), Number)
+  speed = Struct.getIfType(config, "speed", Number, 0.0)
 
   ///@type {Number}
-  angle = Assert.isType(Struct.getDefault(config, "angle", 0), Number)
+  angle = Struct.getIfType(config, "angle", Number, 0.0)
 
   ///@type {Number}
-  lifespawn = Assert.isType(Struct.getDefault(config, "lifespawn", 0), Number)
+  lifespawn = Struct.getIfType(config, "lifespawn", Number, 0.0)
 
   ///@type {GridItemSignals}
   signals = new GridItemSignals()

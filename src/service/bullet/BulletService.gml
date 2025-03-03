@@ -54,6 +54,9 @@ function BulletService(_controller, config = {}): Service() constructor {
       : template
   }
 
+  ///@param {Boolean}
+  optimalizationSortEntitiesByTxGroup = false
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-bullet": function(event, dispatcher) {
@@ -80,7 +83,7 @@ function BulletService(_controller, config = {}): Service() constructor {
 
       this.bullets.add(bullet)
 
-      if (Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")) {
+      if (this.optimalizationSortEntitiesByTxGroup) {
         this.controller.gridService.textureGroups.sortItems(this.bullets)
       }
     },
@@ -143,9 +146,9 @@ function BulletService(_controller, config = {}): Service() constructor {
     }
   }
 
-  ///@override
   ///@return {BulletService}
   update = function() { 
+    this.optimalizationSortEntitiesByTxGroup = Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")
     if (controller.gameMode != this.gameMode) {
       this.gameMode = this.controller.gameMode
       this.bullets.forEach(this.updateGameMode, this.gameMode)

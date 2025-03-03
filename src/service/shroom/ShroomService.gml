@@ -66,6 +66,9 @@ function ShroomService(_controller, config = {}): Service() constructor {
       : template
   }
 
+  ///@param {Boolean}
+  optimalizationSortEntitiesByTxGroup = false
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-shroom": function(event) {
@@ -110,7 +113,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
       this.shrooms.add(shroom)
       this.chunkService.add(shroom)
 
-      if (Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")) {
+      if (this.optimalizationSortEntitiesByTxGroup) {
         this.controller.gridService.textureGroups.sortItems(this.shrooms)
       }
     },
@@ -147,6 +150,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
 
   ///@return {ShroomService}
   update = function() {
+    this.optimalizationSortEntitiesByTxGroup = Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")
     if (controller.gameMode != this.gameMode) {
       this.gameMode = this.controller.gameMode
       this.shrooms.forEach(this.updateGameMode, this.gameMode)
