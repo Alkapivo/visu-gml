@@ -31,7 +31,7 @@ function VETimeline(_editor) constructor {
   ///@return {ChunkService}
   factoryChunkService = function() {
     return new ChunkService(this, {
-      step: 15,
+      step: 30,
       fetchKey: function(timestamp) {
         var from = timestamp div this.step * this.step
         var to = from + this.step
@@ -1008,28 +1008,6 @@ function VETimeline(_editor) constructor {
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
           var store = Beans.get(BeanVisuEditorController).store
-          //if ((mouse_check_button(mb_right) && !keyboard_check(vk_control))
-          //    || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
-          if ((mouse_check_button(mb_right))
-              || (mouse_check_button(mb_left) 
-              && store.getValue("tool") == ToolType.ERASE)) {
-            var mouseX = device_mouse_x_to_gui(0)
-            var mouseY = device_mouse_y_to_gui(0)
-            var areaX = this.area.getX()
-            var areaY = this.area.getY()
-            var areaWidth = this.area.getWidth()
-            var areaHeight = this.area.getHeight()
-            if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
-              this.finishUpdateTimer()
-              this.items.forEach(this.itemMouseEraseEvent, { 
-                data: {
-                  x: mouseX, 
-                  y: mouseY, 
-                  store: store,
-                },
-              })
-            }
-          }
 
           //if (mouse_check_button(mb_right) && keyboard_check(vk_control)) {
           //  var mouseX = device_mouse_x_to_gui(0)
@@ -1084,6 +1062,28 @@ function VETimeline(_editor) constructor {
           this.state.set("speed", spd)
           this.state.set("position", position)
 
+          //if ((mouse_check_button(mb_right) && !keyboard_check(vk_control))
+          //    || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
+          if ((mouse_check_button(mb_right))
+              || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
+            var mouseX = device_mouse_x_to_gui(0)
+            var mouseY = device_mouse_y_to_gui(0)
+            var areaX = this.area.getX()
+            var areaY = this.area.getY()
+            var areaWidth = this.area.getWidth()
+            var areaHeight = this.area.getHeight()
+            if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+              this.finishUpdateTimer()
+              this.items.forEach(this.itemMouseEraseEvent, { 
+                data: {
+                  x: mouseX, 
+                  y: mouseY, 
+                  store: store,
+                },
+              })
+            }
+          }
+
           ///@todo refactor
           if (this.state.get("initialized") == false) {
             var initializeChannels = this.state.get("initializeChannels")
@@ -1118,7 +1118,40 @@ function VETimeline(_editor) constructor {
 
             this.state.set("initialized", true)
           }
-        }, 
+        },
+        update: function() {
+          if (this.enableScrollbarY && Struct.get(this.scrollbarY, "isDragEvent")) {
+            if (mouse_check_button(mb_left) ///@todo button should be a parameter
+              && Optional.is(Struct.get(this, "onMousePressedLeft"))) {
+              this.onMousePressedLeft(new Event("MouseOnLeft", { 
+                x: MouseUtil.getMouseX(), 
+                y: MouseUtil.getMouseY(),
+              }))
+            } else {
+              Struct.set(scrollbarY, "isDragEvent", false)
+            }
+          }
+
+          if (Optional.is(this.updateCustom)) {
+            this.updateCustom()
+          }
+
+          if (Optional.is(this.updateArea)) {
+            if (Optional.is(this.updateTimer)) {
+              if (this.updateTimer.update().finished) {
+                this.updateArea()
+                if (Optional.is(this.updateItems)) {
+                  this.updateItems()
+                }
+              }
+            } else {
+              this.updateArea()
+              if (Optional.is(this.updateItems)) {
+                this.updateItems()
+              }
+            }
+          }
+        },
         renderClipboard: new BindIntent(function() {
           var dropEvent = Beans.get(BeanVisuEditorIO).mouse.getClipboard()
           if (!Optional.is(dropEvent)) {
