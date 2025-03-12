@@ -33,6 +33,9 @@ function VisuController(layerName) constructor {
         actions: {
           onStart: function(fsm, fsmState, data) {
             var controller = Beans.get(BeanVisuController)
+            controller.visuRenderer.gridRenderer.camera.breathTimer1.reset()
+            controller.visuRenderer.gridRenderer.camera.breathTimer2.reset()
+
             if (Optional.is(controller.ostSound)) {
               controller.ostSound.stop()
               controller.ostSound = null
@@ -42,10 +45,15 @@ function VisuController(layerName) constructor {
               fsm.context.send(data)
             }
 
-            fsmState.state.set("bkgColorTimer", new Timer(3.0, { loop: Infinity }))
+            fsmState.state.set("bkgTimer", new Timer(4.0 + random(12.0), { loop: Infinity }))
+            fsmState.state.set("bkgColorTimer", new Timer(4.0 + random(12.0), { loop: Infinity }))
+            fsmState.state.set("glitchTimer", new Timer(4.0 + random(12.0), { loop: Infinity }))
           },
           onFinish: function(fsm, fsmState, data) {
             var controller = Beans.get(BeanVisuController)
+            controller.visuRenderer.gridRenderer.camera.breathTimer1.reset()
+            controller.visuRenderer.gridRenderer.camera.breathTimer2.reset()
+
             if (Optional.is(controller.ostSound)) {
               controller.ostSound.stop()
               controller.ostSound = null
@@ -54,6 +62,7 @@ function VisuController(layerName) constructor {
         },
         update: function(fsm) {
           var controller = Beans.get(BeanVisuController)
+          var gridService = controller.gridService
           if (!Optional.is(controller.ostSound)) {
             var sound = SoundUtil.fetch("sound_QW1waGV0YW1pbmU", { loop: true })
             controller.ostSound = Core.isType(sound, Sound)
@@ -70,16 +79,19 @@ function VisuController(layerName) constructor {
               controller.ostSound.setVolume(ostVolume, 2.0)
             }
           }
+  
+          var bkgTimer = this.state.get("bkgTimer")
+          if (bkgTimer.update().finished) {
+            bkgTimer.setDuration(4.0 + random(12.0))
+            gridService.init()
+          }
 
           var bkgColorTimer = this.state.get("bkgColorTimer")
           if (bkgColorTimer.update().finished) {
-            var controller = Beans.get(BeanVisuController)
-            var gridService = controller.gridService
+            bkgColorTimer.setDuration(4.0 + random(12.0))
             var properties = gridService.properties
             var pump = controller.dispatcher
             var executor = controller.executor
-
-            bkgColorTimer.setDuration(4.0 + random(12.0))
             var color = ColorUtil.parse(GMArray.getRandom([
               "#000000",
               "#160e24",
@@ -109,6 +121,20 @@ function VisuController(layerName) constructor {
               executor
             )
           }
+
+          var glitchTimer = this.state.get("glitchTimer")
+          if (glitchTimer.update().finished) {
+            glitchTimer.setDuration(4.0 + random(12.0))
+            controller.visuRenderer.hudRenderer.sendGlitchEvent()
+            effect_track_event.brush_effect_glitch.run({
+              "ef-glt_use-config":false,
+              "ef-glt_use-fade-out":true,
+              "ef-glt_fade-out": 0.02 + random(1.0) * 0.08,
+            })
+          }
+
+          controller.visuRenderer.gridRenderer.camera.breathTimer1.update()
+          controller.visuRenderer.gridRenderer.camera.breathTimer2.update()
         },
         transitions: { 
           "idle": null, 
@@ -195,21 +221,22 @@ function VisuController(layerName) constructor {
       "play": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            Beans.get(BeanVisuController).menu.send(new Event("close", { fade: true }))
+            var controller = Beans.get(BeanVisuController)
+            controller.visuRenderer.gridRenderer.camera.breathTimer1.reset()
+            controller.visuRenderer.gridRenderer.camera.breathTimer2.reset()
+            controller.menu.send(new Event("close", { fade: true }))
 
             var promises = new Map(String, Promise, {})
-
-            if (Optional.is(fsm.context.videoService.video)) {
-              promises.set("video", fsm.context.videoService
-                .send(new Event("resume-video")))
-            }
-
             fsmState.state.set("promises", promises)
 
+            var videoService = controller.videoService
+            if (Optional.is(videoService.video)) {
+              promises.set("video", videoService.send(new Event("resume-video")))
+            }
+
             ///@hack
-            var trackService = fsm.context.trackService
-            if (trackService.isTrackLoaded()
-              && !trackService.track.audio.isLoaded()) {
+            var trackService = controller.trackService
+            if (trackService.isTrackLoaded() && !trackService.track.audio.isLoaded()) {
               trackService.time = 0.0
             }
           },

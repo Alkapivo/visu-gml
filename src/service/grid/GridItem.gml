@@ -105,14 +105,14 @@ function GridItem(config = {}) constructor {
   sprite = SpriteUtil.parse(Struct.get(config, "sprite"), GRID_ITEM_DEFAULT_SPRITE)
 
   ///@type {Rectangle}
-  mask = new Rectangle(Optional.is(Struct.get(config, "mask"))
-    ? config.mask
-    : { 
+  mask = Core.isType(Struct.get(config, "mask"), Struct)
+    ? new Rectangle(config.mask)
+    : new Rectangle({ 
       x: 0, 
       y: 0, 
       width: this.sprite.getWidth(), 
       height: this.sprite.getHeight()
-    })
+  })
 
   ///@type {Number}
   speed = Struct.getIfType(config, "speed", Number, 0.0)

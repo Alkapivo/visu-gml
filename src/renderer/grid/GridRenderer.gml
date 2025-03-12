@@ -303,7 +303,7 @@ function GridRenderer() constructor {
           var beginY = -6.0 * GRID_SERVICE_PIXEL_HEIGHT
           var endX = beginX
           var endY = (viewHeight + 6.0) * GRID_SERVICE_PIXEL_HEIGHT
-          if (index < indexLeft) {
+          if (index <= indexLeft) {
             GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha * clamp((index - (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), primaryColor, this.textureLine)
           } else if (index > indexRight) {
             GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha * clamp((size - index + (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), primaryColor, this.textureLine)
@@ -479,6 +479,11 @@ function GridRenderer() constructor {
       return this
     }
 
+    var alpha = player.sprite.getAlpha()
+    var angle = player.sprite.getAngle()
+    var scaleX = player.sprite.getScaleX()
+    var scaleY = player.sprite.getScaleY()
+    var scaleFactor = clamp(player.stats.godModeCooldown, 1.0, 10.0)
     var useBlendAsZ = false
     if (useBlendAsZ) {
       shader_set(shader_gml_use_blend_as_z)
@@ -486,28 +491,40 @@ function GridRenderer() constructor {
       var _x = (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH)  - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH
       var _y = (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT)  - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       var blend = player.sprite.getBlend()
-      var alpha = player.sprite.getAlpha()
-      var angle = player.sprite.getAngle()
       player.sprite
-        .setBlend((sin(this.playerZTimer.update().time) * 0.5 + 0.5) * 255     )
+        .setBlend((sin(this.playerZTimer.update().time) * 0.5 + 0.5) * 255)
         .setAlpha(alpha * ((cos(player.stats.godModeCooldown * 15.0) + 2.0) / 3.0) * player.fadeIn)
-        .setAngle(angle - 90.0)
+        .setAngle(angle - 90.0 - (360.0 * player.stats.godModeCooldown))
+        .setScaleX(scaleX * scaleFactor)
+        .setScaleY(scaleY * scaleFactor)
         .render(_x, _y)
         .setBlend(blend)
         .setAlpha(alpha)
         .setAngle(angle)
+        .setScaleX(scaleX)
+        .setScaleY(scaleY)
       shader_reset()
     } else {
       var _x = (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
       var _y = (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      var alpha = player.sprite.getAlpha()
-      var angle = player.sprite.getAngle()
+
+      var _swing = (sin(this.playerZTimer.update().time * 6.66) + 1.0) / 5.0
+      var _scaleX = scaleFactor + (0.33 + _swing) * (player.sprite.getWidth() * player.sprite.getScaleX()) / sprite_get_width(texture_particle)
+      var _scaleY = scaleFactor + (0.33 + _swing) * (player.sprite.getHeight() * player.sprite.getScaleY()) / sprite_get_height(texture_particle)
+      var _alpha = 1.0 * alpha * player.fadeIn * 0.9
+      if (_alpha > 0 && player.sprite.texture.asset != texture_empty) {
+        draw_sprite_ext(texture_player_shadow, 0, _x, _y, _scaleX, _scaleY, 0.0, this.playerShadowColor.toGMColor(), _alpha)
+      }
       player.sprite
         .setAlpha(alpha * ((cos(player.stats.godModeCooldown * 15.0) + 2.0) / 3.0) * player.fadeIn)
-        .setAngle(angle - 90.0)
+        .setAngle(angle - 90.0 - (360.0 * player.stats.godModeCooldown))
+        .setScaleX(scaleX * scaleFactor)
+        .setScaleY(scaleY * scaleFactor)
         .render(_x, _y)
         .setAlpha(alpha)
         .setAngle(angle)
+        .setScaleX(scaleX)
+        .setScaleY(scaleY)
       this.player2DCoords = Math.project3DCoordsOn2D(_x + baseX, _y + baseY, gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
     }
     
@@ -1038,11 +1055,12 @@ function GridRenderer() constructor {
     if (!Visu.settings.getValue("visu.graphics.particle")) {
       return this
     }
+
     var depths = properties.depths
     var camera = this.camera
     var gmCamera = camera.get()
-    var cameraAngle = camera.angle
-    var cameraPitch = camera.pitch
+    var cameraAngle = camera.angle + (sin(camera.breathTimer2.time) * BREATH_TIMER_FACTOR_2)
+    var cameraPitch = camera.pitch + (sin(camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)
     var xto = camera.x
     var yto = camera.y
     var zto = camera.z
@@ -1129,8 +1147,8 @@ function GridRenderer() constructor {
     var depths = properties.depths
     var camera = this.camera
     var gmCamera = camera.get()
-    var cameraAngle = camera.angle
-    var cameraPitch = camera.pitch
+    var cameraAngle = camera.angle + (sin(camera.breathTimer2.time) * BREATH_TIMER_FACTOR_2)
+    var cameraPitch = camera.pitch + (sin(camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)
     var xto = camera.x
     var yto = camera.y
     var zto = camera.z
@@ -1708,6 +1726,9 @@ function GridRenderer() constructor {
     return this
   }
 
+  ///@type {Color}
+  playerShadowColor = new Color(1.0, 1.0, 1.0)
+
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   render = function(layout) {
@@ -1732,6 +1753,13 @@ function GridRenderer() constructor {
     this.shaderCombinedSurface
       .update(ceil(width * shaderQuality), ceil(height * shaderQuality))
       .renderOn(this.renderShaderCombinedSurface, layout)
+
+    if (surface_exists(this.gameSurface.asset)) {
+      var middleColor = surface_getpixel(this.gameSurface.asset, width / 2.0, height / 2.0)
+      playerShadowColor.red = lerp(playerShadowColor.red, 1.0 - (color_get_red(middleColor) / 255.0), 0.1)
+      playerShadowColor.green = lerp(playerShadowColor.green, 1.0 - (color_get_green(middleColor) / 255.0), 0.1)
+      playerShadowColor.blue = lerp(playerShadowColor.blue, 1.0 - (color_get_blue(middleColor) / 255.0), 0.1)
+    }
 
     return this
   }

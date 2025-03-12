@@ -37,8 +37,8 @@ function VisuRenderer() constructor {
   spinner = Assert.isType(SpriteUtil
     .parse({ 
       name: "texture_spinner", 
-      scaleX: 0.25, 
-      scaleY: 0.25,
+      scaleX: 0.5, 
+      scaleY: 0.5,
     }), Sprite, "VisuRenderer.spiner must be type of Sprite")
 
   ///@private
@@ -47,7 +47,7 @@ function VisuRenderer() constructor {
 
   ///@private
   ///@type {Timer}
-  initTimer = new Timer(1.5)
+  initTimer = new Timer(3.0)
 
   ///@type {Timer}
   fadeTimer = new Timer(0.33)
@@ -57,7 +57,7 @@ function VisuRenderer() constructor {
   blur = new NumberTransformer({
     value: 0.0,
     target: 24.0,
-    factor: 0.3,
+    factor: 0.5,
     increase: 0.002,
   })
 
@@ -83,7 +83,7 @@ function VisuRenderer() constructor {
     var loaderState = controller.loader.fsm.getStateName()
     if (loaderState != "idle" && loaderState != "cooldown" && loaderState != "loaded") {
       var color = c_black
-      this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
+      this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.08)
 
       GPU.render.rectangle(
         0, 0, 
@@ -94,15 +94,12 @@ function VisuRenderer() constructor {
       )
 
       this.spinner
-        .setAlpha(this.spinnerFactor / 100.0)
-        .render(
-          (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
-          (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
-            - (this.spinnerFactor / 2)
-      )
+        .setAngle(30.0 * (this.spinnerFactor / 100))
+        .setAlpha(0.85 * (this.spinnerFactor / 100))
+        .render(GuiWidth() / 2.0, (GuiHeight() * 0.66) - this.spinnerFactor)
     } else if (this.spinnerFactor > 0) {
       var color = c_black
-      this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.1)
+      this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.08)
 
       GPU.render.rectangle(
         0, 0, 
@@ -113,12 +110,9 @@ function VisuRenderer() constructor {
       )
 
       this.spinner
-        .setAlpha(this.spinnerFactor / 100.0)
-        .render(
-        (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
-        (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
-          - (this.spinnerFactor / 2)
-      )
+        .setAngle(-30.0 * (this.spinnerFactor / 100.0))
+        .setAlpha(0.85 * (this.spinnerFactor / 100.0))
+        .render(GuiWidth() / 2.0, (GuiHeight() * 0.66) - this.spinnerFactor)
     }
 
     return this
@@ -149,7 +143,10 @@ function VisuRenderer() constructor {
     }
     */
     
-    if (is_debug_overlay_open()) {
+    var editor = Beans.get(BeanVisuEditorController)
+    var enableEditor = Optional.is(editor) && editor.renderUI
+    var enableDebugOverlay = is_debug_overlay_open()
+    if (enableDebugOverlay) {
       var controller = Beans.get(BeanVisuController)
       var gridService = controller.gridService
       var shrooms = controller.shroomService.shrooms.size()
@@ -194,13 +191,14 @@ function VisuRenderer() constructor {
 
     var gridCamera = this.gridRenderer.camera
     var gridCameraMessage = ""
-    if (gridCamera.enableKeyboardLook || gridCamera.enableMouseLook) {
+    if ((enableEditor || enableDebugOverlay)
+        && (gridCamera.enableKeyboardLook || gridCamera.enableMouseLook)) {
       gridCameraMessage = gridCameraMessage 
         + $"x:     {gridCamera.x}\n"
         + $"y:     {gridCamera.y}\n"
         + $"z:     {gridCamera.z}\n"
-        + $"pitch: {gridCamera.pitch}\n"
-        + $"angle: {gridCamera.angle}\n"
+        + $"pitch: {gridCamera.pitch + (sin(this.gridRenderer.camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)}\n"
+        + $"angle: {gridCamera.angle + (sin(this.gridRenderer.camera.breathTimer2.time) * BREATH_TIMER_FACTOR_2)}\n"
     }
     
     if (gridCameraMessage != "") {
@@ -243,7 +241,6 @@ function VisuRenderer() constructor {
 
     var editor = Beans.get(BeanVisuEditorController)
     var _layout = editor == null ? this.layout : editor.layout.nodes.preview
-
     this.gridRenderer.update(_layout)
     this.hudRenderer.update(_layout)
     this.dialogueRenderer.update()
@@ -283,7 +280,7 @@ function VisuRenderer() constructor {
         var _height = _layout.height()
         var xStart = _width * (1.0 - 0.061)
         var yStart = _height * (1.0 - 0.08)
-        var text = "EDITOR MODE [F5]"
+        var text = "SHOW EDITOR [F5]"
         GPU.render.text(
           _x + xStart,
           _y + yStart,
@@ -305,10 +302,11 @@ function VisuRenderer() constructor {
         controller.gridService.properties.update(controller.gridService)
       }
       
+      this.blur.update()
       if (shader_is_compiled(shader_gaussian_blur)) {
         var uniformSize = shader_get_uniform(shader_gaussian_blur, "size")
         shader_set(shader_gaussian_blur)
-        shader_set_uniform_f(uniformSize, _layout.width(), _layout.height(), this.blur.update().value)
+        shader_set_uniform_f(uniformSize, _layout.width(), _layout.height(), this.blur.value)
         this.gridRenderer.renderGameplay(_layout)
         shader_reset()
       } else {

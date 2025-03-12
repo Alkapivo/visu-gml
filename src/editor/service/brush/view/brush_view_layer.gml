@@ -24,9 +24,9 @@ function migrateWallpaperType(type) {
 
 ///@param {?Struct} [json]
 ///@return {Struct}
-function brush_view_wallpaper(json = null) {
+function brush_view_layer(json = null) {
   return {
-    name: "brush_view_wallpaper",
+    name: "brush_view_layer",
     store: new Map(String, Struct, {
       "vw-layer_type": {
         type: String,

@@ -200,7 +200,7 @@ function brush_entity_shroom(json) {
               }
 
               if (store.getValue("en-shr_snap-x")) {
-                _x = _x - (view.x - floor(view.x / view.width) * view.width)
+                _x = _x - (view.x - floor(view.x / (view.width / 2.0)) * (view.width / 2.0))
               }
 
               if (!Struct.contains(this, "spawnerYTimer")) {
@@ -217,7 +217,7 @@ function brush_entity_shroom(json) {
               }
 
               if (store.getValue("en-shr_snap-y")) {
-                _y = _y - (view.y - floor(view.y / view.height) * view.height)
+                _y = _y - (view.y - floor(view.y / (view.height / 2.0)) * (view.height / 2.0))
               }
 
               if (!Struct.contains(this, "spawnerAngleTimer")) {

@@ -1,5 +1,12 @@
 ///@package io.alkapivo.visu.renderer
 
+///@type {Number}
+#macro BREATH_TIMER_FACTOR_1 10.0
+
+///@type {Number}
+#macro BREATH_TIMER_FACTOR_2 -7.5
+
+
 ///@param {?Struct} [config]
 function GridCamera(config = null) constructor {
     
@@ -9,14 +16,20 @@ function GridCamera(config = null) constructor {
   ///@type {Number}
 	y = Struct.getIfType(config, "y", Number, 6656)
 
-  ///@type {Number}
-	z = Struct.getIfType(config, "z", Number, 3840)
+  ///@type {Number}1
+	z = Struct.getIfType(config, "z", Number, 5000)
 
   ///@type {Number}
 	angle = Struct.getIfType(config, "angle", Number, 270.0)
 
-    ///@type {Number}
+  ///@type {Number}
 	pitch = Struct.getIfType(config, "pitch", Number, -32.5)
+
+  ///@type {Timer}
+  breathTimer1 = new Timer(TAU, { amount: 0.0064, loop: Infinity })
+
+  ///@type {Timer}
+  breathTimer2 = new Timer(TAU, { amount: 0.0016, loop: Infinity })
 
   ///@type {?GMMatrix}
   viewMatrix = null
@@ -39,7 +52,6 @@ function GridCamera(config = null) constructor {
   ///@return {GMCamera}
   get = function() {
     if (!Core.isType(this.gmCamera, GMCamera)) {
-      Core.print("ddddddd")
       this.gmCamera = camera_create()
     }
 
@@ -89,19 +101,23 @@ function GridCamera(config = null) constructor {
 	///@param {UILayout} layout
 	///@return {Camera}
 	update = function(layout) {
-		if (this.enableMouseLook) {
-      var width = layout.width()
-      var height = layout.height()
+    var editor = Beans.get(BeanVisuEditorController)
+    var enableEditor = Optional.is(editor) && editor.renderUI
+    var enableDebugOverlay = is_debug_overlay_open()
+    if ((enableEditor || enableDebugOverlay) && this.enableMouseLook) {
       var _x = layout.x()
       var _y = layout.y()
-
-			this.angle -= ceil(MouseUtil.getMouseX() - _x - width / 2.0) / 10.0
-			this.pitch -= ceil(MouseUtil.getMouseY() - _y - height / 2.0) / 10.0
-			this.pitch = clamp(this.pitch, -85, 85)
-			window_mouse_set(_x + width / 2.0, _y + height / 2.0)
+      var width = layout.width()
+      var height = layout.height()
+      var offsetX = MouseUtil.getMouseX() - _x - (width / 2.0)
+      var offsetY = MouseUtil.getMouseY() - _y - (height / 2.0)
+      var factor = 24.0
+			this.angle = clamp(this.angle - ((abs(offsetX) <= 1.0 ? 0.0 : offsetX) / factor), -360.0, 360.0)
+			this.pitch = clamp(this.pitch - ((abs(offsetY) <= 1.0 ? 0.0 : offsetY) / factor), -89.0, 89.0)
+			window_mouse_set(_x + ceil(width / 2.0), _y + ceil(height / 2.0))
 		}
 
-		if (this.enableKeyboardLook) {
+		if ((enableEditor || enableDebugOverlay) && this.enableKeyboardLook) {
 			var dx = 0
 			var dy = 0
 			var dz = 0

@@ -5663,8 +5663,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(data, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)
+                  if (!Struct.contains(vec4, key)
                     || GMTFContext.get() == data.textField) {
                     return 
                   }
@@ -5683,7 +5682,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(this.context, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   item.set(Struct.set(vec4, key, parsedValue))
@@ -5700,8 +5699,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(data, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   data.value = Struct.get(vec4, key)
@@ -5719,7 +5717,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(this.context, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   item.set(Struct.set(vec4, key, parsedValue))
@@ -5753,8 +5751,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(data, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)
+                  if (!Struct.contains(vec4, key)
                     || GMTFContext.get() == data.textField) {
                     return 
                   }
@@ -5773,7 +5770,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(this.context, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   item.set(Struct.set(vec4, key, parsedValue))
@@ -5790,8 +5787,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(data, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   data.value = Struct.get(vec4, key)
@@ -5809,7 +5805,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(this.context, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   item.set(Struct.set(vec4, key, parsedValue))
@@ -5831,7 +5827,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                 var key = Struct.get(this, "vec4Property")
                 var vec4 = item.get()
-                if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                if (!Struct.contains(vec4, key)) {
                   return 
                 }
                 
@@ -5858,7 +5854,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                 var key = Struct.get(this, "vec4Property")
                 var vec4 = item.get()
-                if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                if (!Struct.contains(vec4, key)) {
                   return 
                 }
                 
@@ -5895,8 +5891,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(data, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)
+                  if (!Struct.contains(vec4, key)
                     || GMTFContext.get() == data.textField) {
                     return 
                   }
@@ -5915,7 +5910,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(this.context, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   item.set(Struct.set(vec4, key, parsedValue))
@@ -6025,8 +6020,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(data, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)
+                  if (!Struct.contains(vec4, key)
                     || GMTFContext.get() == data.textField) {
                     return 
                   }
@@ -6045,7 +6039,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(this.context, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   item.set(Struct.set(vec4, key, parsedValue))
@@ -6062,8 +6056,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(data, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   data.value = Struct.get(vec4, key)
@@ -6081,7 +6074,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(this.context, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  if (!Struct.contains(vec4, key)) {
                     return 
                   }
                   item.set(Struct.set(vec4, key, parsedValue))
@@ -6184,7 +6177,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                 var key = Struct.get(this, "vec4Property")
                 var vec4 = item.get()
-                if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                if (!Struct.contains(vec4, key)) {
                   return 
                 }
                 
@@ -6211,7 +6204,7 @@ global.__VEComponents = new Map(String, Callable, {
 
                 var key = Struct.get(this, "vec4Property")
                 var vec4 = item.get()
-                if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                if (!Struct.contains(vec4, key)) {
                   return 
                 }
                 

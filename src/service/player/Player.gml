@@ -333,7 +333,8 @@ function PlayerStats(_player, json) constructor {
                 beginY: (player.y - view.y) * GRID_SERVICE_PIXEL_HEIGHT,
                 endX: (player.x - view.x) * GRID_SERVICE_PIXEL_WIDTH,
                 endY: (player.y - view.y) * GRID_SERVICE_PIXEL_HEIGHT,
-                duration: 0.0,
+                duration: 1.0,
+                interval: 0.5,
                 amount: 2,
               }))
 

@@ -175,7 +175,7 @@ global.__view_track_event = {
       */
     },
   },
-  "brush_view_wallpaper": {
+  "brush_view_layer": {
     parse: function(data) {
       var useTextureBlend = Struct.parse.boolean(data, "vw-layer_use-texture-blend")
       var textureBlend = Struct.parse.color(data, "vw-layer_texture-blend")

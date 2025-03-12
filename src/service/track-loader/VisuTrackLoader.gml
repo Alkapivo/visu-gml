@@ -31,6 +31,8 @@ function VisuTrackLoader(_controller): Service() constructor {
       "Passion.ogg": "sound_kedy_selma_passion",
       "digitalshadowfinalunmixed.ogg": "sound_zoogies_digitalshadow",
       "Schnoopy-Destination-Unknown.ogg": "sound_schnoopy_destination_unknown",
+      "Sewerslvt-Purple-Hearts-In-Her-Eyes.ogg": "sound_sewerslvt_purple_hearts_in_her_eyes",
+      "Sewerslvt-Psychosis.ogg": "sound_sewerslvt_psychosis",
     }),
   }
 

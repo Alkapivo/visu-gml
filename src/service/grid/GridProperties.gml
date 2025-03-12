@@ -26,15 +26,15 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   channelsSecondaryAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.channelsSecondaryAlpha", 0.8), Number)  
+    .getDefault(config, "properties.channelsSecondaryAlpha", 0.6), Number)  
 
   ///@type {Number}
   channelsPrimaryThickness = Assert.isType(Struct
-      .getDefault(config, "properties.channelsPrimaryThickness", 8), Number)
+      .getDefault(config, "properties.channelsPrimaryThickness", 5), Number)
 
   ///@type {Number}
   channelsSecondaryThickness = Assert.isType(Struct
-    .getDefault(config, "properties.channelsSecondaryThickness", 6), Number)
+    .getDefault(config, "properties.channelsSecondaryThickness", 5), Number)
 
   ///@type {String}
   channelsMode = Assert.isType(Struct
@@ -60,15 +60,15 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   separatorsSecondaryAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.separatorsSecondaryAlpha", 0.7), Number)  
+    .getDefault(config, "properties.separatorsSecondaryAlpha", 0.6), Number)  
 
   ///@type {Number}
   separatorsPrimaryThickness = Assert.isType(Struct
-      .getDefault(config, "properties.separatorsPrimaryThickness", 8), Number)
+      .getDefault(config, "properties.separatorsPrimaryThickness", 5), Number)
 
   ///@type {Number}
   separatorsSecondaryThickness = Assert.isType(Struct
-    .getDefault(config, "properties.separatorsSecondaryThickness", 6), Number)
+    .getDefault(config, "properties.separatorsSecondaryThickness", 5), Number)
 
   ///@type {String}
   separatorsMode = Assert.isType(Struct

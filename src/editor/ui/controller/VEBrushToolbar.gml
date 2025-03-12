@@ -329,9 +329,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             brushType: VEBrushType.VIEW_CAMERA,
           },
           {
-            name: "button_category-view_type-wallpaper",
+            name: "button_category-view_type-layer",
             text: "Layer",
-            brushType: VEBrushType.VIEW_WALLPAPER,
+            brushType: VEBrushType.VIEW_LAYER,
           },
           {
             name: "button_category-view_type-subtitle",
@@ -1694,7 +1694,7 @@ function VEBrushToolbar(_editor) constructor {
     ]),
     "view": new Array(String, [
       VEBrushType.VIEW_CAMERA,
-      VEBrushType.VIEW_WALLPAPER,
+      VEBrushType.VIEW_LAYER,
       VEBrushType.VIEW_SUBTITLE,
       VEBrushType.VIEW_CONFIG
     ]),
