@@ -139,7 +139,7 @@ global.__VisuStyles = new Map(String, Callable, {
     },
     preview: {
       align: { v: VAlign.CENTER, h: HAlign.CENTER },
-      font: "font_kodeo_mono_18_regular",
+      font: "font_kodeo_mono_18_bold",
       color: VETheme.color.textFocus,
       enableColorWrite: false,
       colorHoverOver: VETheme.color.accentLight,

@@ -15,29 +15,29 @@ function BulletTemplate(_name, json) constructor {
   ///@type {?Struct}
   mask = Struct.getIfType(json, "mask", Struct)
 
-  ///@type {?Number}
-  lifespawnMax = Struct.getIfType(json, "lifespawnMax", Number)
+  ///@type {Number}
+  lifespawnMax = Struct.getIfType(json, "lifespawnMax", Number, 15.0)
 
-  ///@type {?Number}
-  damage = Struct.getIfType(json, "damage", Number)
+  ///@type {Number}
+  damage = Struct.getIfType(json, "damage", Number, 1.0)
 
-  ///@type {?Boolean}
-  wiggle = Struct.getIfType(json, "wiggle", Boolean)
+  ///@type {Boolean}
+  wiggle = Struct.getIfType(json, "wiggle", Boolean, false)
 
-  ///@type {?Number}
-  wiggleTime = Struct.getIfType(json, "wiggleTime", Number)
+  ///@type {Number}
+  wiggleTime = Struct.getIfType(json, "wiggleTime", Number, 0.0)
 
-  ///@type {?Boolean}
-  wiggleTimeRng = Struct.getIfType(json, "wiggleTimeRng", Boolean)
+  ///@type {Boolean}
+  wiggleTimeRng = Struct.getIfType(json, "wiggleTimeRng", Boolean, false)
 
-  ///@type {?Number}
-  wiggleFrequency = Struct.getIfType(json, "wiggleFrequency", Number)
+  ///@type {Number}
+  wiggleFrequency = Struct.getIfType(json, "wiggleFrequency", Number, FRAME_MS)
 
-  ///@type {?Boolean}
-  wiggleDirRng = Struct.getIfType(json, "wiggleDirRng", Boolean)
+  ///@type {Boolean}
+  wiggleDirRng = Struct.getIfType(json, "wiggleDirRng", Boolean, false)
 
-  ///@type {?Number}
-  wiggleAmplitude = Struct.getIfType(json, "wiggleAmplitude", Number)
+  ///@type {Number}
+  wiggleAmplitude = Struct.getIfType(json, "wiggleAmplitude", Number, 0.0)
 
   ///@type {?Struct}
   angleOffset = Struct.getIfType(json, "angleOffset", Struct)
@@ -95,90 +95,27 @@ function BulletTemplate(_name, json) constructor {
       changeSpeedOffset: this.changeSpeedOffset,
       useAngleOffset: this.useAngleOffset,
       changeAngleOffset: this.changeAngleOffset,
-    }
-
-    if (Optional.is(this.damage)) {
-      Struct.set(json, "damage", this.damage)
-    }
-
-    if (Optional.is(this.lifespawnMax)) {
-      Struct.set(json, "lifespawnMax", this.lifespawnMax)
-    }
-
-    if (Optional.is(this.mask)) {
-      Struct.set(json, "mask", this.mask)
-    }
-
-    if (Optional.is(this.wiggle)) {
-      Struct.set(json, "wiggle", this.wiggle)
-    }
-
-    if (Optional.is(this.wiggleTime)) {
-      Struct.set(json, "wiggleTime", this.wiggleTime)
-    }
-
-    if (Optional.is(this.wiggleTimeRng)) {
-      Struct.set(json, "wiggleTimeRng", this.wiggleTimeRng)
-    }
-
-    if (Optional.is(this.wiggleFrequency)) {
-      Struct.set(json, "wiggleFrequency", this.wiggleFrequency)
-    }
-
-    if (Optional.is(this.wiggleDirRng)) {
-      Struct.set(json, "wiggleDirRng", this.wiggleDirRng)
-    }
-
-    if (Optional.is(this.wiggleAmplitude)) {
-      Struct.set(json, "wiggleAmplitude", this.wiggleAmplitude)
-    }
-
-    if (Optional.is(this.angleOffset)) {
-      Struct.set(json, "angleOffset", this.angleOffset)
-    }
-
-    if (Optional.is(this.angleOffsetRng)) {
-      Struct.set(json, "angleOffsetRng", this.angleOffsetRng)
-    }
-
-    if (Optional.is(this.speedOffset)) {
-      Struct.set(json, "speedOffset", this.speedOffset)
-    }
-
-    if (Optional.is(this.onDeath)) {
-      Struct.set(json, "onDeath", this.onDeath)
-    }
-
-    if (Optional.is(this.onDeathAmount)) {
-      Struct.set(json, "onDeathAmount", this.onDeathAmount)
-    }
-
-    if (Optional.is(this.onDeathAngle)) {
-      Struct.set(json, "onDeathAngle", this.onDeathAngle)
-    }
-
-    if (Optional.is(this.onDeathAngleRng)) {
-      Struct.set(json, "onDeathAngleRng", this.onDeathAngleRng)
-    }
-
-    if (Optional.is(this.onDeathAngleStep)) {
-      Struct.set(json, "onDeathAngleStep", this.onDeathAngleStep)
-    }
-
-    if (Optional.is(this.onDeathRngStep)) {
-      Struct.set(json, "onDeathRngStep", this.onDeathRngStep)
-    }
-
-    if (Optional.is(this.onDeathSpeed)) {
-      Struct.set(json, "onDeathSpeed", this.onDeathSpeed)
-    }
-
-    if (Optional.is(this.onDeathSpeedMerge)) {
-      Struct.set(json, "onDeathSpeedMerge", this.onDeathSpeedMerge)
-    }
-
-    if (Optional.is(this.onDeathRngSpeed)) {
-      Struct.set(json, "onDeathRngSpeed", this.onDeathRngSpeed)
+      damage: this.damage,
+      lifespawnMax: this.lifespawnMax,
+      mask: this.mask,
+      wiggle: this.wiggle,
+      wiggleTime: this.wiggleTime,
+      wiggleTimeRng: this.wiggleTimeRng,
+      wiggleFrequency: this.wiggleFrequency,
+      wiggleDirRng: this.wiggleDirRng,
+      wiggleAmplitude: this.wiggleAmplitude,
+      angleOffset: this.angleOffset,
+      angleOffsetRng: this.angleOffsetRng,
+      speedOffset: this.speedOffset,
+      onDeath: this.onDeath,
+      onDeathAmount: this.onDeathAmount,
+      onDeathAngle: this.onDeathAngle,
+      onDeathAngleRng: this.onDeathAngleRng,
+      onDeathAngleStep: this.onDeathAngleStep,
+      onDeathRngStep: this.onDeathRngStep,
+      onDeathSpeed: this.onDeathSpeed,
+      onDeathSpeedMerge: this.onDeathSpeedMerge,
+      onDeathRngSpeed: this.onDeathRngSpeed,
     }
 
     return JSON.clone(json)
@@ -197,43 +134,35 @@ function Bullet(template): GridItem(template) constructor {
   
   ///@type {Player|Shroom}
   producer = template.producer
-  Assert.isTrue(this.producer == Player || this.producer == Shroom)
+  //Assert.isTrue(this.producer == Player || this.producer == Shroom)
 
   ///@private
   ///@type {Number}
-  lifespawnMax = Core.isType(Struct.get(template, "lifespawnMax"), Number)
-    ? template.lifespawnMax
-    : 15.0
+  lifespawnMax = Struct.get(template, "lifespawnMax")
   
   ///@type {Number}
-  damage = Core.isType(Struct.get(template, "damage"), Number) 
-    ? template.damage 
-    : 1.0
+  damage = Struct.get(template, "damage")
 
   ///@type {Boolean}
-  wiggle = Struct.getIfType(template, "wiggle", Boolean, false)
+  wiggle = Struct.get(template, "wiggle")
 
   ///@type {Number}
-  wiggleTime = Struct.getIfType(template, "wiggleTime", Number, 0.0)
+  wiggleTime = Struct.get(template, "wiggleTime")
 
   ///@type {Boolean}
-  wiggleTimeRng = Struct.getIfType(template, "wiggleTimeRng", Boolean, false)
+  wiggleTimeRng = Struct.get(template, "wiggleTimeRng")
 
-  ///@type {?Number}
-  wiggleFrequency = Struct.getIfType(template, "wiggleFrequency", Number, FRAME_MS)
+  ///@type {Number}
+  wiggleFrequency = Struct.get(template, "wiggleFrequency")
 
-  ///@type {?Boolean}
-  wiggleDirRng = Struct.getIfType(template, "wiggleDirRng", Boolean, false)
+  ///@type {Boolean}
+  wiggleDirRng = Struct.get(template, "wiggleDirRng")
 
-  ///@type {?Number}
-  wiggleAmplitude = Struct.getIfType(template, "wiggleAmplitude", Number, 0.0)
+  ///@type {Number}
+  wiggleAmplitude = Struct.get(template, "wiggleAmplitude")
 
-  this.wiggleTime = this.wiggleTimeRng 
-    ? random(this.wiggleTime) 
-    : this.wiggleTime
-  this.wiggleFrequency = this.wiggleDirRng
-    ? choose(1, -1) * this.wiggleFrequency
-    : this.wiggleFrequency
+  this.wiggleTime = this.wiggleTimeRng ? random(this.wiggleTime) : this.wiggleTime
+  this.wiggleFrequency = this.wiggleDirRng ? choose(1, -1) * this.wiggleFrequency : this.wiggleFrequency
 
   ///@type {?NumberTransformer}
   angleOffset = Optional.is(Struct.get(template, "angleOffset"))
@@ -246,10 +175,10 @@ function Bullet(template): GridItem(template) constructor {
     : null
 
   ///@type {Boolean}
-  angleOffsetRng = Struct.getIfType(template, "angleOffsetRng", Boolean, false)
+  angleOffsetRng = Struct.get(template, "angleOffsetRng") // false
 
   ///@param {Number}
-  angleOffsetDir = this.angleOffsetRng ? choose(1, -1) : 1
+  angleOffsetDir = this.angleOffsetRng ? choose(1.0, -1.0) : 1.0
 
   ///@type {?NumberTransformer}
   speedOffset = Optional.is(Struct.get(template, "speedOffset"))
@@ -262,31 +191,31 @@ function Bullet(template): GridItem(template) constructor {
     : null
   
   ///@type {?String}
-  onDeath = Struct.getIfType(template, "onDeath", String)
+  onDeath = Struct.get(template, "onDeath")
 
   ///@type {?Number}
-  onDeathAmount = Struct.getIfType(template, "onDeathAmount", Number)
+  onDeathAmount = Struct.get(template, "onDeathAmount")
 
   ///@type {?Number}
-  onDeathAngle = Struct.getIfType(template, "onDeathAngle", Number)
+  onDeathAngle = Struct.get(template, "onDeathAngle")
 
   ///@type {?Boolean}
-  onDeathAngleRng = Struct.getIfType(template, "onDeathAngleRng", Boolean)
+  onDeathAngleRng = Struct.get(template, "onDeathAngleRng")
 
   ///@type {?Number}
-  onDeathAngleStep = Struct.getIfType(template, "onDeathAngleStep", Number)
+  onDeathAngleStep = Struct.get(template, "onDeathAngleStep")
 
   ///@type {?Number}
-  onDeathRngStep = Struct.getIfType(template, "onDeathRngStep", Number)
+  onDeathRngStep = Struct.get(template, "onDeathRngStep")
 
   ///@type {?Number}
-  onDeathSpeed = Struct.getIfType(template, "onDeathSpeed", Number)
+  onDeathSpeed = Struct.get(template, "onDeathSpeed")
 
   ///@type {?Boolean}
-  onDeathSpeedMerge = Struct.getIfType(template, "onDeathSpeedMerge", Boolean)
+  onDeathSpeedMerge = Struct.get(template, "onDeathSpeedMerge")
 
   ///@type {?Number}
-  onDeathRngSpeed = Struct.getIfType(template, "onDeathRngSpeed", Number)
+  onDeathRngSpeed = Struct.get(template, "onDeathRngSpeed")
 
   ///@param {VisuController} controller
   ///@return {Bullet}

@@ -73,6 +73,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-shroom": function(event) {
       var view = this.controller.gridService.view
+      var locked = this.controller.gridService.targetLocked
       var template = new ShroomTemplate(event.data.template, this
         .getTemplate(event.data.template)
         .serialize())
@@ -98,8 +99,8 @@ function ShroomService(_controller, config = {}): Service() constructor {
       var spawnY = event.data.spawnY
       var angle = event.data.angle
       var spd = event.data.speed
-      var viewX = event.data.snapH ? floor(view.x / (view.width / 2.0)) * (view.width / 2.0) : view.x
-      var viewY = event.data.snapV ? floor(view.y / (view.height / 2.0)) * (view.height / 2.0) : view.y
+      var viewX = event.data.snapH ? locked.snapH : view.x
+      var viewY = event.data.snapV ? locked.snapV : view.y
 
       Struct.set(template, "x", viewX + spawnX)
       Struct.set(template, "y", viewY + spawnY)

@@ -13,9 +13,9 @@ global.__view_track_event = {
         "vw-cam_lock-y": Struct.parse.boolean(data, "vw-cam_lock-y"),
         "vw-cam_follow": Struct.parse.boolean(data, "vw-cam_follow"),
         "vw-cam_use-follow-x": Struct.parse.boolean(data, "vw-cam_use-follow-x"),
-        "vw-cam_follow-x": Struct.parse.number(data, "vw-cam_follow-x", 0.35, 0.0, 0.5),
+        "vw-cam_follow-x": Struct.parse.number(data, "vw-cam_follow-x", 0.35, -25.0, 25.0),
         "vw-cam_use-follow-y": Struct.parse.boolean(data, "vw-cam_use-follow-y"),
-        "vw-cam_follow-y": Struct.parse.number(data, "vw-cam_follow-y", 0.40, 0.0, 0.5),
+        "vw-cam_follow-y": Struct.parse.number(data, "vw-cam_follow-y", 0.40, -25.0, 25.0),
         "vw-cam_follow-smooth": Struct.parse.number(data, "vw-cam_follow-smooth", 32.0, 1.0, 256.0),
         "vw-cam_use-follow-smooth": Struct.parse.boolean(data, "vw-cam_use-follow-smooth"),
         "vw-cam_use-x": Struct.parse.boolean(data, "vw-cam_use-x"),
@@ -74,20 +74,21 @@ global.__view_track_event = {
       var camera = controller.visuRenderer.gridRenderer.camera
       var lock = gridService.targetLocked
       var follow = gridService.view.follow
-
       ///@description feature TODO view.camera.lock.x
       Visu.resolveBooleanTrackEvent(data,
         "vw-cam_use-lock-x",
         "vw-cam_lock-x",
         "isLockedX",
         lock)
-
+      gridService.targetLocked.lockX = null
+      
       ///@description feature TODO view.camera.lock.y
       Visu.resolveBooleanTrackEvent(data,
         "vw-cam_use-lock-y",
         "vw-cam_lock-y",
         "isLockedY",
         lock)
+      gridService.targetLocked.lockY = null
 
       ///@description feature TODO view.camera.follow.x
       Visu.resolvePropertyTrackEvent(data,

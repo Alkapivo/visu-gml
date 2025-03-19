@@ -223,21 +223,28 @@ global.__VEComponentsUtil = {
         return Struct.appendRecursive({
           factor: 1.0,
           step: 5,
+          treshold: 32,
           value: 0.25,
           minValue: 0.0,
           maxValue: 0.5,
+          deltaX: 0.0,
+          deltaY: 0.0,
           base: null,
           mouseX: null,
           mouseY: null,
           tempValue: null,
-          colorHoverOver: VETheme.color.stickHover,
-          colorHoverOut: VETheme.color.stick,
-          progress: { thickness: 0.0 },
-          pointer: {
-            name: "texture_slider_pointer_simple",
-            scaleX: 0.125,
-            scaleY: 0.125,
+          colorHoverOver: VETheme.color.textFocus,
+          colorHoverOut: VETheme.color.textShadow,
+          progress: {
+            thickness: 1.15,
             blend: VETheme.color.stick,
+            line: { name: "texture_grid_line_bold" },
+          },
+          pointer: {
+            name: "texture_slider_pointer_border",//"texture_slider_pointer_simple",
+            scaleX: 0.15,
+            scaleY: 0.15,
+            blend: VETheme.color.textShadow,
           },
           background: {
             thickness: 0.0000,
@@ -260,39 +267,47 @@ global.__VEComponentsUtil = {
               item.set(parsedValue)
             },
           },
+          getValue: function(uiItem) {
+            return uiItem.store.getValue()
+          },
           updateValue: function(mouseX, mouseY) {
             if (!Optional.is(this.store) || !Optional.is(this.context)) {
               return
             }
 
-            var distanceX = mouseX - this.area.getX() + (this.area.getWidth() / 2) + this.context.offset.x
-            var distanceY = this.area.getY() + (this.area.getHeight() / 2) + this.context.offset.y - mouseY
+            var distanceX = mouseX - this.area.getX() + (this.area.getWidth() / 2.0) + this.context.offset.x
+            var distanceY = this.area.getY() + (this.area.getHeight() / 2.0) + this.context.offset.y - mouseY
             if (!Optional.is(this.mouseX) || !Optional.is(this.mouseY)) {
               this.mouseX = distanceX
               this.mouseY = distanceY
             }
 
-            var deltaX = distanceX - this.mouseX
-            var deltaY = distanceY - this.mouseY
-            var delta = abs(deltaX) > abs(deltaY) ? deltaX : deltaY
-            var distance = round(delta / this.step) * this.step
+            this.deltaX = distanceX - this.mouseX
+            this.deltaY = distanceY - this.mouseY
+            var delta = abs(this.deltaX) > abs(this.deltaY) ? this.deltaX : this.deltaY
+            var distance = round(delta / this.step)
+            var increase = clamp(floor(power((abs(distance) / this.treshold), 2.0)), 1.0, MAX_INT_64)
 
-            this.base = Optional.is(this.base) ? this.base : this.store.getValue()
-            this.value = this.base + (distance * this.factor)
-            if (this.value != this.store.getValue()) {
+            this.base = Optional.is(this.base) ? this.base : this.getValue(this)
+            this.value = this.base + (distance * increase * this.factor)
+            if (this.value != this.getValue(this)) {
               this.store.set(this.value)
             }
           },
           onMouseHoverOver: function(event) {
-            var color = Struct.getIfType(this.enable, "value", Boolean, false)
-              ? this.colorHoverOver
-              : this.colorHoverOut
-            this.pointer.setBlend(ColorUtil.parse(color).toGMColor())
+            if (Struct.get(this.enable, "value") == false) {
+              this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+              return
+            }
+
+            this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
           },
           onMouseHoverOut: function(event) {
-            if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") != this) {
-              this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
+            if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
+              return
             }
+
+            this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
           },
           onMousePressedLeft: function(event) {
             this.base = null
@@ -314,23 +329,57 @@ global.__VEComponentsUtil = {
                 context.base = null
                 context.mouseX = null
                 context.mouseY = null
+                context.deltaX = 0.0
+                context.deltaY = 0.0
                 context.pointer.setBlend(ColorUtil.parse(context.colorHoverOut).toGMColor())
                 Callable.run(this.state.callback, context)
               })
+              .whenFailure(function() {
+                var context = this.state.context
+                context.base = null
+                context.mouseX = null
+                context.mouseY = null
+                context.deltaX = 0.0
+                context.deltaY = 0.0
+                context.pointer.setBlend(ColorUtil.parse(context.colorHoverOut).toGMColor())
+              })
             )
           },
-          preRender: function() {
-            var base = Optional.is(this.base) ? this.base : this.value
-            var distance = (base - this.value) / this.factor
-            var length = abs(this.maxValue - this.minValue)
-            var size = max(GuiWidth(), GuiHeight())
-            this.tempValue = this.value
-            this.value = clamp(0.25 - ((distance * length) / size), this.minValue, this.maxValue)
-          },
-          postRender: function() {
-            if (Optional.is(this.tempValue)) {
-              this.value = this.tempValue
+          onMouseDragLeft: function(event) { },
+          render: function() {
+            var promise = this.getClipboard()
+            if (Struct.get(Struct.get(promise, "state"), "context") == this) {
+              var offsetX = Core.isType(Struct.get(this.context, "layout"), UILayout)
+                ? this.context.layout.x() 
+                : 0.0
+              var offsetY = Core.isType(Struct.get(this.context, "layout"), UILayout)
+                ? this.context.layout.y() 
+                : 0.0
+              this.updateValue(MouseUtil.getMouseX() - offsetX, MouseUtil.getMouseY() - offsetY)
             }
+            
+            if (Optional.is(this.preRender)) {
+              this.preRender()
+            }
+            this.renderBackgroundColor()
+            
+            var areaWidth = this.area.getWidth()
+            var areaHeight = this.area.getHeight()
+            var maxSize = max(GuiWidth(), GuiHeight())
+            var fromX = this.context.area.getX() + this.area.getX() + (areaWidth / 2.0)
+            var fromY = this.context.area.getY() + this.area.getY() + (areaHeight / 2.0)
+            var widthMax = this.area.getWidth()
+            var distanceX = clamp((this.deltaX / maxSize) * areaWidth, -1.0 * areaWidth / 2.0, areaWidth / 2.0)
+            var distanceY = clamp((-1.0 * this.deltaY / maxSize) * areaHeight , -1.0 * areaHeight / 2.0, areaHeight / 2.0)
+            //this.background.render(fromX - (areaWidth / 2.0), fromY - (areaHeight / 2.0), fromX + (areaWidth / 2.0), fromY + (areaHeight / 2.0))
+            this.progress.render(fromX, fromY, fromX + distanceX, fromY + distanceY)
+            this.pointer.render(fromX + distanceX, fromY + distanceY)
+      
+            if (Optional.is(this.postRender)) {
+              this.postRender()
+            }
+            
+            return this
           },
         }, config, false)
       }
@@ -6005,8 +6054,8 @@ global.__VEComponents = new Map(String, Callable, {
     static factoryNumericStickIncreaseField = function(name, layout, config) {
       return new UIComponent({
         name: name,
-        template: VEComponents.get("numeric-slider-increase-field"),
-        layout: VELayouts.get("__text-field-increase-stick-checkbox"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("text-field-increase-stick-checkbox"),
         
         config: Struct.appendRecursive(
           {
@@ -6046,7 +6095,8 @@ global.__VEComponents = new Map(String, Callable, {
                 },
               },
             },
-            slider: {
+            stick: {
+              factor: -0.01,
               store: {
                 callback: function(value, data) { 
                   var item = data.store.get()
@@ -6080,86 +6130,8 @@ global.__VEComponents = new Map(String, Callable, {
                   item.set(Struct.set(vec4, key, parsedValue))
                 },
               },
-              factor: 0.0010,
-              base: null,
-              _value: 0.0,
-              value: 0.25,
-              minValue: 0.0,
-              maxValue: 0.5,
-              pointer: {
-                name: "texture_slider_pointer_simple",
-                scaleX: 0.125,
-                scaleY: 0.125,
-                blend: VETheme.color.stick,
-              },
-              progress: { thickness: 0.0 },
-              background: {
-                thickness: 0.0000,
-                blend: VETheme.color.stickBackground,
-                line: { name: "texture_grid_line_bold" },
-              },
-              updateValue: function(mouseX, mouseY) {
-                var isUIStore = Core.isType(this.store, UIStore)
-                var key = Struct.get(this, "vec4Property")
-                this.base = !Core.isType(this.base, Number) 
-                  ? (isUIStore ? Struct.get(this.store.getValue(), key) : this.value)
-                  : this.base 
- 
-                var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-                var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-                var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-                this.value = this.base + (distance * this.factor)
-                if (isUIStore && this.value != Struct.get(this.store.getValue(), key)) {
-                  this.store.set(this.value)
-                }
-              },
-              colorHoverOver: VETheme.color.stickHover,
-              colorHoverOut: VETheme.color.stick,
-              onMouseHoverOver: function(event) {
-                if (Struct.get(this.enable, "value") == false) {
-                  this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
-                  return
-                }
-
-                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOver).toGMColor())
-              },
-              onMouseHoverOut: function(event) {
-                if (Struct.get(Struct.get(this.getClipboard(), "state"), "context") == this) {
-                  return
-                }
-                this.pointer.setBlend(ColorUtil.parse(this.colorHoverOut).toGMColor())
-              },
-              //onMouseDragLeft: function(event) {
-              onMousePressedLeft: function(event) { ///@stickhack
-                if (Struct.get(this.enable, "value") == false 
-                    || Optional.is(this.getClipboard())) {
-                  return
-                }
-          
-                var context = this
-                this.base = null
-                this.setClipboard(new Promise()
-                  .setState({
-                    context: context,
-                    callback: context.callback,
-                  })
-                  .whenSuccess(function() {
-                    this.state.context.base = null
-                    this.state.context.pointer.setBlend(ColorUtil.parse(this.state.context.colorHoverOut).toGMColor())
-                    Callable.run(Struct.get(this.state, "callback"))
-                  })
-                )
-              },
-              preRender: function() {
-                this._value = this.value
-                var _base = this.base != null ? this.base : this.value
-                var orderOfMagnitude = floor(log10(abs(clamp(abs(this.value), 10, 1000000))))
-                this.value = clamp(0.25 - (((_base - this.value) * this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
-                //orderOfMagnitude = GuiWidth()
-                //this.value = clamp(0.5 - (((_base - this.value) / this.factor) / orderOfMagnitude), this.minValue, this.maxValue)
-              },
-              postRender: function() {
-                this.value = this._value
+              getValue: function(uiItem) {
+                return Struct.get(uiItem.store.getValue(), Struct.get(uiItem, "vec4Property"))
               },
             },
             decrease: {
@@ -6232,7 +6204,7 @@ global.__VEComponents = new Map(String, Callable, {
         Struct.get(config, "x"),
         {
           field: { vec4Property: "x" },
-          slider: { vec4Property: "x" },
+          stick: { vec4Property: "x" },
           decrease: { vec4Property: "x" },
           increase: { vec4Property: "x" },
         },
@@ -6247,7 +6219,7 @@ global.__VEComponents = new Map(String, Callable, {
         Struct.get(config, "y"),
         { 
           field: { vec4Property: "y" },
-          slider: { vec4Property: "y" },
+          stick: { vec4Property: "y" },
           decrease: { vec4Property: "y" },
           increase: { vec4Property: "y" },
         },
@@ -6262,7 +6234,7 @@ global.__VEComponents = new Map(String, Callable, {
         Struct.get(config, "z"),
         {
           field: { vec4Property: "z" },
-          slider: { vec4Property: "z" },
+          stick: { vec4Property: "z" },
           decrease: { vec4Property: "z" },
           increase: { vec4Property: "z" },
         },
@@ -6277,7 +6249,7 @@ global.__VEComponents = new Map(String, Callable, {
         Struct.get(config, "a"),
         {
           field: { vec4Property: "a" },
-          slider: { vec4Property: "a" },
+          stick: { vec4Property: "a" },
           decrease: { vec4Property: "a" },
           increase: { vec4Property: "a" },
         },

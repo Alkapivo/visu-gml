@@ -275,11 +275,11 @@ function _Visu() constructor {
     "particle-player-bomb":{
       "shape":"RING",
       "alpha":{
-        "halfway":0.80000000000000004,
+        "halfway":1.0,
         "finish":0.0,
-        "start":0.5
+        "start":0.7
       },
-      "blend":false,
+      "blend":true,
       "scale":{
         "x":1.0,
         "y":1.0
@@ -302,8 +302,8 @@ function _Visu() constructor {
         "relative":0.0
       },
       "life":{
-        "minValue":30.0,
-        "maxValue":45.0
+        "minValue":45.0,
+        "maxValue":60.0
       },
       "color":{
         "halfway":"#FFB400",
@@ -328,9 +328,9 @@ function _Visu() constructor {
       "alpha":{
         "halfway":0.80000000000000004,
         "finish":0.0,
-        "start":0.20000000000000001
+        "start":1.00000000000000001
       },
-      "blend":false,
+      "blend":true,
       "scale":{
         "x":1.0,
         "y":1.0
@@ -379,9 +379,9 @@ function _Visu() constructor {
       "alpha":{
         "halfway":0.5,
         "finish":0.0,
-        "start":0.80000000000000004
+        "start":1.00000000000000004
       },
-      "blend":false,
+      "blend":true,
       "scale":{
         "x":1.0,
         "y":1.0
@@ -430,9 +430,9 @@ function _Visu() constructor {
       "alpha":{
         "halfway":0.80000000000000004,
         "finish":0.0,
-        "start":0.29999999999999999
+        "start":1.09999999999999999
       },
-      "blend":false,
+      "blend":true,
       "scale":{
         "x":1.0,
         "y":1.0
@@ -474,6 +474,108 @@ function _Visu() constructor {
         "minValue":0.0,
         "maxValue":0.20000000000000001,
         "wiggle":0.0
+      }
+    },
+    "particle-shroom-death":{
+      "shape":"RING",
+      "alpha":{
+        "halfway":1.0,
+        "finish":0.0,
+        "start":1.0
+      },
+      "blend":true,
+      "speed":{
+        "increase":0.0,
+        "minValue":0.0,
+        "wiggle":0.0,
+        "maxValue":0.0
+      },
+      "gravity":{
+        "angle":0.0,
+        "amount":0.0
+      },
+      "angle":{
+        "increase":-3.0,
+        "minValue":0.0,
+        "wiggle":2.0,
+        "maxValue":360.0
+      },
+      "color":{
+        "halfway":"#0049FF",
+        "finish":"#74C7FF",
+        "start":"#8FCFFF"
+      },
+      "size":{
+        "increase":0.5,
+        "minValue":0.0,
+        "wiggle":0.0,
+        "maxValue":0.20000000000000001
+      },
+      "life":{
+        "minValue":50.0,
+        "maxValue":70.0
+      },
+      "scale":{
+        "x":1.0,
+        "y":1.0
+      },
+      "orientation":{
+        "increase":5.0,
+        "minValue":0.0,
+        "wiggle":1.0,
+        "relative":0.0,
+        "maxValue":360.0
+      }
+    },
+    "particle-shroom-damage":{
+      "shape":"RING",
+      "alpha":{
+        "halfway":1.0,
+        "finish":0.0,
+        "start":1.0
+      },
+      "blend":true,
+      "speed":{
+        "increase":0.0,
+        "minValue":0.0,
+        "wiggle":0.0,
+        "maxValue":0.0
+      },
+      "gravity":{
+        "angle":0.0,
+        "amount":0.0
+      },
+      "angle":{
+        "increase":-3.0,
+        "minValue":0.0,
+        "wiggle":2.0,
+        "maxValue":360.0
+      },
+      "color":{
+        "halfway":"#FF0061",
+        "finish":"#4961FF",
+        "start":"#FFCF00"
+      },
+      "size":{
+        "increase":1.0,
+        "minValue":0.0,
+        "wiggle":0.0,
+        "maxValue":2.0
+      },
+      "life":{
+        "minValue":30.0,
+        "maxValue":45.0
+      },
+      "scale":{
+        "x":1.0,
+        "y":1.0
+      },
+      "orientation":{
+        "increase":5.0,
+        "minValue":0.0,
+        "wiggle":1.0,
+        "relative":0.0,
+        "maxValue":360.0
       }
     },
   }
@@ -821,8 +923,8 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.debug.render-debug-chunks", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.debug.render-surfaces", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.god-mode", type: SettingTypes.BOOLEAN, defaultValue: false }))
-      .set(new SettingEntry({ name: "visu.optimalization.sort-entities-by-txgroup", type: SettingTypes.BOOLEAN, defaultValue: true }))
-      .set(new SettingEntry({ name: "visu.optimalization.iterate-entities-once", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.optimalization.sort-entities-by-txgroup", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.optimalization.iterate-entities-once", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.window.width", type: SettingTypes.NUMBER, defaultValue: 1400 }))
       .set(new SettingEntry({ name: "visu.window.height", type: SettingTypes.NUMBER, defaultValue: 900 }))
       .set(new SettingEntry({ name: "visu.interface.scale", type: SettingTypes.NUMBER, defaultValue: 1 }))

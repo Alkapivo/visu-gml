@@ -212,11 +212,13 @@ function brush_entity_player(json = null) {
               enable: { key: "en-pl_use-mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           y: {
             label: {
@@ -238,11 +240,13 @@ function brush_entity_player(json = null) {
               enable: { key: "en-pl_use-mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           z: {
             label: {
@@ -264,11 +268,13 @@ function brush_entity_player(json = null) {
               enable: { key: "en-pl_use-mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           a: {
             label: {
@@ -290,11 +296,13 @@ function brush_entity_player(json = null) {
               enable: { key: "en-pl_use-mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "en-pl_mask" },
               enable: { key: "en-pl_use-mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
         },
       },

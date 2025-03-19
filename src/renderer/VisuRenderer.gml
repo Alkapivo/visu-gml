@@ -96,7 +96,7 @@ function VisuRenderer() constructor {
       this.spinner
         .setAngle(30.0 * (this.spinnerFactor / 100))
         .setAlpha(0.85 * (this.spinnerFactor / 100))
-        .render(GuiWidth() / 2.0, (GuiHeight() * 0.66) - this.spinnerFactor)
+        .render(GuiWidth() / 2.0, (GuiHeight() * 0.75) - this.spinnerFactor)
     } else if (this.spinnerFactor > 0) {
       var color = c_black
       this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.08)
@@ -112,7 +112,7 @@ function VisuRenderer() constructor {
       this.spinner
         .setAngle(-30.0 * (this.spinnerFactor / 100.0))
         .setAlpha(0.85 * (this.spinnerFactor / 100.0))
-        .render(GuiWidth() / 2.0, (GuiHeight() * 0.66) - this.spinnerFactor)
+        .render(GuiWidth() / 2.0, (GuiHeight() * 0.75) - this.spinnerFactor)
     }
 
     return this
@@ -144,11 +144,11 @@ function VisuRenderer() constructor {
     */
     
     var editor = Beans.get(BeanVisuEditorController)
+    var controller = Beans.get(BeanVisuController)
+    var gridService = controller.gridService
     var enableEditor = Optional.is(editor) && editor.renderUI
     var enableDebugOverlay = is_debug_overlay_open()
     if (enableDebugOverlay) {
-      var controller = Beans.get(BeanVisuController)
-      var gridService = controller.gridService
       var shrooms = controller.shroomService.shrooms.size()
       var bullets = controller.bulletService.bullets.size()
   
@@ -199,6 +199,15 @@ function VisuRenderer() constructor {
         + $"z:     {gridCamera.z}\n"
         + $"pitch: {gridCamera.pitch + (sin(this.gridRenderer.camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)}\n"
         + $"angle: {gridCamera.angle + (sin(this.gridRenderer.camera.breathTimer2.time) * BREATH_TIMER_FACTOR_2)}\n"
+        + $"view.x: {gridService.view.x}\n"
+        + $"view.y: {gridService.view.y}\n"
+
+      var player = controller.playerService.player
+      if (Optional.is(player)) {
+        gridCameraMessage = gridCameraMessage 
+          + $"player.x: {player.x}\n"
+          + $"player.y: {player.y}\n"
+      }
     }
     
     if (gridCameraMessage != "") {

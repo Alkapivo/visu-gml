@@ -579,7 +579,6 @@ function Player(template): GridItem(template) constructor {
   ///@override
   ///@return {GridItem}
   static update = function(controller) {
-    gml_pragma("forceinline")
     this.keyboard.update()
     
     if (Optional.is(this.gameMode)) {
@@ -594,33 +593,30 @@ function Player(template): GridItem(template) constructor {
 
     var view = controller.gridService.view
     var targetLocked = controller.gridService.targetLocked
-    if (targetLocked.isLockedX) { 
-      var width = controller.gridService.properties.borderHorizontalLength
-      var offsetX = (this.sprite.getWidth()) / GRID_SERVICE_PIXEL_WIDTH
-      var anchorX = view.x
-      this.x = clamp(
-        this.x,
-        clamp(anchorX - width + offsetX + (view.width / 2.0), 0.0, view.worldWidth),
-        clamp(anchorX + width - offsetX + (view.width / 2.0), 0.0, view.worldWidth)
-      )
+    if (targetLocked.isLockedX && Optional.is(targetLocked.lockX)) { 
+      var horizontal = controller.gridService.properties.borderHorizontalLength / 2.0
+      var width = (this.sprite.getWidth() / 2.0) / GRID_SERVICE_PIXEL_WIDTH
+      var xMin = targetLocked.lockX + (view.width / 2.0) - horizontal + width
+      var xMax = targetLocked.lockX + (view.width / 2.0) + horizontal - width
+      var xMinOffset = xMin < 0 ? abs(xMin) : 0.0
+      var xMaxOffset = xMax > view.worldWidth ? xMax - view.worldWidth : 0.0
+      xMin = clamp(xMin - xMaxOffset, 0.0, view.worldWidth)
+      xMax = clamp(xMax + xMinOffset, 0.0, view.worldWidth)
+        
+      this.x = clamp(this.x, xMin, xMax)
     }
 
-    if (targetLocked.isLockedY) {
-      var height = controller.gridService.properties.borderVerticalLength
-      var anchorY = view.y
-      var platformerY = this.y
-      this.y = clamp(
-        this.y, 
-        clamp(anchorY - height + (view.height / 2.0), 0.0, view.worldHeight),
-        clamp(anchorY + height + (view.height / 2.0), 0.0, view.worldHeight)
-      )
-      if (this.gameMode != null 
-        && this.gameMode.type == PlayerPlatformerGameMode
-        && controller.visuRenderer.gridRenderer.player2DCoords.y > controller.visuRenderer.gridRenderer.gridSurface.height) {
+    if (targetLocked.isLockedY && Optional.is(targetLocked.lockY)) { 
+      var vertical = controller.gridService.properties.borderVerticalLength / 2.0
+      var height = (this.sprite.getHeight() / 2.0) / GRID_SERVICE_PIXEL_HEIGHT
+      var yMin = targetLocked.lockY + (view.height / 2.0) - vertical + height
+      var yMax = targetLocked.lockY + (view.height / 2.0) + vertical - height
+      var yMinOffset = yMin < 0 ? abs(yMin) : 0.0
+      var yMaxOffset = yMax > view.worldHeight ? yMax - view.worldHeight : 0.0
+      yMin = clamp(yMin - yMaxOffset, 0.0, view.worldHeight)
+      yMax = clamp(yMax + yMinOffset, 0.0, view.worldHeight)
 
-        this.y = clamp(platformerY, 0.0, view.worldHeight + view.height)
-        targetLocked.isLockedY = false
-      }
+      this.y = clamp(this.y, yMin, yMax)
     }
 
     this.x = clamp(this.x, 0.0, view.worldWidth)

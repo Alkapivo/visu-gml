@@ -1588,7 +1588,7 @@ function VisuMenu(_config = null) constructor {
               updateCustom: function() {
                 var scaleIntent = Struct.getIfType(this.context, "scaleIntent", Number, Visu.settings.getValue("visu.interface.scale"))
                 Struct.set(this.context, "scaleIntent", scaleIntent)
-                this.label.text = $"{string(int64(scaleIntent * 100))}%"
+                this.label.text = $"{string(int64(ceil(scaleIntent * 100)))}%"
               },
             },
             next: { 
@@ -2708,10 +2708,9 @@ function VisuMenu(_config = null) constructor {
     }
     
     static factoryVersion = function() {
-      var current = date_current_datetime()
-      var year = string_replace(string_format(date_get_year(current) mod 100, 2, 0), " ", "0")
-      var month = string_replace(string_format(date_get_month(current), 2, 0), " ", "0")
-      var day = string_replace(string_format(date_get_day(current), 2, 0), " ", "0")
+      var year = string_replace(string_format(date_get_year(GM_build_date) mod 100, 2, 0), " ", "0")
+      var month = string_replace(string_format(date_get_month(GM_build_date), 2, 0), " ", "0")
+      var day = string_replace(string_format(date_get_day(GM_build_date), 2, 0), " ", "0")
       return $"{year}{month}{day}"
     }
 

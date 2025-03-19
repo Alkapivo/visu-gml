@@ -127,8 +127,8 @@ function VisuController(layerName) constructor {
             glitchTimer.setDuration(4.0 + random(12.0))
             controller.visuRenderer.hudRenderer.sendGlitchEvent()
             effect_track_event.brush_effect_glitch.run({
-              "ef-glt_use-config":false,
-              "ef-glt_use-fade-out":true,
+              "ef-glt_use-config": false,
+              "ef-glt_use-fade-out": true,
               "ef-glt_fade-out": 0.02 + random(1.0) * 0.08,
             })
           }
@@ -190,8 +190,10 @@ function VisuController(layerName) constructor {
             }
 
             audio_stop_all()
+            controller.visuRenderer.gridRenderer.clear()
             Beans.get(BeanSoundService).free()
             Beans.get(BeanTextureService).free()
+            
             controller.trackService.dispatcher.execute(new Event("close-track"))
           },
         },
