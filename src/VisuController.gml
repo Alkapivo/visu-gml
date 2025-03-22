@@ -15,7 +15,7 @@ function VisuController(layerName) constructor {
   ///@type {GMLayer}
   layerId = Assert.isType(Scene.getLayer(layerName), GMLayer)
 
-  ////@type {Gamemode}
+  ///@type {Gamemode}
   gameMode = GameMode.BULLETHELL
 
   ///@type {?VisuTrack}
@@ -64,7 +64,7 @@ function VisuController(layerName) constructor {
           var controller = Beans.get(BeanVisuController)
           var gridService = controller.gridService
           if (!Optional.is(controller.ostSound)) {
-            var sound = SoundUtil.fetch("sound_QW1waGV0YW1pbmU", { loop: true })
+            var sound = SoundUtil.fetch("sound_nfract_amphetamine", { loop: true })
             controller.ostSound = Core.isType(sound, Sound)
               ? sound 
               : controller.ostSound
@@ -862,6 +862,29 @@ function VisuController(layerName) constructor {
     if (Visu.settings.getValue("visu.server.enable", false)) {
       this.server.run()
     }
+
+    
+    var httpService = Beans.get(BeanHTTPService)
+    if (Core.getProperty("visu.version.check", false)
+      && Core.getRuntimeType() != RuntimeType.GXGAMES
+      && Optional.is(httpService)) {
+      httpService.send(httpService.factoryGetEvent({
+        url: Core.getProperty("visu.version.url"),
+        onSuccess: function(result) {
+          try {
+            ///@todo Use JSON.parserTask
+            var versionConfig = JSON.parse(result)
+            var current = Struct.get(versionConfig.data.current, Core.getRuntimeType())
+            Visu._serverVersion = current.version
+          } catch (exception) {
+            Visu._serverVersion = null
+            Logger.error("VisuController", $"serverVersion fatal error: {exception.message}")
+            Core.printStackTrace()
+          }
+        },
+      }))
+    }
+  
     return this
   }
 

@@ -225,7 +225,7 @@ function GridProperties(config = null) constructor {
   ///@type {Struct}
   depths = {
     gridZ: 2045,
-    particleZ: 2047,
+    particleZ: 2100,//2047,
     bulletZ: 2048,
     shroomZ: 2049,
     coinZ: 2047,

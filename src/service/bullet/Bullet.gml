@@ -89,15 +89,15 @@ function BulletTemplate(_name, json) constructor {
 
   ///@return {Struct}
   serialize = function() {
-    var json = {
-      sprite: this.sprite,
+    return {
+      sprite: JSON.clone(this.sprite),
       useSpeedOffset: this.useSpeedOffset,
       changeSpeedOffset: this.changeSpeedOffset,
       useAngleOffset: this.useAngleOffset,
       changeAngleOffset: this.changeAngleOffset,
       damage: this.damage,
       lifespawnMax: this.lifespawnMax,
-      mask: this.mask,
+      mask: Optional.is(this.mask) ? JSON.clone(this.mask) : null,
       wiggle: this.wiggle,
       wiggleTime: this.wiggleTime,
       wiggleTimeRng: this.wiggleTimeRng,
@@ -117,8 +117,44 @@ function BulletTemplate(_name, json) constructor {
       onDeathSpeedMerge: this.onDeathSpeedMerge,
       onDeathRngSpeed: this.onDeathRngSpeed,
     }
+  }
 
-    return JSON.clone(json)
+  ///@return {Struct}
+  serializeSpawn = function(x, y, angle, speed, producer, uid) {
+    return {
+      sprite: JSON.clone(this.sprite),
+      useSpeedOffset: this.useSpeedOffset,
+      changeSpeedOffset: this.changeSpeedOffset,
+      useAngleOffset: this.useAngleOffset,
+      changeAngleOffset: this.changeAngleOffset,
+      damage: this.damage,
+      lifespawnMax: this.lifespawnMax,
+      mask: Optional.is(this.mask) ? JSON.clone(this.mask) : null,
+      wiggle: this.wiggle,
+      wiggleTime: this.wiggleTime,
+      wiggleTimeRng: this.wiggleTimeRng,
+      wiggleFrequency: this.wiggleFrequency,
+      wiggleDirRng: this.wiggleDirRng,
+      wiggleAmplitude: this.wiggleAmplitude,
+      angleOffset: this.angleOffset,
+      angleOffsetRng: this.angleOffsetRng,
+      speedOffset: this.speedOffset,
+      onDeath: this.onDeath,
+      onDeathAmount: this.onDeathAmount,
+      onDeathAngle: this.onDeathAngle,
+      onDeathAngleRng: this.onDeathAngleRng,
+      onDeathAngleStep: this.onDeathAngleStep,
+      onDeathRngStep: this.onDeathRngStep,
+      onDeathSpeed: this.onDeathSpeed,
+      onDeathSpeedMerge: this.onDeathSpeedMerge,
+      onDeathRngSpeed: this.onDeathRngSpeed,
+      x: x,
+      y: y,
+      angle: angle,
+      speed: speed,
+      producer: producer,
+      uid: uid,
+    }
   }
 }
 

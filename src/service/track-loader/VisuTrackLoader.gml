@@ -26,14 +26,6 @@ function VisuTrackLoader(_controller): Service() constructor {
     mapPromiseToTask: function(promise) {
       return Assert.isType(promise.response, Task)
     },
-    wasmSounds: new Map(String, String, {
-      "Just-To-Create-Something.ogg": "sound_kedy_selma_just_to_create_something",
-      "Passion.ogg": "sound_kedy_selma_passion",
-      "digitalshadowfinalunmixed.ogg": "sound_zoogies_digitalshadow",
-      "Schnoopy-Destination-Unknown.ogg": "sound_schnoopy_destination_unknown",
-      "Sewerslvt-Purple-Hearts-In-Her-Eyes.ogg": "sound_sewerslvt_purple_hearts_in_her_eyes",
-      "Sewerslvt-Psychosis.ogg": "sound_sewerslvt_psychosis",
-    }),
   }
 
   ///@type {FSM}
@@ -201,12 +193,12 @@ function VisuTrackLoader(_controller): Service() constructor {
                         //Logger.debug("VisuTrackLoader", $"Load sound intent '{key}'")
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
-                        if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
-                          Assert.isTrue(audio_group_is_loaded(audiogroup_visu_wasm), 
-                            "'audiogroup_visu_wasm' must be loaded")
-                          var sound = Assert.isType(SoundUtil
-                            .fetchGMSound(acc.wasmSounds.get(soundIntent.file)), GMSound, 
-                            $"Couldn't find sound for wasm target, {soundIntent.file}")
+                        var visuWASM = Callable.run("VisuWASM")
+                        if (Core.getRuntimeType() == RuntimeType.GXGAMES && Core.isType(visuWASM, Struct)) {
+                          Assert.isTrue(audio_group_is_loaded(visuWASM.getAudioGroup()), "audiogroup must be loaded")
+
+                          var sound = Struct.get(visuWASM.getSounds(), soundIntent.file)
+                          Assert.isType(sound, GMSound, $"Couldn't find sound for wasm target, {soundIntent.file}")
                           soundService.sounds.add(sound, key)
                           return
                         }
@@ -222,7 +214,6 @@ function VisuTrackLoader(_controller): Service() constructor {
                       acc: {
                         soundService: Beans.get(BeanSoundService),
                         path: controller.track.path,
-                        wasmSounds: fsm.context.utils.wasmSounds,
                       },
                       steps: 1,
                     })
@@ -358,7 +349,7 @@ function VisuTrackLoader(_controller): Service() constructor {
               }))
             }
 
-            if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+            if (Core.getRuntimeType() == RuntimeType.GXGAMES && Core.isType(Callable.run("VisuWASM"), Struct)) {
               var audioGroupTask = new Task("load-audio-group")
                 .setPromise(new Promise())
                 .setTimeout(10.0)
@@ -366,10 +357,17 @@ function VisuTrackLoader(_controller): Service() constructor {
                   isLoading: false
                 })
                 .whenUpdate(function() {
+                  var visuWASM = Callable.run("VisuWASM")
+                  var soundService = Beans.get(BeanSoundService)
+                  if (!Core.isType(visuWASM, Struct) || !Optional.is(soundService)) {
+                    this.reject()
+                    return
+                  }
+
+                  var audioGroup = visuWASM.getAudioGroup()
                   if (!this.state.isLoading) {
-                    this.state.isLoading = Beans.get(BeanSoundService)
-                      .loadAudioGroup(audiogroup_visu_wasm)
-                  } else if (audio_group_is_loaded(audiogroup_visu_wasm)) {
+                    this.state.isLoading = soundService.loadAudioGroup(audioGroup)
+                  } else if (audio_group_is_loaded(audioGroup)) {
                     this.fullfill()
                   }
                 })
@@ -590,7 +588,7 @@ function VisuTrackLoader(_controller): Service() constructor {
       "cooldown": {
         actions: {
           onStart: function(fsm, fsmState) {
-            fsmState.state.set("cooldown-timer", new Timer(1.0))
+            fsmState.state.set("cooldown-timer", new Timer(2.0))
 
             var controller = Beans.get(BeanVisuController)
             controller.executor.tasks.forEach(function(task) {

@@ -319,9 +319,52 @@ function PlayerStats(_player, json) constructor {
               return
             }
 
+            var time = ceil(this.state.timer.finished ? this.state.timer.duration : this.state.timer.time)
+            var col1 = time mod 2 != 0 ? "#371848" : "#FF00FF"
+            var col2 = time mod 2 != 0 ? "#FF00FF" : "#371848"
+            controller.subtitleService.send(new Event("add", {
+              template: new SubtitleTemplate("sub-bomb", {
+                lines: [
+                  $"DROP THE BOMB"
+                ],
+              }),
+              timeout: null,
+              font: FontUtil.fetch("font_kodeo_mono_48_bold"),
+              fontHeight: 96,
+              color: ColorUtil.parse(col1).toGMColor(),
+              outline: ColorUtil.parse(col2).toGMColor(),
+              align: {
+                v: VAlign.TOP,
+                h: HAlign.CENTER,
+              },
+              area: new Rectangle({ 
+                x: 0.25,
+                y: 0.4,
+                width: 0.5,
+                height: 0.2,
+              }),
+              charSpeed: 0.25,
+              lineDelay: new Timer(0.1),
+              finishDelay: new Timer(1.0),
+              angleTransformer: new NumberTransformer({
+                value: 270.0,
+                target: 270.0,
+                factor: 0.1,
+                increase: 0.0,
+              }),
+              speedTransformer: new NumberTransformer({
+                value: 0.0,
+                target: 128.0,
+                factor: 0.03,
+                increase: 0.0003,
+              }),
+              fadeIn: 0.5,
+              fadeOut: 0.5,
+            }))
+
             controller.shroomService.shrooms.forEach(function(shroom, index, player) {
               var length = Math.fetchLength(shroom.x, shroom.y, player.x, player.y)
-              if (length <= 1.0) {
+              if (length <= 1.41) {
                 shroom.signal("kill")
               }
             }, player)
@@ -362,6 +405,48 @@ function PlayerStats(_player, json) constructor {
           })
         controller.executor.add(task)
 
+        var time = 1
+        var col1 = time mod 2 != 0 ? "#371848" : "#FF00FF"
+        var col2 = time mod 2 != 0 ? "#FF00FF" : "#371848"
+        controller.subtitleService.send(new Event("add", {
+          template: new SubtitleTemplate("sub-bomb", {
+            lines: [
+              $"DROP THE BOMB"
+            ],
+          }),
+          timeout: null,
+          font: FontUtil.fetch("font_kodeo_mono_48_bold"),
+          fontHeight: 96,
+          color: ColorUtil.parse(col1).toGMColor(),
+          outline: ColorUtil.parse(col2).toGMColor(),
+          align: {
+            v: VAlign.TOP,
+            h: HAlign.CENTER,
+          },
+          area: new Rectangle({ 
+            x: 0.25,
+            y: 0.4,
+            width: 0.5,
+            height: 0.2,
+          }),
+          charSpeed: 0.25,
+          lineDelay: new Timer(0.1),
+          finishDelay: new Timer(1.00),
+          angleTransformer: new NumberTransformer({
+            value: 270.0,
+            target: 270.0,
+            factor: 0.1,
+            increase: 0.0,
+          }),
+          speedTransformer: new NumberTransformer({
+            value: 0.0,
+            target: 128.0,
+            factor: 0.03,
+            increase: 0.0003,
+          }),
+          fadeIn: 0.5,
+          fadeOut: 0.5,
+        }))
         controller.sfxService.play("player-use-bomb")
       }
       return this

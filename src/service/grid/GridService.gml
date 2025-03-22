@@ -578,7 +578,7 @@ function GridService(_config = null) constructor {
       }
     }
     static shroomBullet = function(player, bullet) {
-      if (player.collide(bullet)) {
+      if (bullet.fadeIn >= 1.0 && player.collide(bullet)) {
         player.signal("bulletCollision", bullet)
         bullet.signal("playerCollision", player)
       }
@@ -614,7 +614,7 @@ function GridService(_config = null) constructor {
   ///@param {Number} index
   ///@param {Player} player
   shroomCollision = function(shroom, index, player) {
-    if (shroom.collide(player)) {
+    if (shroom.fadeIn >= 1.0 && shroom.collide(player)) {
       player.signal("shroomCollision", shroom)
       shroom.signal("playerCollision", player)
       shroom.signal("damage", true)

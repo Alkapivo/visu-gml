@@ -26,6 +26,14 @@ function _Visu() constructor {
   _assets = null
 
   ///@private
+  ///@type {?String}
+  _version = null
+
+  ///@private
+  ///@type {?String}
+  _serverVersion = null
+
+  ///@private
   ///@type {?CLIParamParser}
   _cliParser = null
 
@@ -663,6 +671,62 @@ function _Visu() constructor {
       "asset": texture_hechan_3_abstract,
       "file": "",
     },
+    "texture_bullet_blue": {
+      "asset": texture_bullet_blue,
+      "file": "",
+    },
+    "texture_bullet_circle_blue": {
+      "asset": texture_bullet_circle_blue,
+      "file": "",
+    },
+    "texture_shroom_baron": {
+      "asset": texture_shroom_baron,
+      "file": "",
+    },
+    "texture_shroom_baron_blue": {
+      "asset": texture_shroom_baron_blue,
+      "file": "",
+    },
+    "texture_shroom_baron_green": {
+      "asset": texture_shroom_baron_green,
+      "file": "",
+    },
+    "texture_shroom_baron_magenta": {
+      "asset": texture_shroom_baron_magenta,
+      "file": "",
+    },
+    "texture_shroom_baron_red": {
+      "asset": texture_shroom_baron_red,
+      "file": "",
+    },
+    "texture_shroom_baron_yellow": {
+      "asset": texture_shroom_baron_yellow,
+      "file": "",
+    },
+    "texture_shroom_bazyl": {
+      "asset": texture_shroom_bazyl,
+      "file": "",
+    },
+    "texture_shroom_bazyl_blue": {
+      "asset": texture_shroom_bazyl_blue,
+      "file": "",
+    },
+    "texture_shroom_bazyl_green": {
+      "asset": texture_shroom_bazyl_green,
+      "file": "",
+    },
+    "texture_shroom_bazyl_magenta": {
+      "asset": texture_shroom_bazyl_magenta,
+      "file": "",
+    },
+    "texture_shroom_bazyl_red": {
+      "asset": texture_shroom_bazyl_red,
+      "file": "",
+    },
+    "texture_shroom_bazyl_yellow": {
+      "asset": texture_shroom_bazyl_yellow,
+      "file": "",
+    },
   } 
 
   ///@return {Struct}
@@ -708,6 +772,23 @@ function _Visu() constructor {
     }
 
     return this._assets
+  }
+
+  ///@return {String}
+  static version = function() {
+    if (this._version == null) {
+      var year = string_replace(string_format(date_get_year(GM_build_date) mod 100, 2, 0), " ", "0")
+      var month = string_replace(string_format(date_get_month(GM_build_date), 2, 0), " ", "0")
+      var day = string_replace(string_format(date_get_day(GM_build_date), 2, 0), " ", "0")
+      this._version = $"{year}.{month}.{day}"
+    }
+
+    return this._version
+  }
+
+  ///@return {?String}
+  static serverVersion = function() {
+    return this._serverVersion
   }
 
   ///@return {CLIParamParser}
@@ -1007,6 +1088,18 @@ function _Visu() constructor {
     }
 
     var layerId = Scene.fetchLayer(layerName, layerDefaultDepth)
+
+    if (!Beans.exists(BeanHTTPService)) {
+      Beans.add(Beans.factory(BeanHTTPService, GMServiceInstance, layerId,
+        new HTTPService({
+          eventPump: {
+            enableLogger: true,
+          },
+          executor: {
+            enableLogger: true,
+          }
+        })))
+    }
 
     if (!Beans.exists(BeanFileService)) {
       Beans.add(Beans.factory(BeanFileService, GMServiceInstance, layerId,

@@ -1588,7 +1588,7 @@ function VisuMenu(_config = null) constructor {
               updateCustom: function() {
                 var scaleIntent = Struct.getIfType(this.context, "scaleIntent", Number, Visu.settings.getValue("visu.interface.scale"))
                 Struct.set(this.context, "scaleIntent", scaleIntent)
-                this.label.text = $"{string(int64(ceil(scaleIntent * 100)))}%"
+                this.label.text = $"{string(floor(scaleIntent * 100))}%"
               },
             },
             next: { 
@@ -2706,13 +2706,6 @@ function VisuMenu(_config = null) constructor {
         },
       })
     }
-    
-    static factoryVersion = function() {
-      var year = string_replace(string_format(date_get_year(GM_build_date) mod 100, 2, 0), " ", "0")
-      var month = string_replace(string_format(date_get_month(GM_build_date), 2, 0), " ", "0")
-      var day = string_replace(string_format(date_get_day(GM_build_date), 2, 0), " ", "0")
-      return $"{year}{month}{day}"
-    }
 
     this.layout = this.factoryLayout(parent)
     this.containers
@@ -2746,8 +2739,23 @@ function VisuMenu(_config = null) constructor {
             config: {
               label: { 
                 //text: $"github.com/Alkapivo | v.{GM_build_date} | {date_datetime_string(GM_build_date)}",
-                text: $"v.{factoryVersion()} | Baron's Keep 2025 (c)",
+                text: $"v{Visu.version()} | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n",
+                updateCustom: function() {
+                  var serverVersion = Visu.serverVersion()
+                  if (!Optional.is(serverVersion)) {
+                    return this
+                  }
+
+                  var version = Visu.version()
+                  this.label.text = version == serverVersion 
+                    ? $"v{version} | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n"
+                    : $"v{version} (NEW VERSION AVAILABLE: v{serverVersion}) | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n"
+
+                },
                 font: "font_kodeo_mono_12_bold",
+                onMouseReleasedLeft: function() {
+                  url_open("https://github.com/Alkapivo/visu-project")
+                }
               },
             },
           }

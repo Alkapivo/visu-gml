@@ -128,6 +128,24 @@ function ShroomService(_controller, config = {}): Service() constructor {
     },
   }))
 
+  static spawnShroom = function(name, spawnX, spawnY, angle, spd, snapH, snapV) {
+    var view = this.controller.gridService.view
+    var locked = this.controller.gridService.targetLocked
+    var viewX = snapH ? locked.snapH : view.x
+    var viewY = snapV ? locked.snapV : view.y
+    var template = this.getTemplate(name).serializeSpawn(viewX + spawnX, viewY + spawnY, spd / 1000.0, angle, this.controller.gridService.generateUID())
+    
+    var shroom = new Shroom(template)
+    shroom.updateGameMode(this.controller.gameMode)
+
+    this.shrooms.add(shroom)
+    this.chunkService.add(shroom)
+
+    if (this.optimalizationSortEntitiesByTxGroup) {
+      this.controller.gridService.textureGroups.sortItems(this.shrooms)
+    }
+  }
+
   ///@param {Event} event
   ///@return {?Promise}
   static send = function(event) {

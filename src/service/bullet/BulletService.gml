@@ -97,6 +97,25 @@ function BulletService(_controller, config = {}): Service() constructor {
     },
   }))
 
+  static spawnBullet = function(name, x, y, angle, speed, producer) {
+    var template = this.getTemplate(name).serializeSpawn(x, y, angle, speed / 1000.0, producer, this.controller.gridService.generateUID())
+    if (producer == Shroom) {
+      controller.sfxService.play("shroom-shoot")
+    }
+    
+    var bullet = new Bullet(template)
+    if (producer == Player) {
+      this.chunkService.add(bullet)
+    }
+    //bullet.updateGameMode(this.controller.gameMode)
+
+    this.bullets.add(bullet)
+
+    if (this.optimalizationSortEntitiesByTxGroup) {
+      this.controller.gridService.textureGroups.sortItems(this.bullets)
+    }
+  }
+
   ///@param {Event} event
   ///@return {?Promise}
   static send = function(event) {
@@ -135,14 +154,22 @@ function BulletService(_controller, config = {}): Service() constructor {
         ? (rngSpd + (bullet.speed * 1000.0) + bullet.onDeathSpeed) 
         : (rngSpd + bullet.onDeathSpeed)), 0.1, 99.9)
 
-      context.send(new Event("spawn-bullet", {
-        x: bullet.x,
-        y: bullet.y,
-        angle: dir,
-        speed: spd,
-        producer: bullet.producer,
-        template: bullet.onDeath,
-      }))
+      context.spawnBullet(
+        bullet.onDeath, 
+        bullet.x, 
+        bullet.y,
+        dir,
+        spd,
+        bullet.producer
+      )        
+      //context.send(new Event("spawn-bullet", {
+      //  x: bullet.x,
+      //  y: bullet.y,
+      //  angle: dir,
+      //  speed: spd,
+      //  producer: bullet.producer,
+      //  template: bullet.onDeath,
+      //}))
     }
   }
 

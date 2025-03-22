@@ -19,10 +19,10 @@ global.__grid_track_event = {
         "icon": Struct.parse.sprite(data, "icon"),
         "gr-area_use-h": Struct.parse.boolean(data, "gr-area_use-h"),
         "gr-area_h": Struct.parse.numberTransformer(data, "gr-area_h", {
-          clampValue: { from: 0.0, to: 10.0 },
-          clampTarget: { from: 0.0, to: 10.0 },
+          clampValue: { from: 0.0, to: 100.0 },
+          clampTarget: { from: 0.0, to: 100.0 },
         }),
-        "gr-area_change-h": Struct.parse.boolean(data, "gr-area_change-h"),
+        " ": Struct.parse.boolean(data, "gr-area_change-h"),
         "gr-area_use-h-col": Struct.parse.boolean(data, "gr-area_use-h-col"),
         "gr-area_h-col": Struct.parse.color(data, "gr-area_h-col"),
         "gr-area_h-col-spd": Struct.parse.number(data, "gr-area_h-col-spd", 1.0, 0.0, 999.9),
