@@ -2824,7 +2824,7 @@ function VisuMenu(_config = null) constructor {
                   var version = Visu.version()
                   this.label.text = version == serverVersion 
                     ? $"v{version} | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n"
-                    : $"v{version} (PUBLISHED VERSION: v{serverVersion}) | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n"
+                    : $"v{version} (itch.io version: v{serverVersion}) | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n"
 
                 },
                 font: "font_kodeo_mono_12_bold",

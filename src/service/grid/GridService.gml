@@ -417,8 +417,14 @@ function GridService(_config = null) constructor {
         var angle = random(7.5) * choose(1.0, -1.0)
         var lastTask = controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds.getLast()
         if (Core.isType(lastTask, Task) && Core.isType(lastTask.state, Map)) {
-          lastX = lastTask.state.get("x")
+          lastX = lastTask.state.get("x") + (random(GuiWidth() / 4.0) * choose(1.0, 1.0, -1.0))
           lastY = lastTask.state.get("y")
+          var prev = lastY
+          if (sign(lastY) >= 0) {
+            lastY -= random(abs(lastY) + random(GuiHeight() / 3.0))
+          } else {
+            lastY += random(abs(lastY) + random(GuiHeight() / 3.0))
+          }
         }
 
         controller.send(new Event("fade-sprite", {
