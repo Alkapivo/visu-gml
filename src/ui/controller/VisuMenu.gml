@@ -1771,6 +1771,81 @@ function VisuMenu(_config = null) constructor {
       },
       content: new Array(Struct, [
         {
+          name: "developer_menu-spin-select-entry_difficulty",
+          template: VisuComponents.get("menu-spin-select-entry"),
+          layout: VisuLayouts.get("menu-spin-select-entry"),
+          config: { 
+            layout: { type: UILayoutType.VERTICAL },
+            label: { text: "Difficulty" },
+            previous: { 
+              callback: function() {
+                var map = new Map(String, Number)
+                  .set(Difficulty.EASY, 0)
+                  .set(Difficulty.NORMAL, 1)
+                  .set(Difficulty.HARD, 2)
+                  .set(Difficulty.LUNATIC, 3)
+                var pointer = map.getDefault(Visu.settings.getValue("visu.difficulty"), 1)
+                var target = clamp(int64(pointer - 1), 0, 3)
+                var value = map.findKey(function(value, key, target) {
+                  return value == target
+                }, target)
+
+                if (!Optional.is(value)) {
+                  return
+                }
+
+                Visu.settings.setValue("visu.difficulty", value).save()
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                var value = Visu.settings.getValue("visu.difficulty")
+                if (value == Difficulty.EASY) {
+                  this.sprite.setAlpha(0.15)
+                } else {
+                  this.sprite.setAlpha(1.0)
+                }
+              }
+            },
+            preview: {
+              label: {
+                text: Visu.settings.getValue("visu.difficulty")
+              },
+              updateCustom: function() { 
+                this.label.text = Visu.settings.getValue("visu.difficulty")
+              },
+            },
+            next: { 
+              callback: function() {
+                var map = new Map(String, Number)
+                  .set(Difficulty.EASY, 0)
+                  .set(Difficulty.NORMAL, 1)
+                  .set(Difficulty.HARD, 2)
+                  .set(Difficulty.LUNATIC, 3)
+                var pointer = map.getDefault(Visu.settings.getValue("visu.difficulty"), 1)
+                var target = clamp(int64(pointer + 1), 0, 3)
+                var value = map.findKey(function(value, key, target) {
+                  return value == target
+                }, target)
+
+                if (!Optional.is(value)) {
+                  return
+                }
+
+                Visu.settings.setValue("visu.difficulty", value).save()
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                var value = Visu.settings.getValue("visu.difficulty")
+                if (value == Difficulty.LUNATIC) {
+                  this.sprite.setAlpha(0.15)
+                } else {
+                  this.sprite.setAlpha(1.0)
+                }
+              }
+            },
+          },
+        },
+        {
           name: "developer_menu-button-input-entry_debug",
           template: VisuComponents.get("menu-button-input-entry"),
           layout: VisuLayouts.get("menu-button-input-entry"),
@@ -2749,7 +2824,7 @@ function VisuMenu(_config = null) constructor {
                   var version = Visu.version()
                   this.label.text = version == serverVersion 
                     ? $"v{version} | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n"
-                    : $"v{version} (NEW VERSION AVAILABLE: v{serverVersion}) | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n"
+                    : $"v{version} (PUBLISHED VERSION: v{serverVersion}) | Baron's Keep 2025 (c)\n\ngithub.com/Alkapivo/visu-project\n"
 
                 },
                 font: "font_kodeo_mono_12_bold",
@@ -2799,8 +2874,9 @@ function VisuMenu(_config = null) constructor {
     "close": function(event) {
       if (Struct.getDefault(event.data, "fade", false)) {
         var blur = Beans.get(BeanVisuController).visuRenderer.blur
+        var _value = blur.value
         blur.reset()
-        blur.value = 24
+        blur.value = _value
         blur.target = 0
         this.containers.forEach(function (container) {
           Struct.set(container, "updateCustom", method(container, function() {

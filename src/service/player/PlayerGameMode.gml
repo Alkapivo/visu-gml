@@ -18,7 +18,7 @@ function PlayerBulletHellGameMode(json) {
     focus: Struct.getIfType(json, "focus", Boolean, false),
 
     ///@type {Timer}
-    focusCooldown: new Timer(Struct.getIfType(json, "focusCooldown", Number, 0.33)),
+    focusCooldown: new Timer(Struct.getIfType(json, "focusCooldown", Number, FRAME_MS * 5)),
 
     ///@type {Array<Struct>}
     guns: new Array(Struct, Core.isType(Struct.get(json, "guns"), GMArray)

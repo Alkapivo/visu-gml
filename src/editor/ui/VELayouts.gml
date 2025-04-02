@@ -1342,7 +1342,7 @@ global.__VELayouts = new Map(String, Callable, {
       name: "transform-vec-property-uniform",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       height: function() { 
-        return (5 * 28) + 10; //this.nodes.line.y() + this.nodes.line.margin.bottom - this.nodes.title.y()
+        return this.nodes.title.height() + (4 * 28) + 10; //this.nodes.line.y() + this.nodes.line.margin.bottom - this.nodes.title.y()
       },
       margin: Struct.get(config, "margin"),
       nodes: {

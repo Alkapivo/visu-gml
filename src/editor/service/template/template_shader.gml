@@ -1025,7 +1025,11 @@ function template_shader(json) {
       property.components.forEach(function(component, index, components) {
         components.add(component)
       }, template.components)
-      if (type != ShaderUniformType.findKey(ShaderUniformType.RESOLUTION)) {
+
+      if (type != ShaderUniformType.findKey(ShaderUniformType.RESOLUTION)
+          && type != ShaderUniformType.findKey(ShaderUniformType.VECTOR2) 
+          && type != ShaderUniformType.findKey(ShaderUniformType.VECTOR3) 
+          && type != ShaderUniformType.findKey(ShaderUniformType.VECTOR4)) {
         template.components.add({
           name: $"{template.name}_{key}-line-h",
           template: VEComponents.get("line-h"),

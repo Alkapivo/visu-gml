@@ -67,8 +67,12 @@ global.__view_track_event = {
         "vw-cam_change-move-angle": Struct.parse.boolean(data, "vw-cam_change-move-angle"),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
       var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
       var gridService = controller.gridService
       var pump = gridService.dispatcher
       var executor = gridService.executor
@@ -249,7 +253,7 @@ global.__view_track_event = {
         "vw-layer_texture-lifespan": Struct.parse.number(data, "vw-layer_texture-lifespan", 0.0, 0.0, 9999.9),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
       static fadeOutColorTask = function(task, iterator, type) {
         if (task.name != "fade-color" || task.state.get("type") != type) {
           return
@@ -275,9 +279,12 @@ global.__view_track_event = {
         
         task.state.set("stage", "fade-out")
       }
-      
 
       var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
       var gridService = controller.gridService
       var pump = gridService.dispatcher
       var executor = gridService.executor
@@ -466,7 +473,12 @@ global.__view_track_event = {
         "vw-sub_use-area-preview": Struct.parse.boolean(data, "vw-sub_use-area-preview"),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
+      var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
       var subtitleService = Beans.get(BeanVisuController).subtitleService
 
       ///@description feature TODO view.subtitle.add
@@ -569,8 +581,12 @@ global.__view_track_event = {
         "vw-cfg_render-video-after": Struct.parse.boolean(data, "vw-cfg_render-video-after"),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
       var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
       var gridService = controller.gridService
       var properties = gridService.properties
       var pump = gridService.dispatcher

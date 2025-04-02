@@ -1044,6 +1044,7 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.keyboard.player.action", type: SettingTypes.NUMBER, defaultValue: ord("Z") }))
       .set(new SettingEntry({ name: "visu.keyboard.player.bomb", type: SettingTypes.NUMBER, defaultValue: ord("X") }))
       .set(new SettingEntry({ name: "visu.keyboard.player.focus", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.SHIFT }))
+      .set(new SettingEntry({ name: "visu.difficulty", type: SettingTypes.STRING, defaultValue: Difficulty.NORMAL }))
       .set(new SettingEntry({ 
           name: "visu.editor.theme",
           type: SettingTypes.STRUCT,

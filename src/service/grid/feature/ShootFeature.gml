@@ -50,6 +50,18 @@ function ShootFeature(json) {
     ///@type {Number}
     randomSpeed: Core.isType(Struct.get(data, "randomSpeed"), Number) ? data.randomSpeed : 0.0,
 
+    ///@type {Number}
+    offsetX: Struct.getIfType(data, "offsetX", Number, 0.0),
+
+    ///@type {Number}
+    offsetY: Struct.getIfType(data, "offsetY", Number, 0.0),
+
+    ///@type {Number}
+    offsetAngleStep: Struct.getIfType(data, "offsetAngleStep", Number, 0.0),
+
+    ///@type {Number}
+    randomOffsetAngle: Struct.getIfType(data, "randomOffsetAngle", Number, 0.0),
+
     ///@override
     ///@param {GridItem} item
     ///@param {VisuController} controller
@@ -68,12 +80,19 @@ function ShootFeature(json) {
         }
       }
 
+      var offsetLength = fetchLength(0.0, 0.0, this.offsetX, this.offsetY)
+      var offsetAngle = fetchPointsAngle(0.0, 0.0, this.offsetX, this.offsetY)
       for (var index = 0; index < amount; index++) {
         controller.bulletService.spawnBullet(
           this.bullet, 
-          item.x, 
-          item.y,
-          angle + (index * this.angleStep) + (random(this.randomAngle) * choose(1, -1)),
+          item.x + Math.fetchCircleX(offsetLength, offsetAngle
+            + (index * this.offsetAngleStep)
+            + (random(this.randomOffsetAngle) * choose(1, -1))), 
+          item.y + Math.fetchCircleY(offsetLength, offsetAngle
+            + (index * this.offsetAngleStep)
+            + (random(this.randomOffsetAngle) * choose(1, -1))),
+          angle + (index * this.angleStep)
+            + (random(this.randomAngle) * choose(1, -1)),
           this.speed + (random(this.randomSpeed) * choose(1, -1)),
           Shroom
         )

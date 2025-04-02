@@ -1,5 +1,16 @@
 ///@package io.alkapivo.visu
 
+///@enum
+function _Difficulty(): Enum() constructor {
+  EASY = "EASY"
+  NORMAL = "NORMAL"
+  HARD = "HARD"
+  LUNATIC = "LUNATIC"
+}
+global.__Difficulty = new _Difficulty()
+#macro Difficulty global.__Difficulty
+
+
 ///@param {Struct} json
 function VisuSave(json) constructor {
   
@@ -17,6 +28,9 @@ function VisuController(layerName) constructor {
 
   ///@type {Gamemode}
   gameMode = GameMode.BULLETHELL
+
+  ///@type {Difficulty}
+  difficulty = Difficulty.NORMAL
 
   ///@type {?VisuTrack}
   track = null
@@ -631,6 +645,12 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   watchdog = function() {
     try {
+      this.difficulty = Visu.settings.getValue("visu.difficulty")
+      if (!Core.isEnumKey(this.difficulty, Difficulty)) {
+        this.difficulty = Difficulty.NORMAL
+        Visu.settings.setValue("visu.difficulty", this.difficulty).save()
+      }
+
       if (this.trackService.isTrackLoaded()) {
         var ost = this.trackService.track.audio
         var ostVolume = Visu.settings.getValue("visu.audio.ost-volume")
@@ -792,6 +812,13 @@ function VisuController(layerName) constructor {
       struct: Assert.isType(Struct.get(controller, name), Struct),
     }
   }, this))
+
+  ///@param {TrackChannel}
+  ///@return {Boolean}
+  isChannelDifficultyValid = function(channel) {
+    var difficulties = Struct.get(Struct.get(channel, "settings"), "difficulty")
+    return !Optional.is(difficulties) || Struct.get(difficulties, this.difficulty) != false
+  }
 
   ///@private
   ///@return {VisuController}

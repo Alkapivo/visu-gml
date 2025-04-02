@@ -55,7 +55,12 @@ global.__effect_track_event = {
         "ef-shd_merge-cfg": Struct.getIfType(data, "ef-shd_merge-cfg", Struct, { }),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
+      var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
       static getPipeline = function(data, key) {
         var controller = Beans.get(BeanVisuController)
         var pipeline = Struct.get(data, key)
@@ -106,8 +111,13 @@ global.__effect_track_event = {
         "ef-glt_shd-intensity": Struct.parse.number(data, "ef-glt_shd-intensity", 1.0, 0.0, 5.0),
       }
     },
-    run: function(data) {
-      var pump = Beans.get(BeanVisuController).visuRenderer.gridRenderer.glitchService.dispatcher
+    run: function(data, channel) {
+      var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
+      var pump = controller.visuRenderer.gridRenderer.glitchService.dispatcher
 
       ///@description feature TODO effect.glitch.config
       if (Struct.get(data, "ef-glt_use-config")) {
@@ -215,8 +225,13 @@ global.__effect_track_event = {
           ParticleEmitterDistribution, ParticleEmitterDistribution.LINEAR),
       }
     },
-    run: function(data) {
-      var particleService = Beans.get(BeanVisuController).particleService
+    run: function(data, channel) {
+      var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
+      var particleService = controller.particleService
       var area = Struct.get(data, "ef-part_area")
 
       ///@description feature TODO effect.particle.spawn
@@ -274,8 +289,12 @@ global.__effect_track_event = {
         "ef-cfg_change-particle-z": Struct.parse.boolean(data, "ef-cfg_change-particle-z", false),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
       var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
       var gridService = controller.gridService
       var properties = gridService.properties
       var pump = gridService.dispatcher

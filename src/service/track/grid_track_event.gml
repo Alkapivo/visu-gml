@@ -55,8 +55,13 @@ global.__grid_track_event = {
         "gr-area_change-v-size": Struct.parse.boolean(data, "gr-area_change-v-size"),
       }
     },
-    run: function(data) {
-      var gridService = Beans.get(BeanVisuController).gridService
+    run: function(data, channel) {
+      var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
+      var gridService = controller.gridService
       var properties = gridService.properties
       var pump = gridService.dispatcher
       var executor = gridService.executor
@@ -164,8 +169,13 @@ global.__grid_track_event = {
         "gr-c_change-side-size": Struct.parse.boolean(data, "gr-c_change-side-size"),
       }
     },
-    run: function(data) {
-      var gridService = Beans.get(BeanVisuController).gridService
+    run: function(data, channel) {
+      var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
+      var gridService = controller.gridService
       var properties = gridService.properties
       var pump = gridService.dispatcher
       var executor = gridService.executor
@@ -273,7 +283,12 @@ global.__grid_track_event = {
       }
     },
     run: function(data, channel) {
-      var gridService = Beans.get(BeanVisuController).gridService
+      var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
+      var gridService = controller.gridService
       var properties = gridService.properties
       var pump = gridService.dispatcher
       var executor = gridService.executor
@@ -394,8 +409,13 @@ global.__grid_track_event = {
         "gr-cfg_focus-grid-blend-col-spd": Struct.parse.number(data, "gr-cfg_focus-grid-blend-col-spd", 1.0, 0.0, 999.9),
       }
     },
-    run: function(data) {
-      var gridService = Beans.get(BeanVisuController).gridService
+    run: function(data, channel) {
+      var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
+      var gridService = controller.gridService
       var properties = gridService.properties
       var pump = gridService.dispatcher
       var executor = gridService.executor

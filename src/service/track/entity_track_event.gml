@@ -51,9 +51,12 @@ global.__entity_track_event = {
         "en-shr_mask": Struct.parse.rectangle(data, "en-shr_mask"),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
       var controller = Beans.get(BeanVisuController)
-
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+      
       ///@description feature TODO entity.shroom.spawn
       //controller.shroomService.send(new Event("spawn-shroom", {
       //  template: Struct.get(data, "en-shr_template"),
@@ -183,8 +186,12 @@ global.__entity_track_event = {
           SHROOM_SPAWN_ROW_AMOUNT),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
       var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
       var view = controller.gridService.view
       var viewX = Struct.get(data, "en-coin_snap-x")
         ? floor(view.x / (view.width / 2.0)) * (view.width / 2.0)
@@ -273,8 +280,11 @@ global.__entity_track_event = {
         "en-pl_racing": Struct.getIfType(data, "en-pl_racing", Struct, { }),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
       var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
       
       ///@description feature TODO entity.player.spawn
       controller.playerService.send(new Event("spawn-player", {
@@ -340,8 +350,12 @@ global.__entity_track_event = {
         "en-cfg_change-z-bullet": Struct.parse.boolean(data, "en-cfg_use-render-shr"),
       }
     },
-    run: function(data) {
+    run: function(data, channel) {
       var controller = Beans.get(BeanVisuController)
+      if (!controller.isChannelDifficultyValid(channel)) {
+        return
+      }
+
       var gridService = controller.gridService
       var properties = gridService.properties
       var pump = gridService.dispatcher
