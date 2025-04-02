@@ -71,7 +71,7 @@ function VisuController(layerName) constructor {
           } else {
             var ostVolume = Visu.settings.getValue("visu.audio.ost-volume")
             if (!controller.ostSound.isLoaded()) {
-              controller.ostSound.play(0.0).rewind(random(60.0)).setVolume(ostVolume, 2.0)
+              controller.ostSound.play(0.0).rewind(random(90.0)).setVolume(ostVolume, 2.0)
             } else if (controller.ostSound.isPaused()) {
               controller.ostSound.resume().setVolume(ostVolume, 2.0)
             } else if (controller.ostSound.isPlaying()
@@ -82,13 +82,13 @@ function VisuController(layerName) constructor {
   
           var bkgTimer = this.state.get("bkgTimer")
           if (bkgTimer.update().finished) {
-            bkgTimer.setDuration(4.0 + random(12.0))
+            bkgTimer.setDuration(3.0 + random(8.0))
             gridService.init()
           }
 
           var bkgColorTimer = this.state.get("bkgColorTimer")
           if (bkgColorTimer.update().finished) {
-            bkgColorTimer.setDuration(4.0 + random(12.0))
+            bkgColorTimer.setDuration(3.0 + random(9.0))
             var properties = gridService.properties
             var pump = controller.dispatcher
             var executor = controller.executor
@@ -124,12 +124,12 @@ function VisuController(layerName) constructor {
 
           var glitchTimer = this.state.get("glitchTimer")
           if (glitchTimer.update().finished) {
-            glitchTimer.setDuration(4.0 + random(12.0))
+            glitchTimer.setDuration(4.0 + random(16.0))
             controller.visuRenderer.hudRenderer.sendGlitchEvent()
             effect_track_event.brush_effect_glitch.run({
               "ef-glt_use-config": false,
               "ef-glt_use-fade-out": true,
-              "ef-glt_fade-out": 0.02 + random(1.0) * 0.08,
+              "ef-glt_fade-out": 0.08 + random(1.0) * 0.16,
             })
           }
 
@@ -1079,7 +1079,7 @@ function VisuController(layerName) constructor {
         })
       
       this.executor.add(task)
-    } else {
+    } else if (Core.getProperty("visu.menu.open-on-start", false)) {
       var event = this.menu.factoryOpenMainMenuEvent()
       var task = new Task("load-manifest")
         .setTimeout(3.0)

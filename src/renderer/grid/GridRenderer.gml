@@ -1056,8 +1056,8 @@ function GridRenderer() constructor {
     var camera = this.camera
     var gmCamera = camera.get()
     var cameraAngle = camera.angle + (sin(camera.breathTimer2.time) * BREATH_TIMER_FACTOR_2)
-    var cameraPitch = camera.pitch + (sin(camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)
-    var xto = camera.x
+    var cameraPitch = camera.pitch + (cos(camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)
+    var xto = camera.x + (cos(camera.breathTimer2.time) * GRID_SERVICE_PIXEL_WIDTH * 0.5)
     var yto = camera.y
     var zto = camera.z
     var xfrom = xto + dcos(cameraAngle) * dcos(cameraPitch)
@@ -1145,7 +1145,7 @@ function GridRenderer() constructor {
     var gmCamera = camera.get()
     var cameraAngle = camera.angle + (sin(camera.breathTimer2.time) * BREATH_TIMER_FACTOR_2)
     var cameraPitch = camera.pitch + (sin(camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)
-    var xto = camera.x
+    var xto = camera.x + (cos(camera.breathTimer2.time) * GRID_SERVICE_PIXEL_WIDTH * 0.5)
     var yto = camera.y
     var zto = camera.z
     var xfrom = xto + dcos(cameraAngle) * dcos(cameraPitch)

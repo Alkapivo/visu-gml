@@ -4,17 +4,17 @@
 function GridProperties(config = null) constructor {
 
   ///@type {Number}
-  speed = Struct.getIfType(config, "properties.speed", Number, (FRAME_MS / 4) * 1000)
+  speed = Struct.getIfType(config, "properties.speed", Number, 1.0)
 
   #region channels
   ///@type {Number}
-  channels = Struct.getIfType(config, "properties.channels", Number, 5.0)
+  channels = Struct.getIfType(config, "properties.channels", Number, 10.0)
 
   ///@type {Color}
-  channelsPrimaryColor = ColorUtil.parse(Struct.get(config, "properties.channelsPrimaryColor"), "#1aaaed")
+  channelsPrimaryColor = ColorUtil.parse(Struct.get(config, "properties.channelsPrimaryColor"), "#ff12ac")
 
   ///@type {Color}
-  channelsSecondaryColor = ColorUtil.fromHex(Struct.get(config, "properties.channelsSecondaryColor"), "#c94747")
+  channelsSecondaryColor = ColorUtil.fromHex(Struct.get(config, "properties.channelsSecondaryColor"), "#7daaff")
 
   ///@type {Number}
   channelsPrimaryAlpha = Struct.getIfType(config, "properties.channelsPrimaryAlpha", Number, 0.8)
@@ -23,10 +23,10 @@ function GridProperties(config = null) constructor {
   channelsSecondaryAlpha = Struct.getIfType(config, "properties.channelsSecondaryAlpha", Number, 0.6)
 
   ///@type {Number}
-  channelsPrimaryThickness = Struct.getIfType(config, "properties.channelsPrimaryThickness", Number, 5.0)
+  channelsPrimaryThickness = Struct.getIfType(config, "properties.channelsPrimaryThickness", Number, 6.0)
 
   ///@type {Number}
-  channelsSecondaryThickness = Struct.getIfType(config, "properties.channelsSecondaryThickness", Number, 5.0)
+  channelsSecondaryThickness = Struct.getIfType(config, "properties.channelsSecondaryThickness", Number, 6.0)
 
   ///@type {String}
   channelsMode = Struct.getIfType(config, "properties.channelsMode", String, "DUAL")
@@ -35,15 +35,15 @@ function GridProperties(config = null) constructor {
   #region separators
   ///@type {Number}
   separators = Assert.isType(Struct
-    .getDefault(config, "properties.separators", 10), Number)
+    .getDefault(config, "properties.separators", 20.0), Number)
 
   ///@type {Color}
   separatorsPrimaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.separatorsPrimaryColor ", "#1aaaed")), Color)
+    .getDefault(config, "properties.separatorsPrimaryColor ", "#ff12ac")), Color)
 
   ///@type {Color}
   separatorsSecondaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.separatorsSecondaryColor ", "#c94747")), Color)
+    .getDefault(config, "properties.separatorsSecondaryColor ", "#7daaff")), Color)
 
   ///@type {Number}
   separatorsPrimaryAlpha = Assert.isType(Struct
@@ -55,11 +55,11 @@ function GridProperties(config = null) constructor {
 
   ///@type {Number}
   separatorsPrimaryThickness = Assert.isType(Struct
-      .getDefault(config, "properties.separatorsPrimaryThickness", 5), Number)
+      .getDefault(config, "properties.separatorsPrimaryThickness", 6), Number)
 
   ///@type {Number}
   separatorsSecondaryThickness = Assert.isType(Struct
-    .getDefault(config, "properties.separatorsSecondaryThickness", 5), Number)
+    .getDefault(config, "properties.separatorsSecondaryThickness", 6), Number)
 
   ///@type {String}
   separatorsMode = Assert.isType(Struct
@@ -185,7 +185,7 @@ function GridProperties(config = null) constructor {
 
   ///@type {Color}
   gridClearColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.gridClearColor", "#00000000")), Color)
+    .getDefault(config, "properties.gridClearColor", "#400421")), Color)
 
   ///@type {Boolean}
   gridClearFrame = Assert.isType(Struct
@@ -201,7 +201,7 @@ function GridProperties(config = null) constructor {
 
   ///@type {Color}
   shaderClearColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.shaderClearColor", "#00000000")), Color)
+    .getDefault(config, "properties.shaderClearColor", "#ffffff00")), Color)
 
   ///@type {Boolean}
   shaderClearFrame = Assert.isType(Struct

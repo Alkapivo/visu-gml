@@ -811,6 +811,7 @@ function _Visu() constructor {
               Logger.debug("CLIParamParser", $"Run --test {args.get(0)}")
               Beans.get(BeanTestRunner).push(args.get(0))
               Core.setProperty("visu.manifest.load-on-start", false)
+              Core.setProperty("visu.menu.open-on-start", false)
             },
           }),
           new CLIParam({

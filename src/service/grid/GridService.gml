@@ -424,7 +424,7 @@ function GridService(_config = null) constructor {
         controller.send(new Event("fade-sprite", {
           sprite: SpriteUtil.parse({
             name: "texture_hechan_3_abstract",
-            alpha: 0.33,
+            alpha: 0.5,
             blend: "#FF00EE",
           }),
           collection: controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds,
@@ -458,7 +458,7 @@ function GridService(_config = null) constructor {
           fadeInDuration: 2.0 + random(1.0),
           fadeOutDuration: 4.0 + random(1.0),
           angle: 180.0 + angle,
-          speed: 1.25 + (random(1.0) * 0.5),
+          speed: 1.25 + (random(1.0) * 0.7),
           blendModeSource: BlendModeExt.SRC_ALPHA,
           blendModeTarget: BlendModeExt.ONE,
           blendEquation: BlendEquation.ADD,
@@ -483,7 +483,7 @@ function GridService(_config = null) constructor {
           fadeInDuration: 1.0 + random(1.0),
           fadeOutDuration: 3.0 + random(1.0),
           angle: angle,
-          speed: 0.15 + (random(1.0) * 0.2),
+          speed: 0.15 + (random(1.0) * 0.5),
           blendModeSource: BlendModeExt.SRC_ALPHA,
           blendModeTarget: BlendModeExt.ONE,
           blendEquation: BlendEquation.ADD,
